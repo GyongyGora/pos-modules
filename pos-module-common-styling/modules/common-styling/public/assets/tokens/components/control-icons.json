@@ -1,0 +1,335 @@
+{
+  "_about": "Component spec for pos-close/pos-chevron control icons (docs/inspect refactor, 2026-08-27 — deferred from the 2026-08-26 batch since it was not in the pre-decided toggle list, migrated now as part of finishing the refactor). Reuses the data from the old buildControlIconsInspectSpec() dynamic builder in styleguide-component-page.js (verified-accurate, currently-live), restructured into the new schema. Layout section is generated at DEFAULT icon size (M toggle = --pos-size-icon-s, 16px); getControlIconsVariantSections() in the JS swaps in the currently-selected icon size at render time (S/M/L toggle maps to --pos-size-icon-xs/-s/-m respectively, per ICON_SIZE_MAP) rather than a static pick, since the existing Icon size toggle is a real, already-working control. Preview shows two very different sub-elements (Close/Chevron) side by side, so per the 2026-08-25/26 rule it got a NEW \"Variant\" toggle on the Variants tab, position 1 — filters the preview to one at a time (B2). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "control-icons",
+  "name": "Control icons",
+  "description": "Close (dismiss) and Chevron (expand/collapse) control icon buttons used across the design system.",
+  "whenToUse": [
+    "<strong>Chevron — expand / collapse:</strong> dropdowns, collapsible menus and navigation sections, accordions, tree views, expandable table rows, collapsible sidebars and panels, FAQ sections.",
+    "<strong>Close:</strong> closeable modals and dialogs, closeable alerts, messages and notifications, toasts, banners, closeable tags and chips, drawers and side panels, popovers."
+  ],
+  "whenNotToUse": [
+    "Using as a decorative or purely informational icon — control icons always imply user interaction.",
+    "Using the chevron as a directional or navigation arrow — use a dedicated arrow icon instead.",
+    "Using the close icon as a \"delete\" or \"remove record\" action — use a trash / delete icon for destructive data operations."
+  ],
+  "do": [
+    "Always use <code>&lt;button type=\"button\"&gt;</code> as the element — never <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code>.",
+    "Always include <code>aria-label</code> on close buttons describing exactly what will be closed or removed (e.g. \"Close dialog\", \"Remove Electronics tag\").",
+    "Use <code>aria-expanded</code> on chevron buttons to communicate state — rotation is driven by this attribute automatically.",
+    "Always pair <code>aria-expanded</code> with <code>aria-controls</code> pointing to the controlled panel's <code>id</code>.",
+    "Size control icons relative to their context — use the S token inside compact components (tags, dense lists), M as the default, L for prominent surfaces (dialogs, large cards)."
+  ],
+  "dont": [
+    "Nest a close button inside another <code>&lt;button&gt;</code> — interactive elements cannot be nested.",
+    "Use the chevron to indicate navigation to a new page — use a link with an arrow icon instead.",
+    "Rely on the icon alone to communicate state — always pair with <code>aria-expanded</code> or <code>aria-label</code>.",
+    "Use control icons purely for decoration — their animated behavior signals actionability."
+  ],
+  "accessibility": [
+    "Close: <code>aria-label</code> must describe what is closed or removed, not just say \"Close\".",
+    "Chevron: set <code>aria-expanded=\"false\"</code> by default; toggle to <code>\"true\"</code> when the panel is open.",
+    "Chevron: <code>aria-controls</code> must point to the <code>id</code> of the controlled panel.",
+    "Chevron: include a visually hidden <code>&lt;span class=\"pos-label\"&gt;</code> as the accessible button label."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "kind",
+      "type": "'close' | 'chevron'",
+      "default": "close",
+      "description": "pos-close: dismiss/remove action; pos-chevron: expand/collapse indicator, rotates via [aria-expanded]."
+    },
+    {
+      "name": "size",
+      "type": "'s' | 'm' | 'l'",
+      "default": "m",
+      "description": "Maps to --pos-size-icon-xs / -s / -m respectively (S/M/L toggle labels are one step up from the raw token scale)."
+    }
+  ],
+  "dimensions": {
+    "kind": [
+      "close",
+      "chevron"
+    ],
+    "size": [
+      "s",
+      "m",
+      "l"
+    ],
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "disabled"
+    ]
+  },
+  "shared": {
+    "focus_indicator": [
+      {
+        "css": "--pos-color-focused",
+        "figma": "General elements-theme/Focused",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "close": {
+      "label": "Close",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "chevron": {
+      "label": "Chevron",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Sizing/Icon S (16)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<!-- Close button -->\n<button type=\"button\" class=\"pos-close\" aria-label=\"Close\">\n  <!-- x icon -->\n</button>\n\n<!-- Chevron / expand button -->\n<button type=\"button\" class=\"pos-chevron\"\n  aria-expanded=\"false\" aria-label=\"Expand section\">\n  <!-- dashRight icon -->\n</button>"
+}

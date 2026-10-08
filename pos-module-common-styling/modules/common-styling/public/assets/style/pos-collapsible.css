@@ -71,6 +71,7 @@
 
     .pos-collapsible li:not(:has(> a)){
       padding-inline: 4px;
+      color: var(--pos-color-content-text);
     }
 
 
@@ -87,6 +88,7 @@
 
     border-radius: var(--pos-radius-button);
 
+    color: var(--pos-color-content-icon-interactive);
     cursor: pointer;
 
     transition-property: background-color, color;
@@ -97,7 +99,7 @@
   .pos-collapsible-toggle:hover {
     background-color: var(--pos-color-highlight-background);
 
-    color: var(--pos-color-highlight-text);
+    color: var(--pos-color-interactive);
   }
 
   .pos-collapsible-toggle:focus-visible {
@@ -148,15 +150,31 @@
       display: none;
     }
 
+  /* the selected item gets no hover (RULES.md 4.5b): keep its color against the generic link hover in
+     pos-typography.css (:where(.pos-app) a:hover:not():not():not() = 0,4,1 — this is 0,5,1) */
+  .pos-collapsible .pos-collapsible-active > a:hover:not([aria-disabled="true"]):not(.pos-link--disabled) {
+    color: var(--pos-color-interactive-active);
+  }
+
 
   /* links styling
   ============================================================================ */
   .pos-collapsible a {
     padding-inline: 4px;
+    text-decoration: none;
+  }
+
+  .pos-collapsible a:hover {
+    text-decoration: none;
   }
 
   .pos-collapsible a:focus-visible {
     outline-offset: -2px;
   }
 
+}
+
+/* unlayered — overrides the typography @layer rule that applies font-weight:bold to all :where(.pos-app) a */
+.pos-collapsible a {
+  font-weight: normal;
 }

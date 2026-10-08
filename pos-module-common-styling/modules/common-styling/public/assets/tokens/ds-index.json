@@ -1,0 +1,1400 @@
+{
+  "_about": {
+    "purpose": "Single-file DS index for AI-assisted UI generation. Read this first when building any multi-component surface. Go to components/<name>.json only when you need full token/state detail for a specific component.",
+    "structure": "Two-file system: (1) ds-index.json — this file, fast overview of all components; (2) components/<name>.json — full detail per component (tokens, all states, markup, a11y). Read the index to pick components, then fetch individual files only as needed.",
+    "philosophy": "AI documentation is not prose. It is structured constraints. Verbose guidelines belong on the human doc page. This file answers: what exists, what class to use, when to use it, and what to combine it with.",
+    "example": {
+      "wrong": "Use the primary button for the most important action. It has a filled background and stands out visually.",
+      "right": {
+        "class": "pos-button pos-button-primary",
+        "role": "primary_action",
+        "max_per_screen": 1
+      }
+    },
+    "updated": "2026-10-02: catalog completed — every component spec and component CSS has an entry (checked by npm run check:catalog); removed the non-existent \"toggle\" entry (pos-toggle.css is docs-site only — the switch is toggle-btn); forms entry fixed to the real pos-form-* classes. An entry lists \"specs\" / \"css\" when its key differs from the spec / CSS file name."
+  },
+  "tokens": {
+    "source": "modules/common-styling/public/assets/style/pos-config.css",
+    "primitives": "modules/common-styling/public/assets/style/pos-primitives.css",
+    "component_detail": "modules/common-styling/public/assets/tokens/components/<name>.json",
+    "semantic_reference": "modules/common-styling/public/assets/tokens/token-map.json",
+    "semantic_reference_note": "token-map.json is the authoritative AI-readable token catalog. Contains every semantic token with: css variable name, figma name, resolved light/dark values, chain, status, and description. Read this when you need to understand what a token means, when to use it, or when generating UI that must use the correct semantic token for a given role."
+  },
+  "components": {
+    "button": {
+      "class": "pos-button",
+      "element": "button",
+      "variants": {
+        "primary": "pos-button pos-button-primary",
+        "secondary-filled": "pos-button",
+        "secondary": "pos-button pos-button-secondary",
+        "ghost": "pos-button pos-button-ghost"
+      },
+      "sizes": {
+        "default": "pos-button",
+        "small": "pos-button pos-button-small — desktop only"
+      },
+      "constraints": {
+        "primary_max_per_screen": 1
+      },
+      "api": {
+        "importance": [
+          {
+            "figma": "Primary",
+            "css": "pos-button pos-button-primary"
+          },
+          {
+            "figma": "Secondary Filled",
+            "css": "pos-button"
+          },
+          {
+            "figma": "Secondary",
+            "css": "pos-button pos-button-secondary"
+          },
+          {
+            "figma": "Ghost",
+            "css": "pos-button pos-button-ghost"
+          },
+          {
+            "figma": "Danger",
+            "css": "pos-button pos-button-primary pos-button-error"
+          },
+          {
+            "figma": "Danger Secondary",
+            "css": "pos-button pos-button-error"
+          },
+          {
+            "figma": "Confirm",
+            "css": "pos-button pos-button-primary pos-button-success"
+          },
+          {
+            "figma": "Confirm Secondary",
+            "css": "pos-button pos-button-success"
+          }
+        ],
+        "background": [
+          {
+            "figma": "Normal",
+            "css": ""
+          },
+          {
+            "figma": "Inverted",
+            "css": "pos-button-inverted"
+          }
+        ],
+        "size": [
+          {
+            "figma": "Normal",
+            "css": ""
+          },
+          {
+            "figma": "Small",
+            "css": "pos-button-small"
+          }
+        ],
+        "type": [
+          {
+            "figma": "Text (with icon)",
+            "note": "label + optional icons via booleans"
+          },
+          {
+            "figma": "Icon",
+            "note": "icon-only: remove label, padding-inline:0, width=height (44px default, 30px small)"
+          },
+          {
+            "figma": "Dropdown",
+            "note": "label + trailing chevron icon"
+          }
+        ],
+        "state": [
+          {
+            "figma": "Normal",
+            "css": ""
+          },
+          {
+            "figma": "Hover",
+            "css": ":hover"
+          },
+          {
+            "figma": "Active",
+            "css": ":active"
+          },
+          {
+            "figma": "Focused",
+            "css": ":focus-visible"
+          },
+          {
+            "figma": "Disabled",
+            "css": "[disabled]"
+          }
+        ],
+        "booleans": [
+          {
+            "figma": "Left icon",
+            "html": "prepend <svg> before label"
+          },
+          {
+            "figma": "Right icon",
+            "html": "append <svg> after label"
+          }
+        ]
+      },
+      "detail": "components/button.json",
+      "when": "Triggering an action — submitting a form, opening a dialog, confirming a choice, or initiating any process that does not navigate away from the page. Use pos-button whenever the outcome is an action, not a navigation."
+    },
+    "dropdown-button": {
+      "class": "pos-dropdown-button + pos-dropdown-button-trigger (on pos-button pos-button-primary) + pos-dropdown-button-menu",
+      "element": "div > button[popovertarget] + menu[popover] > li > a | button",
+      "figma": "Buttons/Button — Type=Dropdown",
+      "states": [
+        "normal",
+        "hover",
+        "focus",
+        "active",
+        "disabled"
+      ],
+      "interactive": true,
+      "status": "new",
+      "css": "style/pos-dropdown-button.css",
+      "js": "js/pos-popover.js (run on .pos-dropdown-button by init)",
+      "detail": "components/dropdown-button.json",
+      "when": "One primary entry point for a few related actions (e.g. Add new → Page / Folder); not for picking a value (select) or a single action (button).",
+      "markup": "<div class=\"pos-dropdown-button\"><button type=\"button\" class=\"pos-button pos-button-primary pos-dropdown-button-trigger\" popovertarget=\"add-menu\"><span class=\"pos-dropdown-button-icon\" aria-hidden=\"true\"><svg class=\"pos-icon\">…</svg></span>Add new</button><menu class=\"pos-dropdown-button-menu\" id=\"add-menu\" popover><li><a href=\"…\">Page</a></li><li><button type=\"button\">Folder</button></li></menu></div>",
+      "constraints": {
+        "items": "2–6",
+        "variants": "primary only",
+        "nested_menus": false,
+        "popovertarget_matches_menu_id": true
+      },
+      "composedOf": [
+        "button"
+      ]
+    },
+    "avatar": {
+      "class": "pos-avatar",
+      "element": "img or span",
+      "variants": {
+        "image": "pos-avatar + <img> child",
+        "initials": "pos-avatar with the initials as text content"
+      },
+      "detail": "components/avatar.json",
+      "when": "Representing a user, contact, or entity with a profile image or initials."
+    },
+    "badge": {
+      "class": "pos-badge",
+      "element": "span",
+      "figma": "node-id=8293-129201 (Badge/Number badge)",
+      "api": {
+        "type": [
+          {
+            "figma": "Dot",
+            "css": "pos-badge pos-badge--dot",
+            "note": "no content, aria-hidden=\"true\""
+          },
+          {
+            "figma": "Number",
+            "css": "pos-badge pos-badge--number",
+            "note": "one digit 1–9"
+          },
+          {
+            "figma": "Max count",
+            "css": "pos-badge pos-badge--max-count",
+            "note": "short count like 99+"
+          }
+        ],
+        "size": [
+          {
+            "figma": "Small",
+            "css": "pos-badge--small",
+            "px": 16
+          },
+          {
+            "figma": "Big",
+            "css": "pos-badge--big",
+            "px": 20
+          }
+        ],
+        "intent": [
+          {
+            "figma": "important",
+            "css": "pos-badge--important",
+            "note": "default — can be omitted"
+          },
+          {
+            "figma": "confirmation",
+            "css": "pos-badge--confirmation",
+            "note": "--pos-color-confirmation fill"
+          },
+          {
+            "figma": "brand",
+            "css": "pos-badge--brand",
+            "note": "--pos-color-standout-background fill"
+          },
+          {
+            "figma": "neutral",
+            "css": "pos-badge--neutral",
+            "note": "--pos-color-content-icon fill"
+          }
+        ]
+      },
+      "states": [
+        "normal"
+      ],
+      "interactive": false,
+      "status": "new",
+      "css": "style/pos-badge.css",
+      "detail": "components/badge.json",
+      "when": "A quiet dot or small count on an icon, avatar or tab (new items, unread count); meaning goes into the anchor element's aria-label.",
+      "constraints": {
+        "content": "dot, one digit or a short max count (99+)",
+        "max_per_element": 1
+      }
+    },
+    "card": {
+      "note": "Legacy component — appearance-only changes. CSS: style/pos-card.css. New DS equivalent: feature-card (pos-feature-card).",
+      "class": "pos-card",
+      "variants": {
+        "default": "pos-card",
+        "highlighted": "pos-card pos-card-highlighted",
+        "brand-primary": "pos-card pos-card-brand-primary",
+        "brand-supplementary": "pos-card pos-card-brand-supplementary",
+        "content": "pos-card-content (with pos-card-content-permalink, pos-card-content-title, pos-card-content-image-container, pos-card-content-footer)",
+        "alert": "pos-card-alert",
+        "alert-warning": "pos-card-alert pos-card-alert-warning",
+        "alert-error": "pos-card-alert pos-card-alert-error",
+        "alert-success": "pos-card-alert pos-card-alert-success"
+      },
+      "when": "Grouping related content in a visually distinct, elevated surface.",
+      "detail": "components/card.json",
+      "render": "render 'modules/common-styling/content/card', url: text, image: object | url, title: text, content: text, footer: text (optional), highlighted: bool (optional)"
+    },
+    "chip": {
+      "class": "pos-chip",
+      "element": "span",
+      "figma": "Labels, tags, chips/Chip",
+      "api": {
+        "intent": [
+          {
+            "figma": "Neutral",
+            "css": "pos-chip pos-chip-neutral"
+          },
+          {
+            "figma": "Warning",
+            "css": "pos-chip pos-chip-warning"
+          },
+          {
+            "figma": "Success",
+            "css": "pos-chip pos-chip-success"
+          },
+          {
+            "figma": "Error",
+            "css": "pos-chip pos-chip-error"
+          }
+        ],
+        "color": [
+          {
+            "figma": "Normal",
+            "css": ""
+          },
+          {
+            "figma": "Prominent",
+            "css": "pos-chip--prominent"
+          }
+        ],
+        "size": [
+          {
+            "figma": "default",
+            "css": ""
+          },
+          {
+            "figma": "tiny",
+            "css": "pos-chip--tiny"
+          }
+        ],
+        "booleans": [
+          {
+            "figma": "Additional graphical element",
+            "html": "dot/badge icon inside chip — no CSS class, content only"
+          },
+          {
+            "figma": "beginner",
+            "html": "preset level indicator — no CSS class"
+          },
+          {
+            "figma": "Avarage",
+            "html": "preset level indicator — no CSS class"
+          },
+          {
+            "figma": "experienced",
+            "html": "preset level indicator — no CSS class"
+          }
+        ]
+      },
+      "detail": "components/chip.json",
+      "when": "Displaying the status of an item — e.g. \"Published\", \"Draft\", \"In review\"."
+    },
+    "collapsible": {
+      "class": "pos-collapsible",
+      "element": "ul",
+      "js": "new pos.modules.collapsible({ container, id })",
+      "detail": "components/collapsible-list.json",
+      "specs": [
+        "collapsible-list"
+      ],
+      "when": "Hierarchical sidebar navigation with two or more levels."
+    },
+    "code": {
+      "classes": {
+        "inline": "pos-code",
+        "block": "pos-code--block",
+        "numbered": "pos-code--block pos-code--numbered",
+        "light": "pos-code--block pos-code--light"
+      },
+      "elements": {
+        "inline": "code",
+        "block": "pre > code"
+      },
+      "figma": "Page Elements/Code snippet",
+      "api": {
+        "color_scheme": [
+          {
+            "figma": "Dark",
+            "css": "pos-code--block"
+          },
+          {
+            "figma": "Light",
+            "css": "pos-code--block pos-code--light"
+          }
+        ]
+      },
+      "css_only": {
+        "inline": {
+          "class": "pos-code",
+          "note": "no Figma component — inline code, code font, tag shape"
+        }
+      },
+      "detail": "components/code.json",
+      "when": "Displaying a short code reference inline in prose — a function name, variable, attribute, or command. Use <code class=\"pos-code\">."
+    },
+    "dialog": {
+      "class": "pos-dialog",
+      "element": "dialog",
+      "js": "new pos.modules.dialog(...)",
+      "events": [
+        "pos-dialog-opened",
+        "pos-dialog-closed"
+      ],
+      "constraints": {
+        "focus_trap": true,
+        "scroll_lock": true
+      },
+      "detail": "components/dialog.json",
+      "when": "Requiring the user to make a decision or confirm/cancel an action before continuing.",
+      "render": "render 'modules/common-styling/content/dialog', id: text, title: text, content: html"
+    },
+    "feature-card": {
+      "class": "pos-feature-card",
+      "element": "div or a",
+      "figma": "node-id=16675-23252 (within large card set — use Text+TopIcon variants only)",
+      "api": {
+        "type": [
+          {
+            "figma": "Text+TopIcon default",
+            "css": "pos-feature-card"
+          },
+          {
+            "figma": "Text+TopIcon small",
+            "css": "pos-feature-card pos-feature-card--small"
+          },
+          {
+            "figma": "Text+TopIcon large",
+            "css": "pos-feature-card pos-feature-card--large"
+          },
+          {
+            "figma": "Text+TopIcon centered default",
+            "css": "pos-feature-card pos-feature-card--centered"
+          },
+          {
+            "figma": "Text+TopIcon centered small",
+            "css": "pos-feature-card pos-feature-card--small pos-feature-card--centered"
+          },
+          {
+            "figma": "Text+TopIcon centered large",
+            "css": "pos-feature-card pos-feature-card--large pos-feature-card--centered"
+          }
+        ],
+        "color": [
+          {
+            "figma": "normal",
+            "css": "pos-feature-card"
+          },
+          {
+            "figma": "colorful",
+            "css": "pos-feature-card",
+            "status": "not implemented — no CSS modifier class yet"
+          }
+        ]
+      },
+      "internal_elements": {
+        "pos-feature-card-icon": "icon container (circular bg)",
+        "pos-feature-card-body": "text content wrapper",
+        "pos-feature-card-title": "heading",
+        "pos-feature-card-subtitle": "secondary heading",
+        "pos-feature-card-lead": "intro text",
+        "pos-feature-card-text": "body text",
+        "pos-feature-card-link": "call-to-action link",
+        "pos-feature-card-actions": "button/link group"
+      },
+      "detail": "components/feature-card.json",
+      "when": "Presenting a self-contained piece of content — a feature, section, or offer — with an icon, title, description, and optional action buttons.",
+      "background": {
+        "none": "content background",
+        "highlighted": "pos-feature-card--highlighted",
+        "brand-primary": "pos-feature-card--brand-primary",
+        "brand-supplementary": "pos-feature-card--brand-supplementary",
+        "combine": "with size / centered; one background class at most"
+      }
+    },
+    "forms": {
+      "classes": {
+        "form": "pos-form",
+        "simple_layout": "pos-form-simple",
+        "fieldset": "pos-form-fieldset",
+        "label": "pos-label",
+        "input": "pos-form-input",
+        "select": "pos-form-select",
+        "checkbox": "pos-form-checkbox",
+        "radio": "pos-form-radio",
+        "password": "pos-form-password",
+        "multiselect": "pos-form-multiselect",
+        "input_with_icon": "pos-form-input-wrapper",
+        "error": "pos-form-error",
+        "success": "pos-form-success",
+        "actions": "pos-form-actions"
+      },
+      "constraints": {
+        "every_input_needs_label": true
+      },
+      "specs": [
+        "text-input",
+        "textarea",
+        "select",
+        "checkbox",
+        "radio",
+        "password",
+        "multiselect"
+      ],
+      "css": [
+        "forms"
+      ],
+      "detail": "per control: components/text-input.json, textarea.json, select.json, checkbox.json, radio.json, password.json, multiselect.json",
+      "when": "Any form — wrapper, label, fieldset, error / success states. Each control has its own entry (text-input, textarea, select, checkbox, radio, password, multiselect)."
+    },
+    "link": {
+      "class": "pos-link",
+      "element": "a",
+      "figma": "Links/Link",
+      "note": "bare <a> within .pos-app also receives link styles automatically",
+      "api": {
+        "type": [
+          {
+            "figma": "standalone link - right icon",
+            "html": "<a class='pos-link'>label<svg/></a>"
+          },
+          {
+            "figma": "standalone link - left icon",
+            "html": "<a class='pos-link'><svg/>label</a>"
+          },
+          {
+            "figma": "external link",
+            "html": "<a class='pos-link' target='_blank' rel='noopener'>label<svg aria-label='opens in new tab'/></a>"
+          },
+          {
+            "figma": "document link",
+            "html": "<a class='pos-link'><svg/>label</a>",
+            "note": "document icon prepended"
+          }
+        ],
+        "size": [
+          {
+            "figma": "default",
+            "css": "pos-link"
+          },
+          {
+            "figma": "small",
+            "css": "pos-link pos-link--small"
+          }
+        ],
+        "state": [
+          {
+            "figma": "default",
+            "css": ""
+          },
+          {
+            "figma": "hover",
+            "css": ":hover"
+          },
+          {
+            "figma": "active",
+            "css": ":active"
+          },
+          {
+            "figma": "focused",
+            "css": ":focus-visible"
+          },
+          {
+            "figma": "disabled",
+            "css": "[aria-disabled='true'] or .pos-link--disabled"
+          },
+          {
+            "figma": "visited",
+            "css": ":visited"
+          }
+        ]
+      },
+      "css_only": {
+        "link_list": {
+          "note": "no Figma component for link list — use <ul> with .pos-link items"
+        }
+      },
+      "detail": "components/link.json",
+      "when": "Navigating to another page, section, or URL — inline within body text, or as a standalone navigation target. Use <a href=\"...\"> whenever the outcome is navigation, not an action."
+    },
+    "pagination": {
+      "class": "pos-pagination",
+      "element": "nav",
+      "detail": "components/pagination.json",
+      "when": "Splitting long lists, search results, or data tables into discrete numbered pages.",
+      "render": "render 'modules/common-styling/pagination', total_pages: int"
+    },
+    "popover": {
+      "class": "pos-popover",
+      "element": "div[popover]",
+      "js": "new pos.modules.popover(...)",
+      "events": [
+        "pos-popover-opened",
+        "pos-popover-closed"
+      ],
+      "detail": "components/popover.json",
+      "specs": [
+        "popover-content"
+      ],
+      "when": "Offering a small set of contextual actions for a specific item (e.g. Edit, Duplicate, Delete)."
+    },
+    "segmented-control": {
+      "class": "pos-segmented-control",
+      "element": "div",
+      "figma": "segmented control",
+      "js": "window.pos.modules.segmentedControl(container)",
+      "api": {
+        "color": [
+          {
+            "figma": "default",
+            "css": "pos-segmented-control"
+          },
+          {
+            "figma": "highlighted",
+            "css": "pos-segmented-control pos-segmented-control--highlighted"
+          },
+          {
+            "figma": "subtle",
+            "css": "pos-segmented-control pos-segmented-control--subtle"
+          }
+        ],
+        "size": [
+          {
+            "figma": "normal",
+            "css": "pos-segmented-control",
+            "note": "base = normal size (44px buttons)"
+          },
+          {
+            "figma": "small",
+            "css": "pos-segmented-control pos-segmented-control--small",
+            "note": "30px buttons"
+          }
+        ]
+      },
+      "button_class": "pos-segmented-control-btn",
+      "button_active": "pos-segmented-control-btn--active or [aria-pressed='true']",
+      "detail": "components/segmented.json",
+      "specs": [
+        "segmented"
+      ],
+      "when": "Switching between 2—4 mutually exclusive views, modes, or filters (e.g. Day / Week / Month, List / Grid)."
+    },
+    "switch-card": {
+      "class": "pos-switch-card",
+      "element": "label",
+      "figma": null,
+      "note": "CSS-only — no Figma component yet.",
+      "detail": "components/switch-card.json",
+      "when": "Letting users toggle a feature or setting on or off — especially when the option has a name and an icon that benefits from a larger, more prominent touch target."
+    },
+    "tab": {
+      "class": "pos-tab / pos-tab-detailed",
+      "element": "button",
+      "detail": "components/tab.json",
+      "when": "Switching between a small, fixed set of related views or filtered sections of the same page, without navigating away."
+    },
+    "table": {
+      "class": "pos-table",
+      "element": "ul/li (not a real <table> element)",
+      "detail": "components/table.json",
+      "when": "Displaying structured, multi-column data (e.g. a list of records) that needs to stay legible on mobile without horizontal scrolling."
+    },
+    "tag": {
+      "class": "pos-tag",
+      "element": "span or button or a",
+      "figma": "Labels, tags, chips/Tag",
+      "api": {
+        "type": [
+          {
+            "figma": "Default",
+            "css": "pos-tag"
+          },
+          {
+            "figma": "Neutral",
+            "css": "pos-tag pos-tag-neutral"
+          },
+          {
+            "figma": "Important",
+            "css": "pos-tag pos-tag-important"
+          },
+          {
+            "figma": "Confirmation",
+            "css": "pos-tag pos-tag-confirmation"
+          },
+          {
+            "figma": "Warning",
+            "css": "pos-tag pos-tag-warning"
+          },
+          {
+            "figma": "Interactive",
+            "css": "pos-tag pos-tag-interactive",
+            "element": "button or a"
+          },
+          {
+            "figma": "Interactive X",
+            "css": "pos-tag pos-tag-interactive",
+            "element": "span",
+            "note": "add <button class='pos-tag-remove'> inside"
+          },
+          {
+            "figma": "Selected",
+            "css": "pos-tag pos-tag-interactive pos-tag-selected",
+            "element": "button or a"
+          },
+          {
+            "figma": "Selected X",
+            "css": "pos-tag pos-tag-interactive pos-tag-selected",
+            "element": "span",
+            "note": "add <button class='pos-tag-remove'> inside"
+          },
+          {
+            "figma": "interactive hover",
+            "css": ":hover"
+          },
+          {
+            "figma": "focused",
+            "css": ":focus-visible"
+          },
+          {
+            "figma": "disabled",
+            "css": "[aria-disabled='true']"
+          }
+        ],
+        "size": [
+          {
+            "figma": "Tag (default)",
+            "css": "pos-tag"
+          },
+          {
+            "figma": "Tag Small (separate Figma component)",
+            "css": "pos-tag pos-tag--small",
+            "figma_component": "Labels, tags, chips/Tag Small"
+          }
+        ]
+      },
+      "container": "pos-tags-list",
+      "detail": "components/tag.json",
+      "when": "Static tag: displaying short, non-interactive metadata labels on content items — category, status, type. Use a <span> element."
+    },
+    "tile-btn": {
+      "class": "pos-tile-btn",
+      "element": "button",
+      "figma_horizontal": "tile button horizontal",
+      "figma_vertical": "tile button vertical",
+      "api": {
+        "orientation": [
+          {
+            "figma": "horizontal",
+            "css_group": "pos-tile-btn-group"
+          },
+          {
+            "figma": "vertical",
+            "css_group": "pos-tile-btn-group pos-tile-btn-group--vertical"
+          }
+        ],
+        "color": [
+          {
+            "figma": "default",
+            "css": "pos-tile-btn"
+          },
+          {
+            "figma": "highlighted",
+            "css": "pos-tile-btn",
+            "status": "not implemented — no CSS modifier class yet"
+          }
+        ],
+        "state": [
+          {
+            "figma": "enabled",
+            "css": "pos-tile-btn"
+          },
+          {
+            "figma": "selected",
+            "css": "pos-tile-btn pos-tile-btn--selected"
+          },
+          {
+            "figma": "hover",
+            "css": ":hover"
+          },
+          {
+            "figma": "disabled",
+            "css": "pos-tile-btn[disabled]"
+          },
+          {
+            "figma": "selected disabled",
+            "css": "pos-tile-btn pos-tile-btn--selected[disabled]"
+          }
+        ]
+      },
+      "detail": "components/tile-btn.json",
+      "when": "Letting the user select from a small set of prominent, mutually exclusive options — mode pickers, filter palettes, settings panels — where each option has an icon and benefits from a larger touch target."
+    },
+    "toggle-btn": {
+      "class": "pos-toggle-btn",
+      "element": "label > input[type=checkbox][role=switch] + span",
+      "detail": "components/toggle-btn.json",
+      "when": "A single, standalone on/off setting inline with other content (e.g. next to a label you already control elsewhere, or inside a table cell)."
+    },
+    "toast": {
+      "class": "pos-toast",
+      "js": "new window.pos.modules.toast('error' | 'success' | 'info' | 'warning', message, { delay, autohide, icon, debug })",
+      "events": [
+        "pos-modules-toast-ready"
+      ],
+      "detail": "components/toast.json",
+      "when": "Confirming the result of a user action (save, delete, submit) without interrupting their flow.",
+      "render": "render 'modules/common-styling/toasts', params: flash (in the layout, once) — from JS: new pos.modules.toast('<severity>', '<message>')"
+    },
+    "upload": {
+      "class": "pos-upload",
+      "js": "Uppy-based",
+      "detail": "components/file-upload.json",
+      "specs": [
+        "file-upload"
+      ],
+      "when": "Letting a user attach one or more files (images, documents) to a form, with drag-and-drop and a file browser fallback.",
+      "render": "render 'modules/common-styling/forms/upload', id: text, name: text, presigned_upload: object, files: array (optional), allowed_file_types: [text] (optional)"
+    },
+    "markdown": {
+      "class": "pos-markdown",
+      "js": "EasyMDE-based",
+      "events": [
+        "pos-markdown-initialized",
+        "pos-markdown-changed",
+        "pos-markdown-reset",
+        "pos-markdown-image-uploaded",
+        "pos-markdown-validation-passed",
+        "pos-markdown-validation-failed",
+        "pos-markdown-textarea-updated"
+      ],
+      "detail": "components/markdown.json",
+      "when": "Letting a user write long-form, formatted content (descriptions, articles, comments) using Markdown syntax with a visual toolbar.",
+      "render": "render 'modules/common-styling/forms/markdown', id: text, name: text, presigned_upload: object, value: text (optional), minlength / maxlength: int (optional)"
+    },
+    "breadcrumb": {
+      "class": "pos-breadcrumb",
+      "element": "nav",
+      "figma": null,
+      "variants": [
+        "expanded",
+        "collapsed"
+      ],
+      "states": [
+        "normal",
+        "hover",
+        "focus"
+      ],
+      "composedOf": [
+        "popover"
+      ],
+      "js": "new pos.modules.breadcrumb({ container })",
+      "detail": "components/breadcrumb.json",
+      "when": "Showing the user's location within a nested page hierarchy (e.g. Category > Subcategory > Product)."
+    },
+    "alert-card": {
+      "class": "pos-card pos-card-alert pos-card-alert-<type>",
+      "element": "div",
+      "render": "render 'modules/common-styling/content/alert', type: 'info' | 'success' | 'warning' | 'error', content: text, title: text (optional), icon: false (optional), buttons: html (optional)",
+      "when": "Showing an inline informational, warning, error, or success message within page content — adjacent to a card or content block.",
+      "constraints": {
+        "prefer_render_partial": true
+      },
+      "detail": "components/alert-card.json"
+    },
+    "text-input": {
+      "class": "pos-form-input",
+      "element": "input",
+      "wrapper": "pos-form pos-form-simple + label.pos-label",
+      "states": {
+        "error": "aria-invalid=\"true\" on the input + p.pos-form-error message",
+        "success": "aria-invalid=\"false\" on the input + p.pos-form-success message"
+      },
+      "when": "Collecting a single line of free-form text — names, emails, search queries, URLs, dates.",
+      "constraints": {
+        "every_input_needs_label": true
+      },
+      "detail": "components/text-input.json"
+    },
+    "textarea": {
+      "class": "pos-form-input",
+      "element": "textarea",
+      "wrapper": "pos-form pos-form-simple",
+      "when": "Collecting multi-line free-form text — descriptions, notes, comments.",
+      "constraints": {
+        "every_input_needs_label": true
+      },
+      "detail": "components/textarea.json"
+    },
+    "select": {
+      "class": "pos-form-select",
+      "element": "select",
+      "wrapper": "pos-form pos-form-simple pos-form-input-wrapper (+ pos-form-input-icon for the arrow)",
+      "when": "The user must choose one option from a long list (5+) of predefined values.",
+      "constraints": {
+        "min_options_for_select": 5,
+        "fewer_options": "radio"
+      },
+      "detail": "components/select.json"
+    },
+    "slider": {
+      "class": "pos-slider-field + pos-slider",
+      "element": "div > input[type=range]",
+      "figma": null,
+      "states": [
+        "normal",
+        "focus"
+      ],
+      "interactive": true,
+      "status": "new",
+      "css": "style/pos-slider.css",
+      "js": "js/pos-slider.js (loaded by init when a .pos-slider-field is on the page)",
+      "detail": "components/slider.json",
+      "when": "Picking an approximate value from a continuous range by dragging (volume, opacity, a percentage); not for exact numbers or a few options.",
+      "markup": "<div class=\"pos-slider-field\" style=\"--ratio:.42\"><span class=\"pos-slider-value\" aria-hidden=\"true\">42</span><input type=\"range\" class=\"pos-slider\" min=\"0\" max=\"100\" value=\"42\" aria-label=\"…\"></div>",
+      "constraints": {
+        "label": "required (label for / aria-label)",
+        "min_width_px": 160
+      }
+    },
+    "checkbox": {
+      "class": "pos-form-checkbox",
+      "element": "input[type=checkbox] + label",
+      "wrapper": "pos-form-simple",
+      "when": "Selecting zero or more independent options from a list.",
+      "detail": "components/checkbox.json"
+    },
+    "radio": {
+      "class": "pos-form-radio",
+      "element": "input[type=radio] + label",
+      "wrapper": "pos-form-simple",
+      "when": "Selecting exactly one option from a set of mutually exclusive choices.",
+      "constraints": {
+        "same_name_per_group": true
+      },
+      "detail": "components/radio.json"
+    },
+    "password": {
+      "class": "pos-form-password",
+      "element": "div > input[type=password] + button.pos-form-password-toggle",
+      "when": "Collecting a password, PIN, or any value the user should not see while typing.",
+      "constraints": {
+        "always_include_visibility_toggle": true,
+        "toggle_aria_label_reflects_state": true
+      },
+      "detail": "components/password.json",
+      "render": "render 'modules/common-styling/forms/password', name: text, id: text, value: text (optional), class: text (optional), meter: bool (optional)"
+    },
+    "multiselect": {
+      "class": "pos-form-multiselect",
+      "element": "div (JS-driven)",
+      "when": "Letting users select multiple values from a defined list — tags, categories, filters, permissions.",
+      "modifiers": [
+        "pos-form-multiselect-multiline",
+        "pos-form-multiselect-combine"
+      ],
+      "detail": "components/multiselect.json",
+      "render": "render 'modules/common-styling/forms/multiselect', id: text, list: [{ value, label }], selected: [values] (optional), form: text, name: text, required: bool (optional), combine_selected: bool (optional)"
+    },
+    "tooltip": {
+      "attribute": "data-tooltip",
+      "element": "text type: any interactive element (no wrapper); icon-text type: .pos-tooltip-anchor around the control",
+      "when": "Icon-only controls — every icon-only button/action always needs one (RULES.md 4.2), reusing its own aria-label text.",
+      "constraints": {
+        "required_on_icon_only_buttons": true,
+        "text_mirrors_aria_label": true,
+        "interactive_content": false
+      },
+      "css": [
+        "tooltip"
+      ],
+      "detail": "components/tooltip.json",
+      "classes": [
+        "pos-tooltip-anchor",
+        "pos-tooltip",
+        "pos-tooltip-text"
+      ],
+      "types": {
+        "text": "data-tooltip=\"Label\" on the control",
+        "icon-text": "<span class=\"pos-tooltip-anchor\"><button aria-describedby=\"tip-id\">…</button><span class=\"pos-tooltip\" role=\"tooltip\" id=\"tip-id\"><svg class=\"pos-icon\">…</svg><span class=\"pos-tooltip-text\"><span>Line</span><strong>Bold line</strong></span></span></span>"
+      }
+    },
+    "control-icons": {
+      "classes": {
+        "close": "pos-close",
+        "chevron": "pos-chevron"
+      },
+      "element": "button",
+      "when": "Close (dismiss) and chevron (expand / collapse) icon buttons — reuse these instead of building your own.",
+      "constraints": {
+        "needs_aria_label": true
+      },
+      "css": [
+        "close",
+        "chevron"
+      ],
+      "detail": "components/control-icons.json"
+    },
+    "spinner": {
+      "class": "pos-spinner",
+      "element": "svg",
+      "when": "Loading indicator for an ongoing process (also used by the button loading state). Size via width / height on the svg.",
+      "css": [
+        "spinner"
+      ],
+      "props": [
+        {
+          "name": "size",
+          "type": "width / height on the <svg>",
+          "default": "1em (inside a button)",
+          "description": "Standalone 1.5rem, small 1rem (pos-spinner.css). Inside a button the 1em default follows the label size."
+        },
+        {
+          "name": "accessible name",
+          "type": "role=\"status\" + visually hidden text, or aria-hidden=\"true\"",
+          "default": "required",
+          "description": "A standalone spinner announces the loading state; inside a button that already says it is loading, hide the svg from assistive tech."
+        }
+      ]
+    }
+  },
+  "layout": {
+    "page": {
+      "body_class": "pos-app",
+      "padding_token": "--pos-padding-page",
+      "bg_token": "--pos-color-page-background"
+    },
+    "typography": {
+      "heading_1": "pos-heading-1",
+      "heading_2": "pos-heading-2",
+      "heading_3": "pos-heading-3",
+      "heading_4": "pos-heading-4",
+      "color_prominent": "--pos-color-content-text-prominent",
+      "color_default": "--pos-color-content-text",
+      "color_secondary": "--pos-color-content-text-supplementary"
+    },
+    "spacing": {
+      "h1_to_subtitle": "--pos-gap-title-content",
+      "section_heading_to_content": "--pos-gap-section-title-content",
+      "section_to_section": "--pos-gap-section-section",
+      "card_to_card": "--pos-gap-card-card",
+      "elements_within_card": "--pos-gap-card-elements",
+      "paragraph_to_paragraph": "--pos-gap-text-text",
+      "tag_to_tag": "--pos-gap-tag-tag"
+    }
+  },
+  "rules": {
+    "no_hardcoded_values": true,
+    "no_primitive_tokens_in_components": true,
+    "css_layer": "@layer common-styling { }",
+    "class_prefix": "pos-",
+    "js_namespace": "window.pos",
+    "theming": "theme = token overrides only (light / dark / high contrast blocks in style/pos-config.css) — no structural changes; never use prefers-color-scheme in component CSS",
+    "typography": {
+      "line_height_pairing": "every font size token must be paired with its matching line-height token — Size/font M → Line-height/lineH M; if no exact match exists, use the proportionally closest line-height token",
+      "heading_color": "--pos-color-content-text-prominent — never leave headings at default body text color"
+    },
+    "color": {
+      "interactive_text_vs_graphic": "--pos-color-interactive-text (text) and --pos-color-interactive (icons / graphics) are separate tokens — WCAG text contrast requires 4.5:1 minimum (AA), graphic/icon contrast requires only 3:1; this allows interactive graphics to use a lighter color than interactive text while both remain WCAG compliant",
+      "interactive_text_token": "--pos-color-interactive-text",
+      "interactive_graphic_token": "--pos-color-interactive"
+    }
+  },
+  "aliases": {
+    "_about": "Lookup only — maps the names agents and other libraries commonly use to this DS. Nothing is renamed: every target is an existing components key; use that entry's real pos- classes. Checked by npm run check:catalog.",
+    "names": {
+      "Switch": [
+        "toggle-btn",
+        "switch-card"
+      ],
+      "Toggle": [
+        "toggle-btn",
+        "switch-card"
+      ],
+      "Modal": [
+        "dialog"
+      ],
+      "Dialog": [
+        "dialog"
+      ],
+      "AlertDialog": [
+        "dialog"
+      ],
+      "ConfirmDialog": [
+        "dialog"
+      ],
+      "Alert": [
+        "alert-card"
+      ],
+      "Banner": [
+        "alert-card"
+      ],
+      "Callout": [
+        "alert-card"
+      ],
+      "InlineMessage": [
+        "alert-card"
+      ],
+      "Toast": [
+        "toast"
+      ],
+      "Toaster": [
+        "toast"
+      ],
+      "Snackbar": [
+        "toast"
+      ],
+      "Notification": [
+        "toast"
+      ],
+      "TextField": [
+        "text-input"
+      ],
+      "Input": [
+        "text-input"
+      ],
+      "TextInput": [
+        "text-input"
+      ],
+      "TextArea": [
+        "textarea"
+      ],
+      "Textarea": [
+        "textarea"
+      ],
+      "Select": [
+        "select"
+      ],
+      "Dropdown": [
+        "select",
+        "popover"
+      ],
+      "Combobox": [
+        "multiselect"
+      ],
+      "MultiSelect": [
+        "multiselect"
+      ],
+      "Checkbox": [
+        "checkbox"
+      ],
+      "Radio": [
+        "radio"
+      ],
+      "RadioGroup": [
+        "radio"
+      ],
+      "PasswordInput": [
+        "password"
+      ],
+      "FormControl": [
+        "forms"
+      ],
+      "Field": [
+        "forms"
+      ],
+      "FormHelperText": [
+        "forms"
+      ],
+      "FormErrorMessage": [
+        "forms"
+      ],
+      "Label": [
+        "forms"
+      ],
+      "Button": [
+        "button"
+      ],
+      "IconButton": [
+        "button"
+      ],
+      "CloseButton": [
+        "control-icons"
+      ],
+      "Chevron": [
+        "control-icons"
+      ],
+      "Link": [
+        "link"
+      ],
+      "Anchor": [
+        "link"
+      ],
+      "Card": [
+        "card",
+        "feature-card"
+      ],
+      "Tag": [
+        "tag"
+      ],
+      "Chip": [
+        "chip"
+      ],
+      "Badge": [
+        "badge"
+      ],
+      "StatusBadge": [
+        "chip"
+      ],
+      "Pill": [
+        "chip",
+        "tag"
+      ],
+      "Tooltip": [
+        "tooltip"
+      ],
+      "Popover": [
+        "popover"
+      ],
+      "Menu": [
+        "popover"
+      ],
+      "MenuItem": [
+        "popover"
+      ],
+      "ContextMenu": [
+        "popover"
+      ],
+      "Tabs": [
+        "tab"
+      ],
+      "Tab": [
+        "tab"
+      ],
+      "SegmentedControl": [
+        "segmented-control"
+      ],
+      "ButtonGroup": [
+        "segmented-control",
+        "tile-btn"
+      ],
+      "ToggleGroup": [
+        "segmented-control",
+        "tile-btn"
+      ],
+      "RadioCards": [
+        "tile-btn"
+      ],
+      "Accordion": [
+        "collapsible"
+      ],
+      "Disclosure": [
+        "collapsible"
+      ],
+      "TreeView": [
+        "collapsible"
+      ],
+      "Table": [
+        "table"
+      ],
+      "DataTable": [
+        "table"
+      ],
+      "TableRow": [
+        "table"
+      ],
+      "TableCell": [
+        "table"
+      ],
+      "Pagination": [
+        "pagination"
+      ],
+      "Breadcrumb": [
+        "breadcrumb"
+      ],
+      "Breadcrumbs": [
+        "breadcrumb"
+      ],
+      "Avatar": [
+        "avatar"
+      ],
+      "Spinner": [
+        "spinner"
+      ],
+      "Loader": [
+        "spinner"
+      ],
+      "FileUpload": [
+        "upload"
+      ],
+      "Dropzone": [
+        "upload"
+      ],
+      "Code": [
+        "code"
+      ],
+      "CodeBlock": [
+        "code"
+      ],
+      "MarkdownEditor": [
+        "markdown"
+      ],
+      "RichTextEditor": [
+        "markdown"
+      ],
+      "DropdownButton": [
+        "dropdown-button"
+      ],
+      "MenuButton": [
+        "dropdown-button"
+      ],
+      "Counter": [
+        "badge"
+      ],
+      "NotificationBadge": [
+        "badge"
+      ]
+    },
+    "file_names": {
+      "_about": "Where a components key differs from its spec (tokens/components/<name>.json) or CSS (style/pos-<name>.css) file name.",
+      "segmented": "segmented-control",
+      "file-upload": "upload",
+      "collapsible-list": "collapsible",
+      "popover-content": "popover",
+      "text-input": "forms",
+      "textarea": "forms",
+      "select": "forms",
+      "checkbox": "forms",
+      "radio": "forms",
+      "password": "forms",
+      "multiselect": "forms",
+      "close": "control-icons",
+      "chevron": "control-icons"
+    },
+    "not_in_ds": {
+      "_about": "Names agents often reach for that have no component here — use this instead, never invent a pos- class for them.",
+      "Box / Flex / Stack / Inline / Grid / Container": "no layout component — plain HTML elements + the spacing tokens in layout.spacing",
+      "Heading / Typography / Text": "classes pos-heading-1 … pos-heading-4 and the color tokens in layout.typography",
+      "Icon": "render 'modules/common-styling/icon', icon: '<name>' (inline SVG, color via currentColor)",
+      "cn / clsx": "no helper — write the class attribute directly"
+    }
+  },
+  "deprecated": {
+    "_about": "Names that still work but must not be used in new code. Each entry: use = the replacement, since = when it was deprecated. Details: MIGRATION.md. To update an app: npm run codemod:deprecated -- <app dir> (dry run; add --write to apply).",
+    "tokens": {
+      "--pos-color-important-disabled": {
+        "use": "--pos-color-important-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-warning-disabled": {
+        "use": "--pos-color-warning-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-confirmation-disabled": {
+        "use": "--pos-color-confirmation-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-icon-select-arrow-hover": {
+        "use": "--pos-icon-select-arrow",
+        "since": "2026-10-01"
+      },
+      "--pos-color-light-important-disabled": {
+        "use": "--pos-color-light-important-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-light-warning-disabled": {
+        "use": "--pos-color-light-warning-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-light-confirmation-disabled": {
+        "use": "--pos-color-light-confirmation-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-dark-important-disabled": {
+        "use": "--pos-color-dark-important-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-dark-warning-disabled": {
+        "use": "--pos-color-dark-warning-muted",
+        "since": "2026-10-01"
+      },
+      "--pos-color-dark-confirmation-disabled": {
+        "use": "--pos-color-dark-confirmation-muted",
+        "since": "2026-10-01"
+      }
+    },
+    "classes": {}
+  },
+  "themes": {
+    "_about": "Ready-made brand themes. A theme overrides only the brand-primary / brand-supplementary scale primitives; all tokens follow in light, dark and HC. Source: tokens/themes.json -> npm run build:themes -> style/pos-themes.css (loaded by init).",
+    "apply": "class pos-brand-<key> on <html>; no class = default",
+    "keys": [
+      "wireframe",
+      "default",
+      "indigo",
+      "violet",
+      "plum",
+      "berry",
+      "ocean",
+      "teal",
+      "sky",
+      "midnight",
+      "slate",
+      "crimson",
+      "tangerine",
+      "honey",
+      "forest"
+    ],
+    "docs": "/style-guide/foundations/themes",
+    "graphicStep": "optional per theme in themes.json: 600 (default) | 700 | 800 — light-mode step of buttons / icons / interactive graphics; dark = mirror; max 800 (hover = +2 steps)",
+    "styles": {
+      "wireframe": {
+        "apply": "<html class=\"pos-brand-wireframe pos-style-wireframe\">",
+        "css": "style/pos-style-wireframe.css (loaded by init)",
+        "does": "hand-drawn doodle frames (border-image), Monda headlines (bold) and button labels, no shadows; HC keeps plain frames",
+        "use": "creating interactive prototypes before the visual design phase"
+      }
+    },
+    "scopedModes": {
+      "classes": [
+        "pos-scheme-light",
+        "pos-scheme-dark",
+        "pos-scheme-a11y"
+      ],
+      "apply": "on any element; everything inside uses that mode, the page keeps its own; brand theme kept",
+      "background": "set by the element (card or --pos-color-page-background)"
+    }
+  }
+}

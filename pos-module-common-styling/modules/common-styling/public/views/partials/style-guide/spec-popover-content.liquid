@@ -1,0 +1,109 @@
+{% comment %}
+  Generated from tokens/components/popover-content.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-popover-content">
+{% raw %}
+{
+  "_about": "Component spec for pos-popover-content (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Popover\" section. Reuses the already-curated usage prose from COMP_CONFIGS['popover-content'].usage and token data from COMP_CONFIGS['popover-content'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "popover-content",
+  "name": "Popover",
+  "description": "Showing a small floating panel of content anchored to a trigger element.",
+  "whenToUse": [
+    "Showing a small floating panel of content anchored to a trigger element.",
+    "Displaying tooltip-style information, context menus, or contextual UI that appears on demand without navigating away."
+  ],
+  "whenNotToUse": [
+    "The content is a structured list of actions — use Popover menu instead.",
+    "The content requires user input or is too complex to fit in a small floating panel — use a dialog instead."
+  ],
+  "do": [
+    "Always wrap the trigger and <code>[popover]</code> element in a <code>.pos-popover</code> container — this provides anchor positioning and the caret indicator.",
+    "Use <code>&lt;button type=\"button\" popovertarget=\"id\"&gt;</code> as the trigger for correct accessibility."
+  ],
+  "dont": [
+    "Use the native <code>[popover]</code> attribute without the <code>.pos-popover</code> wrapper — it will appear unstyled at the top of the viewport.",
+    "Place long-form content or forms inside a popover — use a dialog instead."
+  ],
+  "accessibility": [
+    "The browser automatically manages focus when the popover opens and closes.",
+    "The popover closes on Escape key and on click outside (light dismiss) — no custom JS needed."
+  ],
+  "composedOf": [
+    "button"
+  ],
+  "props": [
+    {
+      "name": "content",
+      "type": "any markup",
+      "default": "none",
+      "description": "The [popover] panel accepts arbitrary content — not limited to a menu list (see the Popover menu component for that specific case)."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "hidden",
+      "opened"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "popover-content": {
+      "label": "Popover",
+      "classes": [],
+      "states": {
+        "hidden": {
+          "sections": []
+        },
+        "opened": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "Text-theme/Content text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-shadow-popover",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-panel",
+                  "figma": "Panel corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-popover\">\n  <button type=\"button\" class=\"pos-button\" popovertarget=\"my-popover\">Open popover</button>\n  <div id=\"my-popover\" popover>\n    Any content here…\n  </div>\n</div>"
+}
+{% endraw %}
+</script>

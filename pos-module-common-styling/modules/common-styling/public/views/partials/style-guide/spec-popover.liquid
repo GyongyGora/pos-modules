@@ -1,0 +1,246 @@
+{% comment %}
+  Generated from tokens/components/popover.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-popover">
+{% raw %}
+{
+  "_about": "Component spec for pos-popover (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Popover\" section. Reuses the already-curated usage prose from COMP_CONFIGS['popover'].usage and token data from COMP_CONFIGS['popover'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "popover",
+  "name": "Popover menu",
+  "description": "A small menu that opens from a trigger button and offers a set of contextual actions for a specific item (e.g. Edit, Duplicate, Delete) without leaving the page.",
+  "whenToUse": [
+    "Offering a small set of contextual actions for a specific item (e.g. Edit, Duplicate, Delete).",
+    "Triggering a dropdown menu from a button without navigating away from the page."
+  ],
+  "whenNotToUse": [
+    "More than 5–6 items — prefer a dedicated page or modal.",
+    "The actions are primary and should always be visible — use buttons directly instead."
+  ],
+  "do": [
+    "Use <code>pos-popover-menu-item-important</code> only for destructive or irreversible actions (e.g. Delete).",
+    "Wrap each action in <code>&lt;li&gt;</code> inside a <code>&lt;menu&gt;</code> element — this gives the list correct semantics.",
+    "Use <code>&lt;a&gt;</code> for navigational items and <code>&lt;button&gt;</code> for actions."
+  ],
+  "dont": [
+    "Mix navigation and destructive actions in the same popover without visual separation.",
+    "Use the popover for long forms or complex content — it is a menu, not a dialog."
+  ],
+  "accessibility": [
+    "The trigger button automatically receives <code>aria-expanded</code> state when the popover opens.",
+    "Items inside <code>&lt;menu&gt;</code> are announced as a list by screen readers.",
+    "Destructive items should have a clear label — never rely on color alone to communicate danger."
+  ],
+  "composedOf": [
+    "button"
+  ],
+  "props": [
+    {
+      "name": "pos-popover-menu-item-important",
+      "type": "boolean class on <li>",
+      "default": "false",
+      "description": "Marks a destructive/irreversible action (e.g. Delete, Log out) with the important/error color."
+    },
+    {
+      "name": "role=\"separator\"",
+      "type": "attribute on <li><hr></li>",
+      "default": "none",
+      "description": "Groups related menu items with a visual divider."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "closed",
+      "opened",
+      "hover",
+      "selected"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "popover": {
+      "label": "Popover",
+      "classes": [],
+      "states": {
+        "closed": {
+          "sections": []
+        },
+        "opened": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Panel border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "role": "Menu item text (resting)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Menu item icon (resting)",
+                  "swatch": true,
+                  "requiresSelector": "#comp-popover-preview .pos-popover menu svg"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Destructive menu item text & icon (resting) — pos-popover-menu-item-important, e.g. Delete",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-shadow-popover",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-panel",
+                  "figma": "Panel corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Panel border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Destructive menu item hover/focus background (pos-popover-menu-item-important) — replaces the normal interactive background",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-shadow-popover",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-panel",
+                  "figma": "Panel corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Panel border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Destructive menu item selected/current background (pos-popover-menu-item-important) — replaces the normal interactive background",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-shadow-popover",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-panel",
+                  "figma": "Panel corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-popover\">\n  <button type=\"button\" class=\"pos-button\" aria-label=\"More actions\" popovertarget=\"my-popover\">\n    <!-- kebab icon -->\n  </button>\n  <menu id=\"my-popover\" popover>\n    <li><a href=\"/edit\">Edit</a></li>\n    <li><a href=\"/duplicate\">Duplicate</a></li>\n    <li class=\"pos-popover-menu-item-important\">\n      <button type=\"button\">Delete</button>\n    </li>\n  </menu>\n</div>"
+}
+{% endraw %}
+</script>

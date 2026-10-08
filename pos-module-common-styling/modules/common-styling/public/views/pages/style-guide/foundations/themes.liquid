@@ -1,0 +1,894 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/themes' %}
+    </aside>
+
+    <div class="themes-body">
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article styleguide-ds-article--full">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Themes</h1>
+          <p>Ready-made color themes to start a new project from. A theme swaps only the two brand scales (brand primary and brand supplementary, generated with the same contrast targets as the <a href="/style-guide/foundations/palettes" class="pos-link">Palettes</a>) &mdash; every component follows on its own, in light, dark and high contrast mode. Pick one from the theme list to see it on this whole page.</p>
+        </header>
+
+        <!-- ── Preview ───────────────────────────────────────────── -->
+        <section id="themes-preview">
+          <h2 class="pos-heading-2">Preview</h2>
+          <p>The selected theme on real components. The switch above the theme list shows this preview alone in light, dark or high contrast mode. The focused button shows the keyboard focus ring, which uses the brand supplementary scale.</p>
+
+          <div class="themes-preview pos-card" id="themes-preview-box">
+            <div class="themes-preview-row">
+              <button type="button" class="pos-button pos-button-primary">Primary action</button>
+              <button type="button" class="pos-button pos-button-secondary">Secondary</button>
+              <button type="button" class="pos-button themes-preview-focus">Focused button</button>
+              <button type="button" class="pos-tag pos-tag-interactive">Tag</button>
+              <label class="pos-toggle-btn"><input type="checkbox" role="switch" class="pos-toggle-btn-input" checked aria-label="Notifications"><span class="pos-toggle-btn-track" aria-hidden="true"></span></label>
+              <form class="pos-form pos-form-simple themes-preview-check" action="#" onsubmit="return false"><label><input type="checkbox" checked> Remember me</label></form>
+              <span class="pos-chip pos-chip-success pos-chip--tiny">Approved</span>
+              <span class="pos-chip pos-chip-warning pos-chip--tiny">Pending</span>
+              <span class="pos-chip pos-chip-error pos-chip--tiny">Rejected</span>
+            </div>
+            <nav class="pos-tabs" aria-label="Example tabs">
+              <button type="button" class="pos-tab pos-tab--active" aria-current="page">Overview</button>
+              <button type="button" class="pos-tab">Activity</button>
+              <button type="button" class="pos-tab">Settings</button>
+            </nav>
+            <form class="pos-form pos-form-simple themes-preview-fields" action="#" novalidate onsubmit="return false">
+              <fieldset>
+                <label for="themes-preview-input"><strong>Name</strong></label>
+                <input type="text" id="themes-preview-input" class="pos-form-input" placeholder="Type your name">
+              </fieldset>
+              <fieldset>
+                <label for="themes-preview-select"><strong>Category</strong></label>
+                <div class="pos-form-input-wrapper">
+                  <select id="themes-preview-select" class="pos-form-select">
+                    <option value="">Select option</option>
+                    <option value="design">Design</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="product">Product</option>
+                  </select>
+                  <span class="pos-form-input-icon" aria-hidden="true">
+                    {% render 'modules/common-styling/icon', icon: 'dashDown' %}
+                  </span>
+                </div>
+              </fieldset>
+            </form>
+            <div class="themes-preview-surfaces">
+              <div class="pos-feature-card pos-feature-card--small">
+                <div class="pos-feature-card-icon">
+                  {% render 'modules/common-styling/icon', icon: 'layers-stacked' %}
+                </div>
+                <div class="pos-feature-card-body">
+                  <h3 class="pos-feature-card-title"><span>Feature card</span></h3>
+                  <p class="pos-feature-card-text">Default background, the icon in the brand color.</p>
+                </div>
+              </div>
+              <article class="pos-card pos-card-content pos-card-brand-primary">
+                <a href="#themes-preview" class="pos-card-content-permalink">
+                  <h3 class="pos-heading-4 pos-card-content-title"><span>Brand primary card</span></h3>
+                </a>
+                <p>Quiet tint for cards and sections; buttons keep their contrast on it.</p>
+                <div class="themes-preview-card-actions">
+                  <button type="button" class="pos-button pos-button-primary pos-button-small">Sign up</button>
+                </div>
+              </article>
+              <article class="pos-card pos-card-content pos-card-brand-supplementary">
+                <a href="#themes-preview" class="pos-card-content-permalink">
+                  <h3 class="pos-heading-4 pos-card-content-title"><span>Brand supplementary card</span></h3>
+                </a>
+                <p>The accent tint, same contrast.</p>
+                <div class="themes-preview-card-actions">
+                  <a class="pos-link pos-link--small" href="#" target="_blank" rel="noopener noreferrer">
+                    Read more
+                    {% render 'modules/common-styling/icon', icon: 'dashRight' %}
+                    <span class="pos-label">(opens in new tab)</span>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ── Use a theme ─────────────────────────────────────── -->
+        <section id="themes-use">
+          <details class="themes-disclosure" data-anim-details>
+          <summary><span class="themes-disclosure-icon" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span><h2 class="pos-heading-2">Use a theme</h2></summary>
+          <div class="themes-disclosure-body">
+          <p>Add the theme class to the root element. No class means the Default theme.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html" id="themes-code">&lt;html class="pos-brand-ocean"&gt;</code></pre>
+          <h3 class="pos-heading-4 themes-step">One part of the page in another mode</h3>
+          <p>Put <code class="pos-code pos-code--small">pos-scheme-light</code>, <code class="pos-code pos-code--small">pos-scheme-dark</code> or <code class="pos-code pos-code--small">pos-scheme-a11y</code> on any element: everything inside it uses that mode, whatever mode the page is in &mdash; a dark hero on a light page, a light card on a dark page, a preview box. The brand theme still applies. The element gets the mode's text color; give it a background (a card, or <code class="pos-code pos-code--small">--pos-color-page-background</code>) yourself.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;section class="pos-scheme-dark" style="background: var(--pos-color-page-background)"&gt;
+  &lt;!-- everything here is in dark mode --&gt;
+&lt;/section&gt;</code></pre>
+          <h3 class="pos-heading-4 themes-step">Export your setup</h3>
+          <p>Pick a color theme, a headline font and the button / input radius in the panel on the right, then press <strong>Export CSS</strong>. You get <code class="pos-code pos-code--small">pos-theme-&lt;key&gt;.css</code>: plain <code class="pos-code pos-code--small">:root</code> token overrides &mdash; the brand color scales of the theme (and its deeper button step, if it has one), the headline font with its Google Fonts import, and the radii. No class is needed on <code class="pos-code pos-code--small">&lt;html&gt;</code>; only the Wireframe theme also needs <code class="pos-code pos-code--small">pos-style-wireframe</code>.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- after the design system CSS --&gt;
+&#123;% render 'modules/common-styling/init' %&#125;
+&lt;link rel="stylesheet" href="/css/pos-theme-forest.css"&gt;</code></pre>
+          <p class="themes-note">Load it <strong>after</strong> the design system CSS &mdash; it only overrides token values, so it must come later. The contrast of every theme is already checked; a font or radius change doesn't affect contrast.</p>
+          <p class="themes-note">Themes are defined in <code class="pos-code pos-code--small">tokens/themes.json</code> (two base colors each); <code class="pos-code pos-code--small">npm run build:themes</code> generates <code class="pos-code pos-code--small">style/pos-themes.css</code> and <code class="pos-code pos-code--small">npm run check:contrast</code> checks every theme in all three modes.</p>
+          </div>
+          </details>
+        </section>
+
+        <!-- ── Create a custom theme ───────────────────────────── -->
+        <section id="themes-custom">
+          <details class="themes-disclosure" data-anim-details>
+          <summary><span class="themes-disclosure-icon" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span><h2 class="pos-heading-2">Create a custom theme</h2></summary>
+          <div class="themes-disclosure-body">
+          <p>None of the ready-made themes matches your brand? Make your own from your brand colors. You give two base colors; the scales, the dark mode and the contrast are worked out for you, the same way as for the themes above.</p>
+
+          <h3 class="pos-heading-4 themes-step">1. Pick the two colors</h3>
+          <p><strong>Primary</strong> is your main brand color: buttons, links, selected and active states. <strong>Supplementary</strong> is the accent: the keyboard focus ring and standout areas. Choose an accent that is clearly different from the primary, so focus stays visible. The <a href="/style-guide/foundations/palettes" class="pos-link">Palettes</a> page shows how a base color becomes a 10-step scale.</p>
+
+          <h3 class="pos-heading-4 themes-step">2. Add it to the theme list</h3>
+          <p>Add an entry to <code class="pos-code pos-code--small">tokens/themes.json</code>. The <code class="pos-code pos-code--small">key</code> becomes the class name, lowercase letters, digits and hyphens only.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-json">{
+  "key": "acme",
+  "name": "Acme",
+  "primary": "#2f5d50",
+  "supplementary": "#c2410c",
+  "description": "Acme green with a rust accent."
+}</code></pre>
+          <p class="themes-note">Two optional fields: <code class="pos-code pos-code--small">"note"</code> shows a hint on the theme tile &mdash; add one when your primary is red, orange, yellow or green, because it then looks like an error, warning or success color (keep status messages icon + text). <code class="pos-code pos-code--small">"keepBase": false</code> is for very bright colors, see step 3. <code class="pos-code pos-code--small">"graphicStep": 700</code> or <code class="pos-code pos-code--small">800</code> puts buttons, icons and other interactive graphics on a deeper step than the default 600 &mdash; for a deep brand color (dark mode gets the mirrored step). 800 is the limit: the hover needs two darker steps.</p>
+
+          <h3 class="pos-heading-4 themes-step">3. Generate and check</h3>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-bash">npm run build:themes    # writes the 10-step scales to style/pos-themes.css
+npm run check:contrast  # measures every theme in light, dark and high contrast</code></pre>
+          <p class="themes-note">By default your exact brand color is kept on the scale step closest to it; every other step is calculated to hit its contrast target. A very bright color (a vivid yellow, for example) can be too strong for the step it lands on &mdash; the contrast check then fails and names the pair. Add <code class="pos-code pos-code--small">"keepBase": false</code> to the theme: that step is calculated too, a very close shade replaces the exact color, and the contrast holds. Ship a theme only when the check reports 0 failures.</p>
+
+          <h3 class="pos-heading-4 themes-step">4. Use it</h3>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;html class="pos-brand-acme"&gt;</code></pre>
+          <p class="themes-note">Light, dark and high contrast mode follow on their own; high contrast keeps its own fixed colors for legibility. A custom theme changes colors only.</p>
+          </div>
+          </details>
+        </section>
+
+      </article>
+    </main>
+
+    <!-- ── Theme list: full-height right panel (same frame as the component pages' right panel) ── -->
+    <aside class="comp-doc-right themes-panel" id="themes-pick" aria-labelledby="themes-pick-title">
+      <div class="comp-doc-right-main">
+        <div class="comp-right-sticky-top">
+          <div class="comp-right-header">
+            <h2 class="comp-right-comp-name" id="themes-pick-title">Choose a theme</h2>
+            <div class="pos-segmented-control pos-segmented-control--subtle pos-segmented-control--small" role="group" aria-label="Preview color mode" id="themes-scheme">
+              <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-scheme="light" aria-label="Preview in light mode">
+                {% render 'modules/common-styling/icon', icon: 'brightness' %}
+              </button>
+              <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-scheme="dark" aria-label="Preview in dark mode">
+                {% render 'modules/common-styling/icon', icon: 'moon' %}
+              </button>
+              <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-scheme="a11y" aria-label="Preview in high contrast mode">
+                {% render 'modules/common-styling/icon', icon: 'contrast' %}
+              </button>
+            </div>
+          </div>
+          <!-- headline font + button / input radius: this page only, written as token overrides on <html> -->
+          <form class="pos-form pos-form-simple themes-panel-options" action="#" novalidate onsubmit="return false">
+            <fieldset>
+              <label for="themes-font"><strong>Headline font</strong></label>
+              <div class="pos-form-input-wrapper">
+                <select id="themes-font" class="pos-form-select">
+                  <option value="">Theme default</option>
+                  <optgroup label="Sans-serif">
+                    <option value="DM Sans">DM Sans</option>
+                    <option value="IBM Plex Sans">IBM Plex Sans</option>
+                    <option value="Inter">Inter</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Manrope">Manrope</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Noto Sans">Noto Sans</option>
+                    <option value="Nunito">Nunito</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Poppins">Poppins</option>
+                    <option value="Raleway">Raleway</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Rubik">Rubik</option>
+                    <option value="Source Sans 3">Source Sans 3</option>
+                    <option value="Space Grotesk">Space Grotesk</option>
+                    <option value="Work Sans">Work Sans</option>
+                  </optgroup>
+                  <optgroup label="Serif">
+                    <option value="Lora">Lora</option>
+                    <option value="Merriweather">Merriweather</option>
+                    <option value="Playfair Display">Playfair Display</option>
+                    <option value="PT Serif">PT Serif</option>
+                    <option value="Roboto Slab">Roboto Slab</option>
+                  </optgroup>
+                  <optgroup label="Display & handwriting">
+                    <option value="DM Serif Display">DM Serif Display</option>
+                    <option value="Monda">Monda</option>
+                    <option value="Oxanium">Oxanium</option>
+                    <option value="Patrick Hand">Patrick Hand</option>
+                  </optgroup>
+                </select>
+                <span class="pos-form-input-icon" aria-hidden="true">
+                  {% render 'modules/common-styling/icon', icon: 'dashDown' %}
+                </span>
+              </div>
+            </fieldset>
+            <div class="themes-panel-radius">
+            <fieldset>
+              <label for="themes-radius-button"><strong>Button radius</strong></label>
+              <div class="pos-form-input-wrapper">
+                <select id="themes-radius-button" class="pos-form-select">
+                  <option value="">Default</option>
+                  <option value="sharp">Sharp (0)</option>
+                  <option value="slightly-rounded">Slightly rounded (4px)</option>
+                  <option value="mid-rounded">Mid rounded (8px)</option>
+                  <option value="rounded">Rounded (16px)</option>
+                  <option value="pill">Pill</option>
+                </select>
+                <span class="pos-form-input-icon" aria-hidden="true">
+                  {% render 'modules/common-styling/icon', icon: 'dashDown' %}
+                </span>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label for="themes-radius-input"><strong>Input radius</strong></label>
+              <div class="pos-form-input-wrapper">
+                <select id="themes-radius-input" class="pos-form-select">
+                  <option value="">Default</option>
+                  <option value="sharp">Sharp (0)</option>
+                  <option value="slightly-rounded">Slightly rounded (4px)</option>
+                  <option value="mid-rounded">Mid rounded (8px)</option>
+                  <option value="rounded">Rounded (16px)</option>
+                  <option value="pill">Pill</option>
+                </select>
+                <span class="pos-form-input-icon" aria-hidden="true">
+                  {% render 'modules/common-styling/icon', icon: 'dashDown' %}
+                </span>
+              </div>
+            </fieldset>
+            </div>
+          </form>
+        </div>
+        <div class="themes-grid" id="themes-grid" role="group" aria-label="Theme">
+          <p class="themes-loading">Loading themes&hellip;</p>
+        </div>
+        <div class="themes-panel-footer">
+          <button type="button" class="pos-button pos-button-primary themes-export" id="themes-export">Export CSS</button>
+        </div>
+      </div>
+    </aside>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var url = '{{ "modules/common-styling/tokens/themes.json" | asset_url }}';
+  var html = document.documentElement;
+  var grid = document.getElementById('themes-grid');
+  var codePre = document.getElementById('themes-code').parentNode;
+  var STEPS = ['100', '200', '300', '400', '500', '600', '700', '800', '900', '1000'];
+
+  var styles = {};  // theme key -> its style (e.g. wireframe), from themes.json
+  var currentClasses = [];
+  var themesByKey = {};
+  var currentKey = 'default';
+  // headline font / radius overrides (token -> value), shown in the code sample as a style attribute
+  var overrides = {};
+  function renderCode() {
+    var attrs = currentClasses.length ? ' class="' + currentClasses.join(' ') + '"' : '';
+    var style = Object.keys(overrides).map(function (k) { return k + ': ' + overrides[k]; }).join('; ');
+    if (style) attrs += ' style="' + style + '"';
+    var codeEl = document.createElement('code');
+    codeEl.className = 'language-html';
+    codeEl.id = 'themes-code';
+    codeEl.textContent = attrs ? '<html' + attrs + '>' : '<html>  <!-- Default: no class -->';
+    codePre.textContent = '';
+    codePre.appendChild(codeEl);
+    delete codePre.dataset.hljsDone;
+    delete codePre.dataset.lnDone;
+    if (window.pos && window.pos.modules && window.pos.modules.codeCopy) window.pos.modules.codeCopy.init();
+  }
+  function setOverride(token, value) {
+    if (value) { html.style.setProperty(token, value); overrides[token] = value; }
+    else { html.style.removeProperty(token); delete overrides[token]; }
+    renderCode();
+  }
+
+  function applyBrand(key) {
+    currentKey = key;
+    Array.prototype.slice.call(html.classList).forEach(function (c) { if (c.indexOf('pos-brand-') === 0 || c.indexOf('pos-style-') === 0) html.classList.remove(c); });
+    var classes = key === 'default' ? [] : ['pos-brand-' + key];
+    if (styles[key]) classes.push('pos-style-' + styles[key]);
+    classes.forEach(function (c) { html.classList.add(c); });
+    grid.querySelectorAll('.themes-tile').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.key === key ? 'true' : 'false'); });
+    currentClasses = classes;
+    renderCode();
+  }
+
+  function swatches(scale, label, kind) {
+    var row = document.createElement('span');
+    row.className = 'themes-swatches themes-swatches--' + kind;
+    row.setAttribute('aria-hidden', 'true');
+    row.title = label;
+    STEPS.forEach(function (s) {
+      var sw = document.createElement('span');
+      sw.style.backgroundColor = scale[s];
+      row.appendChild(sw);
+    });
+    return row;
+  }
+
+  fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+    grid.textContent = '';
+    data.themes.forEach(function (t) {
+      themesByKey[t.key] = t;
+      if (t.style) styles[t.key] = t.style;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'themes-tile';
+      b.dataset.key = t.key;
+      b.setAttribute('aria-pressed', 'false');
+      var name = document.createElement('span');
+      name.className = 'themes-tile-name';
+      name.textContent = t.name;
+      var desc = document.createElement('span');
+      desc.className = 'themes-tile-desc';
+      desc.textContent = t.description;
+      b.appendChild(name);
+      var dots = document.createElement('span');
+      dots.className = 'themes-tile-dots';
+      dots.setAttribute('aria-hidden', 'true');
+      [['primary', t.computed.primary[String(t.graphicStep || 600)]], ['supplementary', t.computed.supplementary['600']]].forEach(function (d) {
+        var dot = document.createElement('span');
+        dot.className = 'themes-tile-dot themes-tile-dot--' + d[0];
+        dot.style.backgroundColor = d[1];
+        dots.appendChild(dot);
+      });
+      b.appendChild(dots);
+      b.appendChild(swatches(t.computed.primary, 'Brand primary', 'primary'));
+      b.appendChild(swatches(t.computed.supplementary, 'Brand supplementary', 'supplementary'));
+      b.appendChild(desc);
+      if (t.note) {
+        var note = document.createElement('span');
+        note.className = 'themes-tile-note';
+        note.textContent = t.note;
+        b.appendChild(note);
+      }
+      b.addEventListener('click', function () { applyBrand(t.key); });
+      grid.appendChild(b);
+    });
+    applyBrand('default');
+  }).catch(function () { grid.textContent = 'Themes could not be loaded.'; });
+
+  // preview-only color mode: a pos-scheme-* class on the preview box (the page keeps its own mode).
+  // Starts on the page's current mode.
+  var box = document.getElementById('themes-preview-box');
+  var schemeSwitch = document.getElementById('themes-scheme');
+  function pageScheme() {
+    if (html.classList.contains('pos-theme-a11y')) return 'a11y';
+    var dark = html.classList.contains('pos-theme-dark') ||
+      (html.classList.contains('pos-theme-darkEnabled') && !html.classList.contains('pos-theme-light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    return dark ? 'dark' : 'light';
+  }
+  function setScheme(scheme) {
+    ['light', 'dark', 'a11y'].forEach(function (s) { box.classList.toggle('pos-scheme-' + s, s === scheme); });
+    schemeSwitch.querySelectorAll('[data-scheme]').forEach(function (b) {
+      var on = b.dataset.scheme === scheme;
+      b.classList.toggle('pos-segmented-control-btn--active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  schemeSwitch.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-scheme]');
+    if (btn) setScheme(btn.dataset.scheme);
+  });
+  setScheme(pageScheme());
+
+  // Export: a CSS file with the chosen look as plain :root overrides — the brand color scales (+ the deeper
+  // button step of graphicStep themes), the headline font and the radii. Load it after the DS CSS.
+  function exportCss() {
+    var t = themesByKey[currentKey];
+    var lines = [];
+    var font = overrides['--pos-font-heading'];
+    var family = document.getElementById('themes-font').value;
+    var head = ['/*', '  pOS design system — theme export (' + new Date().toISOString().slice(0, 10) + ')',
+      '  Color theme: ' + (t ? t.name : 'Default') + (family ? ' · headline font: ' + family : '') ,
+      '  Load this file AFTER the design system CSS (modules/common-styling/init). It only overrides tokens.'];
+    if (t && t.style) head.push('  This theme also needs the style class on the root element: <html class="pos-style-' + t.style + '">');
+    head.push('*/', '');
+    if (family) {
+      var WEIGHTS = { 'Patrick Hand': '', 'DM Serif Display': '', 'Lato': ':wght@400;700', 'PT Serif': ':wght@400;700', 'Merriweather': ':wght@400;700', 'Monda': ':wght@400;700' };
+      var w = family in WEIGHTS ? WEIGHTS[family] : ':wght@400;500;600;700';
+      head.push("@import url('https://fonts.googleapis.com/css2?family=" + family.replace(/ /g, '+') + w + "&display=swap');", '');
+    }
+    if (t && t.key !== 'default') {
+      lines.push('  /* brand color scales: ' + t.name + ' */');
+      ['primary', 'supplementary'].forEach(function (k) {
+        STEPS.forEach(function (st) { lines.push('  --pos-primitive-color-brand-' + k + '-' + st + ': ' + t.computed[k][st] + ';'); });
+      });
+      var g = t.graphicStep || 600;
+      if (g >= 700) {
+        var PRIMARY = '--pos-primitive-color-brand-primary-';
+        var step = function (n) { return 'var(' + PRIMARY + n + ')'; };
+        lines.push('  /* buttons, icons and interactive graphics on step ' + g + ' (dark mode: its mirror) */');
+        lines.push('  --pos-color-light-icon-interactive: ' + step(g) + ';', '  --pos-color-light-icon-interactive-hover: ' + step(g + 200) + ';', '  --pos-color-light-icon-interactive-active: ' + step(g + 200) + ';');
+        if (g === 800) {
+          lines.push('  --pos-color-light-interactive: ' + step(800) + ';', '  --pos-color-light-interactive-hover: ' + step(1000) + ';', '  --pos-color-light-interactive-active: ' + step(1000) + ';');
+          ['icon-interactive', 'interactive'].forEach(function (r) {
+            lines.push('  --pos-color-dark-' + r + ': ' + step(300) + ';', '  --pos-color-dark-' + r + '-hover: ' + step(100) + ';', '  --pos-color-dark-' + r + '-active: ' + step(100) + ';');
+          });
+        }
+      }
+    }
+    if (font) lines.push('  /* headline font */', '  --pos-font-heading: ' + font + ';');
+    ['--pos-radius-button', '--pos-radius-button-focus', '--pos-radius-input'].forEach(function (k, i) {
+      if (overrides[k]) { if (i === 0 || (i === 2 && !overrides['--pos-radius-button'])) lines.push('  /* radii */'); lines.push('  ' + k + ': ' + overrides[k] + ';'); }
+    });
+    var css = head.join('\n') + (lines.length ? ':root {\n' + lines.join('\n') + '\n}\n' : '/* nothing to override: the Default theme with the default font and radii */\n');
+    var blob = new Blob([css], { type: 'text/css' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'pos-theme' + (t && t.key !== 'default' ? '-' + t.key : '') + '.css';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  }
+  document.getElementById('themes-export').addEventListener('click', exportCss);
+
+  // headline font: loads the Google font on first use, then overrides --pos-font-heading
+  var loadedFonts = {};
+  document.getElementById('themes-font').addEventListener('change', function () {
+    var family = this.value;
+    if (family && !loadedFonts[family]) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      // single-weight families (no wght axis) are requested without weights
+      // the weights headings use: 500 (h1, h2), 600 / 700 (card titles), 400 (h3, h4). Families without some of
+      // them get what they have — single-weight ones none, 400 / 700-only ones those two (Google Fonts refuses a missing weight)
+      var WEIGHTS = { 'Patrick Hand': '', 'DM Serif Display': '', 'Lato': ':wght@400;700', 'PT Serif': ':wght@400;700', 'Merriweather': ':wght@400;700', 'Monda': ':wght@400;700' };
+      var w = family in WEIGHTS ? WEIGHTS[family] : ':wght@400;500;600;700';
+      link.href = 'https://fonts.googleapis.com/css2?family=' + family.replace(/ /g, '+') + w + '&display=swap';
+      document.head.appendChild(link);
+      loadedFonts[family] = true;
+    }
+    setOverride('--pos-font-heading', family ? "'" + family + "', var(--pos-primitive-font-google-sans)" : '');
+  });
+
+  // radius: button (+ its focus ring, 2px larger) and input, from the radius primitives
+  var RADIUS = {
+    'sharp': 'var(--pos-primitive-radius-sharp)',
+    'slightly-rounded': 'var(--pos-primitive-radius-slightly-rounded)',
+    'mid-rounded': 'var(--pos-primitive-radius-mid-rounded)',
+    'rounded': 'var(--pos-primitive-radius-rounded)',
+    'pill': 'var(--pos-primitive-radius-pill)'
+  };
+  function radiusValue(key) { return RADIUS[key] || ''; }
+  document.getElementById('themes-radius-button').addEventListener('change', function () {
+    var v = radiusValue(this.value);
+    setOverride('--pos-radius-button', v);
+    setOverride('--pos-radius-button-focus', v ? 'calc(' + v + ' + 2px)' : '');
+  });
+  document.getElementById('themes-radius-input').addEventListener('change', function () {
+    setOverride('--pos-radius-input', radiusValue(this.value));
+  });
+
+})();
+</script>
+
+<style>
+  /* main scrolls, the theme panel on the right is full height and stays put (like the component pages) */
+  .themes-body {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .themes-body > .styleguide-ds-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .themes-panel .comp-right-comp-name {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* title left, the preview color-mode switch right; taller than the component pages' 40px header so
+     the switch doesn't touch the panel edge or the divider */
+  .themes-panel .comp-right-header {
+    height: auto;
+    padding-block: var(--pos-primitive-size-1);
+    justify-content: space-between;
+    gap: var(--pos-gap-card-elements);
+  }
+
+  /* headline font / radius pickers under the panel title (they stay, the theme list scrolls below) */
+  .themes-panel-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-gap-card-elements);
+    padding: 0 var(--pos-padding-card) var(--pos-gap-card-elements);
+  }
+
+  .themes-panel-options fieldset {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .themes-panel-options select {
+    width: 100%;
+  }
+
+  .themes-panel-radius {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--pos-gap-card-elements);
+  }
+
+  /* the fixed top (title, pickers) and bottom (Export) parts cast a small shadow onto the scrolling list;
+     no shadow in high contrast */
+  .themes-panel .comp-right-sticky-top,
+  .themes-panel-footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  .themes-panel .comp-right-sticky-top {
+    box-shadow: 0 4px 8px -4px color-mix(in srgb, var(--pos-color-shadow) 25%, transparent);
+  }
+
+  .themes-panel-footer {
+    box-shadow: 0 -4px 8px -4px color-mix(in srgb, var(--pos-color-shadow) 25%, transparent);
+  }
+
+  :root.pos-theme-a11y .themes-panel .comp-right-sticky-top,
+  :root.pos-theme-a11y .themes-panel-footer {
+    box-shadow: none;
+  }
+
+  /* the Export strip at the bottom of the panel */
+  .themes-panel-footer {
+    flex-shrink: 0;
+    padding: var(--pos-gap-card-elements) var(--pos-padding-card);
+    background-color: var(--pos-color-content-background);
+    border-block-start: 1px solid var(--pos-color-frame);
+  }
+
+  .themes-export {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* compact tile parts — only on narrow screens (below) */
+  .themes-tile-dots {
+    display: none;
+  }
+
+  .themes-grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: var(--pos-gap-card-elements);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--pos-padding-card);
+    /* the scrolling theme list sits on the page background, the white tiles stand out on it */
+    background-color: var(--pos-color-page-background);
+  }
+
+  /* compact tiles in the panel, so more themes fit */
+  .themes-panel .themes-tile {
+    padding: var(--pos-primitive-size-2);
+  }
+
+  @media (max-width: 1100px) {
+    /* narrow screens: the panel stays on the right as a slim list — theme name with a big brand primary
+       and a small brand supplementary dot */
+    .themes-panel {
+      width: 12rem;
+      min-width: 12rem;
+    }
+
+    .themes-panel .comp-right-header {
+      flex-wrap: wrap;
+    }
+
+    .themes-panel-options,
+    .themes-panel-footer {
+      padding-inline: var(--pos-primitive-size-1);
+    }
+
+    .themes-panel-radius {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .themes-grid {
+      gap: var(--pos-primitive-size-05);
+      padding: var(--pos-primitive-size-1);
+    }
+
+    .themes-panel .themes-tile {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--pos-primitive-size-1) var(--pos-primitive-size-15);
+    }
+
+    .themes-panel .themes-swatches,
+    .themes-panel .themes-tile-desc,
+    .themes-panel .themes-tile-note {
+      display: none;
+    }
+
+    .themes-tile-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--pos-primitive-size-05);
+      flex-shrink: 0;
+    }
+
+    /* small square swatches (big = brand primary, small = brand supplementary) */
+    .themes-tile-dot {
+      border-radius: var(--pos-radius-tag);
+      box-shadow: inset 0 0 0 1px var(--pos-color-frame-transparent);
+    }
+
+    .themes-tile-dot--primary {
+      width: var(--pos-size-icon-m);
+      height: var(--pos-size-icon-m);
+    }
+
+    .themes-tile-dot--supplementary {
+      width: var(--pos-size-icon-xs);
+      height: var(--pos-size-icon-xs);
+    }
+  }
+
+  .themes-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--pos-primitive-size-1);
+    padding: var(--pos-padding-card);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-card);
+    background-color: var(--pos-color-content-background);
+    color: var(--pos-color-content-text);
+    text-align: start;
+    cursor: pointer;
+    transition: background-color .1s linear, box-shadow .1s linear;
+  }
+
+  /* hover two steps stronger; the selected tile gets no hover (RULES.md 4.5b) */
+  .themes-tile:hover:not([aria-pressed="true"]) {
+    background-color: var(--pos-color-highlight-background);
+  }
+
+  .themes-tile[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 2px var(--pos-color-interactive);
+    cursor: default;
+  }
+
+  /* the Wireframe theme tile stands out with the highlighted background */
+  .themes-tile[data-key="wireframe"] {
+    background-color: var(--pos-color-highlight-background);
+  }
+
+  .themes-tile:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  .themes-tile-name {
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-body);
+    font-weight: var(--pos-font-weight-bold);
+    color: var(--pos-color-content-text-prominent);
+  }
+
+  .themes-tile-desc {
+    font-size: var(--pos-font-size-xs);
+    color: var(--pos-color-content-text-supplementary);
+  }
+
+  /* red / orange / yellow / green brands sit next to the status colors: the tile says so */
+  .themes-tile-note {
+    margin-block-start: auto;
+    padding-block-start: var(--pos-primitive-size-1);
+    border-block-start: 1px solid var(--pos-color-frame);
+    font-size: var(--pos-font-size-xs);
+    color: var(--pos-color-content-text-supplementary);
+  }
+
+  .themes-swatches {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    border-radius: var(--pos-radius-tag);
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px var(--pos-color-frame-transparent);
+  }
+
+  /* primary is the main color, supplementary an accent: the strip heights show the proportion */
+  .themes-swatches--primary {
+    height: var(--pos-primitive-size-3);
+  }
+
+  .themes-swatches--supplementary {
+    height: var(--pos-primitive-size-1);
+  }
+
+  /* space between the section intro and the preview box (was given by the removed mode switch) */
+  .themes-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-gap-card-elements);
+    margin-block-start: var(--pos-gap-section-title-content);
+  }
+
+  .themes-preview-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--pos-gap-card-elements);
+  }
+
+  .themes-preview {
+    container-type: inline-size;
+  }
+
+  /* three cards in a row — or all in one column when they don't fit, never 2 + 1 */
+  .themes-preview-surfaces {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--pos-gap-card-elements);
+  }
+
+  @container (max-width: 40rem) {
+    .themes-preview-surfaces {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* in the grid the cards sit side by side: no stacking margin between them (pos-card + pos-card) */
+  .themes-preview-surfaces > * {
+    margin: 0;
+  }
+
+  /* text input and select side by side */
+  .themes-preview-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--pos-gap-card-elements);
+  }
+
+  .themes-preview-fields fieldset {
+    margin: 0;
+  }
+
+  /* button / link in a content card, after the feature card's pattern (pos-card-content has no action slot) */
+  .themes-preview-card-actions {
+    margin-block-start: var(--pos-gap-card-elements);
+  }
+
+  .themes-preview-check {
+    display: inline-flex;
+  }
+
+  /* shows the focus ring permanently, so the supplementary color is visible without keyboard focus */
+  .themes-preview-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  /* wireframe: dashed like the real focus ring there (pos-style-wireframe.css) */
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .themes-preview-focus:not(.pos-scheme-a11y *) {
+    outline-style: dashed;
+  }
+
+  /* Use a theme / Create a custom theme: a large accordion — white boxes, collapsed by default, the
+     heading row is the toggle */
+  /* elevation like the cards: medium shadow, the blurred (larger) one on hover — no background change */
+  .themes-disclosure {
+    background-color: var(--pos-color-content-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-card);
+    box-shadow: var(--pos-primitive-shadow-medium);
+    transition: box-shadow .15s linear;
+  }
+
+  .themes-disclosure:hover {
+    box-shadow: var(--pos-primitive-shadow-blurred);
+  }
+
+  /* wireframe: the hand-drawn frame like the cards (pos-style-wireframe.css), thicker on hover */
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .themes-disclosure {
+    border: 1.5px solid transparent;
+    border-image: var(--pos-wireframe-doodle) 24 / 12px / 0 stretch;
+  }
+
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .themes-disclosure:hover {
+    border-image-source: var(--pos-wireframe-doodle-bold);
+  }
+
+  /* the second item sits right under the first, like accordion items */
+  /* the accordions follow the preview box at the card gap (not the large section gap), and each other too */
+  #themes-use,
+  #themes-custom {
+    margin-block-start: var(--pos-gap-card-card);
+  }
+
+  .themes-disclosure > summary {
+    display: flex;
+    align-items: center;
+    gap: var(--pos-gap-card-elements);
+    padding: var(--pos-padding-card);
+    border-radius: var(--pos-radius-card);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .themes-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .themes-disclosure > summary .pos-heading-2 {
+    margin: 0;
+  }
+
+  .themes-disclosure > summary:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  .themes-disclosure-icon {
+    display: inline-flex;
+    color: var(--pos-color-content-icon-interactive);
+    transition: transform .15s ease;
+  }
+
+  .themes-disclosure-icon svg {
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
+  }
+
+  .themes-disclosure[open] > summary .themes-disclosure-icon {
+    transform: rotate(90deg);
+  }
+
+  .themes-disclosure-body {
+    padding: 0 var(--pos-padding-card) var(--pos-padding-card);
+  }
+
+  /* paragraphs and code blocks inside an accordion don't touch each other */
+  .themes-disclosure-body > * + * {
+    margin-block-start: var(--pos-gap-text-text);
+  }
+
+  .themes-disclosure-body .pos-code--block code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .themes-disclosure-body > :first-child {
+    margin-block-start: 0;
+  }
+
+  .themes-step {
+    margin-block-start: var(--pos-gap-section-title-content);
+  }
+
+  .themes-note {
+    margin-block-start: var(--pos-gap-card-elements);
+  }
+</style>

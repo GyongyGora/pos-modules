@@ -1,0 +1,227 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/component-boilerplate' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+
+      <article id="component-boilerplate" class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Component template</h1>
+          <p>
+            <span class="pos-tag pos-tag-warning">Internal</span>
+          </p>
+          <p>Developer boilerplate for adding a new component to the DS documentation. Not a real component page — copy the templates below for each required file. Most of these files are created or edited by <code>node scripts/generate-component.js</code> — see <code>RULES.md</code> §6 for the full rule text this page illustrates.</p>
+        </header>
+
+
+        <!-- ── DELIVERABLES CHECKLIST ──────────────────────────────────── -->
+        <section id="boilerplate-checklist">
+          <h2 class="pos-heading-2">Required deliverables</h2>
+          <p>All of the following are required when adding a new component. None are optional.</p>
+          <table class="styleguide-table styleguide-table--striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Deliverable</th>
+                <th>File location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Component CSS</td><td><code>assets/style/pos-[comp].css</code></td></tr>
+              <tr><td>2</td><td>Component JS <em>(if interactive)</em></td><td><code>assets/js/pos-[comp].js</code></td></tr>
+              <tr><td>3</td><td>Tokens in pos-config.css — light + dark + HC sections (button/forms only, see RULES.md §2.2 — everything else uses semantic tokens directly, no new config entries needed)</td><td><code>assets/style/pos-config.css</code></td></tr>
+              <tr><td>4</td><td>Section HTML in the components page</td><td><code>views/pages/style-guide/component-template.liquid</code></td></tr>
+              <tr><td>5</td><td>Component spec JSON + generated spec-*.liquid partial</td><td><code>tokens/components/[comp].json</code> + <code>views/partials/style-guide/spec-[comp].liquid</code></td></tr>
+              <tr><td>6</td><td>COMP_CONFIGS entry (controls and states; usage only as a fallback — no tokens field)</td><td><code>src/js/styleguide-component-page/comp-configs.ts</code></td></tr>
+              <tr><td>7</td><td>Tokens-panel wiring — generic path, or a bespoke getXVariantSections() if the preview shows multiple visual sub-variants side by side</td><td><code>src/js/styleguide-component-page/token-panel.ts</code> + <code>src/js/styleguide-component-page/controls/*.ts</code></td></tr>
+              <tr><td>8</td><td>Nav-left entry</td><td><code>views/partials/style-guide/nav-left.liquid</code></td></tr>
+              <tr><td>9</td><td>COMPONENTS.md inventory update</td><td><code>COMPONENTS.md</code></td></tr>
+            </tbody>
+          </table>
+          <p><strong>Note:</strong> <code>scripts/generate-component.js</code> does the mechanical part of this list (RULES.md §6.0); the CSS values, the real token data, the preview markup and any bespoke Tokens-panel resolver are written by hand. The docs-page JS is TypeScript in <code>src/js/</code> — run <code>npm run build</code> after editing it.</p>
+        </section>
+
+
+        <!-- ── 1. SECTION HTML ──────────────────────────────────────────── -->
+        <section id="boilerplate-section-html">
+          <h2 class="pos-heading-2">1. Section HTML</h2>
+          <p>Add to <code>component-template.liquid</code>. Replace every <code>[comp-key]</code>, <code>[Component Name]</code>, and the preview markup.</p>
+          <div class="styleguide-code"><pre><code>&lt;!-- ══════════════════════════════════════════════════════════
+     [COMPONENT NAME] SECTION
+     ══════════════════════════════════════════════════════════ --&gt;
+&lt;section class="comp-doc-section" data-comp-key="[comp-key]" id="comp-section-[comp-key]"&gt;
+
+  &lt;header class="comp-doc-section-header"&gt;
+    &lt;h4 class="pos-heading-4"&gt;[Component name]&lt;/h4&gt;
+  &lt;/header&gt;
+
+  &lt;!-- Live preview stage.
+       data-status and data-size are driven by the right-panel JS.
+       Add class comp-preview-stage--link if the preview contains links. --&gt;
+  &lt;div class="comp-preview-stage" data-status="normal"&gt;
+
+    &lt;!-- One .comp-preview-variant-row per visual variant group.
+         If there is more than one row, add a "Variant" toggle (see step 7)
+         and a data-base/data-kind attribute per row for filtering. --&gt;
+    &lt;div class="comp-preview-variant-row"&gt;
+      &lt;span class="comp-preview-variant-label"&gt;[Variant label]&lt;/span&gt;
+      &lt;div class="comp-preview-variant-items"&gt;
+
+        &lt;!-- Component instances — use exact pos-* markup from the DS.
+             Hover/focus/active states are applied via .pos-debug-[comp]-[state]
+             classes by applyStatus() in src/js/styleguide-component-page/apply-status.ts. --&gt;
+
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Add more .comp-preview-variant-row blocks as needed --&gt;
+
+  &lt;/div&gt;&lt;!-- /.comp-preview-stage --&gt;
+
+  &lt;!-- Always-visible reactive code snippet — buildGenericCodeSnippet() fills this
+       in automatically from whatever is currently visible in the preview, no
+       bespoke function needed unless the component is Button/Code (see their
+       own build*CodeSnippet functions for that exception). --&gt;
+  &lt;pre class="pos-code pos-code--block pos-code--light pos-code--small comp-preview-code" id="comp-preview-code-[comp-key]"&gt;&lt;code class="language-html"&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/section&gt;&lt;!-- /#comp-section-[comp-key] --&gt;</code></pre></div>
+        </section>
+
+
+        <!-- ── 2. COMPONENT SPEC JSON ───────────────────────────────────── -->
+        <section id="boilerplate-spec-json">
+          <h2 class="pos-heading-2">2. Component spec JSON</h2>
+          <p>Create <code>tokens/components/[comp].json</code> — the single source of truth for this component's tokens, props, composition, and usage example (RULES.md §7, §6.4). Must cover every variant × every state. <strong>Tokens with no Figma equivalent (no entry in <code>css-to-figma.json</code>) are included with <code>"figma": null</code> — never omitted, never invented.</strong> Always generate this file (and the spec-*.liquid wrapper below) via a Node.js script — <code>JSON.stringify</code> + write + parse-back validation — never hand-type or hand-edit the structure directly.</p>
+          <div class="styleguide-code"><pre><code>{
+  "_about": "Component spec for [Component Name] — tokens/variants/states/props for the /style-guide Tokens panel and AI-readable layer. Generated via a Node script from pos-[comp].css + css-to-figma.json, never hand-typed.",
+  "component": "[comp-key]",
+  "description": "[One-sentence description of the component.]",
+  "whenToUse": ["..."],
+  "whenNotToUse": ["..."],
+  "props": [
+    { "name": "size", "type": "'default' | 'small'", "default": "'default'", "description": "..." }
+  ],
+  "composedOf": ["button"],
+  "usageExample": "&lt;div class=\"pos-[comp]\"&gt;...&lt;/div&gt;",
+  "shared": {
+    "focus_indicator": [
+      { "css": "--pos-color-focused", "figma": "General elements-theme/Focused" }
+    ],
+    "layout": [
+      { "css": "--pos-radius-[comp]", "figma": "[Figma/Radius/path]" }
+    ]
+  },
+  "variants": {
+    "[variant-key]": {
+      "label": "[Variant label]",
+      "states": {
+        "normal": {
+          "sections": [
+            { "heading": "Color", "tokens": [
+              { "css": "--pos-color-...", "figma": "...", "swatch": true },
+              { "css": "--pos-color-highlight-background", "figma": null, "swatch": true }
+            ]},
+            { "heading": "Layout", "ref": "shared.layout" }
+          ]
+        },
+        "hover":    { "sections": [ { "heading": "Color", "tokens": [ { "css": "--pos-color-...-hover", "figma": "...", "swatch": true } ] } ] },
+        "focus":    { "sections": [ { "heading": "Color", "tokens": [ "..." ] }, { "heading": "Focus indicator", "ref": "shared.focus_indicator" } ] },
+        "active":   { "sections": [ "..." ] },
+        "disabled": { "sections": [ "..." ] }
+      }
+    }
+  }
+}</code></pre></div>
+          <p>Token lookup — mandatory: read <code>assets/tokens/css-to-figma.json → map</code>. The <code>--pos-*</code> CSS variable maps directly to the Figma name when one exists. Never guess.</p>
+        </section>
+
+
+        <!-- ── 3. SPEC LIQUID PARTIAL ───────────────────────────────────── -->
+        <section id="boilerplate-spec-partial">
+          <h2 class="pos-heading-2">3. Generated spec-[comp].liquid partial</h2>
+          <p>Produced by the same generation script as step 2 — wraps the JSON verbatim, never hand-copied (can't drift from the source JSON). Render it once, anywhere in <code>component-template.liquid</code>:</p>
+          <div class="styleguide-code"><pre><code>&lt;script type="application/json" id="comp-spec-[comp-key]"&gt;
+{ ...the JSON from step 2, byte-identical... }
+&lt;/script&gt;</code></pre></div>
+          <div class="styleguide-code"><pre><code>{% raw %}{% render 'modules/common-styling/style-guide/spec-[comp-key]' %}{% endraw %}</code></pre></div>
+          <p>This is picked up automatically by the docs-page JS's <code>COMPONENT_SPECS</code> auto-discovery block (scans every <code>&lt;script type="application/json" id="comp-spec-*"&gt;</code> on the page) — no separate registration array to update, unlike the deleted <code>INSPECT_SPECS</code>.</p>
+        </section>
+
+
+        <!-- ── 4. COMP_CONFIGS ENTRY ────────────────────────────────────── -->
+        <section id="boilerplate-comp-configs">
+          <h2 class="pos-heading-2">4. COMP_CONFIGS entry</h2>
+          <p>Add inside <code>var COMP_CONFIGS = { ... }</code> in <code>src/js/styleguide-component-page/comp-configs.ts</code>. The entry supplies <code>controls</code> (which right-panel sections to show) and <code>states</code> (which state buttons are valid). The Usage tab reads the spec JSON's <code>whenToUse</code>, <code>whenNotToUse</code>, <code>do</code>, <code>dont</code>, <code>accessibility</code> and <code>surfaces</code> fields (step 2); the config's <code>usage</code> block is only a fallback for a component without those spec fields. <strong>Do not add a <code>tokens</code> field</strong> — tokens come from the spec JSON only.</p>
+          <div class="styleguide-code"><pre><code>'[comp-key]': {
+  name: '[Component Name]',
+  // controls: which right-panel sections to show, in canonical order
+  // (Variant → State → Size → Orientation → Intent → Options — RULES.md §6.7)
+  controls: ['state'],
+  // states: which state buttons are valid for this component
+  states: ['normal', 'hover', 'focus', 'active', 'disabled'],
+  // usage: fallback only — the Usage tab reads whenToUse/whenNotToUse/do/dont/accessibility from the spec JSON
+  usage: {
+    useWhen: ['When to use this component...'],
+    avoidWhen: ['When NOT to use this component...'],
+    do: ['Do this.'],
+    dont: ["Don't do this."],
+    accessibility: [
+      'Keyboard accessible: all interactive states reachable via Tab.',
+      'Focus visible: use :focus-visible, never suppress.',
+      'Minimum touch target: 44×44px for default size.',
+    ],
+  },
+},</code></pre></div>
+        </section>
+
+
+        <!-- ── 5. TOKENS-PANEL WIRING ───────────────────────────────────── -->
+        <section id="boilerplate-tokens-wiring">
+          <h2 class="pos-heading-2">5. Tokens-panel wiring</h2>
+          <p>The Tokens panel is rendered by <code>renderTokenPanel()</code> in <code>src/js/styleguide-component-page/token-panel.ts</code>; the right-panel toggles that feed it live in <code>src/js/styleguide-component-page/controls/*.ts</code>. <code>openTokensPanel()</code>'s condition is just <code>COMPONENT_SPECS[currentComp]</code> — having a spec (steps 2–3) already makes the component eligible. Two cases:</p>
+          <h3 class="styleguide-heading-4">Single representative variant (the common case — most components)</h3>
+          <p>Nothing to write. <code>getGenericVariantSections(compKey, status, size, intent)</code> already handles any component with one variant in its spec, including the 3-form-component Intent override (error/success) if <code>variant.states[intent]</code> exists.</p>
+          <h3 class="styleguide-heading-4">Multiple visual sub-variants shown side by side (e.g. Button's 3 base rows, Chip's Normal/Prominent)</h3>
+          <p>Add a bespoke <code>get[Comp]VariantSections(...)</code> function that reads the variant key directly off the <em>currently visible</em> preview element's own classList (not a separately tracked JS state variable — can't drift from what's actually rendered), and add a matching new "Variant" toggle to the right panel — see RULES.md §7 for when this applies, or ask if unsure. Branch for it inside <code>renderTokenPanel</code>/<code>renderCodePanel</code> the same way Button/Chip/Segmented/Tag/Card/control-icons already do.</p>
+          <p><strong>Reset on switch</strong>: if the component tracks its own JS state variable (a bespoke Variant toggle, an Intent/Size default), add a reset block inside <code>switchComponent()</code> (<code>src/js/styleguide-component-page/switch-component.ts</code>) for the new key — mirrors the existing Button/Code/control-icons reset blocks. Without this, the toggle's visual "active" state and the actual filtered preview can disagree on first visit to the section.</p>
+        </section>
+
+
+        <!-- ── 6. NAV-LEFT ENTRY ────────────────────────────────────────── -->
+        <section id="boilerplate-nav-entry">
+          <h2 class="pos-heading-2">6. Nav-left entry</h2>
+          <p>Add inside the <code>"Components"</code> array in <code>partials/style-guide/nav-left.liquid</code> — <strong>keep this in the same order</strong> as the section appears in <code>component-template.liquid</code>'s scrollable preview list; the two must always stay in sync.</p>
+          <div class="styleguide-code"><pre><code>{ "label": "[Component Name]", "url": "/style-guide/component-template#comp-section-[comp-key]" }</code></pre></div>
+        </section>
+
+
+        <!-- ── IMPLEMENTATION NOTES ─────────────────────────────────────── -->
+        <section id="boilerplate-notes">
+          <h2 class="pos-heading-2">Implementation notes</h2>
+
+          <h3 class="styleguide-heading-4">Scroll-reset — automatic, no extra code needed</h3>
+          <p>When the user scrolls between component sections, <code>switchComponent()</code> fires automatically via the scroll-sync listener. It resets all controls and the preview to their default state, and re-renders the Code snippet unconditionally. This applies both when switching to a new component and when scrolling back to a previously visited one.</p>
+
+          <h3 class="styleguide-heading-4">State combinations — all required</h3>
+          <p>Every variant × every state must be documented in the spec JSON. Not just per-control, but all combinations. Omitting a state silently breaks the Tokens panel for that combination (shows the nearest fallback's data instead, which reads as correct but isn't).</p>
+
+          <h3 class="styleguide-heading-4">Typography tokens — always list as a pair</h3>
+          <p>If <code>--pos-font-*</code> (family) is applied, <code>--pos-font-size-*</code> (size) must also appear in the same spec section — and vice versa. Never list one without the other (RULES.md §7.2).</p>
+
+          <h3 class="styleguide-heading-4">Tokens with figma: null — always include</h3>
+          <p>CSS-only tokens with no Figma equivalent must always appear in the spec, with <code>"figma": null</code> — never omitted. Omitting them makes the spec an inaccurate description of the component's real CSS (RULES.md §7.6).</p>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+</div>

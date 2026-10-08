@@ -1,12 +1,24 @@
-{% doc %}
-  @param {boolean} reset - whether to include the CSS reset stylesheet
-{% enddoc %}
+{% comment %}
+  Loads the design system: fonts, CSS and the JS that wires interactive components.
+  Params:
+    - reset (bool, optional) — also load pos-reset.css
+    - auto_init_components (bool, optional, default true) — initialize popovers, dialogs, collapsible
+      lists, code highlighting and data-load-content automatically. Pass false on pages that create
+      those instances themselves (the docs site does).
+{% endcomment %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700&family=Monda:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap">
 {% if reset %}
   <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-reset.css' | asset_url }}">
 {% endif %}
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-primitives.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-themes.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-config.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-style-wireframe.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-utility.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-typography.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-spinner.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-button.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-toast.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-avatar.css' | asset_url }}">
@@ -14,89 +26,171 @@
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-page.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-popover.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-dialog.css' | asset_url }}">
-<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-card.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-table.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-tab.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-tooltip.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-tag.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-chip.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-code.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-close.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-chevron.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-pagination.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-collapsible.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-segmented-control.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-tile-btn.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-switch-card.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-toggle-btn.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-behaviors.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-feature-card.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-card.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-dropdown-button.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-slider.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-badge.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-breadcrumb.css' | asset_url }}">
 
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/dependency-uppy.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-upload.css' | asset_url }}">
 
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/dependency-easyMde.css' | asset_url }}">
-<script src="{{ 'modules/common-styling/js/dependency-easyMde.js' | asset_url }}" defer></script>
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/dependency-highlightJs.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-markdown.css' | asset_url }}">
 
-<link rel="stylesheet" href="{{ 'modules/common-styling/style/dependency-highlightJs.css' | asset_url }}">
-<script src="{{ 'modules/common-styling/js/dependency-highlightJs.js' | asset_url }}" defer></script>
-
-
 <script>
-  // purpose:		creates global namespace for all platformOS related modules
-  // ------------------------------------------------------------------------
   if(typeof window.pos !== 'object'){
-    // global namespace
     window.pos = {};
-    // modules classes should go here
     window.pos.modules = {};
-    // active instances of modules should go here
     window.pos.modules.active = {};
-    // translations that needs to be used in JS can be outputted here from liquid
+    window.pos.behaviors = {};
     window.pos.translations = {};
-    // enables debug mode on all the modules
     window.pos.debug = false;
-    // csrf token
     window.pos.csrfToken = '{{ context.authenticity_token }}';
   }
-</script>
 
+  /* disabled click guard (RULES.md 4.12): disabled elements keep their pointer events so they can
+     show the not-allowed cursor, so a click on an aria-disabled element (or anything inside it) and
+     on a .pos-link--disabled link is stopped here, before any other handler runs — native
+     [disabled] controls are already inert. Registered once, even if the partial renders twice. */
+  if(!window.pos.disabledClickGuard){
+    window.pos.disabledClickGuard = true;
+    ['click', 'auxclick'].forEach(type => {
+      document.addEventListener(type, event => {
+        if(event.target instanceof Element && event.target.closest('[aria-disabled="true"], .pos-link--disabled')){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+    });
+  }
+</script>
 <script src="{{ 'modules/common-styling/js/pos-debug.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-keyboard-nav.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-behavior-sliding-indicator.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-behavior-resize.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-behavior-smooth-scroll.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-behavior-expand-collapse.js' | asset_url }}" defer></script>
+<script src="{{ 'modules/common-styling/js/pos-behavior-dismiss.js' | asset_url }}" defer></script>
 
 <script>
-  /* selectively load modules */
+  /* selectively load interactive modules */
   document.addEventListener('DOMContentLoaded', () => {
 
-    /* password input */
-    if(document.querySelector('.pos-form-password')){
-      import('{{ 'modules/common-styling/js/pos-forms-password.js' | asset_url }}').then(module => {
-        document.querySelectorAll('.pos-form-password').forEach((element, index) => {
-          window.pos.modules.active[element.querySelector('input').id || `pos-password-${index}`] = new window.pos.modules.password(element, { password: element.value });
-        });
-      });
-    };
-
     /* multiselect input */
-    if(document.querySelector('.pos-form-multiselect')){
+    if (document.querySelector('.pos-form-multiselect')) {
       import('{{ 'modules/common-styling/js/pos-forms-multiselect.js' | asset_url }}').then(module => {
         document.querySelectorAll('.pos-form-multiselect').forEach((element, index) => {
           window.pos.modules.active[element.id || `pos-multiselect-${index}`] = new window.pos.modules.multiselect(element, {});
         });
       });
-    };
+    }
 
-    /* popovers */
-    if(document.querySelector('.pos-popover')){
-      import('{{ 'modules/common-styling/js/pos-popover.js' | asset_url }}').then(module => {
-        document.querySelectorAll('.pos-popover').forEach((element, index) => {
-          window.pos.modules.active[element.querySelector('[popover]').id] = new window.pos.modules.popover(element);
+    /* slider: fill and value tooltip follow the range input */
+    if (document.querySelector('.pos-slider-field')) {
+      import('{{ 'modules/common-styling/js/pos-slider.js' | asset_url }}').then(() => {
+        document.querySelectorAll('.pos-slider-field').forEach((element, index) => {
+          window.pos.modules.active[element.id || `pos-slider-${index}`] = new window.pos.modules.slider(element);
         });
       });
-    };
+    }
 
-    /* modals */
-    if(document.querySelector('[data-dialogtarget]')){
+    /* password input */
+    if (document.querySelector('.pos-form-password')) {
+      import('{{ 'modules/common-styling/js/pos-forms-password.js' | asset_url }}').then(module => {
+        document.querySelectorAll('.pos-form-password').forEach((element, index) => {
+          window.pos.modules.active[element.querySelector('input').id || `pos-password-${index}`] = new window.pos.modules.password(element, { password: element.value });
+        });
+      });
+    }
+
+    /* file upload: Uppy is loaded only when the page has an upload field */
+    if (document.querySelector('.pos-upload')) {
+      import('{{ 'modules/common-styling/js/dependency-uppy.js' | asset_url }}').then(module => {
+        window.pos.modules.uppy = module;
+
+        import('{{ 'modules/common-styling/js/pos-upload.js' | asset_url }}').then(module => {
+          document.querySelectorAll('.pos-upload').forEach((element, index) => {
+            window.pos.modules.active[element.id || `pos-upload-${index}`] = new window.pos.modules.upload({
+              container: element,
+              imageEditorEnabled: element.dataset.imageEditorEnabled === 'true',
+              allowedFileTypes: element.dataset.allowedFileTypes,
+              aspectRatio: element.dataset.aspectRatio,
+              maxNumberOfFiles: element.dataset.maxNumberOfFiles,
+              maxFileSize: element.dataset.maxFileSize,
+              width: element.dataset.width,
+              height: element.dataset.height
+            });
+          });
+        });
+      });
+    }
+
+    /* markdown editor: EasyMDE is loaded only when the page has a markdown field.
+       dependency-easyMde.js sets the EasyMDE global as a side effect (not an ES export). */
+    if (document.querySelector('.pos-markdown')) {
+      import('{{ 'modules/common-styling/js/dependency-easyMde.js' | asset_url }}').then(() => {
+        import('{{ 'modules/common-styling/js/pos-markdown.js' | asset_url }}').then(module => {
+          document.querySelectorAll('.pos-markdown').forEach((element, index) => {
+            window.pos.modules.active[element.id || `pos-markdown-${index}`] = new window.pos.modules.markdown({
+              container: element,
+              id: element.id || `pos-markdown-${index}`,
+              minlength: element.dataset.minlength,
+              maxlength: element.dataset.maxlength
+            });
+          });
+        });
+      });
+    }
+
+
+{%- if auto_init_components != false %}
+    /* dialogs, popovers, collapsible lists, code highlighting and data-load-content.
+       Pages that create these instances themselves (the docs site) render this partial
+       with auto_init_components: false. */
+
+    /* popovers (and dropdown buttons — same keyboard and focus handling) */
+    if (document.querySelector('.pos-popover, .pos-dropdown-button')) {
+      import('{{ 'modules/common-styling/js/pos-popover.js' | asset_url }}').then(module => {
+        document.querySelectorAll('.pos-popover, .pos-dropdown-button').forEach((element) => {
+          var popoverEl = element.querySelector('[popover]');
+          if (!popoverEl) return;
+          window.pos.modules.active[popoverEl.id] = new window.pos.modules.popover(element);
+        });
+      });
+    }
+
+    /* dialogs */
+    if (document.querySelector('[data-dialogtarget]')) {
       import('{{ 'modules/common-styling/js/pos-dialog.js' | asset_url }}').then(module => {
-        document.querySelectorAll('[data-dialogtarget]').forEach((element, index) => {
+        document.querySelectorAll('[data-dialogtarget]').forEach((element) => {
           window.pos.modules.active[element.dataset.dialogtarget] = new window.pos.modules.dialog({
             trigger: element,
             container: document.querySelector('#' + element.dataset.dialogtarget)
           });
         });
       });
-    };
+    }
 
     /* collapsible lists */
-    if(document.querySelector('.pos-collapsible')){
+    if (document.querySelector('.pos-collapsible')) {
       import('{{ 'modules/common-styling/js/pos-collapsible.js' | asset_url }}').then(module => {
         document.querySelectorAll('.pos-collapsible').forEach((element, index) => {
           window.pos.modules.active[element.id || `pos-collapsible-${index}`] = new window.pos.modules.collapsible({
@@ -105,78 +199,42 @@
           });
         });
       });
-    };
+    }
 
-    // purpose:		loads HTML from an endpoint and puts it in the container
-    // arguments: endpoint (string) - URL to load the content from
-    //            target (string) - selector of the element where the content should be loaded
-    //            where (string) -  'replace', 'last' or 'first' to the container
-    //            trigger (dom node) - element that triggers the loading of the content
-    //            triggerType (string) - 'click' or 'hover' to trigger the loading process
-    //            paginated (bool) - if true, it will add page=2, page=3... to each request URL on each trigger activation
-    // ------------------------------------------------------------------------
-    import('{{ 'modules/common-styling/js/pos-load.js' | asset_url }}').then(module => {
-      const loads = document.querySelectorAll('[data-load-content]');
-      loads.forEach((load, i) => {
-        pos.modules.active[load.id ? load.id : 'load-' + load.getAttribute('data-load-target') + '-' + i] = new pos.modules.load({
-          id: load.id ? load.id : 'load-' + load.getAttribute('data-load-target') + '-' + i,
-          endpoint: load.getAttribute('data-load-content'),
-          target: load.getAttribute('data-load-target'),
-          where: load.getAttribute('data-load-where'),
-          trigger: load,
-          triggerType: load.getAttribute('data-load-trigger-type') || 'click',
-          paginated: load.getAttribute('data-load-paginated') === 'true'
-        });
-      });
-    });
-
-
-    /* file upload */
-    if(document.querySelector('.pos-upload')){
-      import('{{ 'modules/common-styling/js/dependency-uppy.js' | asset_url }}').then(module => {
-        pos.modules.uppy = module;
-
-        import('{{ 'modules/common-styling/js/pos-upload.js' | asset_url }}').then(module => {
-          document.querySelectorAll('.pos-upload').forEach((element, index) => {
-            pos.modules.active[element.id || `pos-upload-${index}`] = new pos.modules.upload({
+    /* code highlighting */
+    if (document.querySelector('pre code')) {
+      import('{{ 'modules/common-styling/js/dependency-highlightJs.js' | asset_url }}').then(() => {
+        import('{{ 'modules/common-styling/js/pos-code.js' | asset_url }}').then(module => {
+          document.querySelectorAll('pre code').forEach((element, index) => {
+            window.pos.modules.active[`pos-code-${index}`] = new window.pos.modules.code({
               container: element,
-              imageEditorEnabled: element.dataset.imageEditorEnabled === 'true',
-              allowedFileTypes: element.dataset.allowedFileTypes,
-              aspectRatio: element.dataset.aspectRatio,
-              maxNumberOfFiles: element.dataset.maxNumberOfFiles,
-              maxFileSize: element.dataset.maxFileSize
+              id: `pos-code-${index}`
             });
           });
         });
       });
     }
 
-    /* markdown editor */
-    if(document.querySelector('.pos-markdown')){
-      import('{{ 'modules/common-styling/js/pos-markdown.js' | asset_url }}').then(module => {
-        document.querySelectorAll('.pos-markdown').forEach((element, index) => {
-          window.pos.modules.active[element.id || `pos-markdown-${index}`] = new pos.modules.markdown({
-            container: element,
-            id: element.id || `pos-markdown-${index}`,
-            content: element.value,
-            minlength: element.dataset.minlength,
-            maxlength: element.dataset.maxlength
+    /* load HTML from an endpoint into a container — data-load-content / -target / -where /
+       -trigger-type / -paginated (see js/pos-load.js) */
+    if (document.querySelector('[data-load-content]')) {
+      import('{{ 'modules/common-styling/js/pos-load.js' | asset_url }}').then(module => {
+        document.querySelectorAll('[data-load-content]').forEach((load, i) => {
+          const id = load.id ? load.id : 'load-' + load.getAttribute('data-load-target') + '-' + i;
+          window.pos.modules.active[id] = new window.pos.modules.load({
+            id: id,
+            endpoint: load.getAttribute('data-load-content'),
+            target: load.getAttribute('data-load-target'),
+            where: load.getAttribute('data-load-where'),
+            trigger: load,
+            triggerType: load.getAttribute('data-load-trigger-type') || 'click',
+            paginated: load.getAttribute('data-load-paginated') === 'true'
           });
         });
       });
     }
-
-    /* code highlighting */
-    if(document.querySelector('pre code')){
-      import('{{ 'modules/common-styling/js/pos-code.js' | asset_url }}').then(module => {
-        document.querySelectorAll('pre code').forEach((element, index) => {
-          pos.modules.active[`pos-code-${index}`] = new pos.modules.code({
-            container: element,
-            id: `pos-code-${index}`
-          });
-        });
-      });
-    }
+{%- endif %}
 
   });
 </script>
+

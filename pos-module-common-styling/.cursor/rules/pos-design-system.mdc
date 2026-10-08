@@ -1,0 +1,14 @@
+---
+description: Building UI with the pOS common-styling design system (pos- classes, --pos- tokens, Liquid partials)
+globs: "**/*.{liquid,html,css,scss,js}"
+alwaysApply: false
+---
+
+Follow `AGENTS.md` (module root, `pos-module-common-styling/AGENTS.md`; Cursor reads this rule when the module folder is opened as the workspace) when building UI with this design system.
+
+- Components: `modules/common-styling/public/assets/tokens/ds-index.json` (other libraries' names → `aliases`); markup from `tokens/components/<name>.json` › `usageExample` or the entry's `render` call.
+- Colors: semantic `--pos-color-*` tokens only (pairings: `AGENTS.md` § 4) — no hex / rgb, no `--pos-primitive-color-*`.
+- Spacing / sizes: `--pos-padding-*`, `--pos-gap-*`, `--pos-radius-*`, `--pos-size-icon-*`.
+- Never invent a `pos-` class or create / rename a `--pos-` token; no inline `style`; forward slashes in `render` paths.
+- Labels on every input; `aria-label` + `data-tooltip` on icon-only buttons; max one primary button per screen.
+- Verify: `npm run check:ui -- <files>`, `npm run check:contrast`.

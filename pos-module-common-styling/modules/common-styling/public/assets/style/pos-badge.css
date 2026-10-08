@@ -1,0 +1,110 @@
+/*
+  badge component
+
+  A small, round indicator on another element — a dot for "something new", or a count (up to 9,
+  then "99+"), in an intent color (important by default) with a ring in the background color that separates it from
+  what it sits on. Built from the component wizard draft (tools/component-wizard.html, Figma node
+  8293:129201), approved 2026-10-06.
+
+  .pos-badge                   base: important fill, background-colored ring, fully rounded
+  .pos-badge--dot              no content (aria-hidden="true")
+  .pos-badge--number           one digit, a circle
+  .pos-badge--max-count        a short count like "99+", widens with padding
+  .pos-badge--small / --big    16px (icon-s) / 20px (icon-m)
+  .pos-badge--important        intent (default): important fill, inverted text
+  .pos-badge--confirmation     confirmation fill, inverted text
+  .pos-badge--brand            brand (standout) fill, inverted text
+  .pos-badge--neutral          neutral graphic (icon color) fill, inverted text
+
+  Not interactive: no hover / focus states — the element it sits on is the interactive part.
+*/
+
+@layer common-styling {
+
+  .pos-badge {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    background-color: var(--pos-color-important);
+    /* the ring that separates the badge from what it sits on — 2px, no border-width token this size */
+    border: 2px solid var(--pos-color-content-background);
+    border-radius: var(--pos-primitive-radius-rounded);
+    color: var(--pos-color-content-inverted-text);
+    white-space: nowrap;
+  }
+
+  /* intent — important is the default above */
+  .pos-badge--important {
+    background-color: var(--pos-color-important);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  .pos-badge--confirmation {
+    background-color: var(--pos-color-confirmation);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  .pos-badge--brand {
+    background-color: var(--pos-color-standout-background);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  .pos-badge--neutral {
+    background-color: var(--pos-color-content-icon);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  /* dot */
+  .pos-badge--dot.pos-badge--small {
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+  }
+
+  .pos-badge--dot.pos-badge--big {
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
+  }
+
+  /* number — a circle */
+  .pos-badge--number.pos-badge--small {
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+    font-family: var(--pos-font-badge);
+    font-weight: var(--pos-font-weight-bold);
+    font-size: var(--pos-font-size-xxxs);
+    line-height: var(--pos-line-height-xs);
+  }
+
+  .pos-badge--number.pos-badge--big {
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
+    font-family: var(--pos-font-sidenotes);
+    font-weight: var(--pos-font-weight-bold);
+    font-size: var(--pos-font-size-xs);
+    line-height: var(--pos-line-height-s);
+  }
+
+  /* max count — widens with its content */
+  .pos-badge--max-count.pos-badge--small {
+    height: var(--pos-size-icon-s);
+    padding-inline: var(--pos-primitive-size-05);
+    font-family: var(--pos-font-badge);
+    font-weight: var(--pos-font-weight-bold);
+    font-size: var(--pos-font-size-xxxs);
+    line-height: var(--pos-line-height-xs);
+  }
+
+  .pos-badge--max-count.pos-badge--big {
+    height: var(--pos-size-icon-m);
+    padding-inline: var(--pos-primitive-size-05);
+    font-family: var(--pos-font-sidenotes);
+    font-weight: var(--pos-font-weight-bold);
+    font-size: var(--pos-font-size-xs);
+    line-height: var(--pos-line-height-s);
+  }
+
+}

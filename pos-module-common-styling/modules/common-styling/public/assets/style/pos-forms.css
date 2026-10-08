@@ -36,6 +36,9 @@
 
   .pos-form-simple fieldset:has(label + input),
   .pos-form-simple fieldset:has(label + textarea),
+  .pos-form-simple fieldset:has(label + select),
+  .pos-form-simple fieldset:has(label + .pos-form-password),
+  .pos-form-simple fieldset:has(label + .pos-form-input-wrapper),
   .pos-form-simple fieldset:has(label + .pos-form-multiselect) {
     display: flex;
     flex-direction: column;
@@ -49,9 +52,9 @@
     align-items: start;
   }
 
-    .pos-form-simple fieldset:has([type="checkbox"] + label) input[type="checkbox"],
-    .pos-form-simple fieldset:has([type="radio"] + label) input[type="checkbox"] {
-      height: 1lh;
+    .pos-form-simple fieldset:has([type="checkbox"] + label) input,
+    .pos-form-simple fieldset:has([type="radio"] + label) input {
+      margin-block-start: 1px;
     }
 
   /* combined fieldset */
@@ -82,33 +85,38 @@
 
   /* labels
   ============================================================================ */
+  /* every field type of the fieldset layout above — select, password, input wrapper and multiselect
+     were missing, so their fields sat 1–2px higher than a text input's next to them (fixed 2026-10-03) */
   .pos-form-simple fieldset:has(label + input) label,
   .pos-form-simple fieldset:has(label + textarea) label,
+  .pos-form-simple fieldset:has(label + select) label,
+  .pos-form-simple fieldset:has(label + .pos-form-password) label,
+  .pos-form-simple fieldset:has(label + .pos-form-input-wrapper) label,
+  .pos-form-simple fieldset:has(label + .pos-form-multiselect) label,
   .pos-form-simple fieldset:has(label + .hashtag-container) label,
-  .pos-form-simple fieldset:has(label + .uppy-container) label,
-  .pos-form-simple fieldset:has(label + .pos-form-multiselect) label {
+  .pos-form-simple fieldset:has(label + .uppy-container) label {
     margin-inline-start: -.1ex;
     margin-block-end: .1em;
-    align-self: start;
   }
 
-  .pos-form fieldset:has([required]:not([type="radio"])) label:after,
-  .pos-form fieldset:has([required]:not([type="radio"])) label strong:after,
-  .pos-form .pos-form-fieldset:has([required]:not([type="radio"])) label:after,
-  .pos-form .pos-form-fieldset:has([required]:not([type="radio"])) label strong:after {
+  .pos-form :has([required]:not([type="radio"])) label:after,
+  .pos-form :has([required]:not([type="radio"])) label strong:after {
     color: var(--pos-color-important);
 
     content: " *";
   }
 
-  .pos-form fieldset:has([required]) label:has(strong):after,
-  .pos-form .pos-form-fieldset:has([required]) label:has(strong):after {
+  .pos-form :has([required]) label:has(strong):after {
     display: none;
   }
 
-  .pos-form label:has(strong) {
+  .pos-form label:has(strong),
+  .pos-form label:has(small) {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: .5em;
   }
 
   .pos-form label strong {
@@ -124,12 +132,72 @@
   /* checkbox
   ============================================================================ */
   .pos-form [type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
     margin: 0;
+    width: 1em;
+    height: 1em;
+    min-width: 1em;
     box-sizing: border-box;
+    border-radius: 3px;
+    border: 1.5px solid var(--pos-color-input-frame);
+    background-color: var(--pos-color-input-background);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
 
-    transition-property: border-color, background-color, color;
-    transition-duration: .1s, .1s, .1s;
+    transition-property: border-color, background-color;
+    transition-duration: .1s;
     transition-timing-function: linear;
+  }
+
+  .pos-form [type="checkbox"]:not(:disabled):not(:checked):hover,
+  .pos-form [type="checkbox"]:not(:checked).pos-debug-checkbox-hover {
+    border-color: var(--pos-color-input-hover-frame);
+    background-color: var(--pos-color-input-hover-background);
+  }
+
+  .pos-form [type="checkbox"]:checked {
+    border-color: var(--pos-color-interactive);
+    background-color: var(--pos-color-interactive);
+  }
+
+  /* hover on a selected / checked element darkens it one hover step (light 600 -> 800, dark 400 -> 200, HC -> white) — 2026-10-02 */
+  .pos-form [type="checkbox"]:not(:disabled):checked:hover {
+    border-color: var(--pos-color-interactive-hover);
+    background-color: var(--pos-color-interactive-hover);
+  }
+
+  .pos-form [type="checkbox"]:checked::before {
+    content: '';
+    position: absolute;
+    /* left/top tuned live against real screenshots — the rotated tick's visible ink (only the
+       right+bottom border edges are drawn) isn't symmetric within its own bounding box, so pure
+       geometric box-centering (27%/16%) still read as sitting too low; nudged top up from there. */
+    left: 27%;
+    top: 11%;
+    width: 45%;
+    height: 68%;
+    border: solid var(--pos-color-content-inverted-icon);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+  }
+
+  .pos-form [type="checkbox"]:disabled {
+    border-color: var(--pos-color-input-disabled-frame);
+    background-color: var(--pos-color-input-background);
+    cursor: not-allowed;
+  }
+
+  .pos-form fieldset:has([type="checkbox"]:disabled) label {
+    color: var(--pos-color-content-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .pos-form [type="checkbox"]:disabled:checked {
+    border-color: var(--pos-color-button-primary-disabled-frame);
+    background-color: var(--pos-color-button-primary-disabled-background);
   }
 
   .pos-form [type="checkbox"]:focus-visible,
@@ -143,16 +211,74 @@
   /* radio
   ============================================================================ */
   .pos-form [type="radio"] {
-    transition-property: border-color, background-color, color;
-    transition-duration: .1s, .1s, .1s;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1em;
+    height: 1em;
+    min-width: 1em;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 1.5px solid var(--pos-color-input-frame);
+    background-color: var(--pos-color-input-background);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+
+    transition-property: border-color, background-color;
+    transition-duration: .1s;
     transition-timing-function: linear;
+  }
+
+  .pos-form [type="radio"]:not(:disabled):not(:checked):hover,
+  .pos-form [type="radio"]:not(:checked).pos-debug-radio-hover {
+    border-color: var(--pos-color-input-hover-frame);
+    background-color: var(--pos-color-input-hover-background);
+  }
+
+  .pos-form [type="radio"]:checked {
+    border-color: var(--pos-color-interactive);
+    background-color: var(--pos-color-interactive);
+  }
+
+  .pos-form [type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-color: var(--pos-color-content-inverted-icon);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .pos-form [type="radio"]:disabled {
+    border-color: var(--pos-color-input-disabled-frame);
+    background-color: var(--pos-color-input-background);
+    cursor: not-allowed;
+  }
+
+  .pos-form fieldset:has([type="radio"]:disabled) label {
+    color: var(--pos-color-content-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* the label of a disabled checkbox / radio outside a fieldset (next to it or wrapping it) —
+     cursor only, never the reset's label pointer (RULES.md 4.12) */
+  .pos-form :is([type="checkbox"], [type="radio"]):disabled + label,
+  .pos-form label:has(> :is([type="checkbox"], [type="radio"]):disabled) {
+    cursor: not-allowed;
+  }
+
+  .pos-form [type="radio"]:disabled:checked {
+    border-color: var(--pos-color-button-primary-disabled-frame);
+    background-color: var(--pos-color-button-primary-disabled-background);
   }
 
   .pos-form [type="radio"]:focus-visible,
   .pos-form-radio:focus-visible,
   .pos-debug-radio-focus-visible {
     box-sizing: border-box;
-
     outline: 2px solid var(--pos-color-focused);
     outline-offset: 2px;
   }
@@ -190,16 +316,20 @@
     transition-timing-function: linear;
   }
 
-  .pos-form-input:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="text"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="email"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="password"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="url"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="datetime"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form [type="datetime-local"]:not(:disabled):not(:focus-visible):hover,
-  .pos-form textarea:not(:disabled):not(:focus-visible):hover,
-  .pos-debug-form-input-hover {
+  /* the :where() part skips a disabled multiselect (aria-disabled, no native :disabled) without
+     raising the specificity the [aria-invalid] reinforcements below are matched to (RULES.md 4.12) */
+  .pos-form-input:not(:disabled):not([readonly]):not(:focus-visible):hover:where(:not([aria-disabled="true"], .pos-debug-multiselect-disabled *)),
+  .pos-form [type="text"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form [type="email"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form [type="password"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form [type="url"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form [type="datetime"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form [type="datetime-local"]:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form textarea:not(:disabled):not([readonly]):not(:focus-visible):hover,
+  .pos-form .pos-debug-form-input-hover,
+  .pos-form-input.pos-debug-form-input-hover {
     border-color: var(--pos-color-input-hover-frame);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-hover-frame);
     background-color: var(--pos-color-input-hover-background);
 
     color: var(--pos-color-input-hover-text);
@@ -213,15 +343,42 @@
   .pos-form [type="datetime"]:focus-visible,
   .pos-form [type="datetime-local"]:focus-visible,
   .pos-form textarea:focus-visible,
-  .pos-debug-form-input-focus-visible {
+  .pos-form .pos-debug-form-input-focus-visible,
+  .pos-form-input.pos-debug-form-input-focus-visible {
     position: relative;
     z-index: 2;
 
     border-color: var(--pos-color-input-active-frame);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-active-frame);
     background-color: var(--pos-color-input-active-background);
-    outline: 2px solid var(--pos-color-focused);
 
+    /* input-active-text == input-hover-text (Figma's combined Hover, Active
+       variable) — text never adopts the "filled" prominent color just
+       because the field is focused (a real filled value still bolds via
+       the separate :not(:placeholder-shown) rule, independent of focus) */
     color: var(--pos-color-input-active-text);
+  }
+
+  /* the outline ring is reserved for real keyboard Tab navigation
+     (html[data-keyboard-nav], set by pos-keyboard-nav.js) — Chrome/Firefox
+     treat text-editing controls as :focus-visible even on a plain mouse
+     click, so without this gate every click showed the ring too; a click
+     still gets the border/background change above, same as hover. The
+     docs-preview debug classes (.pos-debug-form-input-focus-visible) are a
+     manually-toggled state demo, not real focus, so they stay unconditional
+     below rather than depending on whether Tab was actually pressed. */
+  html[data-keyboard-nav] .pos-form-input:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="text"]:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="email"]:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="password"]:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="url"]:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="datetime"]:focus-visible,
+  html[data-keyboard-nav] .pos-form [type="datetime-local"]:focus-visible,
+  html[data-keyboard-nav] .pos-form textarea:focus-visible,
+  .pos-form .pos-debug-form-input-focus-visible,
+  .pos-form-input.pos-debug-form-input-focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
   }
 
   .pos-form-input:disabled,
@@ -233,11 +390,82 @@
   .pos-form [type="datetime-local"]:disabled,
   .pos-form textarea:disabled {
     border-color: var(--pos-color-input-disabled-frame);
-    background-color: var(--pos-color-input-disabled-background);
-
+    background-color: var(--pos-color-input-background);
     color: var(--pos-color-input-disabled-text);
+    cursor: not-allowed;
   }
 
+  .pos-form fieldset:has(input:disabled) label,
+  .pos-form fieldset:has(textarea:disabled) label,
+  .pos-form fieldset:has(select:disabled) label,
+  .pos-form fieldset:has(.pos-form-multiselect-input[aria-disabled="true"]) label,
+  .pos-form fieldset:has(.pos-form-multiselect.pos-debug-multiselect-disabled) label {
+    color: var(--pos-color-content-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* filled — has typed content (:not(select) because select has no :placeholder-shown;
+     :not(.pos-form-multiselect-input) because a div is vacuously ":not(:placeholder-shown)"
+     and would otherwise always match this rule) */
+  .pos-form-input:not(select):not(.pos-form-multiselect-input):not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="text"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="email"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="password"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="url"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="datetime"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form [type="datetime-local"]:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form textarea:not(:disabled):not([readonly]):not(:placeholder-shown),
+  .pos-form .pos-debug-form-input-filled,
+  .pos-form-input.pos-debug-form-input-filled,
+  /* select: "filled" = a real option is chosen (not the empty placeholder option) — 2026-10-03, it
+     stayed regular-weight body text while every other field turns prominent bold */
+  .pos-form select:not(:disabled):has(option:checked:not([value=""])),
+  .pos-form-select:not(:disabled):has(option:checked:not([value=""])) {
+    color: var(--pos-color-content-text-prominent);
+    font-weight: 600;
+  }
+
+  /* the open option list keeps regular text (browsers style it from the select) */
+  .pos-form select option,
+  .pos-form-select option {
+    font-weight: 400;
+  }
+
+  /* display-only / readonly */
+  .pos-form-input[readonly],
+  .pos-form [type="text"][readonly],
+  .pos-form [type="email"][readonly],
+  .pos-form [type="password"][readonly],
+  .pos-form [type="url"][readonly],
+  .pos-form [type="datetime"][readonly],
+  .pos-form [type="datetime-local"][readonly],
+  .pos-form textarea[readonly] {
+    background-color: transparent;
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    color: var(--pos-color-content-text);
+    font-weight: 400;
+    cursor: text;
+  }
+
+  /* display-only: suppress hover effect */
+  .pos-form-input[readonly]:hover,
+  .pos-form [type="text"][readonly]:hover,
+  .pos-form [type="email"][readonly]:hover,
+  .pos-form [type="password"][readonly]:hover,
+  .pos-form [type="url"][readonly]:hover,
+  .pos-form [type="datetime"][readonly]:hover,
+  .pos-form [type="datetime-local"][readonly]:hover,
+  .pos-form textarea[readonly]:hover {
+    background-color: transparent;
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    color: var(--pos-color-content-text);
+    cursor: text;
+  }
+
+  /* normal text color, constant across states — consistent with select/multiselect,
+     which have no dedicated "placeholder" concept of their own */
   .pos-form-input::placeholder,
   .pos-form [type="text"]::placeholder,
   .pos-form [type="email"]::placeholder,
@@ -246,7 +474,22 @@
   .pos-form [type="datetime"]::placeholder,
   .pos-form [type="datetime-local"]::placeholder,
   .pos-form textarea::placeholder {
-    color: var(--pos-color-input-placeholder);
+    color: var(--pos-color-input-text);
+    /* browsers apply a default dimming opacity to placeholders — override it
+       so the token's actual color is what renders, not a faded version of it */
+    opacity: 1;
+  }
+
+  .pos-form-input:disabled::placeholder,
+  .pos-form [type="text"]:disabled::placeholder,
+  .pos-form [type="email"]:disabled::placeholder,
+  .pos-form [type="password"]:disabled::placeholder,
+  .pos-form [type="url"]:disabled::placeholder,
+  .pos-form [type="datetime"]:disabled::placeholder,
+  .pos-form [type="datetime-local"]:disabled::placeholder,
+  .pos-form textarea:disabled::placeholder {
+    color: var(--pos-color-input-disabled-text);
+    opacity: 1;
   }
 
 
@@ -281,43 +524,111 @@
     border-style: solid;
     border-color: var(--pos-color-input-frame);
     border-radius: var(--pos-radius-input);
-    background-image: var(--pos-icon-select-arrow);
-    background-repeat: no-repeat;
-    background-size: 1rem;
-    background-position: right var(--pos-padding-input) center;
     background-color: var(--pos-color-input-background);
 
+    /* migration-safety fallback: a plain <select class="pos-form-select"> with
+       no .pos-form-input-wrapper + .pos-form-input-icon still gets a visible
+       dropdown arrow. Suppressed below when the wrapper+icon markup IS used,
+       so the two don't render on top of each other. */
+    background-image: var(--pos-icon-select-arrow);
+    background-repeat: no-repeat;
+    background-position: right var(--pos-padding-input) center;
+
+    /* the reset leaves <select> alone and the browser gives it its own small system font —
+       inherit the page font like the text inputs (which get it through all: unset) */
+    font: inherit;
     color: var(--pos-color-input-text);
   }
 
-  .pos-form select:not(:disabled):hover,
-  .pos-form-select:not(:disabled):hover {
+  .pos-form-input-wrapper select,
+  .pos-form-input-wrapper .pos-form-select {
+    background-image: none;
+  }
+
+  .pos-form select:not(:disabled):not([readonly]):hover,
+  .pos-form-select:not(:disabled):not([readonly]):hover,
+  .pos-form select.pos-debug-form-input-hover,
+  .pos-form-select.pos-debug-form-input-hover {
     border-color: var(--pos-color-input-hover-frame);
-    background-image: var(--pos-icon-select-arrow-hover);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-hover-frame);
     background-color: var(--pos-color-input-hover-background);
 
     color: var(--pos-color-input-hover-text);
   }
 
   .pos-form select:focus-visible,
-  .pos-form-select:focus-visible {
+  .pos-form-select:focus-visible,
+  .pos-form select.pos-debug-form-input-focus-visible,
+  .pos-form-select.pos-debug-form-input-focus-visible {
     position: relative;
     z-index: 1;
 
     border-color: var(--pos-color-input-active-frame);
-    outline: 2px solid var(--pos-color-focused);
-    background-image: var(--pos-icon-select-arrow-hover);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-active-frame);
     background-color: var(--pos-color-input-active-background);
 
-    color: var(--pos-color-input-focus-text);
+    /* input-active-text == input-hover-text (Figma's combined Hover, Active
+       variable) — a select can't tell a real chosen value apart from its
+       unselected placeholder option, so focus must not make the (possibly
+       still-empty) text look "prominent" */
+    color: var(--pos-color-input-active-text);
+  }
+
+  /* outline reserved for real keyboard nav — see the matching note on the
+     text-input :focus-visible rule above (debug classes stay unconditional
+     for the same reason) */
+  html[data-keyboard-nav] .pos-form select:focus-visible,
+  html[data-keyboard-nav] .pos-form-select:focus-visible,
+  .pos-form select.pos-debug-form-input-focus-visible,
+  .pos-form-select.pos-debug-form-input-focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
   }
 
   .pos-form select:disabled,
   .pos-form-select:disabled {
     border-color: var(--pos-color-input-disabled-frame);
-    background-color: var(--pos-color-input-disabled-background);
-
+    background-color: var(--pos-color-input-background);
+    background-image: var(--pos-icon-select-arrow-disabled);
     color: var(--pos-color-input-disabled-text);
+    cursor: not-allowed;
+  }
+
+  /* :disabled's specificity beats the plain wrapper-suppression rule above,
+     so it needs its own re-suppression to stay off when wrapped */
+  .pos-form-input-wrapper select:disabled,
+  .pos-form-input-wrapper .pos-form-select:disabled {
+    background-image: none;
+  }
+
+  /* select — filled (value chosen) */
+  .pos-form select.pos-debug-form-input-filled,
+  .pos-form-select.pos-debug-form-input-filled {
+    color: var(--pos-color-content-text-prominent);
+    font-weight: 600;
+  }
+
+  /* select — display-only (needs [disabled] to actually block interaction —
+     native select ignores [readonly] alone; [readonly] here only overrides the look) */
+  .pos-form select[disabled][readonly],
+  .pos-form-select[disabled][readonly] {
+    background-color: transparent;
+    background-image: none;
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    color: var(--pos-color-content-text);
+    font-weight: 400;
+    cursor: text;
+  }
+
+  /* display-only: suppress hover effect */
+  .pos-form select[disabled][readonly]:hover,
+  .pos-form-select[disabled][readonly]:hover {
+    background-color: transparent;
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    color: var(--pos-color-content-text);
+    cursor: text;
   }
 
   .pos-form-simple select {
@@ -326,7 +637,7 @@
   }
 
 
-  /* errors
+  /* errors / success intent
   ============================================================================ */
   .pos-form-input[aria-invalid="true"],
   .pos-form [type="text"][aria-invalid="true"],
@@ -335,13 +646,100 @@
   .pos-form [type="url"][aria-invalid="true"],
   .pos-form [type="datetime"][aria-invalid="true"],
   .pos-form [type="datetime-local"][aria-invalid="true"],
-  .pos-form textarea[aria-invalid="true"] {
+  .pos-form textarea[aria-invalid="true"],
+  .pos-form select[aria-invalid="true"],
+  .pos-form-select[aria-invalid="true"] {
     border-color: var(--pos-color-important);
+    box-shadow: inset 0 0 0 1px var(--pos-color-important);
+  }
+
+  .pos-form-input[aria-invalid="false"],
+  .pos-form [type="text"][aria-invalid="false"],
+  .pos-form [type="email"][aria-invalid="false"],
+  .pos-form [type="password"][aria-invalid="false"],
+  .pos-form [type="url"][aria-invalid="false"],
+  .pos-form [type="datetime"][aria-invalid="false"],
+  .pos-form [type="datetime-local"][aria-invalid="false"],
+  .pos-form textarea[aria-invalid="false"],
+  .pos-form select[aria-invalid="false"],
+  .pos-form-select[aria-invalid="false"] {
+    border-color: var(--pos-color-confirmation);
+    box-shadow: inset 0 0 0 1px var(--pos-color-confirmation);
+  }
+
+  /* select — error/success must stay visible even while hovered/focused;
+     matches :hover's specificity so it isn't silently overridden */
+  .pos-form-select:not(:disabled):not([readonly])[aria-invalid="true"] {
+    border-color: var(--pos-color-important);
+    box-shadow: inset 0 0 0 1px var(--pos-color-important);
+  }
+
+  .pos-form-select:not(:disabled):not([readonly])[aria-invalid="false"] {
+    border-color: var(--pos-color-confirmation);
+    box-shadow: inset 0 0 0 1px var(--pos-color-confirmation);
+  }
+
+  /* text inputs / textarea — same problem as select above: the plain
+     [aria-invalid] rule (0,2,0 / 0,3,0) loses to :hover's higher specificity
+     (0,5,0 / 0,6,0, from its :not(:disabled):not([readonly]):not(:focus-visible)
+     chain), so an invalid field silently lost its red/green border on hover.
+     These reinforcements match :hover's exact specificity and sit after it in
+     source order, so they win the tie. */
+  .pos-form-input:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="text"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="email"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="password"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="url"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="datetime"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form [type="datetime-local"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"],
+  .pos-form textarea:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="true"] {
+    border-color: var(--pos-color-important);
+    box-shadow: inset 0 0 0 1px var(--pos-color-important);
+  }
+
+  .pos-form-input:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="text"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="email"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="password"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="url"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="datetime"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form [type="datetime-local"]:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"],
+  .pos-form textarea:not(:disabled):not([readonly]):not(:focus-visible)[aria-invalid="false"] {
+    border-color: var(--pos-color-confirmation);
+    box-shadow: inset 0 0 0 1px var(--pos-color-confirmation);
   }
 
   .pos-form-error {
     text-wrap: pretty;
     color: var(--pos-color-important);
+    display: flex;
+    align-items: center;
+    gap: .4em;
+    font-size: var(--pos-font-size-body-small);
+  }
+
+  .pos-form-error[hidden] {
+    display: none;
+  }
+
+  .pos-form-error svg,
+  .pos-form-success svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
+
+  .pos-form-success {
+    text-wrap: pretty;
+    color: var(--pos-color-confirmation);
+    display: flex;
+    align-items: center;
+    gap: .4em;
+    font-size: var(--pos-font-size-body-small);
+  }
+
+  .pos-form-success[hidden] {
+    display: none;
   }
 
 
@@ -353,6 +751,54 @@
     justify-content: end;
     gap: var(--pos-gap-button-button);
   }
+
+
+  /* input with trailing icon (calendar, chevron, etc.)
+  ============================================================================ */
+  .pos-form-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+    .pos-form-input-wrapper .pos-form-input {
+      width: 100%;
+      padding-inline-end: calc(var(--pos-padding-input) * 2 + 1em);
+    }
+
+    /* trailing icon (calendar, chevron, eye, etc.) is a graphic-interactive
+       element, not body text — always the interactive graphic color,
+       constant across hover/focus, muted only when disabled. Same token as
+       the select chevron and multiselect arrow, so every field icon matches. */
+    .pos-form-input-icon {
+      position: absolute;
+      right: var(--pos-padding-input);
+      flex-shrink: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      width: 1em;
+      height: 1em;
+      /* stay above the input — inputs gain position:relative + z-index on focus-visible */
+      z-index: 2;
+
+      color: var(--pos-color-interactive);
+    }
+
+    .pos-form-input-wrapper:has(.pos-form-input:disabled) .pos-form-input-icon,
+    .pos-form-input-wrapper:has([disabled]) .pos-form-input-icon,
+    .pos-form-input-wrapper:has(.pos-form-input[readonly]) .pos-form-input-icon,
+    .pos-form-input-wrapper:has([readonly]) .pos-form-input-icon {
+      /* display-only (readonly) is visually non-interactive the same way disabled is — the
+         trailing icon previously had no readonly-specific rule at all, so it kept showing the
+         normal interactive-blue color even in a field the user can't edit (confirmed 2026-09-02). */
+      color: var(--pos-color-interactive-disabled);
+    }
+
+    /* select is open — chevron points up (focus alone keeps pointing down) */
+    .pos-form-input-wrapper:has(select.pos-debug-form-input-opened) .pos-form-input-icon {
+      transform: rotate(180deg);
+    }
 
 
   /* password input
@@ -391,7 +837,11 @@
 
     cursor: pointer;
 
-    color: var(--pos-color-content-secondary);
+    /* same graphic-interactive color as the select chevron/multiselect arrow
+       at rest, muted only when disabled — but unlike those decorative
+       indicators, this is a real clickable button, so it gets its own hover
+       feedback (same pattern as the multiselect filter-clear button) */
+    color: var(--pos-color-interactive);
   }
 
     .pos-form-password-toggle:hover {
@@ -400,7 +850,20 @@
 
     .pos-form-password-toggle:focus-visible {
       outline: 2px solid var(--pos-color-focused);
+      outline-offset: 2px;
     }
+
+  /* disabled field — the toggle keeps pointer events so the not-allowed cursor shows (RULES.md
+     4.12); this rule outranks the toggle's hover color, and pos-forms-password.js ignores the
+     click while the input is disabled */
+  .pos-form-password:has(input:disabled) .pos-form-password-toggle {
+    color: var(--pos-color-interactive-disabled);
+    cursor: not-allowed;
+  }
+
+  .pos-form-password:has(input:disabled) .pos-form-password-toggle * {
+    cursor: not-allowed;
+  }
 
     .pos-form-password-toggle .pos-label {
       position: absolute;
@@ -425,6 +888,10 @@
       display: none;
     }
 
+    .pos-form-password-shown input {
+      color: var(--pos-color-content-text-prominent);
+    }
+
   /* strength meter */
   .pos-form-password .pos-form-password-strength-meter {
     height: 4px;
@@ -437,7 +904,11 @@
   .pos-form-password .pos-form-password-strength-meter > * {
     flex-grow: 1;
 
-    background-color: var(--pos-color-frame);
+    /* was --pos-color-frame, which resolves to white (not grey) in HC mode — the unfilled meter
+       segments effectively disappeared against a light background there. --pos-color-content-icon-
+       disabled resolves to a real grey in every theme (including a dedicated HC grey, #767676),
+       which is the correct semantic role anyway: this is a muted/inactive indicator, not a border. */
+    background-color: var(--pos-color-content-icon-disabled);
 
     transition: background-color .1s linear;
   }
@@ -489,10 +960,19 @@
   ============================================================================ */
   .pos-form-multiselect {
     min-width: 300px;
+    width: fit-content;
+    max-width: 100%;
     display: inline-block;
     position: relative;
 
     user-select: none;
+  }
+
+  /* multiline — locks the field back to its default (single-line) width
+     instead of letting it grow; tags wrap onto extra lines within it */
+  .pos-form-multiselect-multiline {
+    width: 300px;
+    max-width: 100%;
   }
 
   .pos-form-multiselect-input {
@@ -502,34 +982,53 @@
     gap: .5em;
   }
 
+    .pos-form-multiselect-multiline .pos-form-multiselect-input {
+      width: 100%;
+    }
+
     .pos-form-multiselect-input:focus-visible {
       position: relative;
       z-index: 2;
 
       outline: 2px solid var(--pos-color-focused);
+      outline-offset: 2px;
+
+      /* input-active-text == input-hover-text — see the matching note on the
+         select's :focus-visible rule; also covers the "opened" state,
+         since opening the popup focuses this element in real usage */
+      color: var(--pos-color-input-active-text);
     }
 
+  /* placeholder text has no dedicated color/weight — it inherits the wrapper's
+     state-driven text color (input-text/hover-text/active-text/disabled-text),
+     same as a native <select> has no separate styling for its unselected option */
   .pos-form-multiselect-placeholder {
     cursor: default;
-
-    color: var(--pos-color-input-placeholder);
+    opacity: 1;
   }
 
     .pos-form-multiselect-input:has(li) .pos-form-multiselect-placeholder {
       display: none;
     }
 
-  /* dropdown arrow */
+  /* dropdown arrow — same graphic-interactive color as the select chevron,
+     constant across states, muted only when disabled */
   .pos-form-multiselect-input-arrow {
     width: 1em;
     height: 1em;
     flex-shrink: 0;
+    color: var(--pos-color-interactive);
   }
 
-    .pos-form-multiselect-input:has(.pos-form-multiselect-selected-list:not(:hover)):hover .pos-form-multiselect-input-arrow,
-    .pos-form-multiselect-input:focus-visible .pos-form-multiselect-input-arrow {
-      fill: var(--pos-color-interactive-hover);
-    }
+  .pos-form-multiselect.pos-debug-multiselect-disabled .pos-form-multiselect-input-arrow,
+  .pos-form-multiselect-input[aria-disabled="true"] .pos-form-multiselect-input-arrow {
+    color: var(--pos-color-interactive-disabled);
+  }
+
+  /* open — chevron points up, same convention as the select */
+  .pos-form-multiselect-opened .pos-form-multiselect-input-arrow {
+    transform: rotate(180deg);
+  }
 
   /* selected items */
   .pos-form-multiselect-selected-list {
@@ -538,19 +1037,16 @@
     overflow: hidden;
   }
 
+  /* Rebuilt 2026-08-27 to embed the real pos-tag component (level 1 of the component composition
+     hierarchy — CLAUDE.md) instead of a one-off pill re-implementation: this fixes the contrast bug
+     from earlier the same day (was --pos-color-page-background, barely visible against the field)
+     properly, since pos-tag already handles every theme including HC's visible border correctly.
+     The visual pill is now the inner .pos-tag.pos-tag-interactive span (see forms/multiselect.liquid
+     and pos-tag.css) — this <li> is just a plain flex-list wrapper, no visual styling of its own. */
   .pos-form-multiselect-selected-item {
     flex-grow: 0;
-    padding-inline: .3em;
-    padding-block: .2em;
     display: flex;
-    align-items: center;
     overflow: hidden;
-    gap: .2em;
-
-    background-color: var(--pos-color-page-background);
-    border-radius: var(--pos-radius-tag);
-
-    white-space: nowrap;
   }
 
     .pos-form-multiselect-selected-item-label {
@@ -561,23 +1057,16 @@
     }
 
     .pos-form-multiselect-selected-item-remove {
-      width: 1.1em;
-      padding: .25em;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       line-height: 0;
       cursor: pointer;
-
-      color: var(--pos-color-content-text-supplementary);
     }
-
-      .pos-form-multiselect-selected-item-remove:hover {
-        color: var(--pos-color-interactive-hover);
-      }
 
       .pos-form-multiselect-selected-item-remove:focus-visible {
         outline: 2px solid var(--pos-color-focused);
+        outline-offset: 2px;
       }
 
     /* multiline version */
@@ -637,13 +1126,67 @@
   }
 
   /* filter input */
-  .pos-form-multiselect-filter {
-    border: 0 !important;
+  .pos-form-multiselect-filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
   }
 
-  .pos-form-multiselect-filter + .pos-form-multiselect-list {
+  /* defensive — guarantees the optional filter input hides/shows correctly
+     regardless of how [hidden] cascades against the reset's display:revert */
+  .pos-form-multiselect-filter-wrapper[hidden] {
+    display: none;
+  }
+
+  /* .pos-form-multiselect .pos-form-multiselect-filter-wrapper .pos-form-multiselect-filter (not
+     just .pos-form-multiselect-filter) is required here: the filter input also carries
+     .pos-form-input, whose shared `all: unset` base rule is written as the compound selector
+     `.pos-form [type="text"]` (specificity 0,2,0) — a single-class selector (0,1,0) always loses
+     to that regardless of source order, so `all: unset`'s implicit width: auto silently won,
+     shrinking the input to content width and leaving a gap before the clear button. */
+  .pos-form-multiselect .pos-form-multiselect-filter-wrapper .pos-form-multiselect-filter {
+    border: 0;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding-inline-end: calc(var(--pos-padding-input) * 2 + 1em);
+  }
+
+  .pos-form-multiselect-filter-wrapper + .pos-form-multiselect-list {
     border-block-start: 1px solid var(--pos-color-input-frame);
   }
+
+  /* clear button — only shown once the user has actually typed a filter phrase. z-index is
+     required now that the filter input is a flex item spanning the wrapper's full width (see the
+     scoped .pos-form-multiselect-filter selector above): its own opaque background otherwise
+     painted over this absolutely-positioned button once there was no longer a visible gap to its
+     side for it to sit in. */
+  .pos-form-multiselect-filter-clear {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: var(--pos-padding-input);
+
+    color: var(--pos-color-interactive);
+    cursor: pointer;
+  }
+
+    .pos-form-multiselect-filter-clear:hover {
+      color: var(--pos-color-interactive-hover);
+    }
+
+    .pos-form-multiselect-filter-clear:focus-visible {
+      outline: 2px solid var(--pos-color-focused);
+      outline-offset: 2px;
+    }
+
+    .pos-form-multiselect-filter:not(:placeholder-shown) ~ .pos-form-multiselect-filter-clear {
+      display: flex;
+    }
 
   .pos-form-multiselect-filter-noresults {
     display: none;
@@ -660,6 +1203,49 @@
 
   .pos-form-multiselect-list .pos-form-multiselect-list-item-filtered {
     display: none;
+  }
+
+  /* multiselect — disabled (debug class drives the inspect-panel demo;
+     [aria-disabled] is the real production hook, set by the JS module) */
+  .pos-form-multiselect.pos-debug-multiselect-disabled .pos-form-multiselect-input,
+  .pos-form-multiselect-input[aria-disabled="true"] {
+    border-color: var(--pos-color-input-disabled-frame);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-disabled-frame);
+    background-color: var(--pos-color-input-background);
+    color: var(--pos-color-input-disabled-text);
+    cursor: not-allowed;
+  }
+
+  /* disabled — not-allowed over the whole field: placeholder, selected tags, their remove buttons
+     and the arrow (each would otherwise keep its own default / pointer cursor). Pointer events
+     stay on so the cursor shows (RULES.md 4.12); the field's hover rule skips it and the
+     aria-disabled click guard in init.liquid blocks opening it. */
+  .pos-form-multiselect.pos-debug-multiselect-disabled .pos-form-multiselect-input *,
+  .pos-form-multiselect-input[aria-disabled="true"] * {
+    cursor: not-allowed;
+  }
+
+  /* multiselect — disabled: text/icon color only, no background override — matches the
+     real pos-tag.css disabled state (span.pos-tag[aria-disabled] has no background fill) */
+  .pos-form-multiselect.pos-debug-multiselect-disabled .pos-form-multiselect-selected-item-label,
+  .pos-form-multiselect-input[aria-disabled="true"] .pos-form-multiselect-selected-item-label {
+    color: var(--pos-color-input-disabled-text);
+  }
+
+  .pos-form-multiselect.pos-debug-multiselect-disabled .pos-form-multiselect-selected-item-remove,
+  .pos-form-multiselect-input[aria-disabled="true"] .pos-form-multiselect-selected-item-remove {
+    color: var(--pos-color-interactive-disabled);
+    cursor: not-allowed;
+  }
+
+  /* multiselect — display-only (same treatment as a readonly text input) */
+  .pos-form-multiselect-input[aria-readonly="true"] {
+    background-color: transparent;
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    color: var(--pos-color-content-text);
+    cursor: text;
+    pointer-events: none;
   }
 
 }

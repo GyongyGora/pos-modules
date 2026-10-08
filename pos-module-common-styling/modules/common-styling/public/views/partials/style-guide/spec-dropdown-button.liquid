@@ -1,0 +1,359 @@
+{% comment %}
+  Generated from tokens/components/dropdown-button.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-dropdown-button">
+{% raw %}
+{
+  "_about": "Component spec for pos-dropdown-button (style/pos-dropdown-button.css) — created 2026-10-06 from the Figma Button's Type=Dropdown (node 16340:19960), as its own component (the Button component is unchanged; in Figma it stays a Button variant). Decisions (user, 2026-10-06): the whole button opens the list (not a split button); item hover = the primary button's hover background (Figma draws hover the same as normal); primary only. One variant; states normal / hover / focus / disabled come from the Button it is built on (composedOf button, its tokens are not repeated — RULES.md 7.12), active = open (Figma State=Active). The trigger is a real .pos-button.pos-button-primary with popovertarget; the menu is a native popover; init runs the Popover module on the wrapper for keyboard navigation. Figma names resolved through pos-config.css (RULES.md §6.4). Regenerate spec-dropdown-button.liquid after any change here — never hand-edit the .liquid partial.",
+  "component": "dropdown-button",
+  "name": "Dropdown button",
+  "description": "A primary button with an icon that opens a short list of related actions right below it (e.g. \"Add new\" → Page / Folder / Upload). The whole button opens the list; built on the native popover, so keyboard and light-dismiss work like the Popover.",
+  "whenToUse": [
+    "One entry point for a few related actions of the same kind (e.g. several things the user can add).",
+    "The page already has its primary action and the related choices would crowd the toolbar as separate buttons."
+  ],
+  "whenNotToUse": [
+    "There is only one action — use a plain primary button.",
+    "The options are settings or a value the user picks — use a select or a segmented control.",
+    "The list is long or needs search — use a popover with a menu or a multiselect."
+  ],
+  "do": [
+    "Keep the list short (2–6 items) and the item labels to one or two words.",
+    "Use an icon that says what the actions have in common (e.g. plus for \"add\").",
+    "Use links for items that navigate and buttons for items that act on the page."
+  ],
+  "dont": [
+    "Put more than one dropdown button in the same toolbar — it hides the actions.",
+    "Nest a second list inside an item."
+  ],
+  "accessibility": [
+    "The trigger is a real <button> with popovertarget — Enter / Space open the list, Esc and clicking outside close it, focus moves to the first item when opened by keyboard.",
+    "Arrow up / down, Home and End move between items (the Popover module, loaded by init).",
+    "Give the trigger a visible label; the icon is decorative (aria-hidden)."
+  ],
+  "composedOf": [
+    "button"
+  ],
+  "props": [
+    {
+      "name": "popovertarget / id",
+      "type": "attributes",
+      "default": "none",
+      "description": "The trigger's popovertarget must match the menu's id."
+    },
+    {
+      "name": "disabled",
+      "type": "attribute on the trigger",
+      "default": "false",
+      "description": "Disables the trigger (the list can't open)."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "active",
+      "disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "dropdown-button": {
+      "label": "Dropdown button",
+      "classes": [
+        "pos-dropdown-button"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "Icon square size (covers the trigger frame)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "Icon square pulled over the trigger frame by this much",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Icon square radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–label gap (also while open, so the width never changes)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "Icon square size (covers the trigger frame)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "Icon square pulled over the trigger frame by this much",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Icon square radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–label gap (also while open, so the width never changes)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "Icon square size (covers the trigger frame)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "Icon square pulled over the trigger frame by this much",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Icon square radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–label gap (also while open, so the width never changes)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "Icon square size (covers the trigger frame)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "Icon square pulled over the trigger frame by this much",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Icon square radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–label gap (also while open, so the width never changes)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-hover-background",
+                  "figma": "Primary/Button Prim Bg Hover",
+                  "role": "Trigger background while open, item hover background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-frame",
+                  "figma": "Primary/Button Prim Frame Normal",
+                  "role": "Trigger frame while open (stays the normal frame)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-hover-text",
+                  "figma": "Primary/Button Prim Text, icon Hover",
+                  "role": "Trigger text while open, item hover text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "Icon square while open, menu background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "Item text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-focused-inverse",
+                  "figma": "General elements-theme/Focused inverse",
+                  "role": "Item keyboard focus ring (2px, inset 4px)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "Icon square size (covers the trigger frame)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "Icon square pulled over the trigger frame by this much",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Icon square radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–label gap (also while open, so the width never changes)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Menu corners (the one joined to the trigger is square; the far one too when the menu is exactly as wide as the trigger)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-15",
+                  "figma": "Size/1.5 unit",
+                  "role": "Item padding top / bottom",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-2",
+                  "figma": "Size/2 unit",
+                  "role": "Item padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "role": "Item font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Item font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-normal",
+                  "figma": "Weight/normal",
+                  "role": "Item font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-m",
+                  "figma": "Line-height/lineH M",
+                  "role": "Item line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-dropdown-button\">\n  <button type=\"button\" class=\"pos-button pos-button-primary pos-dropdown-button-trigger\" popovertarget=\"add-menu\">\n    <span class=\"pos-dropdown-button-icon\" aria-hidden=\"true\"><!-- icon --></span>\n    Add new\n  </button>\n  <menu class=\"pos-dropdown-button-menu\" id=\"add-menu\" popover>\n    <li><a href=\"/pages/new\">Page</a></li>\n    <li><button type=\"button\">Folder</button></li>\n  </menu>\n</div>"
+}
+{% endraw %}
+</script>

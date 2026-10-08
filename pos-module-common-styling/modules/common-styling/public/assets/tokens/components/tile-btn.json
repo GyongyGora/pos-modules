@@ -1,0 +1,405 @@
+{
+  "_about": "Component spec for pos-tile-btn (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Choice button\" section. Reuses the already-curated usage prose from COMP_CONFIGS['tile-btn'].usage and token data from COMP_CONFIGS['tile-btn'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Rebuilt 2026-08-26 against the real pos-tile-btn.css: 'normal' had the wrong label token (was --pos-color-content-text-supplementary, should be --pos-color-content-text-interactive per line 63) and every state was missing the icon's own distinct color token (.pos-tile-btn-icon has its own color rule, separate from the label). Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "tile-btn",
+  "name": "Choice button",
+  "description": "Letting the user select from a small set of prominent, mutually exclusive options — mode pickers, filter palettes, settings panels — where each option has an icon and benefits from a larger touch target.",
+  "whenToUse": [
+    "Letting the user select from a small set of prominent, mutually exclusive options — mode pickers, filter palettes, settings panels — where each option has an icon and benefits from a larger touch target.",
+    "In a variant panel or options bar where a segmented control would be too compact."
+  ],
+  "whenNotToUse": [
+    "More than 4–5 options — the row becomes too wide; use a <code>&lt;select&gt;</code> or segmented control instead.",
+    "Options have no meaningful icon — use <code>pos-segmented-control</code> instead.",
+    "The choice is not mutually exclusive — use checkboxes instead."
+  ],
+  "do": [
+    "Use <code>&lt;button type=\"button\"&gt;</code> as the element — never a <code>&lt;div&gt;</code> or <code>&lt;a&gt;</code>.",
+    "Set <code>aria-pressed=\"true\"</code> on the active tile and <code>aria-pressed=\"false\"</code> on all others.",
+    "Keep labels short — 1–3 words maximum.",
+    "Wrap a group of related tile buttons in a <code>role=\"group\"</code> container with an <code>aria-label</code>."
+  ],
+  "dont": [
+    "Use tile buttons for navigation — use links instead.",
+    "Leave all tiles un-selected unless the setting is genuinely optional with no default."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "pos-tile-btn-group--vertical",
+      "type": "boolean class on the group",
+      "default": "false (horizontal)",
+      "description": "Wide/landscape orientation — icon left, label right, full-width rows."
+    },
+    {
+      "name": "pos-tile-btn--selected / [aria-pressed]",
+      "type": "boolean class + attribute",
+      "default": "false",
+      "description": "Active tile in the group."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native disabled attribute."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "selected",
+      "disabled",
+      "selected-disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "tile-btn": {
+      "label": "Choice button",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-frame",
+                  "figma": "Primary/Button Prim Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-text",
+                  "figma": "Primary/Button Prim Text, icon Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-buttons",
+                  "figma": "Family/buttons",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-small-button-text",
+                  "figma": "Size/small button text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-tile-btn-group\" role=\"group\" aria-label=\"View mode\">\n  <button type=\"button\" class=\"pos-tile-btn pos-tile-btn--selected\" aria-pressed=\"true\">\n    <span class=\"pos-tile-btn-icon\" aria-hidden=\"true\"><!-- grid icon --></span>\n    <span class=\"pos-tile-btn-label\">Grid</span>\n  </button>\n  <button type=\"button\" class=\"pos-tile-btn\" aria-pressed=\"false\">\n    <span class=\"pos-tile-btn-icon\" aria-hidden=\"true\"><!-- list icon --></span>\n    <span class=\"pos-tile-btn-label\">List</span>\n  </button>\n</div>"
+}

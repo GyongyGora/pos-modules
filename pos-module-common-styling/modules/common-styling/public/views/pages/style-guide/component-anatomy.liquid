@@ -1,0 +1,138 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/component-anatomy' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Component anatomy</h1>
+          <p>Every component in this design system is built from four independent layers. Each layer has its own source of truth in Figma and its own mechanism in code — no layer does the job of another.</p>
+        </header>
+
+        <section class="anatomy-grid">
+
+          <div class="pos-feature-card anatomy-layer-card">
+            <div class="pos-feature-card-icon">
+              {% render 'modules/common-styling/icon', icon: 'color-palette-sample' %}
+            </div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Appearance</span></h3>
+              <p class="pos-feature-card-lead">Color, typography, border, shadow.</p>
+              <div class="anatomy-flow">
+                <span>Figma variable</span>
+                <span class="anatomy-flow-arrow" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+                <code class="pos-code pos-code--small">semantic CSS token</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="pos-feature-card anatomy-layer-card">
+            <div class="pos-feature-card-icon">
+              {% render 'modules/common-styling/icon', icon: 'expand-horizontal-4' %}
+            </div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Layout</span></h3>
+              <p class="pos-feature-card-lead">Size, padding, gap, radius.</p>
+              <div class="anatomy-flow">
+                <span>Figma measurement</span>
+                <span class="anatomy-flow-arrow" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+                <code class="pos-code pos-code--small">spacing / size token</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="pos-feature-card anatomy-layer-card">
+            <div class="pos-feature-card-icon">
+              {% render 'modules/common-styling/icon', icon: 'cursor-select-4' %}
+            </div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Interactions</span></h3>
+              <p class="pos-feature-card-lead">Hover, focus, drag, expand.</p>
+              <div class="anatomy-flow">
+                <code class="pos-code pos-code--small">pos-anim-*</code>
+                <span class="anatomy-flow-arrow" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+                <code class="pos-code pos-code--small">window.pos.behaviors.*</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="pos-feature-card anatomy-layer-card">
+            <div class="pos-feature-card-icon">
+              {% render 'modules/common-styling/icon', icon: 'sign-badge-circle' %}
+            </div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>States</span></h3>
+              <p class="pos-feature-card-lead">Default, hover, disabled, error.</p>
+              <div class="anatomy-flow">
+                <span>Figma variant</span>
+                <span class="anatomy-flow-arrow" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+                <code class="pos-code pos-code--small">modifier class / pseudo-class / data-attribute</code>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--pos-primitive-size-2);
+  }
+
+  .anatomy-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--pos-primitive-size-05);
+    color: var(--pos-color-content-text-supplementary);
+    font-size: var(--pos-font-size-ss);
+  }
+
+  .anatomy-flow-arrow {
+    display: inline-flex;
+    align-items: center;
+    color: var(--pos-color-content-text-supplementary);
+  }
+
+  .anatomy-flow-arrow .pos-icon {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+  }
+
+  /* these cards are static (plain <div>, no click target) — reset the hover-interactive
+     look pos-feature-card normally has (lift shadow, title color + underline reveal),
+     since nothing here leads anywhere */
+  .anatomy-layer-card:hover {
+    box-shadow: var(--pos-primitive-shadow-medium);
+  }
+
+  .anatomy-layer-card:hover .pos-feature-card-title {
+    color: var(--pos-color-content-text-prominent);
+  }
+
+  .anatomy-layer-card:hover .pos-feature-card-title > span {
+    background-size: 0% 2px;
+  }
+
+  @media (max-width: 720px) {
+    .anatomy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

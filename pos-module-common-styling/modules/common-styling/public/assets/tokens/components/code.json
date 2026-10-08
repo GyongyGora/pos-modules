@@ -1,0 +1,534 @@
+{
+  "_about": "Component spec for pos-code (docs/inspect refactor, component #2 after Button). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Code\" section. Reuses the token/Figma data from the old inspect-code.liquid (that data was already accurate — verified against pos-code.css) restructured into the new schema, plus added the block+small combinations the old spec never had (needed for the unified Size toggle that now resizes both inline and block together, decided 2026-08-26). Regenerate via the build script if pos-code.css changes; do not hand-edit token values here.",
+  "component": "code",
+  "name": "Code",
+  "description": "Inline code reference and multi-line code block — for short code fragments in prose, or full code/terminal/config samples.",
+  "whenToUse": [
+    "Displaying a short code reference inline in prose — a function name, variable, attribute, or command. Use <code>&lt;code class=\"pos-code\"&gt;</code>.",
+    "Showing a multi-line code sample, terminal output, or configuration snippet. Use <code>&lt;pre class=\"pos-code pos-code--block\"&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt;</code>."
+  ],
+  "whenNotToUse": [
+    "Styling non-code text as code — <code>pos-code</code> is reserved for actual code references.",
+    "Nesting block code inside inline text or other inline elements."
+  ],
+  "do": [
+    "Use the semantic <code>&lt;code&gt;</code> element — never a <code>&lt;span&gt;</code> or <code>&lt;div&gt;</code>.",
+    "For multi-line blocks, always place the <code>&lt;code&gt;</code> directly inside <code>&lt;pre&gt;</code>."
+  ],
+  "dont": [
+    "Apply <code>pos-code--block</code> to an inline <code>&lt;code&gt;</code> element — the block variant requires a <code>&lt;pre&gt;</code> wrapper.",
+    "Use code styling for decorative or purely visual purposes — it carries semantic meaning for screen readers."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "kind",
+      "type": "'inline' | 'block'",
+      "default": "inline",
+      "description": "inline: <code class=\"pos-code\">; block: <pre class=\"pos-code pos-code--block\"><code>...</code></pre>. Structurally different elements, not interchangeable via a class alone."
+    },
+    {
+      "name": "pos-code--dark / pos-code--light",
+      "type": "boolean class",
+      "default": "dark for inline is off (inline defaults light); light for block is off (block defaults dark)",
+      "description": "Inline defaults light, add pos-code--dark for the dark variant. Block defaults dark, add pos-code--light for the light variant — the two kinds have opposite defaults, deliberately (matches Figma)."
+    },
+    {
+      "name": "pos-code--small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "12px instead of 16px. Works on both inline and block (as of the 2026-08-26 unified Size toggle) — requires the base pos-code class to also be present."
+    },
+    {
+      "name": "pos-code--numbered",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Block only. Adds line numbers — each line must be wrapped in <span class=\"pos-code-ln\"> (handled automatically by pos.modules.codeCopy.addLineNumbers when toggled via the doc site; a real integration should wrap lines itself)."
+    }
+  ],
+  "usageExample": "<code class=\"pos-code\">value</code>\n\n<pre class=\"pos-code pos-code--block pos-code--numbered\"><code class=\"language-html\">...</code></pre>",
+  "dimensions": {
+    "kind": [
+      "inline",
+      "block"
+    ],
+    "variant": [
+      "default",
+      "alt"
+    ],
+    "size": [
+      "default",
+      "small"
+    ],
+    "numbered": [
+      "off",
+      "on"
+    ]
+  },
+  "shared": {
+    "layout-inline": [
+      {
+        "css": "--pos-radius-tag",
+        "figma": "Tag corner"
+      },
+      {
+        "css": "--pos-font-size-s",
+        "figma": "Size/font S"
+      },
+      {
+        "css": "--pos-font-code",
+        "figma": "Family/code"
+      }
+    ],
+    "layout-inline-small": [
+      {
+        "css": "--pos-radius-tag",
+        "figma": "Tag corner"
+      },
+      {
+        "css": "--pos-font-size-xs",
+        "figma": "Size/font XS"
+      },
+      {
+        "css": "--pos-font-code",
+        "figma": "Family/code"
+      }
+    ],
+    "layout-block": [
+      {
+        "css": "--pos-radius-card",
+        "figma": "Card corner"
+      },
+      {
+        "css": "--pos-font-size-s",
+        "figma": "Size/font S"
+      },
+      {
+        "css": "--pos-font-code",
+        "figma": "Family/code"
+      }
+    ],
+    "color-inline-dark": [
+      {
+        "css": "--pos-color-inverted-background",
+        "figma": "Backgrounds/Inverted Background",
+        "role": "background"
+      },
+      {
+        "css": "--pos-color-content-inverted-text",
+        "figma": "Text-theme/Content inverted text",
+        "role": "text"
+      },
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "border"
+      }
+    ],
+    "color-inline": [
+      {
+        "css": "--pos-color-highlight-background",
+        "figma": "Surfaces-theme/Highlight background",
+        "role": "background"
+      },
+      {
+        "css": "--pos-color-content-text",
+        "figma": "Text-theme/Content text",
+        "role": "text"
+      },
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "border"
+      }
+    ],
+    "color-block-dark": [
+      {
+        "css": "--pos-color-inverted-background",
+        "figma": "Backgrounds/Inverted Background",
+        "role": "background"
+      },
+      {
+        "css": "--pos-color-content-inverted-text",
+        "figma": "Text-theme/Content inverted text",
+        "role": "text"
+      },
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "border"
+      },
+      {
+        "css": "--pos-color-interactive-inverted",
+        "figma": "General elements-theme/Graphic Interactive Inverted",
+        "role": "copy icon"
+      }
+    ],
+    "color-block-light": [
+      {
+        "css": "--pos-color-highlight-background",
+        "figma": "Surfaces-theme/Highlight background",
+        "role": "background"
+      },
+      {
+        "css": "--pos-color-content-text",
+        "figma": "Text-theme/Content text",
+        "role": "text"
+      },
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "border"
+      },
+      {
+        "css": "--pos-color-interactive",
+        "figma": "General elements-theme/Graphic Interactive",
+        "role": "copy icon"
+      }
+    ],
+    "focus_indicator": [
+      {
+        "css": "--pos-color-focused",
+        "figma": "General elements-theme/Focused"
+      },
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner"
+      }
+    ],
+    "line-numbers-dark": [
+      {
+        "css": "--pos-color-content-inverted-text",
+        "figma": "General elements-theme/Inverted - text",
+        "role": "line number text"
+      },
+      {
+        "css": "--pos-color-content-inverted-icon",
+        "figma": "General elements-theme/Graphic Inverted",
+        "role": "separator line"
+      }
+    ],
+    "line-numbers-light": [
+      {
+        "css": "--pos-color-content-text",
+        "figma": "General elements-theme/Normal - text",
+        "role": "line number text"
+      },
+      {
+        "css": "--pos-color-content-icon",
+        "figma": "General elements-theme/Graphic Normal",
+        "role": "separator line"
+      }
+    ],
+    "layout-block-small": [
+      {
+        "css": "--pos-radius-card",
+        "figma": "Card corner"
+      },
+      {
+        "css": "--pos-font-size-xs",
+        "figma": "Size/font XS"
+      },
+      {
+        "css": "--pos-font-code",
+        "figma": "Family/code"
+      }
+    ]
+  },
+  "variants": {
+    "inline-default-default": {
+      "label": "Inline code",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-inline"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-inline"
+            }
+          ]
+        }
+      }
+    },
+    "inline-alt-default": {
+      "label": "Inline code — dark",
+      "classes": [
+        "pos-code--dark"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-inline-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-inline"
+            }
+          ]
+        }
+      }
+    },
+    "inline-default-small": {
+      "label": "Inline code — small",
+      "classes": [
+        "pos-code--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-inline"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-inline-small"
+            }
+          ]
+        }
+      }
+    },
+    "inline-alt-small": {
+      "label": "Inline code — dark, small",
+      "classes": [
+        "pos-code--dark",
+        "pos-code--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-inline-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-inline-small"
+            }
+          ]
+        }
+      }
+    },
+    "block-default-default-off": {
+      "label": "Code block — dark",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-alt-default-off": {
+      "label": "Code block — light",
+      "classes": [
+        "pos-code--light"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-light"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-default-small-off": {
+      "label": "Code block — dark, small",
+      "classes": [
+        "pos-code--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block-small"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-alt-small-off": {
+      "label": "Code block — light, small",
+      "classes": [
+        "pos-code--light",
+        "pos-code--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-light"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block-small"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-default-default-on": {
+      "label": "Code block — dark, line numbers",
+      "classes": [
+        "pos-code--numbered"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-dark"
+            },
+            {
+              "heading": "Line numbers",
+              "ref": "shared.line-numbers-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-alt-default-on": {
+      "label": "Code block — light, line numbers",
+      "classes": [
+        "pos-code--light",
+        "pos-code--numbered"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-light"
+            },
+            {
+              "heading": "Line numbers",
+              "ref": "shared.line-numbers-light"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-default-small-on": {
+      "label": "Code block — dark, small, line numbers",
+      "classes": [
+        "pos-code--small",
+        "pos-code--numbered"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-dark"
+            },
+            {
+              "heading": "Line numbers",
+              "ref": "shared.line-numbers-dark"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block-small"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    },
+    "block-alt-small-on": {
+      "label": "Code block — light, small, line numbers",
+      "classes": [
+        "pos-code--light",
+        "pos-code--small",
+        "pos-code--numbered"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "ref": "shared.color-block-light"
+            },
+            {
+              "heading": "Line numbers",
+              "ref": "shared.line-numbers-light"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout-block-small"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "accessibility": [
+    "Screen readers recognize <code>&lt;code&gt;</code> semantically — use the correct element so assistive technology can announce it appropriately.",
+    "Block code with horizontal overflow should be keyboard-scrollable; ensure the <code>&lt;pre&gt;</code> element receives focus or is inside a focusable scrollable region."
+  ]
+}

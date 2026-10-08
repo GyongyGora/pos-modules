@@ -1,0 +1,1083 @@
+{% comment %}
+  Generated from tokens/components/textarea.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-textarea">
+{% raw %}
+{
+  "_about": "Component spec for pos-textarea (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Textarea\" section. Reuses the already-curated usage prose from COMP_CONFIGS['textarea'].usage and token data from COMP_CONFIGS['textarea'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "textarea",
+  "name": "Textarea",
+  "description": "Collecting multi-line free-form text — descriptions, notes, comments.",
+  "whenToUse": [
+    "Collecting multi-line free-form text — descriptions, notes, comments.",
+    "The expected input length exceeds a single line.",
+    "Add <code>readonly</code> to create a <strong>display-only</strong> field that loads or presents data without being editable. Background is transparent to distinguish it from editable fields."
+  ],
+  "whenNotToUse": [
+    "Input is short and single-line — use a text input instead.",
+    "The user must choose from fixed options — use select or checkboxes."
+  ],
+  "do": [
+    "Set a meaningful <code>rows</code> attribute to reflect the expected content length.",
+    "Include a character counter in the label using <code>&lt;small&gt;</code>.",
+    "Use <code>aria-invalid=\"true\"</code> + <code>.pos-form-error</code> for errors."
+  ],
+  "dont": [
+    "Use <code>resize: none</code> unless the layout requires it — let users resize.",
+    "Use placeholder text as a substitute for a label."
+  ],
+  "accessibility": [
+    "Always associate a visible <code>&lt;label&gt;</code> with the textarea.",
+    "Link error messages via <code>aria-describedby</code>."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "rows",
+      "type": "attribute",
+      "default": "4",
+      "description": "Initial visible height in text lines."
+    },
+    {
+      "name": "readonly",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Display-only field."
+    },
+    {
+      "name": "aria-invalid",
+      "type": "'true' | 'false' | (absent)",
+      "default": "absent",
+      "description": "Pairs with .pos-form-error / .pos-form-success."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "filled",
+      "disabled",
+      "display-only"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "textarea": {
+      "label": "Textarea",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "error-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "success-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-textarea-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<form class=\"pos-form pos-form-simple\" action=\"#\" novalidate>\n  <fieldset>\n    <label for=\"my-textarea\">\n      <strong>Description</strong>\n      <small>0 of 500 char</small>\n    </label>\n    <textarea id=\"my-textarea\" class=\"pos-form-input\" placeholder=\"Type here...\" rows=\"4\" required></textarea>\n    <p class=\"pos-form-error\" hidden>Too short description</p>\n    <p class=\"pos-form-success\" hidden>Valid description</p>\n  </fieldset>\n</form>"
+}
+{% endraw %}
+</script>

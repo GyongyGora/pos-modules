@@ -17,6 +17,11 @@
   button {
     cursor: pointer;
   }
+
+  /* a disabled button never shows the pointer of the rule above (RULES.md 4.12) */
+  button:disabled {
+    cursor: not-allowed;
+  }
   
   .pos-button {
     all: unset;
@@ -51,25 +56,34 @@
     outline: none;
 
     line-height: 1.2em;
-    font-size: .95rem;
+    font-family: var(--pos-font-buttons);
+    font-size: var(--pos-font-size-big-button-text);
     font-weight: 500;
     color: var(--pos-color-button-secondary-text);
 
     transition: all .1s linear;
   }
 
-  .pos-button:hover,
+  /* every :hover / :active rule in this file carries the same :where(:not(...)) guard: a disabled
+     button shows only the not-allowed cursor, no hover or press look (RULES.md 4.12) — :where()
+     keeps the original specificity */
+  .pos-button:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
   .pos-debug-button-hover {
     background-color: var(--pos-color-button-secondary-hover-background);
     border-color: var(--pos-color-button-secondary-hover-frame);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-button-secondary-hover-frame);
 
     color: var(--pos-color-button-secondary-hover-text);
   }
 
-  .pos-button:active,
+  .pos-button:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
   .pos-debug-button-active {
     transform: scale(98%);
   }
+
+  /* active = normal (2026-08-26): removed the gray-tint background override for
+     Default-intent secondary-filled/secondary buttons — was the last variant still diverging from
+     normal on :active, now consistent with primary/error/success/inverted (all scale-only). */
 
   .pos-button:focus-visible,
   .pos-debug-button-focus-visible {
@@ -79,21 +93,27 @@
   }
 
   .pos-button:disabled {
+    cursor: not-allowed;
     background-color: var(--pos-color-button-secondary-disabled-background);
     border-color: var(--pos-color-button-secondary-disabled-frame);
-
     color: var(--pos-color-button-secondary-disabled-text);
   }
 
   /* icon */
   .pos-button svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
     flex-shrink: 0;
 
     fill: currentColor;
 
     transition: fill .2s ease-in-out;
+  }
+
+  /* icons on filled (inverted-bg) buttons use the Graphic Inverted token,
+     separate from the text token — covers primary, primary+error, primary+success */
+  .pos-button-primary svg {
+    color: var(--pos-color-content-inverted-icon);
   }
 
   /* label for screen readers */
@@ -106,46 +126,482 @@
 
 
 
+  /* secondary — transparent background variant (Figma: "Secondary")
+     default .pos-button is "Secondary Filled" (white bg)
+     add .pos-button-secondary to get the no-background variant
+  ============================================================================ */
+  .pos-button-secondary {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+  }
+
+  .pos-button-secondary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-debug-button-hover {
+    background-color: var(--pos-color-button-secondary-hover-background-transparent);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-button-secondary-hover-frame);
+  }
+
+  .pos-button-secondary:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+  }
+
+
+  /* ghost — same as secondary, but no visible frame at rest (icon + text only).
+     The frame stays structurally present (border-width unchanged, per the
+     never-change-border-width-on-hover rule) but transparent until hover,
+     when an interactive-grey frame appears — also the HC-mode interactive
+     graphic color, so it stays visible in high contrast.
+  ============================================================================ */
+  .pos-button-ghost {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+  }
+
+  .pos-button-ghost:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-debug-button-hover,
+  .pos-button-ghost:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-debug-button-active {
+    background-color: var(--pos-color-button-secondary-hover-background-transparent);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-content-icon-interactive);
+    border-color: var(--pos-color-content-icon-interactive);
+  }
+
+  .pos-button-ghost:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+  }
+
+
   /* primary
   ============================================================================ */
   .pos-button-primary {
     background-color: var(--pos-color-button-primary-background);
     border-color: var(--pos-color-button-primary-frame);
-
     color: var(--pos-color-button-primary-text);
+    box-shadow: var(--pos-primitive-shadow-bevel);
   }
 
-  .pos-button-primary:hover,
+  .pos-button-primary:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
   .pos-button-primary.pos-debug-button-hover {
     background-color: var(--pos-color-button-primary-hover-background);
     border-color: var(--pos-color-button-primary-hover-frame);
-
     color: var(--pos-color-button-primary-hover-text);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
   }
 
-  .pos-button-primary:active,
+  .pos-button-primary:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
   .pos-button-primary.pos-debug-button-active {
     transform: scale(98%);
   }
 
   .pos-button-primary:disabled {
+    cursor: not-allowed;
     background-color: var(--pos-color-button-primary-disabled-background);
     border-color: var(--pos-color-button-primary-disabled-frame);
-
     color: var(--pos-color-button-primary-disabled-text);
+  }
+
+
+  /* error
+  ============================================================================ */
+  .pos-button-error {
+    background-color: var(--pos-color-button-error-background);
+    border-color: var(--pos-color-button-error-frame);
+    color: var(--pos-color-button-error-text);
+    box-shadow: var(--pos-primitive-shadow-bevel);
+  }
+
+  .pos-button-error:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-error.pos-debug-button-hover {
+    background-color: var(--pos-color-button-error-hover-background);
+    border-color: var(--pos-color-button-error-hover-frame);
+    color: var(--pos-color-button-error-hover-text);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+  }
+
+  /* active = normal (2026-08-26): no color override, matches primary's own
+     :active (which never had one) — consistent across light/dark/HC since it's one shared rule */
+  .pos-button-error:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-error.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-error:disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-error-disabled-background);
+    border-color: var(--pos-color-button-error-disabled-frame);
+    color: var(--pos-color-button-error-disabled-text);
+    box-shadow: none;
+  }
+
+  /* error secondary-filled (white bg) and secondary (transparent) — outlined style
+  ============================================================================ */
+  .pos-button-error:not(.pos-button-primary) {
+    background-color: var(--pos-color-button-secondary-background);
+    border-color: var(--pos-color-button-secondary-frame);
+    color: var(--pos-color-important);
+    box-shadow: none;
+  }
+
+  .pos-button-error:not(.pos-button-primary):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-error:not(.pos-button-primary).pos-debug-button-hover {
+    border-color: var(--pos-color-important-hover);
+    color: var(--pos-color-important-hover);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-important-hover);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-error:not(.pos-button-primary):active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-error:not(.pos-button-primary).pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-error:not(.pos-button-primary):disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-secondary-background);
+    border-color: var(--pos-color-button-secondary-disabled-frame);
+    color: var(--pos-color-important-muted);
+    box-shadow: none;
+  }
+
+  .pos-button-secondary.pos-button-error {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: var(--pos-color-button-secondary-frame);
+  }
+
+  .pos-button-secondary.pos-button-error:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-error.pos-debug-button-hover {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-secondary.pos-button-error:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-error.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-secondary.pos-button-error:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: var(--pos-color-button-secondary-disabled-frame);
+    color: var(--pos-color-important-muted);
+  }
+
+  /* ghost + error — same override-after-catch-all pattern as .pos-button-secondary.pos-button-error
+     above: must come after the bare/:not(primary) rules so it wins on equal specificity via
+     source order. Hover/active share ghost's own interactive-grey frame (not a semantic color) —
+     intent shows in text color only. */
+  .pos-button-ghost.pos-button-error {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+    color: var(--pos-color-important);
+  }
+
+  .pos-button-ghost.pos-button-error:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-error.pos-debug-button-hover,
+  .pos-button-ghost.pos-button-error:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-error.pos-debug-button-active {
+    background-color: var(--pos-color-button-secondary-hover-background-transparent);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-content-icon-interactive);
+    border-color: var(--pos-color-content-icon-interactive);
+    color: var(--pos-color-important-hover);
+  }
+
+  .pos-button-ghost.pos-button-error:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+    color: var(--pos-color-important-muted);
+  }
+
+
+  /* success
+  ============================================================================ */
+  .pos-button-success {
+    background-color: var(--pos-color-button-success-background);
+    border-color: var(--pos-color-button-success-frame);
+    color: var(--pos-color-button-success-text);
+    box-shadow: var(--pos-primitive-shadow-bevel);
+  }
+
+  .pos-button-success:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-success.pos-debug-button-hover {
+    background-color: var(--pos-color-button-success-hover-background);
+    border-color: var(--pos-color-button-success-hover-frame);
+    color: var(--pos-color-button-success-hover-text);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-success:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-success.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-success:disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-success-disabled-background);
+    border-color: var(--pos-color-button-success-disabled-frame);
+    color: var(--pos-color-button-success-disabled-text);
+    box-shadow: none;
+  }
+
+  /* success secondary-filled (white bg) and secondary (transparent) — outlined style
+  ============================================================================ */
+  .pos-button-success:not(.pos-button-primary) {
+    background-color: var(--pos-color-button-secondary-background);
+    border-color: var(--pos-color-button-secondary-frame);
+    color: var(--pos-color-confirmation);
+    box-shadow: none;
+  }
+
+  .pos-button-success:not(.pos-button-primary):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-success:not(.pos-button-primary).pos-debug-button-hover {
+    border-color: var(--pos-color-confirmation-hover);
+    color: var(--pos-color-confirmation-hover);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-confirmation-hover);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-success:not(.pos-button-primary):active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-success:not(.pos-button-primary).pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-success:not(.pos-button-primary):disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-secondary-background);
+    border-color: var(--pos-color-button-secondary-disabled-frame);
+    color: var(--pos-color-confirmation-muted);
+    box-shadow: none;
+  }
+
+  .pos-button-secondary.pos-button-success {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: var(--pos-color-button-secondary-frame);
+  }
+
+  .pos-button-secondary.pos-button-success:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-success.pos-debug-button-hover {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-secondary.pos-button-success:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-success.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-secondary.pos-button-success:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: var(--pos-color-button-secondary-disabled-frame);
+    color: var(--pos-color-confirmation-muted);
+  }
+
+  /* ghost + success — same reasoning as ghost + error above. */
+  .pos-button-ghost.pos-button-success {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+    color: var(--pos-color-confirmation);
+  }
+
+  .pos-button-ghost.pos-button-success:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-success.pos-debug-button-hover,
+  .pos-button-ghost.pos-button-success:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-success.pos-debug-button-active {
+    background-color: var(--pos-color-button-secondary-hover-background-transparent);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-content-icon-interactive);
+    border-color: var(--pos-color-content-icon-interactive);
+    color: var(--pos-color-confirmation-hover);
+  }
+
+  .pos-button-ghost.pos-button-success:disabled {
+    background-color: var(--pos-color-button-secondary-background-transparent);
+    border-color: transparent;
+    color: var(--pos-color-confirmation-muted);
+  }
+
+
+  /* loading
+  ============================================================================ */
+  .pos-button--loading {
+    pointer-events: none;
+  }
+
+  /* .pos-button-loading-icon is a .pos-spinner instance — animation handled by pos-spinner.css */
+  .pos-button--loading .pos-button-loading-icon {
+    flex-shrink: 0;
+  }
+
+  /* animated dots for text-only loading buttons — fixed width prevents layout shift */
+  .pos-button-loading-text::after {
+    content: '';
+    display: inline-block;
+    width: 1.4em;
+    text-align: left;
+    animation: pos-button-dots 1.2s steps(4, end) infinite;
+  }
+
+  @keyframes pos-button-dots {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+  }
+
+
+  /* icon-only — square, centered icon, no inline padding, no text label
+  ============================================================================ */
+  .pos-button.pos-button--icon-only {
+    padding-inline: 0;
+    width: var(--pos-height-button);
+    justify-content: center;
   }
 
 
   /* small
   ============================================================================ */
   .pos-button-small {
-    padding-inline: var(--pos-padding-button);
+    padding-inline: var(--pos-padding-button-small);
     height: calc(var(--pos-height-button) * 0.682 );
+    font-size: var(--pos-font-size-small-button-text);
   }
 
     .pos-button-small svg {
-      width: 1rem;
-      height: 1rem;
+      width: var(--pos-size-icon-s);
+      height: var(--pos-size-icon-s);
     }
+
+    .pos-button.pos-button--icon-only.pos-button-small {
+      width: calc(var(--pos-height-button) * 0.682);
+    }
+
+
+  /* inverted — primary (white bg, blue text, bevel shadow)
+  ============================================================================ */
+  .pos-button-primary.pos-button-inverted {
+    background-color: var(--pos-color-button-inverted-background);
+    border-color: var(--pos-color-button-inverted-frame);
+    color: var(--pos-color-button-inverted-text);
+    box-shadow: var(--pos-primitive-shadow-bevel);
+  }
+
+  /* reset white icon fill — inverted primary uses text color (blue) for icons */
+  .pos-button-primary.pos-button-inverted svg {
+    fill: currentColor;
+  }
+
+  .pos-button-primary.pos-button-inverted:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-primary.pos-button-inverted.pos-debug-button-hover,
+  .pos-button-primary.pos-button-inverted:focus-visible,
+  .pos-button-primary.pos-button-inverted.pos-debug-button-focus-visible {
+    background-color: var(--pos-color-button-inverted-hover-background);
+    border-color: var(--pos-color-button-inverted-hover-frame);
+    color: var(--pos-color-button-inverted-hover-text);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-primary.pos-button-inverted:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-primary.pos-button-inverted.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-primary.pos-button-inverted:disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-inverted-disabled-background);
+    border-color: var(--pos-color-button-inverted-disabled-frame);
+    color: var(--pos-color-button-inverted-disabled-text);
+    box-shadow: none;
+  }
+
+
+  /* inverted — secondary filled (dark/inverted bg, no shadow)
+  ============================================================================ */
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary) {
+    background-color: var(--pos-color-inverted-background);
+    border-color: var(--pos-color-button-inverted-secondary-frame);
+    color: var(--pos-color-button-inverted-secondary-text);
+  }
+
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary):hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary).pos-debug-button-hover,
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary):focus-visible,
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary).pos-debug-button-focus-visible {
+    background-color: var(--pos-color-inverted-background);
+    border-color: var(--pos-color-button-inverted-secondary-hover-frame);
+    color: var(--pos-color-button-inverted-secondary-hover-text);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-button-inverted-secondary-hover-frame);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary):active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary).pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-inverted:not(.pos-button-primary):not(.pos-button-secondary):disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-inverted-background);
+    border-color: var(--pos-color-button-inverted-secondary-disabled-frame);
+    color: var(--pos-color-button-inverted-secondary-disabled-text);
+    box-shadow: none;
+  }
+
+
+  /* inverted — secondary (transparent bg)
+  ============================================================================ */
+  .pos-button-secondary.pos-button-inverted {
+    background-color: var(--pos-color-button-inverted-secondary-background);
+    border-color: var(--pos-color-button-inverted-secondary-frame);
+    color: var(--pos-color-button-inverted-secondary-text);
+  }
+
+  .pos-button-secondary.pos-button-inverted:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-inverted.pos-debug-button-hover,
+  .pos-button-secondary.pos-button-inverted:focus-visible,
+  .pos-button-secondary.pos-button-inverted.pos-debug-button-focus-visible {
+    background-color: var(--pos-color-button-inverted-secondary-hover-background);
+    border-color: var(--pos-color-button-inverted-secondary-hover-frame);
+    color: var(--pos-color-button-inverted-secondary-hover-text);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-button-inverted-secondary-hover-frame);
+  }
+
+  /* active = normal (2026-08-26) — see comment on the primary+error :active above */
+  .pos-button-secondary.pos-button-inverted:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-secondary.pos-button-inverted.pos-debug-button-active {
+    transform: scale(98%);
+  }
+
+  .pos-button-secondary.pos-button-inverted:disabled {
+    cursor: not-allowed;
+    background-color: var(--pos-color-button-inverted-secondary-disabled-background);
+    border-color: var(--pos-color-button-inverted-secondary-disabled-frame);
+    color: var(--pos-color-button-inverted-secondary-disabled-text);
+    box-shadow: none;
+  }
+
+  /* ghost + inverted — same reasoning as ghost + error above; no background token since ghost
+     never has a filled surface, inverted or otherwise (literal transparent). */
+  .pos-button-ghost.pos-button-inverted {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--pos-color-button-inverted-secondary-text);
+  }
+
+  .pos-button-ghost.pos-button-inverted:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-inverted.pos-debug-button-hover,
+  .pos-button-ghost.pos-button-inverted:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-button-ghost.pos-button-inverted.pos-debug-button-active,
+  .pos-button-ghost.pos-button-inverted:focus-visible,
+  .pos-button-ghost.pos-button-inverted.pos-debug-button-focus-visible {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-content-icon-interactive);
+    border-color: var(--pos-color-content-icon-interactive);
+    color: var(--pos-color-button-inverted-secondary-hover-text);
+  }
+
+  .pos-button-ghost.pos-button-inverted:disabled {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--pos-color-button-inverted-secondary-disabled-text);
+  }
 
 }

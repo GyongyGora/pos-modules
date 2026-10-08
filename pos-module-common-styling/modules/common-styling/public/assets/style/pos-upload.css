@@ -15,7 +15,36 @@
 
 [data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
   border-color: var(--pos-color-frame);
+  border-style: dashed;
   border-radius: var(--pos-radius-panel);
+}
+
+/* Uppy's own CSS already tries to center this box's content via justify-content/align-items:
+   center + height: 100% — but that only centers within whatever height the inherited percentage
+   chain actually resolves to, which kept leaving the "Drop files here" text anchored near the top
+   regardless (confirmed live, twice, including after forcing an explicit min-height here — still
+   no change, so the chain itself is broken somewhere, not just short of a fixed height to work
+   against). Absolute + translate centers this element directly against its nearest positioned
+   ancestor's REAL rendered size, with no dependency on any percentage-height chain resolving
+   correctly at all. */
+.uppy-Dashboard-AddFiles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Uppy's own margin: 7px (dependency-uppy.css) still applies on top of the transform-based
+     centering above — position:absolute does not cancel margin, so the box was shifting ~7px off
+     -center in one direction (most visible in HC mode, where the outer/inner borders both render
+     at full contrast). The 7px inset look is already fully replicated via the width/height
+     calc(100% - 14px) below, so the margin itself must be zeroed out here. */
+  margin: 0;
+  /* calc(100% - 14px), not 100% — Uppy's own CSS already gives this element margin: 7px (all
+     sides, creating the inset dashed-border look) and height: calc(100% - 14px) to account for
+     it; a plain 100% width didn't subtract that same margin, making the box 14px wider than its
+     container and visibly shifting the dashed border out of alignment with the outer solid one
+     (most visible in HC mode, where both borders render at full contrast). Matching Uppy's own
+     height formula here keeps both dimensions symmetric. */
+  width: calc(100% - 14px);
 }
 
 .uppy-Dashboard-dropFilesHereHint {
@@ -34,8 +63,30 @@
 
 .uppy-Dashboard-AddFiles-title {
   font-weight: 400;
-  color: var(--pos-color-highlight-text);
+  color: var(--pos-color-content-text);
 }
+
+  /* decorative icon above the "Drop files here" text — Uppy generates this element's text
+     content itself at runtime, so a real inline <svg> (the icon.liquid partial) can't be
+     injected here; a ::before with a --pos-icon-* background-image data-URI is this DS's
+     established pattern for a CSS-only icon in a context like this (see --pos-icon-select-arrow
+     in pos-config.css). Circle background is the white content-background surface; border uses
+     --pos-color-frame-transparent (invisible in light/dark, visible white in HC), the same
+     pattern as Card/Alert card/Toast/Dialog. */
+  .uppy-Dashboard-AddFiles-title::before {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 1rem;
+    border: 1px solid var(--pos-color-frame-transparent);
+    border-radius: 50%;
+    background-color: var(--pos-color-content-background);
+    background-image: var(--pos-icon-upload-bottom);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px 24px;
+  }
 
   .uppy-Dashboard-AddFiles-title button {
     font-weight: 400;
@@ -46,6 +97,8 @@
 .uppy-DashboardContent-save,
 .uppy-DashboardContent-addMore {
   color: var(--pos-color-interactive);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
   .uppy-Dashboard-browse:hover,
@@ -97,4 +150,44 @@
 
 .uppy-Dashboard-Item-progressIcon--circle circle {
   r: 18px;
+}
+
+
+/* status bar — per-file upload progress/error/retry bar. Uppy's own defaults only switch via
+   prefers-color-scheme (its own separate dark-mode system), so they never followed this DS's
+   HC/dark theme toggle at all, staying stuck in Uppy's light colors regardless of theme.
+============================================================================ */
+.uppy-StatusBar {
+  background-color: var(--pos-color-content-background);
+}
+
+.uppy-StatusBar-content,
+.uppy-StatusBar-status,
+.uppy-StatusBar-statusPrimary {
+  color: var(--pos-color-content-text);
+}
+
+.uppy-StatusBar-statusSecondary {
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.uppy-StatusBar-actionBtn {
+  color: var(--pos-color-interactive);
+}
+
+.uppy-StatusBar.is-error .uppy-StatusBar-progress,
+.uppy-StatusBar.is-error .uppy-StatusBar-statusIndicator {
+  color: var(--pos-color-important);
+  background-color: var(--pos-color-important);
+}
+
+.uppy-StatusBar.is-complete .uppy-StatusBar-progress,
+.uppy-StatusBar.is-complete .uppy-StatusBar-statusIndicator {
+  color: var(--pos-color-confirmation);
+  background-color: var(--pos-color-confirmation);
+}
+
+.uppy-StatusBar-actionBtn--retry {
+  background-color: var(--pos-color-important);
+  color: var(--pos-color-content-inverted-text);
 }

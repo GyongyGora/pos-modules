@@ -1,0 +1,601 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+{% capture icon_copy %}<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>{% endcapture %}
+{% capture icon_check %}<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></svg>{% endcapture %}
+
+{% assign vals = "Google Sans,Inter,Roboto Mono,500,400,700,3rem,2rem,1.5rem,1.25rem,1rem,0.875rem,0.75rem,200,300,800,0.5rem,0.625rem" | split: "," %}
+
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/typography' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Typography</h1>
+          <p>Text styles and font tokens defined in <code class="pos-code pos-code--small">pos-typography.css</code> and <code class="pos-code pos-code--small">pos-config.css</code>. All styles use semantic tokens &mdash; font families reference primitive font variables, sizes and weights reference their scale tokens.</p>
+        </header>
+
+        <!-- ── Text styles ─────────────────────────────────────────── -->
+        <section>
+          <h2 class="pos-heading-2">Text styles</h2>
+
+          <div class="styleguide-typography-table-wrapper" id="typography-table-wrapper" data-name-mode="figma">
+
+            <div class="styleguide-token-header-bar styleguide-typography-header-bar">
+              <div class="styleguide-token-header-cell">Preview</div>
+              <div class="styleguide-token-header-cell">
+                Token
+                <select class="t-name-select" aria-label="Token name format">
+                  <option value="figma">Figma variables</option>
+                  <option value="css">CSS</option>
+                </select>
+              </div>
+              <div class="styleguide-token-header-cell">Value</div>
+              <div class="styleguide-token-header-cell">Description</div>
+            </div>
+
+            <table class="styleguide-token-table styleguide-typography-table">
+              <colgroup>
+                <col class="col-preview">
+                <col class="col-token">
+                <col class="col-value">
+                <col class="col-desc">
+              </colgroup>
+
+              <!-- Heading 1 -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span class="pos-heading-1">Heading 1</span>
+                    <span class="typo-class-label">.pos-heading-1</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/headlines</span><span class="pos-tag t-name-css">--pos-font-heading</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Google Sans" aria-label="Copy value"><span class="t-copy-pill-text">Google Sans</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/medium</span><span class="pos-tag t-name-css">--pos-font-weight-medium</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="500" aria-label="Copy value"><span class="t-copy-pill-text">500</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XXL</span><span class="pos-tag t-name-css">--pos-font-size-xxl</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="3rem" aria-label="Copy value"><span class="t-copy-pill-text">3rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">48px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Heading 2 -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span class="pos-heading-2">Heading 2</span>
+                    <span class="typo-class-label">.pos-heading-2</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/headlines</span><span class="pos-tag t-name-css">--pos-font-heading</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Google Sans" aria-label="Copy value"><span class="t-copy-pill-text">Google Sans</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/medium</span><span class="pos-tag t-name-css">--pos-font-weight-medium</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="500" aria-label="Copy value"><span class="t-copy-pill-text">500</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XL</span><span class="pos-tag t-name-css">--pos-font-size-xl</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="2rem" aria-label="Copy value"><span class="t-copy-pill-text">2rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">32px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Heading 3 -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span class="pos-heading-3">Heading 3</span>
+                    <span class="typo-class-label">.pos-heading-3</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/headlines</span><span class="pos-tag t-name-css">--pos-font-heading</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Google Sans" aria-label="Copy value"><span class="t-copy-pill-text">Google Sans</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/normal</span><span class="pos-tag t-name-css">--pos-font-weight-normal</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font L</span><span class="pos-tag t-name-css">--pos-font-size-l</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1.5rem" aria-label="Copy value"><span class="t-copy-pill-text">1.5rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">24px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Heading 4 -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span class="pos-heading-4">Heading 4</span>
+                    <span class="typo-class-label">.pos-heading-4</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/headlines</span><span class="pos-tag t-name-css">--pos-font-heading</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Google Sans" aria-label="Copy value"><span class="t-copy-pill-text">Google Sans</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/normal</span><span class="pos-tag t-name-css">--pos-font-weight-normal</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font M</span><span class="pos-tag t-name-css">--pos-font-size-m</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1.25rem" aria-label="Copy value"><span class="t-copy-pill-text">1.25rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">20px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Body -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span>Body text</span>
+                    <span class="typo-class-label">default</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/body</span><span class="pos-tag t-name-css">--pos-font-default</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Default body font</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/normal</span><span class="pos-tag t-name-css">--pos-font-weight-normal</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font S</span><span class="pos-tag t-name-css">--pos-font-size-s</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">16px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Body small -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span style="font-size: var(--pos-font-size-ss)">Body small</span>
+                    <span class="typo-class-label">--pos-font-size-ss</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/body</span><span class="pos-tag t-name-css">--pos-font-default</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Default body font</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/normal</span><span class="pos-tag t-name-css">--pos-font-weight-normal</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font SS</span><span class="pos-tag t-name-css">--pos-font-size-ss</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.875rem" aria-label="Copy value"><span class="t-copy-pill-text">0.875rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">14px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Link -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <a href="#" class="pos-link" aria-label="Link example" onclick="return false">Link text</a>
+                    <span class="typo-class-label">.pos-link</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/body</span><span class="pos-tag t-name-css">--pos-font-default</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Body font, inherits context size</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/bold</span><span class="pos-tag t-name-css">--pos-font-weight-bold</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="700" aria-label="Copy value"><span class="t-copy-pill-text">700</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Bold, always underlined</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font S</span><span class="pos-tag t-name-css">--pos-font-size-s</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Default; <code class="pos-code pos-code--small">.pos-link--small</code> uses 0.875rem</td>
+                </tr>
+              </tbody>
+
+              <!-- Link small -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <a href="#" class="pos-link pos-link--small" aria-label="Small link example" onclick="return false">Link small</a>
+                    <span class="typo-class-label">.pos-link--small</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/body</span><span class="pos-tag t-name-css">--pos-font-default</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Body font</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/bold</span><span class="pos-tag t-name-css">--pos-font-weight-bold</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="700" aria-label="Copy value"><span class="t-copy-pill-text">700</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Bold, always underlined</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font SS</span><span class="pos-tag t-name-css">--pos-font-size-ss</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.875rem" aria-label="Copy value"><span class="t-copy-pill-text">0.875rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">14px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Code inline -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="2">
+                    <code class="pos-code pos-code--small">Inline code</code>
+                    <span class="typo-class-label">.pos-code</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/code</span><span class="pos-tag t-name-css">--pos-font-code</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Roboto Mono" aria-label="Copy value"><span class="t-copy-pill-text">Roboto Mono</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Monospace font</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XS</span><span class="pos-tag t-name-css">--pos-font-size-xs</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.75rem" aria-label="Copy value"><span class="t-copy-pill-text">0.75rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">12px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Code block -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="2">
+                    <pre class="pos-code pos-code--block" style="margin:0"><code>Code block</code></pre>
+                    <span class="typo-class-label">.pos-code--block</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/code</span><span class="pos-tag t-name-css">--pos-font-code</span></td>                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Roboto Mono" aria-label="Copy value"><span class="t-copy-pill-text">Roboto Mono</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Monospace font</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font S</span><span class="pos-tag t-name-css">--pos-font-size-s</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">16px at default scale</td>
+                </tr>
+              </tbody>
+
+              <!-- Sidenote -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span style="font-family: var(--pos-font-sidenotes); font-size: var(--pos-font-size-xs); color: var(--pos-color-content-text-supplementary)">Sidenote</span>
+                    <span class="typo-class-label">--pos-font-sidenotes</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/sidenotes</span><span class="pos-tag t-name-css">--pos-font-sidenotes</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/normal</span><span class="pos-tag t-name-css">--pos-font-weight-normal</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XS</span><span class="pos-tag t-name-css">--pos-font-size-xs</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.75rem" aria-label="Copy value"><span class="t-copy-pill-text">0.75rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">12px; helper text, captions</td>
+                </tr>
+              </tbody>
+
+              <!-- Badge -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span style="font-family: var(--pos-font-badge); font-size: var(--pos-font-size-xxxs); font-weight: var(--pos-font-weight-bold); color: var(--pos-color-content-text-supplementary)">Badge</span>
+                    <span class="typo-class-label">--pos-font-badge</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/badge</span><span class="pos-tag t-name-css">--pos-font-badge</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/bold</span><span class="pos-tag t-name-css">--pos-font-weight-bold</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="700" aria-label="Copy value"><span class="t-copy-pill-text">700</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XXXS</span><span class="pos-tag t-name-css">--pos-font-size-xxxs</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.5rem" aria-label="Copy value"><span class="t-copy-pill-text">0.5rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">8px; micro label, counter</td>
+                </tr>
+              </tbody>
+
+              <!-- Big button text -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span style="font-family: var(--pos-font-buttons); font-size: var(--pos-font-size-big-button-text); font-weight: var(--pos-font-weight-medium)">Button label</span>
+                    <span class="typo-class-label">--pos-font-size-big-button-text</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/buttons</span><span class="pos-tag t-name-css">--pos-font-buttons</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/medium</span><span class="pos-tag t-name-css">--pos-font-weight-medium</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="500" aria-label="Copy value"><span class="t-copy-pill-text">500</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font S</span><span class="pos-tag t-name-css">--pos-font-size-big-button-text</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">16px; default button label</td>
+                </tr>
+              </tbody>
+
+              <!-- Small button text -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="3">
+                    <span style="font-family: var(--pos-font-buttons); font-size: var(--pos-font-size-small-button-text); font-weight: var(--pos-font-weight-medium)">Small button</span>
+                    <span class="typo-class-label">--pos-font-size-small-button-text</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">Family/buttons</span><span class="pos-tag t-name-css">--pos-font-buttons</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="Inter" aria-label="Copy value"><span class="t-copy-pill-text">Inter</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font family</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Weight/medium</span><span class="pos-tag t-name-css">--pos-font-weight-medium</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="500" aria-label="Copy value"><span class="t-copy-pill-text">500</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">Font weight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">Size/font XS</span><span class="pos-tag t-name-css">--pos-font-size-small-button-text</span></td>
+                  <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.75rem" aria-label="Copy value"><span class="t-copy-pill-text">0.75rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                  <td class="t-desc-cell">12px; small button label</td>
+                </tr>
+              </tbody>
+
+              <!-- Selected text -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="2">
+                    <span style="background: var(--pos-color-selection-background); color: var(--pos-color-selection-text); padding: 2px 6px; border-radius: 2px">Selected text</span>
+                    <span class="typo-class-label">selection state</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">--pos-color-selection-background</span><span class="pos-tag t-name-css">--pos-color-selection-background</span></td>
+                  <td><span class="pos-tag pos-tag--small">= focused color</span></td>
+                  <td class="t-desc-cell">Selection highlight</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">--pos-color-selection-text</span><span class="pos-tag t-name-css">--pos-color-selection-text</span></td>
+                  <td><span class="pos-tag pos-tag--small">white</span></td>
+                  <td class="t-desc-cell">Selected text color</td>
+                </tr>
+              </tbody>
+
+              <!-- Inverted text -->
+              <tbody>
+                <tr>
+                  <td class="typo-preview-cell" rowspan="2">
+                    <span style="background: var(--pos-color-inverted-background); color: var(--pos-color-content-inverted-text); padding: 4px 10px; border-radius: var(--pos-radius-button); display: inline-block">Inverted text</span>
+                    <span class="typo-class-label">inverted surface</span>
+                  </td>
+                  <td><span class="pos-tag t-name-figma">--pos-color-inverted-background</span><span class="pos-tag t-name-css">--pos-color-inverted-background</span></td>
+                  <td><span class="pos-tag pos-tag--small">dark</span></td>
+                  <td class="t-desc-cell">Inverted surface background</td>
+                </tr>
+                <tr>
+                  <td><span class="pos-tag t-name-figma">--pos-color-content-inverted-text</span><span class="pos-tag t-name-css">--pos-color-content-inverted-text</span></td>
+                  <td><span class="pos-tag pos-tag--small">white</span></td>
+                  <td class="t-desc-cell">Text on inverted surface</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </section>
+
+        <!-- ── Font families ───────────────────────────────────────── -->
+        <section style="margin-block-start: var(--pos-gap-section-section)">
+          <h2 class="pos-heading-2">Font families</h2>
+
+          <table class="styleguide-token-table" style="margin-block-start: var(--pos-primitive-size-3)">
+            <colgroup>
+              <col style="width:30%">
+              <col style="width:28%">
+              <col style="width:22%">
+              <col style="width:20%">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td style="font-family: var(--pos-font-heading)">Google Sans</td>
+                <td><code class="pos-code pos-code--small">--pos-font-heading</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-google-sans</code></td>
+                <td class="t-desc-cell">Headings (h1–h4)</td>
+              </tr>
+              <tr>
+                <td style="font-family: var(--pos-font-default)">Inter</td>
+                <td><code class="pos-code pos-code--small">--pos-font-default</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-inter</code></td>
+                <td class="t-desc-cell">Body, UI text</td>
+              </tr>
+              <tr>
+                <td style="font-family: var(--pos-font-buttons)">Inter</td>
+                <td><code class="pos-code pos-code--small">--pos-font-buttons</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-inter</code></td>
+                <td class="t-desc-cell">Button labels</td>
+              </tr>
+              <tr>
+                <td style="font-family: var(--pos-font-sidenotes)">Inter</td>
+                <td><code class="pos-code pos-code--small">--pos-font-sidenotes</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-inter</code></td>
+                <td class="t-desc-cell">Sidenotes, helper text, captions</td>
+              </tr>
+              <tr>
+                <td style="font-family: var(--pos-font-code)">Roboto Mono</td>
+                <td><code class="pos-code pos-code--small">--pos-font-code</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-roboto-mono</code></td>
+                <td class="t-desc-cell">Code, inline code blocks</td>
+              </tr>
+              <tr>
+                <td style="font-family: var(--pos-font-badge)">Inter</td>
+                <td><code class="pos-code pos-code--small">--pos-font-badge</code></td>
+                <td><code class="pos-code pos-code--small">--pos-primitive-font-inter</code></td>
+                <td class="t-desc-cell">Badge counters, numeric labels</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ── Type scale ──────────────────────────────────────────── -->
+        <section style="margin-block-start: var(--pos-gap-section-section)">
+          <h2 class="pos-heading-2">Type scale</h2>
+
+          <table class="styleguide-token-table" style="margin-block-start: var(--pos-primitive-size-3)">
+            <colgroup>
+              <col style="width:28%">
+              <col style="width:14%">
+              <col style="width:12%">
+              <col style="width:46%">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-xxxs</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.5rem" aria-label="Copy value"><span class="t-copy-pill-text">0.5rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">8px</span></td>
+                <td style="font-size: 0.5rem" class="t-desc-cell">Micro label, badge counter</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-xxs</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.625rem" aria-label="Copy value"><span class="t-copy-pill-text">0.625rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">10px</span></td>
+                <td style="font-size: 0.625rem" class="t-desc-cell">Extra small label</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-xs</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.75rem" aria-label="Copy value"><span class="t-copy-pill-text">0.75rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">12px</span></td>
+                <td style="font-size: 0.75rem" class="t-desc-cell">Tag, chip, inline code, small UI text</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-ss</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.875rem" aria-label="Copy value"><span class="t-copy-pill-text">0.875rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">14px</span></td>
+                <td style="font-size: 0.875rem" class="t-desc-cell">Body small, small link, sidenote</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-s</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">16px</span></td>
+                <td style="font-size: 1rem" class="t-desc-cell">Body text, code block, big button</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-m</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1.25rem" aria-label="Copy value"><span class="t-copy-pill-text">1.25rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">20px</span></td>
+                <td style="font-size: 1.25rem" class="t-desc-cell">Heading 4</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-l</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1.5rem" aria-label="Copy value"><span class="t-copy-pill-text">1.5rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">24px</span></td>
+                <td style="font-size: 1.5rem" class="t-desc-cell">Heading 3</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-xl</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="2rem" aria-label="Copy value"><span class="t-copy-pill-text">2rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">32px</span></td>
+                <td style="font-size: 2rem" class="t-desc-cell">Heading 2</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-xxl</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="3rem" aria-label="Copy value"><span class="t-copy-pill-text">3rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">48px</span></td>
+                <td style="font-size: 3rem; line-height: 1" class="t-desc-cell">Heading 1</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-big-button-text</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="1rem" aria-label="Copy value"><span class="t-copy-pill-text">1rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">16px</span></td>
+                <td style="font-size: 1rem" class="t-desc-cell">Default (large) button label</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-size-small-button-text</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="0.75rem" aria-label="Copy value"><span class="t-copy-pill-text">0.75rem</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td><span class="pos-tag pos-tag--small">12px</span></td>
+                <td style="font-size: 0.75rem" class="t-desc-cell">Small button label</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ── Font weights ────────────────────────────────────────── -->
+        <section style="margin-block-start: var(--pos-gap-section-section)">
+          <h2 class="pos-heading-2">Font weights</h2>
+
+          <table class="styleguide-token-table" style="margin-block-start: var(--pos-primitive-size-3)">
+            <colgroup>
+              <col style="width:32%">
+              <col style="width:14%">
+              <col style="width:54%">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-extralight</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="200" aria-label="Copy value"><span class="t-copy-pill-text">200</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 200" class="t-desc-cell">Extra light text</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-light</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="300" aria-label="Copy value"><span class="t-copy-pill-text">300</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 300" class="t-desc-cell">Light text</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-normal</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="400" aria-label="Copy value"><span class="t-copy-pill-text">400</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 400" class="t-desc-cell">Regular body text, h3, h4</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-medium</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="500" aria-label="Copy value"><span class="t-copy-pill-text">500</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 500" class="t-desc-cell">Headings h1, h2</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-bold</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="700" aria-label="Copy value"><span class="t-copy-pill-text">700</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 700" class="t-desc-cell">Links, emphasis</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small">--pos-font-weight-extrabold</code></td>
+                <td><button class="pos-tag pos-tag-confirmation pos-tag--small t-copy-pill" data-value="800" aria-label="Copy value"><span class="t-copy-pill-text">800</span><span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span><span class="t-copy-pill-done" aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span></button></td>
+                <td style="font-weight: 800" class="t-desc-cell">Extra bold display text</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var wrapper = document.getElementById('typography-table-wrapper');
+  if (wrapper) {
+    wrapper.addEventListener('change', function (e) {
+      if (!e.target.classList.contains('t-name-select')) return;
+      wrapper.dataset.nameMode = e.target.value;
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.t-copy-pill');
+    if (!btn) return;
+    var text = btn.dataset.value;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.classList.add('t-copy-pill--copied');
+      setTimeout(function () { btn.classList.remove('t-copy-pill--copied'); }, 2000);
+    });
+  });
+})();
+</script>

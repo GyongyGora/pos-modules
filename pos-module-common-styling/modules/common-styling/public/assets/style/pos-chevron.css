@@ -1,0 +1,88 @@
+/*
+  Chevron control icon — new DS
+
+  A standalone animated chevron button. Points right at rest,
+  rotates 90° (pointing down) when expanded/open.
+  Semantic state driven by aria-expanded — no extra class needed.
+
+  Markup:
+    <button type="button" class="pos-chevron" aria-expanded="false" aria-controls="panel-id">
+      {% render 'modules/common-styling/icon', icon: 'dashRight' %}
+      <span class="pos-label">Expand "Section name"</span>
+    </button>
+
+  States:
+    default (collapsed)  — graphic-normal-interactive (yellow in HC), chevron points right
+    hover                — graphic-interactive blue
+    expanded             — chevron rotates 90° (points down), driven by aria-expanded="true"
+    focus                — standard focus ring
+    disabled             — graphic-disabled, not-allowed cursor, no hover (RULES.md 4.12)
+
+  Note: rotation is CSS-only — toggle aria-expanded in JS to animate.
+*/
+
+
+@layer common-styling {
+
+  .pos-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 7px;
+    background: none;
+    border: none;
+    border-radius: var(--pos-radius-button);
+
+    color: var(--pos-color-content-icon-interactive);
+    cursor: pointer;
+
+    transition: color 0.15s linear, background-color 0.15s linear;
+  }
+
+  .pos-chevron svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+    rotate: 0deg;
+    transition: rotate 0.2s ease;
+  }
+
+
+  /* hover
+  ============================================================================ */
+  .pos-chevron:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-debug-chevron-hover {
+    background-color: var(--pos-color-highlight-background);
+    color: var(--pos-color-interactive);
+  }
+
+
+  /* expanded — rotates 90° downward, driven by aria-expanded
+  ============================================================================ */
+  .pos-chevron[aria-expanded="true"] svg {
+    rotate: 90deg;
+  }
+
+
+  /* focus
+  ============================================================================ */
+  .pos-chevron:focus-visible,
+  .pos-debug-chevron-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+    border-radius: var(--pos-radius-button);
+  }
+
+
+  /* disabled — keeps pointer events so the not-allowed cursor shows (RULES.md 4.12); hover is
+     skipped by the guard on the hover rule, a click is blocked by [disabled] or the aria-disabled
+     click guard in init.liquid
+  ============================================================================ */
+  .pos-chevron:disabled,
+  .pos-chevron[aria-disabled="true"] {
+    color: var(--pos-color-content-icon-disabled);
+    cursor: not-allowed;
+  }
+
+}

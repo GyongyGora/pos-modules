@@ -1,0 +1,207 @@
+/*
+  dropdown button component
+
+  A primary button with an icon that opens a short list of related actions right below it
+  (e.g. "Add new" → Page / Folder / Upload). The whole button opens the list. Built from the Figma
+  Button's Type=Dropdown (2026-10-06); in code it is its own component, the Button stays as is.
+
+  .pos-dropdown-button          wrapper (init runs the Popover module on it: keyboard navigation,
+                                focus handling, closing when focus leaves)
+  .pos-dropdown-button-trigger  on a real .pos-button.pos-button-primary with popovertarget — all
+                                colors, hover, focus and disabled come from the Button
+  .pos-dropdown-button-icon     the square icon area at the start of the trigger
+  .pos-dropdown-button-menu     the <menu popover> with <li><a> / <li><button> items
+
+  open state: the trigger takes the Button's hover colors and loses the corners on the menu's
+  side, the icon square keeps the normal color, the menu hangs right below (or above, when there is
+  no room below) in the same primary color; it is at least as wide as the trigger and otherwise as
+  wide as its longest item.
+
+  set by the Popover module (js/pos-popover.js) while open:
+  .pos-dropdown-button--up      the menu opened above the trigger
+  .pos-dropdown-button--flush   the menu is exactly as wide as the trigger (its far corner squares)
+
+  .pos-debug-dropdown-button-active  (docs only) shows the open state in place
+*/
+
+
+
+@layer common-styling {
+
+  .pos-dropdown-button {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+
+  /* trigger: icon square + label
+  ============================================================================ */
+  /* the 8px icon–label gap of Figma's open state is there from the start, so the button keeps its
+     width when it opens */
+  .pos-dropdown-button-trigger {
+    padding-inline-start: 0;
+    gap: var(--pos-primitive-size-1);
+    /* its own layer, like the menu in the top layer, so both edges snap to the same device pixel —
+       otherwise at a fractional position and 125 % / 150 % display scaling the menu sits 1px in
+       from the trigger (measured 2026-10-06) */
+    will-change: transform;
+  }
+
+  /* a full button-height square that covers the trigger's frame, as in Figma */
+  .pos-dropdown-button-icon {
+    align-self: stretch;
+    width: var(--pos-height-button);
+    margin-block: calc(var(--pos-border-button) * -1);
+    margin-inline-start: calc(var(--pos-border-button) * -1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: var(--pos-radius-button);
+  }
+
+  .pos-dropdown-button-icon svg {
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+  }
+
+
+  /* open state
+  ============================================================================ */
+  .pos-dropdown-button:has(:popover-open) {
+    z-index: 10;
+  }
+
+  /* Figma State=Active: hover background, normal frame */
+  .pos-dropdown-button:has(:popover-open) .pos-dropdown-button-trigger,
+  .pos-dropdown-button.pos-debug-dropdown-button-active .pos-dropdown-button-trigger {
+    background-color: var(--pos-color-button-primary-hover-background);
+    border-color: var(--pos-color-button-primary-frame);
+    color: var(--pos-color-button-primary-hover-text);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .pos-dropdown-button--up:has(:popover-open) .pos-dropdown-button-trigger {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-start-radius: var(--pos-radius-button);
+    border-end-end-radius: var(--pos-radius-button);
+  }
+
+  /* while open the icon square's two corners on the menu side square off, so it runs into the
+     menu; the other two stay rounded (top; bottom when the menu opens upwards) */
+  .pos-dropdown-button:has(:popover-open) .pos-dropdown-button-icon,
+  .pos-dropdown-button.pos-debug-dropdown-button-active .pos-dropdown-button-icon {
+    background-color: var(--pos-color-button-primary-background);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .pos-dropdown-button--up:has(:popover-open) .pos-dropdown-button-icon {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    border-end-start-radius: var(--pos-radius-button);
+    border-end-end-radius: var(--pos-radius-button);
+  }
+
+
+  /* menu
+  ============================================================================ */
+  /* at least as wide as the trigger, otherwise as wide as the longest item; opens upwards when
+     there is no room below */
+  .pos-dropdown-button-menu {
+    width: max-content;
+    min-width: anchor-size(width);
+    margin: 0;
+    padding: 0;
+    position-anchor: auto;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block;
+    inset: auto;
+    overflow: hidden;
+
+    list-style: none;
+    background-color: var(--pos-color-button-primary-background);
+    border: none;
+    border-radius: 0 var(--pos-radius-button) var(--pos-radius-button) var(--pos-radius-button);
+    color: var(--pos-color-button-primary-text);
+  }
+
+  .pos-dropdown-button--flush .pos-dropdown-button-menu {
+    border-start-end-radius: 0;
+  }
+
+  .pos-dropdown-button--up .pos-dropdown-button-menu {
+    border-radius: var(--pos-radius-button) var(--pos-radius-button) var(--pos-radius-button) 0;
+  }
+
+  .pos-dropdown-button--up.pos-dropdown-button--flush .pos-dropdown-button-menu {
+    border-end-end-radius: 0;
+  }
+
+  /* docs only: the menu in place, without the top layer */
+  .pos-dropdown-button.pos-debug-dropdown-button-active .pos-dropdown-button-menu {
+    display: block;
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    min-width: 100%;
+  }
+
+  .pos-dropdown-button-menu li {
+    margin: 0;
+    padding: 0;
+  }
+
+  .pos-dropdown-button-menu li a,
+  .pos-dropdown-button-menu li button {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: var(--pos-primitive-size-15) var(--pos-primitive-size-2);
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+
+    text-align: start;
+    text-decoration: none;
+    white-space: nowrap;
+    font-family: var(--pos-font-buttons);
+    font-size: var(--pos-font-size-s);
+    font-weight: var(--pos-font-weight-normal);
+    line-height: var(--pos-line-height-m);
+    color: var(--pos-color-button-primary-text);
+
+    transition: background-color .1s linear, color .1s linear;
+  }
+
+  /* the extra .pos-dropdown-button and :not() lift these above the global link rules
+     (pos-typography.css — :where(.pos-app) a:hover:not(…):not(…):not(…), a:active,
+     a:focus-visible), which would otherwise turn a link item's text dark blue */
+  .pos-dropdown-button .pos-dropdown-button-menu li a:is(:hover, :focus-visible, :active):not([aria-disabled="true"]),
+  .pos-dropdown-button .pos-dropdown-button-menu li button:is(:hover, :focus-visible, :active):not([aria-disabled="true"], :disabled) {
+    background-color: var(--pos-color-button-primary-hover-background);
+    color: var(--pos-color-button-primary-hover-text);
+  }
+
+  /* a disabled menu item: not-allowed over the whole item, never the pointer above (RULES.md 4.12) */
+  .pos-dropdown-button-menu li :is(a, button):is(:disabled, [aria-disabled="true"]),
+  .pos-dropdown-button-menu li :is(a, button):is(:disabled, [aria-disabled="true"]) * {
+    cursor: not-allowed;
+  }
+
+  /* keyboard focus also gets a ring — the two blues alone are too close to see */
+  .pos-dropdown-button .pos-dropdown-button-menu li a:focus-visible:not([aria-disabled="true"]),
+  .pos-dropdown-button .pos-dropdown-button-menu li button:focus-visible:not([aria-disabled="true"], :disabled) {
+    border-radius: 0;
+    outline: 2px solid var(--pos-color-focused-inverse);
+    outline-offset: -4px;
+  }
+
+}

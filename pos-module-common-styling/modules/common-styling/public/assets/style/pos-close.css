@@ -1,0 +1,91 @@
+/*
+  Close / dismiss button component — new DS
+  Figma: (to be linked)
+
+  A small icon-only button used to close or dismiss any surface:
+  dialogs, notifications, removable tags, banners, panels.
+
+  Markup:
+    <button type="button" class="pos-close" aria-label="Close">
+      {% render 'modules/common-styling/icon', icon: 'x' %}
+    </button>
+
+  States:
+    default    — graphic-normal-interactive (--pos-color-content-icon-interactive, yellow in HC)
+    hover      — graphic-interactive blue + scale(1.2) + thicker stroke (stroke icons only)
+    focus      — standard focus ring
+    disabled   — graphic-disabled, not-allowed cursor, no hover (RULES.md 4.12)
+
+  Note on stroke-width hover:
+    Stroke thickening applies only to stroke-based SVG icons (those using
+    stroke="currentColor"). The current 'x' icon is fill-based — it responds
+    to color and scale changes but not to stroke-width. Use a stroke variant
+    of the X icon to get all three effects.
+*/
+
+
+@layer common-styling {
+
+  .pos-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--pos-radius-button);
+
+    color: var(--pos-color-content-icon-interactive);
+    cursor: pointer;
+
+    transition: color 0.15s linear, scale 0.15s ease;
+  }
+
+  .pos-close svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
+
+  /* stroke-based icons — transition stroke-width */
+  .pos-close svg * {
+    transition: stroke-width 0.15s ease;
+  }
+
+
+  /* hover
+  ============================================================================ */
+  .pos-close:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-debug-close-hover {
+    color: var(--pos-color-interactive);
+    scale: 1.2;
+  }
+
+  /* stroke-based icons — thicker on hover */
+  .pos-close:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) svg *,
+  .pos-debug-close-hover svg * {
+    stroke-width: 2;
+  }
+
+
+  /* focus
+  ============================================================================ */
+  .pos-close:focus-visible,
+  .pos-debug-close-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+
+  /* disabled — keeps pointer events so the not-allowed cursor shows (RULES.md 4.12); hover is
+     skipped by the guard on the hover rules, a click is blocked by [disabled] or the aria-disabled
+     click guard in init.liquid
+  ============================================================================ */
+  .pos-close:disabled,
+  .pos-close[aria-disabled="true"] {
+    color: var(--pos-color-content-icon-disabled);
+    cursor: not-allowed;
+  }
+
+}

@@ -1,0 +1,514 @@
+{
+  "_about": "Brand themes of the design system — the source the CSS is generated from (npm run build:themes -> style/pos-themes.css). Each theme gives the two brand base colors; the 10-step brand-primary and brand-supplementary scales are computed from them with the palette math of assets/style-guide/palettes.js (same contrast targets as the default palette), and a theme only overrides those 20 primitives — every semantic and component token already points at them, so light, dark and high contrast follow automatically (HC keeps its own colors). Apply a theme with its class on <html> (e.g. pos-brand-ocean); Default needs no class. Primary is the interactive color; red / orange / yellow / green brands are fine (status is never color alone — icon + text), but those themes carry a note that buttons and links share the hue of a status color. Optional keepBase: false computes every step instead of keeping the base hex (used when the base is too vivid for the step it would land on). Base colors are slightly muted to sit next to the Default blue: OKLCH chroma 90% of the vivid hue, 80% for red / orange (harsh at full saturation); Sunflower yellow, Slate and Default stay as they are. Optional graphicStep (600 default | 700 | 800, never higher — hover needs two darker steps): the light-mode step of buttons, icons and other interactive graphics; dark mode gets its mirror. Optional style (e.g. \"wireframe\"): the theme also needs the pos-style-<style> class (style/pos-style-<style>.css) — shapes, frames and fonts, not colors. Audience: humans and AI. Update: edit a theme here, run npm run build:themes, then npm run check:contrast (checks every theme in all three modes).",
+  "themes": [
+    {
+      "key": "wireframe",
+      "name": "Wireframe",
+      "primary": "#262626",
+      "supplementary": "#6b6b6b",
+      "graphicStep": 800,
+      "style": "wireframe",
+      "description": "Black and white with hand-drawn frames and Monda headlines — for creating interactive prototypes before the visual design phase.",
+      "computed": {
+        "primary": {
+          "100": "#f8f8f8",
+          "200": "#efefef",
+          "300": "#dedede",
+          "400": "#9a9a9a",
+          "500": "#7c7c7c",
+          "600": "#727272",
+          "700": "#575757",
+          "800": "#262626",
+          "900": "#151515",
+          "1000": "#0a0a0a"
+        },
+        "supplementary": {
+          "100": "#f8f8f8",
+          "200": "#efefef",
+          "300": "#dedede",
+          "400": "#9a9a9a",
+          "500": "#7c7c7c",
+          "600": "#6b6b6b",
+          "700": "#575757",
+          "800": "#242424",
+          "900": "#151515",
+          "1000": "#0a0a0a"
+        }
+      }
+    },
+    {
+      "key": "default",
+      "name": "Default",
+      "primary": "#1d4ed8",
+      "supplementary": "#8326ff",
+      "description": "The pOS blue with a violet accent.",
+      "computed": {
+        "primary": {
+          "100": "#f5f8ff",
+          "200": "#e8efff",
+          "300": "#cedeff",
+          "400": "#6897ff",
+          "500": "#3a71fe",
+          "600": "#1d4ed8",
+          "700": "#1949d3",
+          "800": "#010087",
+          "900": "#01005b",
+          "1000": "#000039"
+        },
+        "supplementary": {
+          "100": "#f9f7ff",
+          "200": "#f0edff",
+          "300": "#e0d9ff",
+          "400": "#a686ff",
+          "500": "#9057ff",
+          "600": "#8326ff",
+          "700": "#7500ea",
+          "800": "#32006c",
+          "900": "#1f0047",
+          "1000": "#11002c"
+        }
+      }
+    },
+    {
+      "key": "indigo",
+      "name": "Indigo",
+      "primary": "#433fbf",
+      "supplementary": "#d33978",
+      "description": "Deep indigo with a soft rose accent.",
+      "computed": {
+        "primary": {
+          "100": "#f7f8ff",
+          "200": "#ebeeff",
+          "300": "#d6dcff",
+          "400": "#8591ff",
+          "500": "#676cf0",
+          "600": "#5f63e6",
+          "700": "#433fbf",
+          "800": "#20007c",
+          "900": "#120053",
+          "1000": "#080034"
+        },
+        "supplementary": {
+          "100": "#fff6f8",
+          "200": "#ffeaef",
+          "300": "#ffd2de",
+          "400": "#fe639c",
+          "500": "#d9407d",
+          "600": "#d33978",
+          "700": "#ad025a",
+          "800": "#4e0025",
+          "900": "#330016",
+          "1000": "#1e000a"
+        }
+      },
+      "graphicStep": 700
+    },
+    {
+      "key": "violet",
+      "name": "Violet",
+      "primary": "#7a45e1",
+      "supplementary": "#2b9287",
+      "description": "Violet with a teal accent.",
+      "computed": {
+        "primary": {
+          "100": "#f9f7ff",
+          "200": "#f0edff",
+          "300": "#e0d9ff",
+          "400": "#a586ff",
+          "500": "#8c5bf8",
+          "600": "#7a45e1",
+          "700": "#6b30ce",
+          "800": "#31006c",
+          "900": "#1f0048",
+          "1000": "#10002d"
+        },
+        "supplementary": {
+          "100": "#dffffa",
+          "200": "#a8fff3",
+          "300": "#8fefe2",
+          "400": "#48aa9e",
+          "500": "#2b9287",
+          "600": "#0d8176",
+          "700": "#00635b",
+          "800": "#002925",
+          "900": "#001916",
+          "1000": "#000d0b"
+        }
+      },
+      "graphicStep": 700
+    },
+    {
+      "key": "plum",
+      "name": "Plum",
+      "primary": "#9d2da8",
+      "supplementary": "#2a90ad",
+      "description": "Dusky plum with a cyan accent.",
+      "computed": {
+        "primary": {
+          "100": "#fef6ff",
+          "200": "#fee9ff",
+          "300": "#fcd0ff",
+          "400": "#dd6ee8",
+          "500": "#bb4dc6",
+          "600": "#9d2da8",
+          "700": "#93209e",
+          "800": "#44004b",
+          "900": "#2c0030",
+          "1000": "#1a001d"
+        },
+        "supplementary": {
+          "100": "#eefaff",
+          "200": "#d6f4ff",
+          "300": "#a4e8ff",
+          "400": "#44a6c3",
+          "500": "#2a90ad",
+          "600": "#067d9a",
+          "700": "#006077",
+          "800": "#002833",
+          "900": "#001820",
+          "1000": "#000c11"
+        }
+      },
+      "graphicStep": 700
+    },
+    {
+      "key": "berry",
+      "name": "Berry",
+      "primary": "#9d275b",
+      "supplementary": "#23738c",
+      "description": "Wine berry with a petrol accent.",
+      "computed": {
+        "primary": {
+          "100": "#fff6f9",
+          "200": "#ffeaf0",
+          "300": "#ffd2df",
+          "400": "#ed719f",
+          "500": "#c95180",
+          "600": "#bf4878",
+          "700": "#9d275b",
+          "800": "#4e0027",
+          "900": "#320017",
+          "1000": "#1e000b"
+        },
+        "supplementary": {
+          "100": "#eefaff",
+          "200": "#d7f4ff",
+          "300": "#a8e7ff",
+          "400": "#58a4be",
+          "500": "#38859e",
+          "600": "#23738c",
+          "700": "#026078",
+          "800": "#002834",
+          "900": "#001820",
+          "1000": "#000c12"
+        }
+      },
+      "graphicStep": 700
+    },
+    {
+      "key": "ocean",
+      "name": "Ocean",
+      "primary": "#23738c",
+      "supplementary": "#da683a",
+      "description": "Petrol blue with a terracotta accent.",
+      "computed": {
+        "primary": {
+          "100": "#eefaff",
+          "200": "#d7f4ff",
+          "300": "#a8e7ff",
+          "400": "#58a4be",
+          "500": "#38859e",
+          "600": "#23738c",
+          "700": "#026078",
+          "800": "#002834",
+          "900": "#001820",
+          "1000": "#000c12"
+        },
+        "supplementary": {
+          "100": "#fff7f4",
+          "200": "#ffebe4",
+          "300": "#ffd5c5",
+          "400": "#ee7a4c",
+          "500": "#da683a",
+          "600": "#c05020",
+          "700": "#9b3700",
+          "800": "#451400",
+          "900": "#2c0a00",
+          "1000": "#1a0400"
+        }
+      }
+    },
+    {
+      "key": "teal",
+      "name": "Teal",
+      "primary": "#23756d",
+      "supplementary": "#8f40df",
+      "description": "Dark teal with a purple accent.",
+      "computed": {
+        "primary": {
+          "100": "#dffffa",
+          "200": "#affef3",
+          "300": "#9eece2",
+          "400": "#5aa79e",
+          "500": "#39887f",
+          "600": "#23756d",
+          "700": "#04635c",
+          "800": "#002926",
+          "900": "#001916",
+          "1000": "#000d0b"
+        },
+        "supplementary": {
+          "100": "#faf7ff",
+          "200": "#f3ecff",
+          "300": "#e6d7ff",
+          "400": "#b77fff",
+          "500": "#9f53f1",
+          "600": "#8f40df",
+          "700": "#7b25c8",
+          "800": "#380063",
+          "900": "#230041",
+          "1000": "#140028"
+        }
+      }
+    },
+    {
+      "key": "sky",
+      "name": "Sky",
+      "primary": "#1c699b",
+      "supplementary": "#7a45e1",
+      "description": "Calm sky blue with a violet accent.",
+      "computed": {
+        "primary": {
+          "100": "#f2f9ff",
+          "200": "#e1f1ff",
+          "300": "#bfe2ff",
+          "400": "#59a1d6",
+          "500": "#3881b4",
+          "600": "#1c699b",
+          "700": "#065c8e",
+          "800": "#00263f",
+          "900": "#001728",
+          "1000": "#000b17"
+        },
+        "supplementary": {
+          "100": "#f9f7ff",
+          "200": "#f0edff",
+          "300": "#e0d9ff",
+          "400": "#a586ff",
+          "500": "#8c5bf8",
+          "600": "#7a45e1",
+          "700": "#6b30ce",
+          "800": "#31006c",
+          "900": "#1f0048",
+          "1000": "#10002d"
+        }
+      }
+    },
+    {
+      "key": "midnight",
+      "name": "Midnight",
+      "primary": "#16245c",
+      "supplementary": "#2b9287",
+      "description": "Deep navy with a teal accent; buttons in the deep step.",
+      "computed": {
+        "primary": {
+          "100": "#f6f8ff",
+          "200": "#e9efff",
+          "300": "#d1deff",
+          "400": "#8199db",
+          "500": "#637ab9",
+          "600": "#5b70b0",
+          "700": "#415592",
+          "800": "#16245c",
+          "900": "#060d44",
+          "1000": "#030037"
+        },
+        "supplementary": {
+          "100": "#dffffa",
+          "200": "#a8fff3",
+          "300": "#8fefe2",
+          "400": "#48aa9e",
+          "500": "#2b9287",
+          "600": "#0d8176",
+          "700": "#00635b",
+          "800": "#002925",
+          "900": "#001916",
+          "1000": "#000d0b"
+        }
+      },
+      "graphicStep": 800
+    },
+    {
+      "key": "slate",
+      "name": "Slate",
+      "primary": "#475569",
+      "supplementary": "#2584c0",
+      "description": "Muted slate with a blue accent — for calm, content-first products.",
+      "computed": {
+        "primary": {
+          "100": "#f4f9ff",
+          "200": "#e6f0ff",
+          "300": "#cedff7",
+          "400": "#8c9cb2",
+          "500": "#6e7d92",
+          "600": "#657489",
+          "700": "#475569",
+          "800": "#182436",
+          "900": "#0a1526",
+          "1000": "#020a19"
+        },
+        "supplementary": {
+          "100": "#f2f9ff",
+          "200": "#e0f1ff",
+          "300": "#bee2ff",
+          "400": "#48a2e0",
+          "500": "#2584c0",
+          "600": "#1379b4",
+          "700": "#005c8e",
+          "800": "#00263e",
+          "900": "#001728",
+          "1000": "#000b17"
+        }
+      },
+      "graphicStep": 800
+    },
+    {
+      "key": "crimson",
+      "name": "Crimson",
+      "primary": "#cb453c",
+      "supplementary": "#2e66df",
+      "description": "Brick red with a slate-blue accent.",
+      "note": "Primary shares its hue with the error color — keep status messages icon + text.",
+      "computed": {
+        "primary": {
+          "100": "#fff6f5",
+          "200": "#ffebe8",
+          "300": "#ffd4ce",
+          "400": "#f96f62",
+          "500": "#d44e44",
+          "600": "#cb453c",
+          "700": "#a9221f",
+          "800": "#510002",
+          "900": "#350001",
+          "1000": "#200000"
+        },
+        "supplementary": {
+          "100": "#f5f8ff",
+          "200": "#e7f0ff",
+          "300": "#cddfff",
+          "400": "#6498ff",
+          "500": "#3b75ef",
+          "600": "#2e66df",
+          "700": "#194ec6",
+          "800": "#001b66",
+          "900": "#000f44",
+          "1000": "#00062a"
+        }
+      },
+      "graphicStep": 700
+    },
+    {
+      "key": "tangerine",
+      "name": "Tangerine",
+      "primary": "#da683a",
+      "supplementary": "#2b9287",
+      "description": "Burnt orange with a teal accent.",
+      "note": "Primary is close to the warning color — keep status messages icon + text.",
+      "computed": {
+        "primary": {
+          "100": "#fff7f4",
+          "200": "#ffebe4",
+          "300": "#ffd5c5",
+          "400": "#ee7a4c",
+          "500": "#da683a",
+          "600": "#c05020",
+          "700": "#9b3700",
+          "800": "#451400",
+          "900": "#2c0a00",
+          "1000": "#1a0400"
+        },
+        "supplementary": {
+          "100": "#dffffa",
+          "200": "#a8fff3",
+          "300": "#8fefe2",
+          "400": "#48aa9e",
+          "500": "#2b9287",
+          "600": "#0d8176",
+          "700": "#00635b",
+          "800": "#002925",
+          "900": "#001916",
+          "1000": "#000d0b"
+        }
+      }
+    },
+    {
+      "key": "honey",
+      "name": "Honey",
+      "primary": "#f2a516",
+      "supplementary": "#6b35cd",
+      "description": "Warm honey with a violet accent; text and icon steps turn warm amber brown for contrast.",
+      "note": "Primary shares its hue with the warning color — keep status messages icon + text.",
+      "computed": {
+        "primary": {
+          "100": "#fff7ed",
+          "200": "#ffecd4",
+          "300": "#ffd8a3",
+          "400": "#d18c00",
+          "500": "#a87000",
+          "600": "#9d6800",
+          "700": "#794f00",
+          "800": "#342000",
+          "900": "#201200",
+          "1000": "#120800"
+        },
+        "supplementary": {
+          "100": "#f9f7ff",
+          "200": "#f0edff",
+          "300": "#dfd9ff",
+          "400": "#a487ff",
+          "500": "#8b5df5",
+          "600": "#8353eb",
+          "700": "#6933cb",
+          "800": "#31006d",
+          "900": "#1e0048",
+          "1000": "#10002d"
+        }
+      },
+      "keepBase": false
+    },
+    {
+      "key": "forest",
+      "name": "Forest",
+      "primary": "#277e43",
+      "supplementary": "#7a45e1",
+      "description": "Moss green with a purple accent.",
+      "note": "Primary shares its hue with the success color — keep status messages icon + text.",
+      "computed": {
+        "primary": {
+          "100": "#e5ffe9",
+          "200": "#bbffc9",
+          "300": "#9cf1af",
+          "400": "#57ab6d",
+          "500": "#378b50",
+          "600": "#277e43",
+          "700": "#00662d",
+          "800": "#002b0f",
+          "900": "#001a07",
+          "1000": "#000d03"
+        },
+        "supplementary": {
+          "100": "#f9f7ff",
+          "200": "#f0edff",
+          "300": "#e0d9ff",
+          "400": "#a586ff",
+          "500": "#8c5bf8",
+          "600": "#7a45e1",
+          "700": "#6b30ce",
+          "800": "#31006c",
+          "900": "#1f0048",
+          "1000": "#10002d"
+        }
+      }
+    }
+  ]
+}

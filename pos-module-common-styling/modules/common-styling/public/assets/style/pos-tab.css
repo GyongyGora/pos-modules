@@ -1,0 +1,246 @@
+/*
+  tab navigation
+
+  simple tabs (underline)
+  overflow (kebab menu when tabs don't fit)
+  detailed tabs (card-style, with stats)
+*/
+
+
+
+@layer common-styling {
+
+  /* simple tabs
+  ============================================================================ */
+  .pos-tabs {
+    display: flex;
+    align-items: center;
+    border-block-end: 1px solid var(--pos-color-frame);
+  }
+
+  .pos-tab {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    padding: var(--pos-primitive-size-1) var(--pos-padding-cell);
+    margin-block-end: -1px;
+
+    cursor: pointer;
+    font-size: var(--pos-font-size-body-small);
+    font-weight: 500;
+    color: var(--pos-color-content-text-supplementary);
+    border-block-end: 2px solid transparent;
+
+    transition: color .15s linear, border-color .15s linear;
+  }
+
+  .pos-tab:hover:where(:not(:disabled, [aria-disabled="true"], .pos-debug-tab-disabled)),
+  .pos-debug-tab-hover {
+    color: var(--pos-color-content-text);
+  }
+
+  .pos-tab:disabled,
+  .pos-tab[aria-disabled="true"],
+  .pos-debug-tab-disabled {
+    cursor: not-allowed;
+    color: var(--pos-color-content-text-disabled);
+  }
+
+  .pos-tab:focus-visible,
+  .pos-debug-tab-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: -2px;
+  }
+
+  .pos-tab--active {
+    color: var(--pos-color-interactive-text);
+    border-block-end-color: var(--pos-color-interactive);
+  }
+
+  /* the active tab is not clicked again: hover leaves it as it is (the generic .pos-tab:hover, same
+     specificity and earlier, used to turn it grey) — 2026-10-02 */
+  .pos-tab--active:hover:where(:not(:disabled, [aria-disabled="true"], .pos-debug-tab-disabled)) {
+    color: var(--pos-color-interactive-text);
+  }
+
+  .pos-tab--active:disabled,
+  .pos-tab--active[aria-disabled="true"],
+  .pos-tab--active.pos-debug-tab-disabled {
+    color: var(--pos-color-interactive-text-disabled);
+    border-block-end-color: var(--pos-color-interactive-disabled);
+  }
+
+  /* overflow — kebab menu revealing tabs that no longer fit. This CSS only styles the trigger
+     button itself; deciding WHEN tabs stop fitting and moving them behind it requires runtime
+     width measurement (ResizeObserver), which is product-specific wiring, not a CSS concern —
+     same "static representative view" limitation already accepted for Card/Feature card/File
+     upload's own internal-state limitations. */
+  .pos-tabs-overflow {
+    margin-inline-start: auto;
+    padding-inline: var(--pos-padding-cell);
+  }
+
+  /* icon color fixed to the interactive-icon token regardless of hover/focus (grey light/dark,
+     turquoise HC) — this trigger's own icon, not text, so it uses the icon-specific interactive
+     token rather than the text one. Two classes to reliably beat .pos-tab:hover/-focus, which
+     would otherwise recolor it via inherited .pos-tab state rules. */
+  .pos-tab.pos-tabs-overflow {
+    color: var(--pos-color-content-icon-interactive);
+  }
+
+    .pos-tabs-overflow svg {
+      width: var(--pos-size-icon-m);
+      height: var(--pos-size-icon-m);
+      fill: currentColor;
+    }
+
+
+  /* detailed tabs — card-style, with a title + stats line
+  ============================================================================ */
+  .pos-tabs-detailed {
+    display: flex;
+    gap: var(--pos-gap-section-elements);
+  }
+
+  .pos-tab-detailed {
+    all: unset;
+    display: block;
+    flex: 1;
+    padding: var(--pos-padding-cell);
+
+    cursor: pointer;
+    text-align: start;
+    font-size: var(--pos-font-size-body-small);
+    color: var(--pos-color-content-text-supplementary);
+
+    border: 1px solid var(--pos-color-frame);
+    border-top-left-radius: var(--pos-radius-card);
+    border-top-right-radius: var(--pos-radius-card);
+
+    transition: background-color .15s linear, box-shadow .15s linear, border-color .15s linear;
+  }
+
+  .pos-tab-detailed:focus-visible,
+  .pos-debug-tab-detailed-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: -2px;
+  }
+
+  .pos-tab-detailed:disabled,
+  .pos-tab-detailed[aria-disabled="true"],
+  .pos-debug-tab-detailed-disabled {
+    cursor: not-allowed;
+    color: var(--pos-color-content-text-disabled);
+    border-color: var(--pos-color-content-icon-disabled);
+  }
+
+  /* title: Normal/Focus use the "supplementary-interactive" token — identical grey value to plain
+     supplementary in light/dark (so it visually matches the stat line),
+     but resolves to HC yellow to still signal interactivity there (every title stays yellow in HC). Hover/Selected go fully prominent; Disabled/Selected-disabled use
+     the disabled token. */
+  .pos-tab-detailed-title {
+    display: block;
+    margin-block-end: var(--pos-primitive-size-1);
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-m);
+    font-weight: var(--pos-font-weight-bold);
+    color: var(--pos-color-content-text-supplementary-interactive);
+  }
+
+  /* hover/selected — title becomes fully prominent. */
+  .pos-tab-detailed--active .pos-tab-detailed-title,
+  .pos-tab-detailed:hover:where(:not(:disabled, [aria-disabled="true"], .pos-debug-tab-detailed-disabled)) .pos-tab-detailed-title,
+  .pos-debug-tab-detailed-hover .pos-tab-detailed-title {
+    color: var(--pos-color-content-text-prominent);
+  }
+
+  /* disabled / selected-disabled — title AND stat both switch to the same disabled token (the
+     debug class is present on both plain Disabled and Selected-disabled, since the latter adds it
+     alongside --active, see applyStatus in styleguide-component-page.js). */
+  .pos-tab-detailed:disabled .pos-tab-detailed-title,
+  .pos-tab-detailed[aria-disabled="true"] .pos-tab-detailed-title,
+  .pos-debug-tab-detailed-disabled .pos-tab-detailed-title,
+  .pos-tab-detailed:disabled .pos-tab-detailed-stat,
+  .pos-tab-detailed[aria-disabled="true"] .pos-tab-detailed-stat,
+  .pos-debug-tab-detailed-disabled .pos-tab-detailed-stat {
+    color: var(--pos-color-content-text-disabled);
+  }
+
+  .pos-tab-detailed-stat {
+    color: var(--pos-color-content-text-supplementary);
+    font-size: var(--pos-font-size-body-small);
+    font-weight: var(--pos-font-weight-bold);
+  }
+
+  /* active — floats above the panel below it: no visible border, white surface, shadow cast
+     upward. The real --pos-primitive-shadow-medium/-layered tokens are used as-is (so they stay
+     theme-reactive — lighter in dark mode, none at all in HC — instead of hardcoded values) on a
+     ::before that exactly covers the tab and is rotated 180deg: every real X/Y offset in both
+     tokens is 0/positive-Y, so a 180deg rotation flips only the Y sign (X stays 0), turning the
+     normal downward shadow into an upward one with zero other side effects. */
+  /* hover skips a disabled tab (RULES.md 4.12) — :where() keeps the original specificity */
+  .pos-tab-detailed--active,
+  .pos-tab-detailed:hover:where(:not(:disabled, [aria-disabled="true"], .pos-debug-tab-detailed-disabled)),
+  .pos-debug-tab-detailed-hover {
+    position: relative;
+    background-color: var(--pos-color-content-background);
+  }
+
+  /* selected only — hover keeps the same border as Normal (--pos-color-frame, inherited from the
+     base rule); only the active/selected tab's own border goes
+     transparent. */
+  .pos-tab-detailed--active {
+    border-color: transparent;
+  }
+
+  /* HC-only override — Selected/Selected-disabled get a colored fill (reusing the existing Graphic
+     Interactive tokens: turquoise for Selected, grey for Selected-disabled) with black text for
+     contrast, instead of the plain light/dark "white card" look. No single
+     existing token expresses this per-theme relationship on a plain card surface, so this is
+     scoped to the HC theme class rather than inventing a new token — the only component-scoped HC
+     override in this codebase so far, but built entirely from tokens that already exist. */
+  /* color set directly on the card itself so it's inherited by the loose inline text between the
+     title/stat spans too (e.g. the literal " following"/" experts" words in the usage example,
+     which belong to neither span). This alone is NOT enough for the title/stat spans themselves,
+     though — they each carry their own explicit, more specific color rule per state (prominent for
+     Hover/Selected, disabled for Disabled/Selected-disabled), and an explicit child rule always
+     wins over an inherited parent color regardless of the parent's specificity. The second rule
+     below re-targets those spans directly, at higher specificity than every one of their own
+     state rules, so both spans plus the loose text all end up the same black. */
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active {
+    background-color: var(--pos-color-interactive);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active .pos-tab-detailed-title,
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active .pos-tab-detailed-stat {
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active:disabled,
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active[aria-disabled="true"],
+  :is(:root.pos-theme-a11y:where(.pos-theme-a11yEnabled), .pos-scheme-a11y) .pos-tab-detailed--active.pos-debug-tab-detailed-disabled {
+    background-color: var(--pos-color-interactive-disabled);
+  }
+
+  .pos-tab-detailed--active::before,
+  .pos-tab-detailed:hover:where(:not(:disabled, [aria-disabled="true"], .pos-debug-tab-detailed-disabled))::before,
+  .pos-debug-tab-detailed-hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* NOT border-radius: inherit — the real card is rounded top-only/square-bottom, and rotating
+       that asymmetric shape 180deg moves the rounded corners to the bottom, leaving the shadow
+       looking sharp at the top exactly where the real card is rounded (confirmed live: the shadow
+       reads as a sharp-cornered "outer container" behind the correctly-rounded white fill). A
+       uniform radius on all 4 corners looks identical before and after a 180deg rotation, so the
+       mismatch disappears — the shadow's own bottom corners end up very slightly rounded too, but
+       that's imperceptible under a soft, blurred shadow. */
+    border-radius: var(--pos-radius-card);
+    box-shadow: var(--pos-primitive-shadow-medium), var(--pos-primitive-shadow-layered);
+    transform: rotate(180deg);
+    pointer-events: none;
+  }
+
+
+}

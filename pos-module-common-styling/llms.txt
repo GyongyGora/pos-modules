@@ -1,0 +1,69 @@
+# pOS common-styling
+
+> Design system for platformOS apps: native CSS (`pos-` classes, `--pos-` tokens, `@layer common-styling`), Liquid partials and vanilla JS — no React, no Tailwind. Light, dark and high-contrast themes are token overrides. Build UI only from the classes, partials and tokens listed in the files below.
+
+Start with AGENTS.md, then ds-index.json. Paths are relative to this repository; in an app that installed the module the same files live under modules/common-styling/.
+
+## Start here
+
+- [AGENTS.md](AGENTS.md): how to build UI with this DS — read order, layout setup, hard rules, color pairings, component list, patterns
+- [ds-index.json](modules/common-styling/public/assets/tokens/ds-index.json): every component with its classes, render call, constraints; name aliases; layout and color rules
+- [token-map.json](modules/common-styling/public/assets/tokens/token-map.json): every token — CSS name, Figma name, light / dark / high-contrast value, description
+- [MIGRATION.md](MIGRATION.md): 1.x → 2.0.0 migration (incl. the palette change) and deprecated names
+- [CHANGELOG.md](CHANGELOG.md): what changed, newest first
+
+## Component specs
+
+One JSON per component (modules/common-styling/public/assets/tokens/components/): usageExample, props, do / dont, accessibility, tokens per variant and state.
+
+- `alert-card` (AlertCard): [alert-card.json](modules/common-styling/public/assets/tokens/components/alert-card.json)
+- `avatar` (Avatar): [avatar.json](modules/common-styling/public/assets/tokens/components/avatar.json)
+- `badge` (Badge): [badge.json](modules/common-styling/public/assets/tokens/components/badge.json)
+- `breadcrumb` (Breadcrumb): [breadcrumb.json](modules/common-styling/public/assets/tokens/components/breadcrumb.json)
+- `button` (Button): [button.json](modules/common-styling/public/assets/tokens/components/button.json)
+- `card` (Card): [card.json](modules/common-styling/public/assets/tokens/components/card.json)
+- `checkbox` (Checkbox): [checkbox.json](modules/common-styling/public/assets/tokens/components/checkbox.json)
+- `chip` (Chip): [chip.json](modules/common-styling/public/assets/tokens/components/chip.json)
+- `code` (Code): [code.json](modules/common-styling/public/assets/tokens/components/code.json)
+- `collapsible` (Collapsible, CollapsibleList): [collapsible-list.json](modules/common-styling/public/assets/tokens/components/collapsible-list.json)
+- `control-icons` (ControlIcons): [control-icons.json](modules/common-styling/public/assets/tokens/components/control-icons.json)
+- `dropdown-button` (Dropdown button): [dropdown-button.json](modules/common-styling/public/assets/tokens/components/dropdown-button.json)
+- `dialog` (Dialog): [dialog.json](modules/common-styling/public/assets/tokens/components/dialog.json)
+- `feature-card` (FeatureCard): [feature-card.json](modules/common-styling/public/assets/tokens/components/feature-card.json)
+- `forms` (Forms): one spec per control — `text-input`, `textarea`, `select`, `checkbox`, `radio`, `password`, `multiselect`
+- `link` (Link): [link.json](modules/common-styling/public/assets/tokens/components/link.json)
+- `markdown` (Markdown): [markdown.json](modules/common-styling/public/assets/tokens/components/markdown.json)
+- `multiselect` (Multiselect): [multiselect.json](modules/common-styling/public/assets/tokens/components/multiselect.json)
+- `pagination` (Pagination): [pagination.json](modules/common-styling/public/assets/tokens/components/pagination.json)
+- `password` (Password): [password.json](modules/common-styling/public/assets/tokens/components/password.json)
+- `popover` (Popover, PopoverContent): [popover.json](modules/common-styling/public/assets/tokens/components/popover.json), [popover-content.json](modules/common-styling/public/assets/tokens/components/popover-content.json)
+- `radio` (Radio): [radio.json](modules/common-styling/public/assets/tokens/components/radio.json)
+- `segmented-control` (SegmentedControl, Segmented): [segmented.json](modules/common-styling/public/assets/tokens/components/segmented.json)
+- `select` (Select): [select.json](modules/common-styling/public/assets/tokens/components/select.json)
+- `slider` (Slider): [slider.json](modules/common-styling/public/assets/tokens/components/slider.json)
+- `spinner` (Spinner): no spec — `pos-spinner` on an svg (see ds-index.json)
+- `switch-card` (SwitchCard): [switch-card.json](modules/common-styling/public/assets/tokens/components/switch-card.json)
+- `tab` (Tab): [tab.json](modules/common-styling/public/assets/tokens/components/tab.json)
+- `table` (Table): [table.json](modules/common-styling/public/assets/tokens/components/table.json)
+- `tag` (Tag): [tag.json](modules/common-styling/public/assets/tokens/components/tag.json)
+- `text-input` (TextInput): [text-input.json](modules/common-styling/public/assets/tokens/components/text-input.json)
+- `textarea` (Textarea): [textarea.json](modules/common-styling/public/assets/tokens/components/textarea.json)
+- `tile-btn` (TileBtn): [tile-btn.json](modules/common-styling/public/assets/tokens/components/tile-btn.json)
+- `toast` (Toast): [toast.json](modules/common-styling/public/assets/tokens/components/toast.json)
+- `toggle-btn` (ToggleBtn): [toggle-btn.json](modules/common-styling/public/assets/tokens/components/toggle-btn.json)
+- `tooltip` (Tooltip): [tooltip.json](modules/common-styling/public/assets/tokens/components/tooltip.json)
+- `upload` (Upload, FileUpload): [file-upload.json](modules/common-styling/public/assets/tokens/components/file-upload.json)
+
+## Tokens and styles
+
+- [pos-primitives.css](modules/common-styling/public/assets/style/pos-primitives.css): raw palette and sizes — never use these directly in UI
+- [pos-config.css](modules/common-styling/public/assets/style/pos-config.css): semantic tokens and the light / dark / high-contrast theme blocks
+- [pos-themes.css](modules/common-styling/public/assets/style/pos-themes.css): the 15 built-in themes — Default (no class) plus 14 `pos-brand-<key>` classes (Wireframe also needs `pos-style-wireframe`), generated from `tokens/themes.json`
+- [icon-registry.json](modules/common-styling/public/assets/tokens/icon-registry.json): every icon's logical name and purpose (`icon.liquid` is generated from it), rendered with render 'modules/common-styling/icon', icon: 'name'
+
+## Optional
+
+- [README.md](README.md): installing the module, toasts, JS helpers
+- [RULES.md](RULES.md): the rulebook for developing the DS itself (not needed to build UI with it)
+- [CLAUDE.md](CLAUDE.md): repository setup for agents working on the DS itself
+- Docs (preview instance): https://gyongy-design-system.staging.oregon.platform-os.com/style-guide

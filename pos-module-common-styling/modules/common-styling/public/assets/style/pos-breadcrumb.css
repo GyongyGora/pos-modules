@@ -1,0 +1,186 @@
+/*
+  breadcrumb component
+
+  A horizontal trail of links showing the current page's location within a nested hierarchy,
+  with a chevron separator between items and the current page shown as plain (non-link) text.
+
+  Reuses existing DS components rather than duplicating their styling:
+    - .pos-link for every ancestor link (color/hover/focus/underline all inherited)
+    - .pos-popover + the native HTML popover API for the collapsed-state parent-links flyout
+      (position/panel/menu-item styling all inherited from pos-popover.css — nothing
+      breadcrumb-specific needed there)
+
+  Markup:
+    <nav class="pos-breadcrumb" aria-label="Breadcrumb">
+      <div class="pos-popover pos-breadcrumb-collapsed-trigger">
+        <button type="button" popovertarget="breadcrumb-hidden-x" class="pos-breadcrumb-back" aria-label="Show parent pages">
+          <!-- dashLeft icon -->
+        </button>
+        <menu popover id="breadcrumb-hidden-x">
+          <li><a href="#">Ancestor</a></li>
+        </menu>
+      </div>
+      <ol class="pos-breadcrumb-list">
+        <li class="pos-breadcrumb-item">
+          <a href="#" class="pos-link">Ancestor</a>
+          <span class="pos-breadcrumb-separator" aria-hidden="true"><!-- dashRight icon --></span>
+        </li>
+        <li class="pos-breadcrumb-item">
+          <span class="pos-breadcrumb-current" aria-current="page">Current page</span>
+        </li>
+      </ol>
+    </nav>
+
+  Responsive behavior: assets/js/pos-breadcrumb.js measures real overflow via ResizeObserver
+  and toggles the single .pos-breadcrumb--collapsed class below — the docs site's "Collapsed"
+  Variant toggle applies the same class manually to demo the result without needing to resize
+  the preview panel.
+*/
+
+
+@layer common-styling {
+
+  .pos-breadcrumb {
+    all: unset;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    /* The Expanded/Collapsed toggle hides/shows list items, which can shift this element's
+       rendered size by a few px (different icon sizes between the separator and the back-chevron
+       button). Without this, that shift can trigger the browser's scroll-anchoring adjustment on
+       the scrollable docs container, firing a genuine native 'scroll' event even though nothing
+       was scrolled — which the shared scroll-sync observer picks up and can switch the right
+       panel to a neighboring section. Found 2026-09-19 via a real click-through test. */
+    overflow-anchor: none;
+  }
+
+  .pos-breadcrumb-list {
+    all: unset;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    min-width: 0;
+
+    font-size: var(--pos-font-size-body);
+
+    /* .pos-link:focus-visible draws a 2px outline with a 2px outline-offset (4px halo total,
+       pos-typography.css) — this list's own overflow: hidden (needed so the list clips cleanly
+       before the ResizeObserver's first collapse check, and to enforce the ellipsis truncation
+       above) would otherwise cut that halo off on whichever side has no neighboring space to
+       spare (observed: tab-focusing the first link only showed a sliver of the ring). Padding
+       the list by the halo size and pulling it back in with an equal negative margin keeps the
+       list's visual position/width identical while giving the outline room to render in full. */
+    margin: -4px;
+    padding: 4px;
+  }
+
+  .pos-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .pos-breadcrumb-item .pos-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pos-breadcrumb-separator {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-inline: var(--pos-gap-text-text);
+
+    color: var(--pos-color-content-icon);
+  }
+
+  .pos-breadcrumb-separator svg {
+    display: block;
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+  }
+
+  .pos-breadcrumb-current {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: var(--pos-color-content-text-supplementary);
+  }
+
+
+  /* collapsed-state trigger (back chevron + popover) — hidden unless collapsed
+  ============================================================================ */
+  .pos-breadcrumb-collapsed-trigger {
+    display: none;
+    flex-shrink: 0;
+    margin-inline-end: var(--pos-gap-text-text);
+  }
+
+  /* Override the generic .pos-popover [popover] default (position-area: block-end
+     span-inline-start, i.e. opens below AND extending toward inline-start/left) — the
+     breadcrumb's collapsed trigger sits at the very start (left edge) of the component, so
+     opening leftward risks running off-screen on narrow viewports. Opens below and toward inline-end/right instead — there's always real content
+     (the current page's own text) to the right to grow into, unlike the left side.
+     Must be the "span-" variant (span-inline-end), not bare inline-end: the bare keyword places
+     the popover in a discrete region entirely past the anchor's own edge, detached from it —
+     the caret arrow drawn by .pos-popover's shared [popovertarget]:after rule is centered under
+     the trigger button itself (not the panel), so a detached panel leaves the arrow visually
+     disconnected from it (caught live, 2026-09-19). "span-inline-end"
+     keeps the panel's start edge anchored at the button, extending rightward from there, so the
+     arrow — still centered under the button — lands back on the panel's own edge. */
+  .pos-breadcrumb-collapsed-trigger [popover] {
+    position-area: block-end span-inline-end;
+  }
+
+  /* the parent pages in the flyout are links, same color as the expanded breadcrumb's links
+     (Figma: Interactive text normal) — the generic popover menu draws its items grey; hover /
+     focus still come from pos-popover.css */
+  .pos-popover.pos-breadcrumb-collapsed-trigger menu li a {
+    color: var(--pos-color-interactive-text);
+  }
+
+  .pos-breadcrumb-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 7px;
+    background: none;
+    border: none;
+    border-radius: var(--pos-radius-button);
+
+    color: var(--pos-color-content-icon-interactive);
+    cursor: pointer;
+  }
+
+  .pos-breadcrumb-back svg {
+    display: block;
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+  }
+
+  .pos-breadcrumb-back:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+    border-radius: var(--pos-radius-button);
+  }
+
+  /* .pos-breadcrumb-back's hover color comes from the generic
+     .pos-popover > [popovertarget]:hover rule in pos-popover.css — not redeclared here. */
+
+
+  /* collapsed state — hide all but the current item, show the back-chevron trigger
+  ============================================================================ */
+  .pos-breadcrumb--collapsed .pos-breadcrumb-collapsed-trigger {
+    display: inline-flex;
+  }
+
+  .pos-breadcrumb--collapsed .pos-breadcrumb-list .pos-breadcrumb-item:not(:last-child) {
+    display: none;
+  }
+
+}

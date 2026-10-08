@@ -1,0 +1,1259 @@
+{
+  "Colors": {
+    "Brand": {
+      "Brand Primary 1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.11372549086809158,
+            0.30588236451148987,
+            0.8470588326454163
+          ],
+          "alpha": 1,
+          "hex": "#1D4ED8"
+        },
+        "$description": "Primary brand color. The main brand color used consistently across the UI for interactive and functional elements such as buttons, links, icons, and other clickable components, and for brand expression in decorative elements such as colored banners and backgrounds.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14478",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 1 0%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.11372549086809158,
+            0.30588236451148987,
+            0.8470588326454163
+          ],
+          "alpha": 0,
+          "hex": "#1D4ED8"
+        },
+        "$description": "Fully transparent brand primary 1. Starting point for fade-in transitions, gradients and overlays.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17046:24467",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 1 70%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.11372549086809158,
+            0.30588236451148987,
+            0.8470588326454163
+          ],
+          "alpha": 0.699999988079071,
+          "hex": "#1D4ED8"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16566:20877",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.20392157137393951,
+            0.4000000059604645,
+            0.8901960849761963
+          ],
+          "alpha": 1,
+          "hex": "#3466E3"
+        },
+        "$description": "Primary color variant (lighter/darker brand color shades). Used to create visual hierarchy and variation—for example, hover and active states, inverted elements, or dark mode adaptations—while still maintaining a strong connection to the core brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14479",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5139091610908508,
+            0.7375109195709229,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#83BCFF"
+        },
+        "$description": "Primary color variant (lighter/darker brand color shades). Used to create visual hierarchy and variation—for example, hover and active states, inverted elements, or dark mode adaptations—while still maintaining a strong connection to the core brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13591:258069",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 4": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7490196228027344,
+            0.8588235378265381,
+            0.9960784316062927
+          ],
+          "alpha": 1,
+          "hex": "#BFDBFE"
+        },
+        "$description": "Primary color variant (lighter/darker brand color shades). Used to create visual hierarchy and variation—for example, hover and active states, inverted elements, or dark mode adaptations—while still maintaining a strong connection to the core brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14480",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Primary 5": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.20392157137393951,
+            0.27843138575553894,
+            0.5215686559677124
+          ],
+          "alpha": 1,
+          "hex": "#344785"
+        },
+        "$description": "Primary color variant (lighter/darker brand color shades). Used to create visual hierarchy and variation—for example, hover and active states, inverted elements, or dark mode adaptations—while still maintaining a strong connection to the core brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14481",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Supplementary 1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5149335861206055,
+            0.14807656407356262,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#8326FF"
+        },
+        "$description": "Accent color used to highlight focused and high-priority elements, such as keyboard focus states and important interactive cues. Can also be used optionally in brand gradients and backgrounds, applied more sparingly than the main brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16058:26943",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Supplementary 2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7568910121917725,
+            0.6442307829856873,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#C1A4FF"
+        },
+        "$description": "Accent color used to highlight focused and high-priority elements, such as keyboard focus states and important interactive cues. Can also be used optionally in brand gradients and backgrounds, applied more sparingly than the main brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16062:53448",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Supplementary 3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.5137255191802979,
+            0.4117647111415863,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#8369FF"
+        },
+        "$description": "Accent color used to highlight focused and high-priority elements, such as keyboard focus states and important interactive cues. Can also be used optionally in brand gradients and backgrounds, applied more sparingly than the main brand color.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16795:39542",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand Supplementary 4": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.13333334028720856,
+            0.9490196108818054,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#22F2FF"
+        },
+        "$description": "A brand-aligned color used sparingly to enhance the interface. Typically used in illustrations, gradients, backgrounds or other graphical elements, they add visual interest without overwhelming the overall branding.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17044:24345",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    },
+    "Greyscale": {
+      "Black": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 1,
+          "hex": "#000000"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14468",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Black 50%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.5,
+          "hex": "#000000"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17071:125691",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Black 20%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#000000"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17071:125692",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Dark 1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.21568627655506134,
+            0.2549019753932953,
+            0.3176470696926117
+          ],
+          "alpha": 1,
+          "hex": "#374151"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14469",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Dark 2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.250980406999588,
+            0.3333333432674408,
+            0.40784314274787903
+          ],
+          "alpha": 1,
+          "hex": "#405568"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14470",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Dark 3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.10196078568696976,
+            0.11372549086809158,
+            0.12941177189350128
+          ],
+          "alpha": 1,
+          "hex": "#1A1D21"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13591:257982",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Dark 3 50%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.10352189838886261,
+            0.11409080028533936,
+            0.13100102543830872
+          ],
+          "alpha": 0.5,
+          "hex": "#1A1D21"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16314:17282",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Dark 4": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.07058823853731155,
+            0.0784313753247261,
+            0.0941176488995552
+          ],
+          "alpha": 1,
+          "hex": "#121418"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:18240:150337",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.41960784792900085,
+            0.4470588266849518,
+            0.501960813999176
+          ],
+          "alpha": 1,
+          "hex": "#6B7280"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14471",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Medium": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.6574328541755676,
+            0.7140460014343262,
+            0.804627001285553
+          ],
+          "alpha": 1,
+          "hex": "#A8B6CD"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13591:258075",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Light 1": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.886274516582489,
+            0.9098039269447327,
+            0.9411764740943909
+          ],
+          "alpha": 1,
+          "hex": "#E2E8F0"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14472",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Light 2": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9058823585510254,
+            0.9254902005195618,
+            0.9529411792755127
+          ],
+          "alpha": 1,
+          "hex": "#E7ECF3"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14473",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Grey Light 3": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9529411792755127,
+            0.9607843160629272,
+            0.9725490212440491
+          ],
+          "alpha": 1,
+          "hex": "#F3F5F8"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14474",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "White": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 1,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14475",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "White 50%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.5,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14476",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "White 20%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16222:72722",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Transparent": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14477",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    },
+    "Utility": {
+      "Red Deep": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.321884423494339,
+            0.055225569754838943,
+            0.055225569754838943
+          ],
+          "alpha": 1,
+          "hex": "#520E0E"
+        },
+        "$description": "Shade of the error color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13593:266403",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Red Dark": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7254902124404907,
+            0.10980392247438431,
+            0.10980392247438431
+          ],
+          "alpha": 1,
+          "hex": "#B91C1C"
+        },
+        "$description": "Error state color, expressing danger. Used to communicate errors, destructive actions, and critical states. Signals immediate attention and indicates that something has gone wrong or requires correction. Commonly applied to error messages, validation states, alerts, and destructive actions (e.g., delete or remove).",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14482",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Red Mid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.7921568751335144,
+            0.22745098173618317,
+            0.1921568661928177
+          ],
+          "alpha": 1,
+          "hex": "#CA3A31"
+        },
+        "$description": "Shade of the error color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14483",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Red Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.8509615659713745,
+            0.8509615659713745
+          ],
+          "alpha": 1,
+          "hex": "#FFD9D9"
+        },
+        "$description": "Shade of the error color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14484",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Red Extra Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.9471153616905212,
+            0.9471153616905212
+          ],
+          "alpha": 1,
+          "hex": "#FFF2F2"
+        },
+        "$description": "Shade of the error color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17080:129417",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Yellow Deep": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.3481697142124176,
+            0.24247677624225616,
+            0.08393736183643341
+          ],
+          "alpha": 1,
+          "hex": "#593E15"
+        },
+        "$description": "Shade of the warning color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13593:266405",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Yellow Dark": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.9529411792755127,
+            0.6941176652908325,
+            0.30588236451148987
+          ],
+          "alpha": 1,
+          "hex": "#F3B14E"
+        },
+        "$description": "Warning state color, expressing caution. Used to communicate warnings, potentially destructive actions, and states that require user attention before proceeding. Signals that something may go wrong or needs review. Commonly applied to warning messages, validation states, alerts, and cautionary actions.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14488",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Yellow Mid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.7433332800865173,
+            0.3583333492279053
+          ],
+          "alpha": 1,
+          "hex": "#FFBE5B"
+        },
+        "$description": "Shade of the warning color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14489",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Yellow Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.9133332967758179,
+            0.7833333015441895
+          ],
+          "alpha": 1,
+          "hex": "#FFE9C8"
+        },
+        "$description": "Shade of the warning color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14490",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Yellow Extra Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            0.9711538553237915,
+            0.9278846383094788
+          ],
+          "alpha": 1,
+          "hex": "#FFF8ED"
+        },
+        "$description": "Shade of the warning color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17080:129414",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Green Deep": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.008603480644524097,
+            0.21474339067935944,
+            0.12198043614625931
+          ],
+          "alpha": 1,
+          "hex": "#02371F"
+        },
+        "$description": "Shade of the confirmation color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:13593:266404",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Green Dark": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.006656804587692022,
+            0.4615384638309479,
+            0.332132488489151
+          ],
+          "alpha": 1,
+          "hex": "#027655"
+        },
+        "$description": "Confirmation state color, expressing success. Used to communicate successful actions, positive feedback, and completed states. Signals that something has gone right or is approved. Commonly applied to success messages, validation states, alerts, and confirmatory actions (e.g., save or submit).",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14485",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Green Mid": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.03515625,
+            0.5625,
+            0.41247981786727905
+          ],
+          "alpha": 1,
+          "hex": "#098F69"
+        },
+        "$description": "Shade of the confirmation color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14486",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Green Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.8066543936729431,
+            0.955128014087677,
+            0.8759421110153198
+          ],
+          "alpha": 1,
+          "hex": "#CEF4DF"
+        },
+        "$description": "Shade of the confirmation color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:14487",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Green Extra Light": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.921466588973999,
+            0.9631409049034119,
+            0.9508838057518005
+          ],
+          "alpha": 1,
+          "hex": "#EBF6F2"
+        },
+        "$description": "Shade of the confirmation color — for example, hover and active states, inverted elements, or dark mode adaptations.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17080:129415",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    }
+  },
+  "Graphics": {
+    "Colors": {
+      "Brand 1": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Primary 1}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17043:41623",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand 1 0%": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Primary 1 0%}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17046:24466",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand 1 Light": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Primary 3}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17043:41625",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Color 3": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Supplementary 2}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17043:41624",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Color 4": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Supplementary 3}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17043:41626",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Brand 3": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Supplementary 1}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17043:41627",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Color 6": {
+        "$type": "color",
+        "$value": "{Colors.Brand.Brand Supplementary 4}",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:17044:24381",
+          "com.figma.scopes": [
+            "ALL_SCOPES"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    }
+  },
+  "Size": {
+    "-0,5 unit": {
+      "$type": "number",
+      "$value": -4,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:212371",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "0 unit": {
+      "$type": "number",
+      "$value": 0,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:215136",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "0,5 unit": {
+      "$type": "number",
+      "$value": 4,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:215137",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "1 unit": {
+      "$type": "number",
+      "$value": 8,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:219227",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "1,25 unit": {
+      "$type": "number",
+      "$value": 10,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20424",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "1,5 unit": {
+      "$type": "number",
+      "$value": 12,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:220821",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "1,75 unit": {
+      "$type": "number",
+      "$value": 14,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18209:150320",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "2 unit": {
+      "$type": "number",
+      "$value": 16,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:222443",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "2,5 unit": {
+      "$type": "number",
+      "$value": 20,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:225603",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "3 unit": {
+      "$type": "number",
+      "$value": 24,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:224667",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "3,5 unit": {
+      "$type": "number",
+      "$value": 28,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20436",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "4 unit": {
+      "$type": "number",
+      "$value": 32,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230358",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "5 unit": {
+      "$type": "number",
+      "$value": 40,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230365",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "6 unit": {
+      "$type": "number",
+      "$value": 48,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12829:67319",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "7 unit": {
+      "$type": "number",
+      "$value": 56,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12892:90466",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "8 unit": {
+      "$type": "number",
+      "$value": 64,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12851:25000",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "9 unit": {
+      "$type": "number",
+      "$value": 72,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12892:90467",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "10 unit": {
+      "$type": "number",
+      "$value": 80,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12839:75820",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Radius": {
+    "radius Sharp": {
+      "$type": "number",
+      "$value": 0,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230366",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Slightly Rounded": {
+      "$type": "number",
+      "$value": 4,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230367",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Slightly Rounded +2": {
+      "$type": "number",
+      "$value": 6,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16059:50422",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Mid Rounded": {
+      "$type": "number",
+      "$value": 8,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16222:13193",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Rounded": {
+      "$type": "number",
+      "$value": 16,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230368",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Pill": {
+      "$type": "number",
+      "$value": 40,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230369",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "radius Full": {
+      "$type": "number",
+      "$value": 999,
+      "$description": "Radius for full circle elements",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18163:148028",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Primitives"
+  }
+}

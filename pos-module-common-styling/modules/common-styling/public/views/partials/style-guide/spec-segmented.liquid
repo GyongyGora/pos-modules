@@ -1,0 +1,1084 @@
+{% comment %}
+  Generated from tokens/components/segmented.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-segmented">
+{% raw %}
+{
+  "_about": "Component spec for pos-segmented (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Segmented button\" section. Reuses the existing inspect-segmented.liquid's full variant set wholesale (verified-accurate, currently-live data — richer than COMP_CONFIGS['segmented'].tokens, which only keys by state, not by intent) plus usage prose from COMP_CONFIGS['segmented'].usage. This component's preview shows multiple visually distinct sub-variants side by side, so per the 2026-08-25/26 rule it got a NEW \"Variant\" toggle (default/highlighted/subtle) added to the Variants tab, position 1 — filters the preview to one at a time (option B2). The Tokens tab derives the exact variant key live from the visible preview element's own classList (getXVariantSections in styleguide-component-page.js), not a static pick, since this component already has its own pre-existing Intent/Size toggles this new one composes with. Regenerate the spec partial with the script in RULES.md 6.4 if pos-segmented.css changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "segmented",
+  "name": "Segmented button",
+  "description": "A row of 2–4 connected buttons for switching between mutually exclusive views, modes, or filters (e.g. Day / Week / Month, List / Grid).",
+  "whenToUse": [
+    "Switching between 2—4 mutually exclusive views, modes, or filters (e.g. Day / Week / Month, List / Grid).",
+    "All options are visible at once and the user switches frequently."
+  ],
+  "whenNotToUse": [
+    "More than 4 options — use a tab bar or select instead.",
+    "Options with long labels that would wrap or truncate.",
+    "Navigation between pages — use the navigation component instead.",
+    "Binary on/off — use a checkbox or toggle switch instead."
+  ],
+  "do": [
+    "Always have exactly one active option at any given time.",
+    "Provide a meaningful <code>aria-label</code> on the wrapper to describe what the group controls.",
+    "Set <code>aria-pressed=\"true\"</code> on the active button and <code>aria-pressed=\"false\"</code> on others.",
+    "Choose the variant based on the background surface — no variant should sit on a matching background color.",
+    "Use the small variant on desktop only."
+  ],
+  "dont": [
+    "Use for binary on/off toggles — use a checkbox or toggle switch instead.",
+    "Mix color variants within the same group.",
+    "Place more than 4 options in a single segmented control.",
+    "Use the small variant as the default on touch/mobile — minimum touch target is 44px."
+  ],
+  "accessibility": [
+    "Wrapper uses <code>role=\"group\"</code> with a descriptive <code>aria-label</code>.",
+    "Each button uses <code>aria-pressed</code> to communicate active state to screen readers.",
+    "Fully keyboard navigable via <kbd>Tab</kbd> — active button receives visible focus via <code>:focus-visible</code>.",
+    "Active button has <code>cursor: default</code> — it is not re-clickable.",
+    "Small variant is desktop-only — never use as the default on touch devices (minimum touch target is 44px)."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "variant class",
+      "type": "'pos-segmented-control--highlighted' | '--subtle' | (none = default)",
+      "default": "none (default)",
+      "description": "Choose based on the surface it sits on — see CLAUDE.md \"Toggle group — variant selection by surface\"."
+    },
+    {
+      "name": "pos-segmented-control--small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Compact size — desktop only, never the default on touch (44px minimum touch target)."
+    },
+    {
+      "name": "pos-segmented-control-btn--active / [aria-pressed]",
+      "type": "boolean class + attribute",
+      "default": "false",
+      "description": "Exactly one segment must be active at any time."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "default",
+      "highlighted",
+      "subtle"
+    ],
+    "state": [
+      "inactive",
+      "hover",
+      "active",
+      "focus",
+      "disabled"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "swatch": false
+      },
+      {
+        "css": "--pos-primitive-size-05",
+        "figma": "Size/0.5 unit",
+        "swatch": false
+      },
+      {
+        "css": "--pos-height-button",
+        "figma": null,
+        "swatch": false
+      }
+    ],
+    "layout-small": [
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "swatch": false
+      },
+      {
+        "css": "--pos-primitive-size-05",
+        "figma": "Size/0.5 unit",
+        "swatch": false
+      },
+      {
+        "css": "--pos-height-button-small",
+        "figma": null,
+        "swatch": false
+      }
+    ],
+    "typography": [
+      {
+        "css": "--pos-font-buttons",
+        "figma": "Family/buttons",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-big-button-text",
+        "figma": "Size/big button text",
+        "swatch": false
+      }
+    ],
+    "typography-small": [
+      {
+        "css": "--pos-font-buttons",
+        "figma": "Family/buttons",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-small-button-text",
+        "figma": "Size/small button text",
+        "swatch": false
+      }
+    ],
+    "focus_indicator": [
+      {
+        "css": "--pos-color-focused",
+        "figma": "General elements-theme/Focused",
+        "swatch": true
+      },
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "swatch": false
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "selector": ".pos-segmented-control:not(.pos-segmented-control--highlighted):not(.pos-segmented-control--subtle)",
+      "label": "Default",
+      "states": {
+        "inactive": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "slidingIndicator",
+          "description": "Tracks the active segment with a sliding CSS-animated indicator"
+        }
+      ]
+    },
+    "highlighted": {
+      "selector": ".pos-segmented-control.pos-segmented-control--highlighted",
+      "label": "Highlighted",
+      "states": {
+        "inactive": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "slidingIndicator",
+          "description": "Tracks the active segment with a sliding CSS-animated indicator"
+        }
+      ]
+    },
+    "subtle": {
+      "selector": ".pos-segmented-control.pos-segmented-control--subtle",
+      "label": "Subtle",
+      "states": {
+        "inactive": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-inner",
+                  "figma": "Elevation/Inner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "slidingIndicator",
+          "description": "Tracks the active segment with a sliding CSS-animated indicator"
+        }
+      ]
+    }
+  },
+  "usageExample": "<div class=\"pos-segmented-control\" role=\"group\" aria-label=\"View\">\n  <button type=\"button\" class=\"pos-segmented-control-btn pos-segmented-control-btn--active\" aria-pressed=\"true\">Day</button>\n  <button type=\"button\" class=\"pos-segmented-control-btn\" aria-pressed=\"false\">Week</button>\n  <button type=\"button\" class=\"pos-segmented-control-btn\" aria-pressed=\"false\">Month</button>\n</div>",
+  "surfaces": [
+    {
+      "surface": "Content background",
+      "hex": "#ffffff",
+      "variants": [
+        "default",
+        "highlighted"
+      ]
+    },
+    {
+      "surface": "Page background",
+      "hex": "#f3f5f8",
+      "variants": [
+        "highlighted",
+        "subtle"
+      ]
+    },
+    {
+      "surface": "Highlighted background",
+      "hex": "#e7ecf3",
+      "variants": [
+        "default",
+        "subtle"
+      ]
+    }
+  ]
+}
+{% endraw %}
+</script>

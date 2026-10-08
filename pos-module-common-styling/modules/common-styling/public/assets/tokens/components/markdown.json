@@ -1,0 +1,178 @@
+{
+  "_about": "Component spec for pos-markdown (style/pos-markdown.css + views/partials/forms/markdown.liquid + assets/js/pos-markdown.js). Built 2026-09-04 from already-shipped CSS (61 lines) that had no Tokens-panel spec, docs page, or nav wiring. Wraps the EasyMDE library (real npm dependency, easymde ^2.20.0, already bundled into assets/js/dependency-easyMde.js/style/dependency-easyMde.css — not a new external dependency), whose toolbar/editor/preview DOM is generated entirely by EasyMDE's own JS at runtime from a plain <textarea>. Real pre-existing gap found and fixed, same class of bug as File upload: init.liquid linked dependency-easyMde.css but never actually loaded dependency-easyMde.js or pos-markdown.js at all — .pos-markdown elements silently did nothing anywhere in the new DS until now. Fixed with a guarded dynamic import (only loads when a .pos-markdown element is actually present), consistent with how the upload dependency is already loaded in this same file. Per the same live-widget precedent established for File upload, the docs preview mounts a real, live EasyMDE editor (toolbar, live preview toggle, syntax highlighting all genuinely interactive) rather than a hand-approximated static mockup; real image-upload attempts fail gracefully since the preview has no real backend endpoint. No Variant/State toggle exists — EasyMDE manages its own internal interaction state (which toolbar buttons are active, preview on/off), which can't be simulated via a debug class; documented as a single static representative view, the same known limitation already accepted for Card/Feature card/File upload. Four uses of !important already exist in this component's CSS (pre-existing, not added by this pass) — flagged, not silently removed: EasyMDE's own bundled CSS sets competing border/radius rules directly on the same elements at equal or higher specificity, and removing !important without live verification risks silently breaking the actual visual override. Regenerate spec-markdown.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. 2026-09-04: toolbar buttons previously inherited the toolbar's own text color (--pos-color-input-text) instead of an icon token now use --pos-color-content-icon-interactive at rest / --pos-color-interactive on hover, the standard icon-signals-interactivity pattern. Also styled EasyMDE's own .disabled-for-preview class (added to formatting buttons while the live preview is active, but shipped with zero matching CSS in the bundled dependency-easyMde.css — buttons looked fully clickable with no indication they currently do nothing) with --pos-color-content-icon-disabled + pointer-events: none. 2026-09-04: fixed the code-editor (CodeMirror) area rendering with a hardcoded white background/black text (EasyMDE's own bare .CodeMirror rule, specificity 0,1,0) regardless of theme — added background-color/color using --pos-color-input-background/--pos-color-input-text on the .EasyMDEContainer .CodeMirror selector (0,2,0, wins without !important, verified no competing higher-specificity EasyMDE rule targets the same properties). 2026-09-04: corrected the CodeMirror background/text fix from the same day — the input-specific tokens (--pos-color-input-background/-text) were wrong for the code-editor area; switched to the generic --pos-color-content-background/--pos-color-content-text tokens, confirmed via live dark-mode screenshot that the input tokens did not switch correctly. 2026-09-04 (3rd attempt): the plain (non-!important) background-color/color on .EasyMDEContainer .CodeMirror still did not visibly apply in the browser despite correct specificity math (0,2,0 vs EasyMDE bare .CodeMirror at 0,1,0, no competing !important found in dependency-easyMde.css) — escalated both properties to !important, matching the precedent already set on this exact selector for border-color/radius in the same rule block. 2026-09-04: fixed the active/hover toolbar button background — EasyMDE's own bundled CSS hardcodes #fcfcfc/#95a5a6 (background/border), invisible against a dark toolbar in dark/HC mode; overridden with --pos-color-highlight-background/--pos-color-input-frame. 2026-09-04: fixed a real selector bug in the disabled-for-preview fix from earlier the same day — checked dependency-easyMde.js directly and found the class actually lands on the toolbar container itself (toolbar_div), never on individual buttons, so .editor-toolbar button.disabled-for-preview never matched anything and no icon ever visibly grayed out. Corrected to .editor-toolbar.disabled-for-preview button:not(.active) — the :not(.active) exclusion keeps the preview-toggle button itself clickable so the user can still exit preview mode.",
+  "component": "markdown",
+  "name": "Markdown editor",
+  "description": "A rich Markdown text editor (built on EasyMDE) with a formatting toolbar, live preview, syntax highlighting, and optional image upload.",
+  "whenToUse": [
+    "Letting a user write long-form, formatted content (descriptions, articles, comments) using Markdown syntax with a visual toolbar.",
+    "Needing a live preview of the rendered Markdown, or drag-and-drop/paste image upload inline with the content."
+  ],
+  "whenNotToUse": [
+    "A short, single-line text input — use Input instead.",
+    "Plain, unformatted multi-line text with no Markdown/preview/upload needs — use Textarea instead."
+  ],
+  "do": [
+    "Trigger via <code>new window.pos.modules.markdown({ container })</code> — never build or style EasyMDE's toolbar/preview markup by hand, it is entirely generated at runtime.",
+    "Provide a real <code>presigned_upload</code> object in production if image upload is needed — the upload endpoint is required for pasted/dropped images to actually save.",
+    "Set <code>minlength</code>/<code>maxlength</code> to match real validation needs — both are enforced on form submit via the built-in <code>module.validate()</code>."
+  ],
+  "dont": [
+    "Restyle EasyMDE's toolbar/editor beyond the color/radius tokens already applied in <code>pos-markdown.css</code> — its internal layout is controlled by the library, not this design system.",
+    "Rely on this component in a docs/demo context expecting real image uploads to succeed — without a real <code>presigned_upload</code> endpoint, the editor works but uploads fail."
+  ],
+  "accessibility": [
+    "EasyMDE's toolbar buttons are keyboard-operable and carry their own accessible labels/titles.",
+    "Validation errors are separate <code>&lt;li&gt;</code> elements toggled via a class, not injected dynamically — verify they're associated with the field for screen reader users if customizing further."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": "n/a (required)",
+      "description": "Name for the underlying <textarea> carrying the Markdown content."
+    },
+    {
+      "name": "presigned_upload",
+      "type": "object",
+      "default": "none",
+      "description": "Presigned upload data (upload_url + upload_url_payload) for the inline image-upload feature."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": "''",
+      "description": "Pre-filled Markdown content for the textarea."
+    },
+    {
+      "name": "minlength",
+      "type": "number",
+      "default": "0",
+      "description": "Minimum character count, enforced on form submit."
+    },
+    {
+      "name": "maxlength",
+      "type": "number",
+      "default": "10000",
+      "description": "Maximum character count, enforced on form submit."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "markdown"
+    ],
+    "state": [
+      "normal"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "markdown": {
+      "label": "Markdown editor",
+      "classes": [
+        "pos-markdown"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Toolbar background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Toolbar, code-editor, and preview-pane border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "role": "Toolbar base text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Code-editor (CodeMirror) background — the generic content-background token, not the toolbar/input-specific one",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Code-editor (CodeMirror) typed text color — the generic normal-text token, not the toolbar/input-specific one",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Live preview pane background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Toolbar button icon color at rest — the subdued icon-signals-interactivity pattern (RULES.md §4.10)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Toolbar button icon color on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Toolbar button icon color while the live preview is showing (EasyMDE's own .disabled-for-preview class, unstyled by its bundled CSS until now)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Active/hover toolbar button background — overrides EasyMDE's own hardcoded near-white background, which stayed white regardless of theme",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Toolbar height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Toolbar horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Toolbar (top corners) and code-editor (bottom corners) radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-card",
+                  "figma": "Paddings/cards, boxes",
+                  "role": "Live preview pane padding",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-markdown\" id=\"my-editor\">\n  <textarea class=\"pos-forms-text\" rows=\"2\" name=\"my_field\" data-upload-url=\"{{ presigned_upload.upload_url }}\"></textarea>\n  <ul class=\"pos-form-errors\">\n    <li class=\"pos-form-error pos-markdown-error-disabled\" data-pos-markdown-error-minlength>Too short</li>\n    <li class=\"pos-form-error pos-markdown-error-disabled\" data-pos-markdown-error-maxlength>Too long</li>\n  </ul>\n</div>\n\n<script>\n  new window.pos.modules.markdown({\n    container: document.getElementById('my-editor'),\n  });\n<\\/script>"
+}

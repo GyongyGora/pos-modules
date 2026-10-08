@@ -1,0 +1,781 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/tokens' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <div class="styleguide-ds-article-header-row">
+            <h1 class="pos-heading-1">Design Tokens</h1>
+            <div class="token-download-wrapper" id="token-download-wrapper">
+              <button class="pos-button pos-button-primary token-download-btn" id="token-download-btn" aria-haspopup="true" aria-expanded="false">
+                Download tokens
+                <span class="token-download-chevron" aria-hidden="true">
+                  <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6 -6" /></svg>
+                </span>
+              </button>
+              <div class="token-download-menu" id="token-download-menu" hidden>
+                <button class="token-download-option" data-download="figma">Token JSON (dev)</button>
+                <button class="token-download-option" data-download="css">Token CSS (dev)</button>
+              </div>
+            </div>
+          </div>
+          <p>All visual properties are defined as tokens, sourced from Figma. Hierarchy: <strong>Primitive &rarr; Semantic &rarr; Component</strong>. Components must only reference semantic or component-level tokens &mdash; never color primitives directly.</p>
+          <p>These are the <strong>core tokens</strong> of the design system. Every component &mdash; buttons, inputs, cards, chips, dialogs, and all future components &mdash; is built consistently from this same set. Changing a core token value propagates automatically across the entire system.</p>
+        </header>
+
+        <div class="styleguide-token-table-wrapper" id="token-table-wrapper" data-name-mode="figma">
+          <p class="styleguide-token-loading" id="token-loading">Loading token data&hellip;</p>
+        </div>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+
+  var tokenJsonUrl = '{{ "modules/common-styling/tokens/token-map.json" | asset_url }}';
+  var wrapper      = document.getElementById('token-table-wrapper');
+  var loading      = document.getElementById('token-loading');
+
+  /* ── SVG icons ────────────────────────────────────────────────── */
+  var ICON_COPY  = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>';
+  var ICON_CHECK = '<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></svg>';
+  var ICON_NAV_MENU = '<svg width="14" height="14" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>';
+
+  /* ── helpers ──────────────────────────────────────────────────── */
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;');
+  }
+
+  function isColor(val) {
+    if (!val) return false;
+    var v = String(val).trim();
+    return /^#[0-9a-f]/i.test(v) || /^rgb/.test(v) || /^hsl/.test(v);
+  }
+
+  /* ── token description proposals (for review) ─────────────────── */
+  /* type: 'improve' = better version of existing  |  'new' = no existing desc  |  'fix' = error in existing */
+  var tokenProposals = {
+    /* ── Brand primitives ── */
+    /* Brand Primary 1 — approved, in token-map.json */
+    /* Brand Primary 1 0% — approved, in token-map.json */
+    /* Brand Primary 1 70% — intentionally left empty */
+    /* Brand Primary 2–5 — approved, in token-map.json */
+    /* Brand Supplementary 1–4 — approved, in token-map.json */
+
+    /* ── Greyscale primitives — no descriptions needed ── */
+
+    /* ── Utility primitives ── */
+    /* Red Deep/Mid/Light/Extra Light — approved, in token-map.json */
+    /* Red Dark — approved, in token-map.json */
+    /* Yellow/Green utility primitives — approved, in token-map.json */
+
+    /* ── Spacing & Sizing ── */
+    /* Paddings/cards, boxes — approved, in token-map.json */
+    /* Paddings/table cells — approved, in token-map.json */
+    /* Paddings/page content — approved, in token-map.json */
+    /* Gaps/section title-content — approved, in token-map.json */
+    /* Gaps/section-section — approved, in token-map.json */
+    /* Remaining gaps + icon sizes — approved, in token-map.json */
+
+    /* ── Typography — family ── */
+    /* Family/headlines — approved, in token-map.json */
+    /* Family/body, sidenotes, code, buttons, badge — approved, in token-map.json */
+
+    /* ── General elements — semantic ── */
+    /* Interactive text hover — approved, in token-map.json */
+    /* Interactive text active — approved, in token-map.json */
+    /* Interactive text disabled — approved, in token-map.json */
+    /* Focused — approved, in token-map.json */
+    /* Focused inverse — approved, in token-map.json */
+
+    /* ── Backgrounds — semantic ── */
+    /* Shadow — approved, in token-map.json */
+    /* Content Background 50% — approved, in token-map.json */
+
+    /* ── Gradients ── */
+    /* Gradient1 From — approved, in token-map.json */
+    /* Gradient1 To — approved, in token-map.json */
+    /* Gradient2 From — approved, in token-map.json */
+    /* Gradient2 To — approved, in token-map.json */
+    /* Legibility gradient — approved, in token-map.json */
+
+    /* ── Utility state tokens — all approved, in token-map.json ── */
+
+    /* ── Button Primary states — all approved, in token-map.json ── */
+    /* Button Prim Bg Hover — approved */
+    /* Button Prim Bg Active — approved */
+    /* Button Prim Bg Disabled — approved */
+    /* Button Prim Frame Hover — approved */
+    /* Button Prim Frame Active — approved */
+    /* Button Prim Frame Disabled — approved */
+    /* Button Prim Text, icon Hover — approved */
+    /* Button Prim Text, icon Active — approved */
+    /* Button Prim Text, icon Disabled — approved */
+
+    /* ── Button Secondary states — all approved, in token-map.json ── */
+    /* Button Sec Bg Normal 100% — approved */
+    /* Button Sec Bg Normal 0% — approved */
+    /* Button Sec Bg Hover 0% — approved */
+    /* Button Sec Bg Hover 100% — approved */
+    /* Button Sec Bg Active — approved */
+    /* Button Sec Bg Disabled — approved */
+    /* Button Sec Frame Hover — approved */
+    /* Button Sec Frame Active — approved */
+    /* Button Sec Frame Disabled — approved */
+    /* Button Sec Text, icon Hover — approved */
+    /* Button Sec Text, icon Active — approved */
+    /* Button Sec Text, icon Disabled — approved */
+
+    /* ── Form input states — all approved, in token-map.json ── */
+    /* Input field Bg Normal — approved */
+    /* Input field Bg Hover, Active — approved */
+    /* Input field Bg Filled — approved */
+    /* Input field Bg Disabled — approved */
+    /* Input field Frame Normal — approved */
+    /* Input field Frame Hover, Active — approved */
+    /* Input field Frame Filled — approved */
+    /* Input field Frame Disabled — approved */
+    /* Input Field Text Normal — approved */
+    /* Input Field Text Hover, Active — approved */
+    /* Input Field Text Filled — approved */
+    /* Input Field Text Disabled — approved */
+
+    /* ── Button Inverted Primary states — all approved, in token-map.json ── */
+    /* Button Inv Bg Normal — approved */
+    /* Button Inv Bg Hover — approved */
+    /* Button Inv Bg Active — approved */
+    /* Button Inv Bg Disabled — approved */
+    /* Button Inv Frame Normal — approved */
+    /* Button Inv Frame Hover — approved */
+    /* Button Inv Frame Active — approved */
+    /* Button Inv Frame Disabled — approved */
+    /* Button Inv Text, icon — approved */
+    /* Button Inv Text, icon Hover — approved */
+    /* Button Inv Text, icon Active — approved */
+    /* Button Inv Text, icon Disabled — approved */
+
+    /* ── Button Inverted Secondary states — all approved, in token-map.json ── */
+    /* Button InvSec Bg Normal — approved */
+    /* Button InvSec Bg Hover — approved */
+    /* Button InvSec Bg Active — approved */
+    /* Button InvSec Bg Disabled — approved */
+    /* Button InvSec Frame Normal — approved */
+    /* Button InvSec Frame Hover — approved */
+    /* Button InvSec Frame Active — approved */
+    /* Button InvSec Frame Disabled — approved */
+    /* Button InvSec Text, icon — approved */
+    /* Button InvSec Text, icon Hover — approved */
+    /* Button InvSec Text, icon Active — approved */
+    /* Button InvSec Text, icon Disabled — approved */
+  };
+
+  /* ── section / label mapping ──────────────────────────────────── */
+  function getSectionId(figmaGroup) {
+    if (figmaGroup.indexOf('--- BT Primitives') === 0) return 'primitive';
+    if (figmaGroup.indexOf('BT Color Variables') === 0) {
+      if (figmaGroup.indexOf('/ Buttons') !== -1 || figmaGroup.indexOf('/ Forms') !== -1) return 'component';
+      return 'color';
+    }
+    return 'semantic';
+  }
+
+  function getGroupLabel(figmaGroup) {
+    if (figmaGroup.indexOf('--- BT Primitives / ') === 0) {
+      var stripped = figmaGroup.replace('--- BT Primitives / ', '');
+      /* display-only rename — figma_group data itself stays verbatim for Figma traceability */
+      if (stripped === 'Colors / High Contrast') return 'Colors / a11y';
+      return stripped;
+    }
+    if (figmaGroup.indexOf('BT Color Variables') === 0 && figmaGroup.indexOf('light mode') !== -1) {
+      var afterLightMode = figmaGroup.split('light mode')[1] || '';
+      var sub = afterLightMode.replace(/^\s*\/\s*/, '').trim();
+      return sub || 'Text & Icons';
+    }
+    var map = {
+      'BT Corner variables':     'Corner Radius',
+      'BT Space variables':      'Spacing & Sizing',
+      'BT Typography variables': 'Typography'
+    };
+    return map[figmaGroup] || figmaGroup;
+  }
+
+  /* ── SVG icons for color mode toggle ─────────────────────────── */
+  var ICON_SUN  = '<svg width="13" height="13" aria-hidden="true" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>';
+  var ICON_MOON = '<svg width="13" height="13" aria-hidden="true" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></svg>';
+  var ICON_A11Y   = '<svg width="13" height="13" aria-hidden="true" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 17a5 5 0 0 0 0 -10v10" /></svg>';
+
+  /* ── sticky header bar (rendered once) ───────────────────────── */
+  function renderHeaderBar() {
+    var selectHtml =
+      '<select class="t-name-select" aria-label="Token name format">' +
+        '<option value="figma">Figma variables</option>' +
+        '<option value="css">CSS</option>' +
+      '</select>';
+
+    /* sun/moon/a11y 3-button toggle — uses pos-segmented-control DS component (default variant on highlight-background) */
+    var colorModeToggle =
+      '<div class="pos-segmented-control pos-segmented-control--small" id="t-color-mode-toggle" role="group" aria-label="Color mode preview" style="display:none">' +
+        '<button class="pos-segmented-control-btn pos-segmented-control-btn--active" data-color-mode-set="light" aria-pressed="true"  aria-label="Light mode">'          + ICON_SUN  + '</button>' +
+        '<button class="pos-segmented-control-btn"                                   data-color-mode-set="dark"  aria-pressed="false" aria-label="Dark mode">'           + ICON_MOON + '</button>' +
+        '<button class="pos-segmented-control-btn"                                   data-color-mode-set="a11y"    aria-pressed="false" aria-label="High contrast mode">' + ICON_A11Y   + '</button>' +
+      '</div>';
+
+    var navBtn =
+      '<div class="pos-popover">' +
+        '<button class="pos-button pos-button-primary pos-button-small pos-button--icon-only" popovertarget="t-nav-popup" aria-label="Jump to section">' +
+          ICON_NAV_MENU +
+          '<span class="pos-label">Jump to section</span>' +
+        '</button>' +
+        '<menu id="t-nav-popup" popover></menu>' +
+      '</div>';
+
+    return (
+      '<div class="styleguide-token-header-bar">' +
+        '<div class="styleguide-token-header-cell">' + navBtn + 'Token name ' + selectHtml + '</div>' +
+        '<div class="styleguide-token-header-cell">Reference</div>' +
+        '<div class="styleguide-token-header-cell">Value ' + colorModeToggle + '</div>' +
+        '<div class="styleguide-token-header-cell">Description</div>' +
+      '</div>'
+    );
+  }
+
+  /* ── table renderer (no thead) ────────────────────────────────── */
+  function renderTable(tokens, cssToFigma, rowCssSet, lightRefToRowCss) {
+    var rows = '';
+
+    tokens.forEach(function (t) {
+      var lightChain = t.light_chain || [];
+      var darkChain  = t.dark_chain  || [];
+      var a11yChain    = t.a11y_chain    || [];
+      var hasDark    = darkChain.length > 0;
+      var hasA11y      = a11yChain.length > 0;
+
+      /* ── reference (direct pointer — one level) ────────────────── */
+      function makeRefHtml(directRef) {
+        if (!directRef) return '<span class="t-empty">\u2014</span>';
+        var figmaFull = cssToFigma[directRef]
+          || cssToFigma[directRef.replace(/^--pos-color-(dark|a11y)-/, '--pos-color-light-')]
+          || directRef;
+        /* strip group prefix — show only the token name after the last "/" */
+        var figmaName = figmaFull.indexOf('/') !== -1 ? figmaFull.split('/').pop() : figmaFull;
+        if (directRef.indexOf('--') === 0) {
+          /* primitive font reference → external Google Fonts link */
+          if (directRef.indexOf('--pos-primitive-font-') === 0) {
+            var fontUrl = 'https://fonts.google.com/specimen/' + figmaName.replace(/ /g, '+');
+            return (
+              '<a class="pos-tag pos-tag-interactive t-ref-pill t-name-figma" href="' + esc(fontUrl) + '" target="_blank" rel="noopener">\u2192 ' + esc(figmaName) + '</a>' +
+              '<a class="pos-tag pos-tag-interactive t-ref-pill t-name-css"   href="' + esc(fontUrl) + '" target="_blank" rel="noopener">\u2192 ' + esc(directRef) + '</a>'
+            );
+          }
+          /* CSS variable — clickable if target row exists directly, or via light/dark alias resolution */
+          var rowCss = directRef.replace(/^--pos-color-dark-/, '--pos-color-light-');
+          /* direct hit */
+          if (rowCssSet[rowCss]) {
+            return (
+              '<button class="pos-tag pos-tag-interactive t-ref-pill t-name-figma" data-ref-css="' + esc(rowCss) + '">\u2192 ' + esc(figmaName) + '</button>' +
+              '<button class="pos-tag pos-tag-interactive t-ref-pill t-name-css"   data-ref-css="' + esc(rowCss) + '">\u2192 ' + esc(directRef) + '</button>'
+            );
+          }
+          /* indirect hit — light/dark alias resolves to a theme-neutral row (e.g. --pos-color-light-icon-interactive → --pos-color-interactive) */
+          var resolvedCss = lightRefToRowCss[directRef] || lightRefToRowCss[rowCss];
+          if (resolvedCss && rowCssSet[resolvedCss]) {
+            return (
+              '<button class="pos-tag pos-tag-interactive t-ref-pill t-name-figma" data-ref-css="' + esc(resolvedCss) + '">\u2192 ' + esc(figmaName) + '</button>' +
+              '<button class="pos-tag pos-tag-interactive t-ref-pill t-name-css"   data-ref-css="' + esc(resolvedCss) + '">\u2192 ' + esc(directRef) + '</button>'
+            );
+          }
+        }
+        /* non-variable value or unresolvable CSS var — plain display, no interaction */
+        return (
+          '<span class="pos-tag t-name-figma">\u2192 ' + esc(figmaName) + '</span>' +
+          '<span class="pos-tag t-name-css">\u2192 '   + esc(directRef) + '</span>'
+        );
+      }
+
+      var chainHtml;
+      if (!hasDark && !hasA11y) {
+        chainHtml = makeRefHtml(t.light_direct_ref || null);
+      } else {
+        chainHtml =
+          '<span class="t-color-light">' + makeRefHtml(t.light_direct_ref || null) + '</span>' +
+          (hasDark ? '<span class="t-color-dark">'  + makeRefHtml(t.dark_direct_ref  || null) + '</span>' : '') +
+          (hasA11y   ? '<span class="t-color-a11y">'    + makeRefHtml(t.a11y_direct_ref    || null) + '</span>' : '');
+      }
+
+      /* ── value cell ─────────────────────────────────────────── */
+      var COPY_LABEL = ICON_COPY + ' <span>copy</span>';
+      var DONE_LABEL = ICON_CHECK + ' <span>copied</span>';
+
+      function copyPill(extraClass, textHtml, dataAttrs) {
+        return (
+          '<button class="pos-tag pos-tag-confirmation t-copy-pill' + (extraClass ? ' ' + extraClass : '') + '"' +
+            dataAttrs + ' aria-label="Copy">' +
+            '<span class="t-copy-pill-text">' + textHtml + '</span>' +
+            '<span class="t-copy-pill-overlay" aria-hidden="true">' + COPY_LABEL + '</span>' +
+            '<span class="t-copy-pill-done"    aria-hidden="true">' + DONE_LABEL + '</span>' +
+          '</button>'
+        );
+      }
+
+      function nameTag(extraClass, textHtml) {
+        return '<span class="pos-tag' + (extraClass ? ' ' + extraClass : '') + '">' + textHtml + '</span>';
+      }
+
+      var lightVal = t.light_resolved || t.figma_value || '';
+      var darkVal  = hasDark ? (t.dark_resolved || '') : '';
+      var a11yVal    = hasA11y   ? (t.a11y_resolved   || '') : '';
+
+      var darkCss       = hasDark ? ((t.dark_chain && t.dark_chain[0]) || t.css.replace(/^--pos-color-light-/, '--pos-color-dark-')) : null;
+      var a11yCss         = hasA11y ? ((t.a11y_chain && t.a11y_chain[0]) || t.css.replace(/^--pos-color-light-/, '--pos-color-a11y-')) : null;
+      var nameAttrs     = ' data-figma="' + esc(t.figma_name) + '" data-css="' + esc(t.css) + '"';
+      var lightValAttrs = ' data-value="' + esc(lightVal) + '"';
+      var darkValAttrs  = ' data-value="' + esc(darkVal)  + '"';
+      var a11yValAttrs    = ' data-value="' + esc(a11yVal)    + '"';
+
+      var lightSwatch = isColor(lightVal) ? '<span class="t-swatch" style="background:' + esc(lightVal) + '"></span>' : '';
+      var darkSwatch  = isColor(darkVal)  ? '<span class="t-swatch" style="background:' + esc(darkVal)  + '"></span>' : '';
+      var a11ySwatch    = isColor(a11yVal)    ? '<span class="t-swatch" style="background:' + esc(a11yVal)    + '"></span>' : '';
+
+      var valueCellHtml;
+      if (!hasDark && !hasA11y) {
+        /* primitive / semantic — single value, no mode wrappers */
+        var swatch = isColor(lightVal) ? '<span class="t-swatch" style="background:' + esc(lightVal) + '"></span>' : '';
+        valueCellHtml = '<div class="t-value-cell">' + swatch + copyPill('', esc(lightVal), lightValAttrs) + '</div>';
+      } else {
+        /* color token — separate light/dark/a11y value cells */
+        valueCellHtml =
+          '<span class="t-color-light t-value-cell">' + lightSwatch + copyPill('', esc(lightVal), lightValAttrs) + '</span>' +
+          (hasDark ? '<span class="t-color-dark t-value-cell">'  + darkSwatch  + copyPill('', esc(darkVal),  darkValAttrs)  + '</span>' : '') +
+          (hasA11y   ? '<span class="t-color-a11y t-value-cell">'    + a11ySwatch    + copyPill('', esc(a11yVal),    a11yValAttrs)    + '</span>' : '');
+      }
+
+      /* name cell: figma name is same for all modes; CSS name switches with color mode */
+      var nameCellHtml =
+        nameTag('t-name-figma', esc((t.figma_name || t.css).replace(/^[^\/]+\//, ''))) +
+        (hasDark || hasA11y
+          ? '<span class="t-color-light">' + nameTag('t-name-css', esc(t.css))      + '</span>' +
+            (hasDark ? '<span class="t-color-dark">'  + nameTag('t-name-css', esc(darkCss)) + '</span>' : '') +
+            (hasA11y   ? '<span class="t-color-a11y">'    + nameTag('t-name-css', esc(a11yCss))   + '</span>' : '')
+          : nameTag('t-name-css', esc(t.css))
+        );
+
+      rows +=
+        '<tr data-css="' + esc(t.css) + '">' +
+          '<td>' + nameCellHtml + '</td>' +
+          /* reference chain */
+          '<td>' + chainHtml + '</td>' +
+          /* value */
+          '<td>' + valueCellHtml + '</td>' +
+          /* description — existing (grey) + proposal (blue/red) */
+          (function () {
+            var existHtml = t.description
+              ? '<span class="t-desc-existing">' + esc(t.description) + '</span>'
+              : '';
+            var prop = tokenProposals[t.figma_name];
+            var propHtml = prop
+              ? '<span class="t-desc-proposal t-desc-proposal--' + prop.type + '">' + esc(prop.text) + '</span>'
+              : '';
+            return '<td class="t-desc-cell">' + existHtml + propHtml + '</td>';
+          }()) +
+        '</tr>';
+    });
+
+    return (
+      '<table class="styleguide-token-table">' +
+        '<colgroup>' +
+          '<col class="col-token">' +
+          '<col class="col-chain">' +
+          '<col class="col-value">' +
+          '<col class="col-desc">' +
+        '</colgroup>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>'
+    );
+  }
+
+  /* ── page renderer ────────────────────────────────────────────── */
+  function renderPage(data) {
+    var tokens = data.tokens;
+
+    /* CSS → Figma reverse map for chain display */
+    var cssToFigma = {};
+    tokens.forEach(function (t) {
+      if (t.css) cssToFigma[t.css] = t.figma_name;
+    });
+
+    /* CSS-only semantic tokens not in token-map.json (no Figma variable, lookup only) */
+    var cssOnlyMap = {
+      '--pos-color-light-icon-interactive':           'General elements-theme/Graphic Interactive',
+      '--pos-color-light-icon-interactive-hover':     'General elements-theme/Graphic Interactive Hover',
+      '--pos-color-light-icon-interactive-active':    'General elements-theme/Graphic Interactive Active',
+      '--pos-color-light-icon-interactive-disabled':  'General elements-theme/Graphic Interactive Disabled',
+      '--pos-color-light-icon-interactive-inverted':  'General elements-theme/Graphic Interactive Inverted',
+      '--pos-color-dark-icon-interactive':            'General elements-theme/Graphic Interactive',
+      '--pos-color-dark-icon-interactive-hover':      'General elements-theme/Graphic Interactive Hover',
+      '--pos-color-dark-icon-interactive-active':     'General elements-theme/Graphic Interactive Active',
+      '--pos-color-dark-icon-interactive-disabled':   'General elements-theme/Graphic Interactive Disabled',
+      '--pos-color-dark-icon-interactive-inverted':   'General elements-theme/Graphic Interactive Inverted'
+    };
+    Object.keys(cssOnlyMap).forEach(function (k) { cssToFigma[k] = cssOnlyMap[k]; });
+
+    /* also map primitive font vars: extract font name from resolved value
+       e.g. --pos-primitive-font-google-sans → "Google Sans" */
+    tokens.forEach(function (t) {
+      var chain = t.light_chain || [];
+      if (chain.length >= 2) {
+        var primitive = chain[chain.length - 1];
+        if (primitive.indexOf('--pos-primitive-font-') === 0 && !cssToFigma[primitive]) {
+          var resolved = t.light_resolved || '';
+          var m = resolved.match(/^'?([^',]+)/);
+          if (m) cssToFigma[primitive] = m[1].trim();
+        }
+      }
+    });
+
+    /* build set of all CSS variables that appear as rows — used by makeRefHtml to decide
+       whether a reference is navigable (target row exists) or just a plain value display */
+    var rowCssSet = {};
+    tokens.forEach(function (t) { if (t.css && !t.table_hidden) rowCssSet[t.css] = true; });
+
+    /* build reverse map: light/dark alias → theme-neutral row CSS
+       uses chain[1] (the light/dark-specific intermediate alias) from each token's chain
+       e.g. --pos-color-light-icon-interactive → --pos-color-interactive
+       lets references that use light/dark-prefixed aliases still resolve to a navigable row */
+    var lightRefToRowCss = {};
+    tokens.forEach(function (t) {
+      if (!t.css || t.table_hidden) return;
+      /* Only build the map for theme-neutral tokens (--pos-color-* without light-/dark- prefix).
+         Light/dark-prefixed tokens (e.g. --pos-color-light-input-hover-frame) also have
+         --pos-color-light-icon-interactive as chain[1], which would overwrite the correct mapping
+         from the canonical semantic token and cause wrong scroll targets. */
+      if (t.css.indexOf('--pos-color-light-') === 0 || t.css.indexOf('--pos-color-dark-') === 0) return;
+      var lc = t.light_chain || [];
+      var dc = t.dark_chain  || [];
+      if (lc[1] && lc[1] !== t.css) lightRefToRowCss[lc[1]] = t.css;
+      if (dc[1] && dc[1] !== t.css) lightRefToRowCss[dc[1]] = t.css;
+    });
+
+    /* group tokens by figma_group, preserving order — skip table_hidden entries */
+    var groupMap   = {};
+    var groupOrder = [];
+    tokens.forEach(function (t) {
+      if (t.table_hidden) return;
+      if (!groupMap[t.figma_group]) {
+        groupMap[t.figma_group] = [];
+        groupOrder.push(t.figma_group);
+      }
+      groupMap[t.figma_group].push(t);
+    });
+
+    var sectionDefs = [
+      {
+        id:    'primitive',
+        label: 'Primitive Tokens',
+        desc:  'Raw values \u2014 the palette. Value primitives (size, radius, typography) may be used directly when no semantic equivalent exists. Color primitives must never be used directly \u2014 they are fixed values that do not switch between light and dark mode. Always reference color through semantic tokens (\u2014pos-color-*).'
+      },
+      {
+        id:    'semantic',
+        label: 'Semantic Tokens',
+        desc:  'Role-based tokens that reference primitives. Use these when styling components.'
+      },
+      {
+        id:    'color',
+        label: 'Color Tokens',
+        desc:  'Semantic color tokens define usage-based colors that change across modes (e.g. light and dark). They are built on primitive tokens, allowing easy customization to match your brand or neutral palette.'
+      },
+      {
+        id:    'component',
+        label: 'Component Tokens',
+        desc:  'Component-specific color tokens that map semantic tokens to concrete component roles. These control the exact colors used by each component variant and state \u2014 making it easy to customize a single component without affecting the rest of the system.\nThe tables below cover the core component tokens (buttons and forms), which are part of the shared token foundation. Tokens for other components are documented on each component\u2019s own page.'
+      }
+    ];
+
+    var sectionGroups = { primitive: [], semantic: [], color: [], component: [] };
+    groupOrder.forEach(function (key) {
+      var sid = getSectionId(key);
+      if (sectionGroups[sid]) sectionGroups[sid].push(key);
+    });
+
+    /* one sticky header for all tables */
+    var html = renderHeaderBar();
+
+    /* per-group descriptions — keyed by exact figma_group value */
+    var groupDescriptions = {
+      '--- BT Primitives / Colors / Brand':
+        'Brand colors can be freely extended \u2014 add as many as your brand requires. These are the foundation for interactive, standout, and gradient tokens, and are the primary candidates for customization when creating a white-label or branded theme.',
+      '--- BT Primitives / Colors / Greyscale':
+        'These are carefully calibrated neutral tones used for text, backgrounds, borders, and shadows throughout the system. While technically, it can be extended with any number of shades, customizing greyscale primitives is not recommended \u2014 the current set is designed to maintain consistent contrast and visual hierarchy across all components.',
+      '--- BT Primitives / Colors / Utility':
+        'Functional status colors for important (error/danger), confirmation (success), and warning states. Color-customization is possible if brand requirements demand it, but not advised \u2014 these are proven colors with well-established meaning for users.'
+    };
+
+    sectionDefs.forEach(function (section) {
+      var groups = sectionGroups[section.id];
+      if (!groups || groups.length === 0) return;
+
+      html += '<section class="styleguide-token-section" id="token-section-' + section.id + '">';
+      html += '<h2 class="pos-heading-2 styleguide-token-section-heading">' + esc(section.label) + '</h2>';
+      html += '<p class="styleguide-token-section-desc">' + esc(section.desc) + '</p>';
+
+      groups.forEach(function (groupKey) {
+        var groupDesc = groupDescriptions[groupKey] ? '<p class="styleguide-token-group-desc">' + esc(groupDescriptions[groupKey]) + '</p>' : '';
+        html +=
+          '<div class="styleguide-token-group">' +
+            '<h3 class="styleguide-token-group-label">' + esc(getGroupLabel(groupKey)) + '</h3>' +
+            groupDesc +
+            renderTable(groupMap[groupKey], cssToFigma, rowCssSet, lightRefToRowCss) +
+          '</div>';
+      });
+
+      html += '</section>';
+    });
+
+    return html;
+  }
+
+  /* ── event delegation: select sync + copy ─────────────────────── */
+  wrapper.addEventListener('change', function (e) {
+    if (!e.target.classList.contains('t-name-select')) return;
+    var mode = e.target.value;
+    wrapper.dataset.nameMode = mode;
+    /* keep all selects in sync (only one here, but future-proof) */
+    wrapper.querySelectorAll('.t-name-select').forEach(function (sel) {
+      sel.value = mode;
+    });
+  });
+
+  wrapper.addEventListener('click', function (e) {
+    /* ── reference pill: scroll to the referenced token row ──── */
+    var refBtn = e.target.closest('.t-ref-pill');
+    if (refBtn) {
+      var targetCss = refBtn.dataset.refCss;
+      if (targetCss) {
+        var targetRow = wrapper.querySelector('[data-css="' + targetCss + '"]');
+        if (targetRow) {
+          targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          /* add highlight after smooth scroll has had time to complete */
+          targetRow.classList.remove('t-row--highlight');
+          setTimeout(function () {
+            void targetRow.offsetHeight; /* force reflow so animation restarts cleanly */
+            targetRow.classList.add('t-row--highlight');
+            setTimeout(function () { targetRow.classList.remove('t-row--highlight'); }, 3000);
+          }, 700);
+        }
+      }
+      return;
+    }
+
+    var btn = e.target.closest('.t-copy-pill');
+    if (!btn) return;
+
+    var text;
+    if (btn.dataset.value !== undefined && btn.dataset.figma === undefined) {
+      text = btn.dataset.value;
+    } else {
+      text = wrapper.dataset.nameMode === 'css' ? btn.dataset.css : btn.dataset.figma;
+    }
+
+    navigator.clipboard.writeText(text).then(function () {
+      btn.classList.add('t-copy-pill--copied');
+      setTimeout(function () {
+        btn.classList.remove('t-copy-pill--copied');
+      }, 2000);
+    });
+  });
+
+  /* ── fetch & render ───────────────────────────────────────────── */
+  fetch(tokenJsonUrl)
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      loading.remove();
+      wrapper.insertAdjacentHTML('beforeend', renderPage(data));
+
+      /* ── Color mode toggle (sun/moon 2-button) ──────────────── */
+      (function () {
+        var modToggle    = document.getElementById('t-color-mode-toggle');
+        var colorSection = wrapper.querySelector('#token-section-color');
+        var compSection  = wrapper.querySelector('#token-section-component');
+        if (!modToggle || !colorSection) return;
+
+        function setColorMode(mode) {
+          wrapper.dataset.colorMode = mode;
+          modToggle.querySelectorAll('.pos-segmented-control-btn').forEach(function (btn) {
+            var active = btn.dataset.colorModeSet === mode;
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            btn.classList.toggle('pos-segmented-control-btn--active', active);
+          });
+        }
+
+        /* show toggle only when Color or Component Tokens section is in view, hide + reset when they leave.
+           Scroll listener is on the actual scroll container (.styleguide-ds-main / #main-content)
+           because the layout uses height:100dvh + overflow-y:auto on main — window never scrolls.
+           style.display is used instead of the hidden attribute because author CSS (display:inline-flex
+           on .pos-segmented-control) overrides the UA stylesheet's [hidden]{display:none}. */
+        function checkToggleVisibility() {
+          var h = window.innerHeight;
+          function inView(el) {
+            if (!el) return false;
+            var r = el.getBoundingClientRect();
+            return r.top < h * 0.9 && r.bottom > 80;
+          }
+          var visible = inView(colorSection) || inView(compSection);
+          if (visible && modToggle.style.display === 'none') {
+            modToggle.style.display = '';
+          } else if (!visible && modToggle.style.display !== 'none') {
+            modToggle.style.display = 'none';
+            setColorMode('light');
+          }
+        }
+
+        var mainEl = document.getElementById('main-content');
+        if (mainEl) {
+          mainEl.addEventListener('scroll', checkToggleVisibility, { passive: true });
+        }
+        /* check after layout settles (rAF ensures content has been painted) */
+        requestAnimationFrame(checkToggleVisibility);
+
+        /* set mode on button click */
+        modToggle.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-color-mode-set]');
+          if (btn) setColorMode(btn.dataset.colorModeSet);
+        });
+      }());
+
+      /* ── Section nav dropdown (uses pos-popover / native popover API) ── */
+      (function () {
+        var navPopup = document.getElementById('t-nav-popup');
+        var mainEl   = document.getElementById('main-content');
+        if (!navPopup) return;
+
+        wrapper.querySelectorAll('.styleguide-token-section').forEach(function (section) {
+          var h2 = section.querySelector('h2');
+          if (!h2) return;
+          var li  = document.createElement('li');
+          var btn = document.createElement('button');
+          btn.textContent = h2.textContent;
+          btn.addEventListener('click', function () {
+            navPopup.hidePopover();
+            if (mainEl) {
+              var rect     = section.getBoundingClientRect();
+              var mainRect = mainEl.getBoundingClientRect();
+              mainEl.scrollBy({ top: rect.top - mainRect.top - 16, behavior: 'smooth' });
+            }
+          });
+          li.appendChild(btn);
+          navPopup.appendChild(li);
+        });
+      }());
+    })
+    .catch(function (err) {
+      loading.textContent = 'Failed to load token data: ' + err.message;
+    });
+
+  /* ── Download tokens dropdown ─────────────────────────────────── */
+  (function () {
+    var dlBtn     = document.getElementById('token-download-btn');
+    var dlMenu    = document.getElementById('token-download-menu');
+    var dlWrapper = document.getElementById('token-download-wrapper');
+    if (!dlBtn || !dlMenu) return;
+
+    var primitivesUrl = '{{ "modules/common-styling/style/pos-primitives.css" | asset_url }}';
+    var configUrl     = '{{ "modules/common-styling/style/pos-config.css" | asset_url }}';
+    var tokenMapUrl   = '{{ "modules/common-styling/tokens/token-map.json" | asset_url }}';
+
+    function triggerDownload(content, filename, mime) {
+      var blob = new Blob([content], { type: mime });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+
+    function fetchText(url) {
+      return fetch(url).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      });
+    }
+
+    function openMenu() {
+      dlMenu.hidden = false;
+      dlBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      dlMenu.hidden = true;
+      dlBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    dlBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      dlMenu.hidden ? openMenu() : closeMenu();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!dlWrapper.contains(e.target)) closeMenu();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    dlMenu.addEventListener('click', function (e) {
+      var opt = e.target.closest('[data-download]');
+      if (!opt) return;
+      closeMenu();
+
+      var type = opt.dataset.download;
+
+      if (type === 'figma') {
+        fetchText(tokenMapUrl).then(function (content) {
+          triggerDownload(content, 'pos-token-map.json', 'application/json');
+        }).catch(function (err) { console.error('Download failed:', err); });
+      }
+
+      if (type === 'css') {
+        Promise.all([fetchText(primitivesUrl), fetchText(configUrl)])
+          .then(function (files) {
+            var today = new Date().toISOString().slice(0, 10);
+            var combined = [
+              '/* pOS Core Design System — CSS Tokens */',
+              '/* Generated: ' + today + ' */',
+              '',
+              '/* ── Primitive Tokens (pos-primitives.css) ─────────── */',
+              files[0],
+              '',
+              '/* ── Semantic + Component Tokens (pos-config.css) ───── */',
+              files[1]
+            ].join('\n');
+            triggerDownload(combined, 'pos-css-tokens.css', 'text/css');
+          }).catch(function (err) { console.error('Download failed:', err); });
+      }
+    });
+  }());
+
+})();
+</script>

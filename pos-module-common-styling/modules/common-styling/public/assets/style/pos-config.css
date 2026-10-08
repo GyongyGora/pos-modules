@@ -39,107 +39,208 @@
   /* ---------------------------------------- */
 
   /* whole page background */
-  --pos-color-light-page-background: #f7f8fa;
+  --pos-color-light-page-background: var(--pos-primitive-color-grey-light-3);
   /* background color used under the content (grid, cards, panels) */
-  --pos-color-light-content-background: #fff;
+  --pos-color-light-content-background: var(--pos-primitive-color-white);
+  /* content background at 50% opacity */
+  --pos-color-light-content-background-50: var(--pos-primitive-color-white-50);
   /* general content text */
-  --pos-color-light-content-text: #374151;
+  --pos-color-light-content-text: var(--pos-primitive-color-grey-dark-1);
+  /* text that looks non-interactive in light/dark but must signal interactivity in HC */
+  --pos-color-light-content-text-interactive: var(--pos-primitive-color-grey-dark-1);
   /* general content icons (moight be different shade due to contrast) */
-  --pos-color-light-content-icon: #405568;
+  --pos-color-light-content-icon: var(--pos-primitive-color-grey-dark-2);
+  /* icon/graphic that looks non-interactive in light/dark but must signal interactivity in HC */
+  --pos-color-light-content-icon-interactive: var(--pos-primitive-color-grey-dark-2);
+  /* disabled icons (non-interactive) */
+  --pos-color-light-content-icon-disabled: var(--pos-primitive-color-grey-medium);
   /* sidenotes, metadata, table headers */
-  --pos-color-light-content-text-supplementary: #6b7280;
+  --pos-color-light-content-text-supplementary: var(--pos-primitive-color-grey-dark-6);
+  /* supplementary text that is interactive but looks subdued in light/dark, yellow in HC */
+  --pos-color-light-content-text-supplementary-interactive: var(--pos-primitive-color-grey-dark-6);
+  /* disabled text (non-interactive) */
+  --pos-color-light-content-text-disabled: var(--pos-primitive-color-grey-medium);
   /* prominent text used to highlight important information */
-  --pos-color-light-content-text-prominent: #141414;
+  --pos-color-light-content-text-prominent: var(--pos-primitive-color-black);
   /* content text when placed on an inverted contrasty background */
-  --pos-color-light-content-inverted-text: var(--pos-color-light-content-background);
-  /* dividers, separators, frames, table rows */
-  --pos-color-light-frame: #e2e8f0;
+  --pos-color-light-content-inverted-text: var(--pos-primitive-color-white);
+  /* icons/graphics placed on an inverted contrasty background */
+  --pos-color-light-content-inverted-icon: var(--pos-primitive-color-white);
+  /* subtle border — dividers, separators, table rows, less-emphasized elements */
+  --pos-color-light-frame: var(--pos-primitive-color-grey-light-1);
+  /* standard border — inputs, containers, key UI elements */
+  --pos-color-light-frame-default: var(--pos-primitive-color-grey);
+  /* invisible border for elements with no visible outline; becomes white in high-contrast mode */
+  --pos-color-light-frame-transparent: var(--pos-primitive-color-transparent);
   /* highlighted elements background, like a navigation item when it is hovered or panels that need to stand out from the rest of the page like a filters panel */
-  --pos-color-light-highlight-background: #eff2f6;
+  --pos-color-light-highlight-background: var(--pos-primitive-color-grey-light-2);
   /* highlighted elements text and icons */
   --pos-color-light-highlight-text: var(--pos-color-light-content-text);
   /* background of sections of the page that needs to really stand out, like call to actions */
-  --pos-color-light-standout-background: #fff;
+  --pos-color-light-standout-background: var(--pos-primitive-color-brand-primary-700);
   /* background of sections of the page that needs to really stand out when poitner hovers over */
-  --pos-color-light-standout-background-hover: #f7f8fa;
+  --pos-color-light-standout-background-hover: var(--pos-primitive-color-brand-primary-900);
+  /* quiet brand-tinted background of cards and sections — never darker than the highlight background (dark: never lighter), so every content text / link / icon color keeps its contrast */
+  --pos-color-light-brand-primary-background: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-light-brand-supplementary-background: var(--pos-primitive-color-brand-supplementary-200);
+  /* frame of a brand-tinted card / section — one step stronger than its background (light 300 on 200, dark 800 on 900); HC: the usual visible frame */
+  --pos-color-light-brand-primary-frame: var(--pos-primitive-color-brand-primary-300);
+  --pos-color-light-brand-supplementary-frame: var(--pos-primitive-color-brand-supplementary-300);
+  /* background of small icon badges appearing over standout background */
+  --pos-color-light-banner-stats: var(--pos-primitive-color-brand-primary-800);
   /* text and icons placed on the sections that needs to really stand out */
-  --pos-color-light-standout-text: var(--pos-color-light-content-text);
+  --pos-color-light-standout-text: var(--pos-color-light-content-inverted-text);
+  /* supplementary text and icons placed on the sections that needs to really stand out */
+  --pos-color-light-standout-text-supplementary: var(--pos-primitive-color-brand-primary-300);
+  /* dark background for inverted content sections */
+  --pos-color-light-inverted-background: var(--pos-primitive-color-grey-dark-3);
+  /* shadow color */
+  --pos-color-light-shadow: var(--pos-primitive-color-black);
 
 
 
   /* interactive elements */
   /* ---------------------------------------- */
 
-  /* active elements suggesting a possible interaction */
-  --pos-color-light-interactive: #2173c4;
-  /* active elements with possible interaction when a pointer is over them */
-  --pos-color-light-interactive-hover: #194f90;
-  /* active elements with possible interaction when they are pressed */
-  --pos-color-light-interactive-active: #1a5f9c;
-  /* disabled elements that could become or has been interactive */
-  --pos-color-light-interactive-disabled: #d9ebfc;
+  /* interactive text color — links, button labels, interactive text elements */
+  --pos-color-light-interactive: var(--pos-primitive-color-brand-primary-700);
+  --pos-color-light-interactive-hover: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-light-interactive-active: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-light-interactive-disabled: var(--pos-primitive-color-brand-primary-300);
+  /* interactive text on inverted/dark background */
+  --pos-color-light-interactive-text-inverted: var(--pos-primitive-color-brand-primary-400);
+
+  /* interactive icon/graphic color (separate from text — lower contrast threshold applies) */
+  --pos-color-light-icon-interactive: var(--pos-primitive-color-brand-primary-600);
+  --pos-color-light-icon-interactive-hover: var(--pos-primitive-color-brand-primary-800);
+  --pos-color-light-icon-interactive-active: var(--pos-primitive-color-brand-primary-800);
+  --pos-color-light-icon-interactive-disabled: var(--pos-primitive-color-brand-primary-300);
+  /* interactive icon on inverted/dark background */
+  --pos-color-light-icon-interactive-inverted: var(--pos-primitive-color-brand-primary-500);
 
   /* primary action button background */
-  --pos-color-light-button-primary-background: #141414;
+  --pos-color-light-button-primary-background: var(--pos-color-light-icon-interactive);
   /* primary action button text and icons */
-  --pos-color-light-button-primary-text: #fff;
+  --pos-color-light-button-primary-text: var(--pos-color-light-content-inverted-text);
   /* border around primary action button */
-  --pos-color-light-button-primary-frame: var(--pos-color-light-button-primary-background);
+  --pos-color-light-button-primary-frame: var(--pos-color-light-icon-interactive);
   /* primary action button background when a pointer is over it */
-  --pos-color-light-button-primary-hover-background: #374151;
+  --pos-color-light-button-primary-hover-background: var(--pos-color-light-icon-interactive-hover);
   /* primary action button text and icons icons when a pointer is over it */
-  --pos-color-light-button-primary-hover-text: #fff;
+  --pos-color-light-button-primary-hover-text: var(--pos-color-light-content-inverted-text);
   /* border around primary action button when a pointer is over it */
-  --pos-color-light-button-primary-hover-frame: var(--pos-color-light-button-primary-hover-background);
+  --pos-color-light-button-primary-hover-frame: var(--pos-color-light-icon-interactive-hover);
   /* primary action button background when it is being pressed */
-  --pos-color-light-button-primary-active-background: var(--pos-color-light-button-primary-hover-background);
+  --pos-color-light-button-primary-active-background: var(--pos-color-light-icon-interactive-active);
   /* primary action button text and icons icons when it is being pressed */
-  --pos-color-light-button-primary-active-text: var(--pos-color-light-button-primary-hover-text);
+  --pos-color-light-button-primary-active-text: var(--pos-color-light-content-inverted-text);
   /* border around primary action button when it is being pressed */
-  --pos-color-light-button-primary-active-frame: var(--pos-color-light-button-primary-hover-frame);
+  --pos-color-light-button-primary-active-frame: var(--pos-color-light-icon-interactive-active);
   /* primary action button background when it is disabled */
-  --pos-color-light-button-primary-disabled-background: color-mix(in srgb, var(--pos-color-light-button-primary-background) 30%, transparent 70%);
+  --pos-color-light-button-primary-disabled-background: var(--pos-color-light-icon-interactive-disabled);
   /* primary action button text and icons when it is disabled */
-  --pos-color-light-button-primary-disabled-text: var(--pos-color-light-button-primary-text);
+  --pos-color-light-button-primary-disabled-text: var(--pos-color-light-content-inverted-text);
   /* border around primary action button when it is disabled */
-  --pos-color-light-button-primary-disabled-frame: var(--pos-color-light-button-primary-disabled-background);
+  --pos-color-light-button-primary-disabled-frame: var(--pos-color-light-icon-interactive-disabled);
 
   /* secondary action button background */
-  --pos-color-light-button-secondary-background: #f7f8fa;
+  --pos-color-light-button-secondary-background: var(--pos-primitive-color-white);
+  /* secondary action button background — transparent (0%) variant */
+  --pos-color-light-button-secondary-background-transparent: transparent;
   /* secondary action button text and icons */
   --pos-color-light-button-secondary-text: var(--pos-color-light-interactive);
   /* border around secondary action button */
-  --pos-color-light-button-secondary-frame: #6b7280;
+  --pos-color-light-button-secondary-frame: var(--pos-color-light-input-frame);
   /* secondary action button background when a pointer is over it */
-  --pos-color-light-button-secondary-hover-background: #fff;
+  --pos-color-light-button-secondary-hover-background: var(--pos-primitive-color-white);
+  /* secondary action button background when a pointer is over it — transparent (0%) variant */
+  --pos-color-light-button-secondary-hover-background-transparent: transparent;
   /* secondary action button text and icons icons when a pointer is over it */
   --pos-color-light-button-secondary-hover-text: var(--pos-color-light-interactive-hover);
   /* border around secondary action button when a pointer is over it */
-  --pos-color-light-button-secondary-hover-frame: var(--pos-color-light-button-secondary-frame);
+  --pos-color-light-button-secondary-hover-frame: var(--pos-color-light-icon-interactive-hover);
   /* secondary action button background when it is being pressed */
-  --pos-color-light-button-secondary-active-background: var(--pos-color-light-button-secondary-hover-background);
+  --pos-color-light-button-secondary-active-background: var(--pos-primitive-color-grey-light-1);
   /* secondary action button text and icons icons when it is being pressed */
-  --pos-color-light-button-secondary-active-text: var(--pos-color-light-button-secondary-hover-text);
+  --pos-color-light-button-secondary-active-text: var(--pos-color-light-interactive-active);
   /* border around secondary action button when it is being pressed */
-  --pos-color-light-button-secondary-active-frame: var(--pos-color-light-button-secondary-hover-frame);
+  --pos-color-light-button-secondary-active-frame: var(--pos-color-light-icon-interactive-active);
   /* secondary action button background when it is disabled */
-  --pos-color-light-button-secondary-disabled-background: color-mix(in srgb, var(--pos-color-light-button-secondary-background) 30%, transparent 70%);
+  --pos-color-light-button-secondary-disabled-background: transparent;
   /* secondary action button text and icons when it is disabled */
   --pos-color-light-button-secondary-disabled-text: var(--pos-color-light-interactive-disabled);
   /* border around secondary action button when it is disabled */
-  --pos-color-light-button-secondary-disabled-frame: color-mix(in srgb, var(--pos-color-light-button-secondary-frame) 30%, transparent 70%);
+  --pos-color-light-button-secondary-disabled-frame: var(--pos-color-light-content-icon-disabled);
+
+  /* inverted primary button — white button for use on dark/inverted backgrounds */
+  --pos-color-light-button-inverted-background: var(--pos-primitive-color-white);
+  --pos-color-light-button-inverted-text: var(--pos-color-light-interactive);
+  --pos-color-light-button-inverted-frame: var(--pos-primitive-color-white);
+  --pos-color-light-button-inverted-hover-background: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-light-button-inverted-hover-text: var(--pos-color-light-interactive-hover);
+  --pos-color-light-button-inverted-hover-frame: var(--pos-color-light-icon-interactive-inverted);
+  --pos-color-light-button-inverted-active-background: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-light-button-inverted-active-text: var(--pos-color-light-interactive-active);
+  --pos-color-light-button-inverted-active-frame: var(--pos-color-light-icon-interactive-inverted);
+  --pos-color-light-button-inverted-disabled-background: var(--pos-primitive-color-white-20);
+  --pos-color-light-button-inverted-disabled-text: var(--pos-color-light-interactive-text-inverted);
+  --pos-color-light-button-inverted-disabled-frame: var(--pos-primitive-color-white-20);
+
+  /* inverted secondary button — transparent bordered button for use on dark/inverted backgrounds */
+  --pos-color-light-button-inverted-secondary-background: transparent;
+  --pos-color-light-button-inverted-secondary-text: var(--pos-color-light-interactive-text-inverted);
+  --pos-color-light-button-inverted-secondary-frame: var(--pos-color-light-content-icon-disabled);
+  --pos-color-light-button-inverted-secondary-hover-background: transparent;
+  --pos-color-light-button-inverted-secondary-hover-text: var(--pos-primitive-color-white);
+  --pos-color-light-button-inverted-secondary-hover-frame: var(--pos-color-light-icon-interactive-inverted);
+  --pos-color-light-button-inverted-secondary-active-background: var(--pos-primitive-color-white-20);
+  --pos-color-light-button-inverted-secondary-active-text: var(--pos-primitive-color-white);
+  --pos-color-light-button-inverted-secondary-active-frame: var(--pos-color-light-icon-interactive-inverted);
+  --pos-color-light-button-inverted-secondary-disabled-background: transparent;
+  --pos-color-light-button-inverted-secondary-disabled-text: var(--pos-primitive-color-white-20);
+  --pos-color-light-button-inverted-secondary-disabled-frame: var(--pos-primitive-color-white-20);
+
+  /* error button — destructive/irreversible actions */
+  --pos-color-light-button-error-background: var(--pos-color-light-important);
+  --pos-color-light-button-error-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-error-frame: var(--pos-color-light-important);
+  --pos-color-light-button-error-hover-background: var(--pos-color-light-important-hover);
+  --pos-color-light-button-error-hover-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-error-hover-frame: var(--pos-color-light-important-hover);
+  --pos-color-light-button-error-active-background: var(--pos-color-light-important-active);
+  --pos-color-light-button-error-active-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-error-active-frame: var(--pos-color-light-important-active);
+  --pos-color-light-button-error-disabled-background: var(--pos-color-light-important-muted);
+  --pos-color-light-button-error-disabled-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-error-disabled-frame: var(--pos-color-light-important-muted);
+
+  /* success button — positive/confirmation actions */
+  --pos-color-light-button-success-background: var(--pos-color-light-confirmation);
+  --pos-color-light-button-success-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-success-frame: var(--pos-color-light-confirmation);
+  --pos-color-light-button-success-hover-background: var(--pos-color-light-confirmation-hover);
+  --pos-color-light-button-success-hover-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-success-hover-frame: var(--pos-color-light-confirmation-hover);
+  --pos-color-light-button-success-active-background: var(--pos-color-light-confirmation-active);
+  --pos-color-light-button-success-active-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-success-active-frame: var(--pos-color-light-confirmation-active);
+  --pos-color-light-button-success-disabled-background: var(--pos-color-light-confirmation-muted);
+  --pos-color-light-button-success-disabled-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-light-button-success-disabled-frame: var(--pos-color-light-confirmation-muted);
 
 
   /* colors user for variety of browser-related UI elements */
   /* ---------------------------------------- */
 
   /* outline for focused elements */
-  --pos-color-light-focused: #2e70c1;
+  --pos-color-light-focused: var(--pos-primitive-color-brand-supplementary-600);
+  /* focus indicator color for use on dark/inverted backgrounds */
+  --pos-color-light-focused-inverse: var(--pos-primitive-color-brand-supplementary-500);
 
   /* background color for selected text */
-  --pos-color-light-selection-background: var(--pos-color-light-focused);
+  --pos-color-light-selection-background: var(--pos-primitive-color-brand-supplementary-700);
   /* foreground color for selected text */
-  --pos-color-light-selection-text: #fff;
+  --pos-color-light-selection-text: var(--pos-color-light-content-inverted-text);
 
 
   /* forms */
@@ -149,47 +250,68 @@
   --pos-color-light-input-placeholder: color-mix(in srgb, var(--pos-color-light-input-text) 50%, transparent 50%);
 
   /* input field background */
-  --pos-color-light-input-background: #fff;
+  --pos-color-light-input-background: var(--pos-primitive-color-white);
   /* input field text and icon */
-  --pos-color-light-input-text: var(--pos-color-light-content-text);
+  --pos-color-light-input-text: var(--pos-color-light-content-text-supplementary);
   /* border around input field */
-  --pos-color-light-input-frame: #6b7280;
-  /* input field background when a pointer is over it */
+  --pos-color-light-input-frame: var(--pos-color-light-frame-default);
+  /* input field background when a pointer is over it or when focused (hover + active states) */
   --pos-color-light-input-hover-background: var(--pos-color-light-input-background);
-  /* input field text and icon when a pointer is over it */
-  --pos-color-light-input-hover-text: var(--pos-color-light-input-text);
-  /* border around input field when a pointer is over it */
-  --pos-color-light-input-hover-frame: var(--pos-color-light-input-frame);
-  /* input field background when it is being focused */
-  --pos-color-light-input-active-background: var(--pos-color-light-input-background);
-  /* input field text and icon when it is being focused */
-  --pos-color-light-input-active-text: var(--pos-color-light-input-text);
-  /* border around input field when it is being focused */
-  --pos-color-light-input-active-frame: var(--pos-color-light-interactive-active);
+  /* input field text and icon when a pointer is over it or when focused */
+  --pos-color-light-input-hover-text: var(--pos-color-light-content-text-supplementary);
+  /* border around input field when a pointer is over it or when focused */
+  --pos-color-light-input-hover-frame: var(--pos-color-light-icon-interactive);
+  /* input field background when focused (keyboard-active) — Figma combines hover + active into one variable */
+  --pos-color-light-input-active-background: var(--pos-color-light-input-hover-background);
+  /* input field text and icon when focused — same as hover, per Figma's combined Hover+Active variable */
+  --pos-color-light-input-active-text: var(--pos-color-light-input-hover-text);
+  /* border around input field when focused — same as hover, per Figma's combined Hover+Active variable */
+  --pos-color-light-input-active-frame: var(--pos-color-light-input-hover-frame);
   /* background of disabled input field */
   --pos-color-light-input-disabled-background: var(--pos-color-light-input-background);
   /* text and icon of disabled input field */
-  --pos-color-light-input-disabled-text: color-mix(in srgb, var(--pos-color-light-input-text) 40%, transparent 60%);
+  --pos-color-light-input-disabled-text: var(--pos-color-light-content-text-disabled);
   /* border around input field when it is disabled */
-  --pos-color-light-input-disabled-frame: color-mix(in srgb, var(--pos-color-light-input-frame) 40%, transparent 60%);
+  --pos-color-light-input-disabled-frame: var(--pos-color-light-frame);
 
 
   /* utility */
   /* ---------------------------------------- */
 
   /* errors, actions that can't be undone */
-  --pos-color-light-important: #b62324;
-  --pos-color-light-important-hover: #c73e37;
-  --pos-color-light-important-disabled: #fccbcb;
+  --pos-color-light-important: var(--pos-primitive-color-red-700);
+  --pos-color-light-important-hover: var(--pos-primitive-color-red-900);
+  --pos-color-light-important-active: var(--pos-primitive-color-red-900);
+  --pos-color-light-important-muted: var(--pos-primitive-color-red-300);
+  /* quiet status backgrounds for boxes and sections (not for small elements — those use -muted); never darker than the highlight background (dark: never lighter), so content text, link and icon colors keep their contrast */
+  --pos-color-light-important-background: var(--pos-primitive-color-red-200);
+  --pos-color-light-important-disabled: var(--pos-color-light-important-muted); /* old-DS name, kept for compatibility */
   /* warnings, actions that might have unwanted consequences */
-  --pos-color-light-warning: #f0b357;
-  --pos-color-light-warning-hover: #fcc064;
-  --pos-color-light-warning-disabled: #feeaca;
+  --pos-color-light-warning: var(--pos-primitive-color-yellow-700);
+  --pos-color-light-warning-hover: var(--pos-primitive-color-yellow-900);
+  --pos-color-light-warning-active: var(--pos-primitive-color-yellow-900);
+  --pos-color-light-warning-muted: var(--pos-primitive-color-yellow-300);
+  --pos-color-light-warning-background: var(--pos-primitive-color-yellow-200);
+  --pos-color-light-warning-disabled: var(--pos-color-light-warning-muted); /* old-DS name, kept for compatibility */
   /* confirmations of a successful actions */
-  --pos-color-light-confirmation: #167b16;
-  --pos-color-light-confirmation-hover: #198f6a;
-  --pos-color-light-confirmation-disabled: #bcddd3;
+  --pos-color-light-confirmation: var(--pos-primitive-color-green-700);
+  --pos-color-light-confirmation-hover: var(--pos-primitive-color-green-900);
+  --pos-color-light-confirmation-active: var(--pos-primitive-color-green-900);
+  --pos-color-light-confirmation-muted: var(--pos-primitive-color-green-300);
+  --pos-color-light-confirmation-background: var(--pos-primitive-color-green-200);
+  --pos-color-light-confirmation-disabled: var(--pos-color-light-confirmation-muted); /* old-DS name, kept for compatibility */
 
+
+  /* added with the 2026-10-01 palette (gradients, interactive-inverted, supplementary status family) */
+  --pos-color-light-gradient1-from: var(--pos-primitive-color-brand-primary-100);
+  --pos-color-light-gradient1-to: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-light-gradient2-from: var(--pos-primitive-color-brand-primary-700);
+  --pos-color-light-gradient2-to: var(--pos-primitive-color-brand-primary-800);
+  --pos-color-light-interactive-inverted: var(--pos-color-light-icon-interactive-inverted); /* the graphic token, as in HC — not the text token (fixed 2026-10-07) */
+  --pos-color-light-supplementary: var(--pos-primitive-color-brand-supplementary-700);
+  --pos-color-light-supplementary-hover: var(--pos-primitive-color-brand-supplementary-900);
+  --pos-color-light-supplementary-active: var(--pos-primitive-color-brand-supplementary-900);
+  --pos-color-light-supplementary-muted: var(--pos-primitive-color-brand-supplementary-300);
 }
 
 
@@ -201,31 +323,60 @@
   /* ---------------------------------------- */
 
   /* whole page background */
-  --pos-color-dark-page-background: #000;
+  --pos-color-dark-page-background: var(--pos-primitive-color-grey-dark-5);
   /* background color used under the content (grid, cards, panels) */
-  --pos-color-dark-content-background: #141414;
+  --pos-color-dark-content-background: var(--pos-primitive-color-grey-dark-3);
+  /* content background at 50% opacity */
+  --pos-color-dark-content-background-50: var(--pos-primitive-color-grey-dark-3-50);
   /* general content text */
-  --pos-color-dark-content-text: #b6bdca;
+  --pos-color-dark-content-text: var(--pos-primitive-color-grey-light-3);
+  --pos-color-dark-content-text-interactive: var(--pos-primitive-color-grey-light-3);
   /* general content icons (moight be different shade due to contrast) */
-  --pos-color-dark-content-icon: #808691;
+  --pos-color-dark-content-icon: var(--pos-primitive-color-grey-light-3);
+  --pos-color-dark-content-icon-interactive: var(--pos-primitive-color-grey-light-3);
+  /* disabled icons (non-interactive) */
+  --pos-color-dark-content-icon-disabled: var(--pos-primitive-color-grey-dark-2);
   /* sidenotes, metadata, table headers */
-  --pos-color-dark-content-text-supplementary: #808691;
+  --pos-color-dark-content-text-supplementary: var(--pos-primitive-color-grey-medium);
+  --pos-color-dark-content-text-supplementary-interactive: var(--pos-primitive-color-grey-medium);
+  /* disabled text (non-interactive) */
+  --pos-color-dark-content-text-disabled: var(--pos-primitive-color-grey-dark-2);
   /* prominent text used to highlight important information */
-  --pos-color-dark-content-text-prominent: #fff;
+  --pos-color-dark-content-text-prominent: var(--pos-primitive-color-white);
   /* content text when placed on an inverted contrasty background */
-  --pos-color-dark-content-inverted-text: #000;
-  /* dividers, separators, frames, table rows */
-  --pos-color-dark-frame: rgba(255, 255, 255, 0.1);
+  --pos-color-dark-content-inverted-text: var(--pos-primitive-color-black);
+  /* icons/graphics placed on an inverted contrasty background */
+  --pos-color-dark-content-inverted-icon: var(--pos-primitive-color-black);
+  /* subtle border — dividers, separators, table rows, less-emphasized elements */
+  --pos-color-dark-frame: var(--pos-primitive-color-grey-dark-1);
+  /* standard border — inputs, containers, key UI elements */
+  --pos-color-dark-frame-default: var(--pos-primitive-color-grey);
+  /* invisible border for elements with no visible outline; becomes white in high-contrast mode */
+  --pos-color-dark-frame-transparent: var(--pos-primitive-color-transparent);
   /* highlighted elements background, like a navigation item when it is hovered or panels that need to stand out from the rest of the page like a filters panel */
-  --pos-color-dark-highlight-background: #0c0c0c;
+  --pos-color-dark-highlight-background: var(--pos-primitive-color-grey-dark-4);
   /* highlighted elements text and icons */
   --pos-color-dark-highlight-text: var(--pos-color-dark-content-text);
   /* background of sections of the page that needs to really stand out, like call to actions */
-  --pos-color-dark-standout-background: #2173c4;
+  --pos-color-dark-standout-background: var(--pos-primitive-color-brand-primary-400);
   /* background of sections of the page that needs to really stand out when hovered with a pointer */
-  --pos-color-dark-standout-background-hover: #194f90;
+  --pos-color-dark-standout-background-hover: var(--pos-primitive-color-brand-primary-200);
+  /* quiet brand-tinted background of cards and sections — never darker than the highlight background (dark: never lighter), so every content text / link / icon color keeps its contrast */
+  --pos-color-dark-brand-primary-background: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-dark-brand-supplementary-background: var(--pos-primitive-color-brand-supplementary-900);
+  /* frame of a brand-tinted card / section — one step stronger than its background (light 300 on 200, dark 800 on 900); HC: the usual visible frame */
+  --pos-color-dark-brand-primary-frame: var(--pos-primitive-color-brand-primary-800);
+  --pos-color-dark-brand-supplementary-frame: var(--pos-primitive-color-brand-supplementary-800);
   /* text and icons placed on the sections that needs to really stand out */
-  --pos-color-dark-standout-text: #fff;
+  --pos-color-dark-standout-text: var(--pos-color-dark-content-inverted-text);
+  /* supplementary text and icons placed on the sections that needs to really stand out */
+  --pos-color-dark-standout-text-supplementary: var(--pos-primitive-color-brand-primary-800);
+  /* background of small icon badges appearing over standout background */
+  --pos-color-dark-banner-stats: var(--pos-primitive-color-brand-primary-300);
+  /* dark background for inverted content sections */
+  --pos-color-dark-inverted-background: var(--pos-primitive-color-white);
+  /* shadow color */
+  --pos-color-dark-shadow: var(--pos-primitive-color-black);
 
 
 
@@ -233,76 +384,147 @@
   /* interactive elements */
   /* ---------------------------------------- */
 
-  /* active elements suggesting a possible interaction */
-  --pos-color-dark-interactive: #fff;
-  /* active elements with possible interaction when a pointer is over them */
-  --pos-color-dark-interactive-hover: #38d430;
-  /* active elements with possible interaction when they are pressed */
-  --pos-color-dark-interactive-active: #31bd29;
-  /* disabled elements that could become or has been interactive */
-  --pos-color-dark-interactive-disabled: #6b7280;
+  /* interactive text color — links, button labels, interactive text elements */
+  --pos-color-dark-interactive: var(--pos-primitive-color-brand-primary-400);
+  --pos-color-dark-interactive-hover: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-dark-interactive-active: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-dark-interactive-disabled: var(--pos-primitive-color-brand-primary-700);
+
+  /* interactive icon/graphic color (separate from text — lower contrast threshold applies) */
+  --pos-color-dark-icon-interactive: var(--pos-primitive-color-brand-primary-400);
+  --pos-color-dark-icon-interactive-hover: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-dark-icon-interactive-active: var(--pos-primitive-color-brand-primary-200);
+  --pos-color-dark-icon-interactive-disabled: var(--pos-primitive-color-brand-primary-700);
+  /* interactive icon on inverted/dark background */
+  --pos-color-dark-icon-interactive-inverted: var(--pos-primitive-color-brand-primary-600);
 
   /* primary action button background */
-  --pos-color-dark-button-primary-background: #fff;
+  --pos-color-dark-button-primary-background: var(--pos-color-dark-icon-interactive);
   /* primary action button text and icons */
-  --pos-color-dark-button-primary-text: #141414;
+  --pos-color-dark-button-primary-text: var(--pos-color-dark-content-inverted-text);
   /* border around primary action button */
-  --pos-color-dark-button-primary-frame: var(--pos-color-dark-button-primary-background);
+  --pos-color-dark-button-primary-frame: var(--pos-color-dark-icon-interactive);
   /* primary action button background when a pointer is over it */
-  --pos-color-dark-button-primary-hover-background: #b6bdca;
+  --pos-color-dark-button-primary-hover-background: var(--pos-color-dark-icon-interactive-hover);
   /* primary action button text and icons icons when a pointer is over it */
-  --pos-color-dark-button-primary-hover-text: #000;
+  --pos-color-dark-button-primary-hover-text: var(--pos-color-dark-content-inverted-text);
   /* border around primary action button when a pointer is over it */
-  --pos-color-dark-button-primary-hover-frame: var(--pos-color-dark-button-primary-hover-background);
+  --pos-color-dark-button-primary-hover-frame: var(--pos-color-dark-icon-interactive-hover);
   /* primary action button background when it is being pressed */
-  --pos-color-dark-button-primary-active-background: var(--pos-color-dark-button-primary-hover-background);
+  --pos-color-dark-button-primary-active-background: var(--pos-color-dark-icon-interactive-active);
   /* primary action button text and icons icons when it is being pressed */
-  --pos-color-dark-button-primary-active-text: var(--pos-color-dark-button-primary-hover-text);
+  --pos-color-dark-button-primary-active-text: var(--pos-color-dark-content-inverted-text);
   /* border around primary action button when it is being pressed */
-  --pos-color-dark-button-primary-active-frame: var(--pos-color-dark-button-primary-hover-frame);
+  --pos-color-dark-button-primary-active-frame: var(--pos-color-dark-icon-interactive-active);
   /* primary action button background when it is disabled */
-  --pos-color-dark-button-primary-disabled-background: color-mix(in srgb, var(--pos-color-dark-button-primary-background) 30%, transparent 70%);
+  /* disabled filled controls are neutral grey in dark mode — thin disabled elements (icons, text) use
+     brand step 700, and a filled control in that color would read as enabled */
+  --pos-color-dark-button-primary-disabled-background: var(--pos-color-dark-content-icon-disabled);
   /* primary action button text and icons when it is disabled */
-  --pos-color-dark-button-primary-disabled-text: var(--pos-color-dark-button-primary-text);
+  --pos-color-dark-button-primary-disabled-text: var(--pos-color-dark-content-inverted-text);
   /* border around primary action button when it is disabled */
-  --pos-color-dark-button-primary-disabled-frame: color-mix(in srgb, var(--pos-color-dark-button-primary-frame) 30%, transparent 70%);
+  --pos-color-dark-button-primary-disabled-frame: var(--pos-color-dark-content-icon-disabled);
 
   /* secondary action button background */
-  --pos-color-dark-button-secondary-background: #000;
+  --pos-color-dark-button-secondary-background: var(--pos-primitive-color-grey-dark-3);
+  /* secondary action button background — transparent (0%) variant */
+  --pos-color-dark-button-secondary-background-transparent: var(--pos-primitive-color-transparent);
   /* secondary action button text and icons */
-  --pos-color-dark-button-secondary-text: #fff;
+  --pos-color-dark-button-secondary-text: var(--pos-color-dark-interactive);
   /* border around secondary action button */
-  --pos-color-dark-button-secondary-frame: #9da3ad;
+  --pos-color-dark-button-secondary-frame: var(--pos-color-dark-input-frame);
   /* secondary action button background when a pointer is over it */
-  --pos-color-dark-button-secondary-hover-background: var(--pos-color-dark-button-secondary-background);
+  --pos-color-dark-button-secondary-hover-background: var(--pos-primitive-color-grey-dark-3);
+  /* secondary action button background when a pointer is over it — transparent (0%) variant */
+  --pos-color-dark-button-secondary-hover-background-transparent: var(--pos-primitive-color-transparent);
   /* secondary action button text and icons icons when a pointer is over it */
-  --pos-color-dark-button-secondary-hover-text: #fff;
+  --pos-color-dark-button-secondary-hover-text: var(--pos-color-dark-interactive-hover);
   /* border around secondary action button when a pointer is over it */
-  --pos-color-dark-button-secondary-hover-frame: #000;
+  --pos-color-dark-button-secondary-hover-frame: var(--pos-color-dark-icon-interactive-hover);
   /* secondary action button background when it is being pressed */
-  --pos-color-dark-button-secondary-active-background: var(--pos-color-dark-button-secondary-hover-background);
+  --pos-color-dark-button-secondary-active-background: var(--pos-primitive-color-grey-dark-1);
   /* secondary action button text and icons icons when it is being pressed */
-  --pos-color-dark-button-secondary-active-text: var(--pos-color-dark-button-secondary-hover-text);
+  --pos-color-dark-button-secondary-active-text: var(--pos-color-dark-interactive-active);
   /* border around secondary action button when it is being pressed */
-  --pos-color-dark-button-secondary-active-frame: var(--pos-color-dark-button-secondary-hover-frame);
+  --pos-color-dark-button-secondary-active-frame: var(--pos-color-dark-icon-interactive-active);
   /* secondary action button background when it is disabled */
-  --pos-color-dark-button-secondary-disabled-background: color-mix(in srgb, var(--pos-color-dark-button-secondary-background) 30%, transparent 70%);
+  --pos-color-dark-button-secondary-disabled-background: transparent;
   /* secondary action button text and icons when it is disabled */
-  --pos-color-dark-button-secondary-disabled-text: color-mix(in srgb, var(--pos-color-dark-button-secondary-text) 30%, transparent 70%);
+  --pos-color-dark-button-secondary-disabled-text: var(--pos-color-dark-interactive-disabled);
   /* border around secondary action button when it is disabled */
-  --pos-color-dark-button-secondary-disabled-frame: color-mix(in srgb, var(--pos-color-dark-button-secondary-frame) 30%, transparent 70%);
+  --pos-color-dark-button-secondary-disabled-frame: var(--pos-color-dark-content-icon-disabled);
+  /* inverted button background (button on a contrasty/dark surface) */
+  --pos-color-dark-button-inverted-background: var(--pos-primitive-color-grey-dark-4);
+  /* interactive colors for use on dark/inverted backgrounds that appear light in dark mode */
+  --pos-color-dark-interactive-inverted: var(--pos-color-dark-icon-interactive-inverted); /* the graphic token, as in HC — not the text token (fixed 2026-10-07) */
+  --pos-color-dark-interactive-text-inverted: var(--pos-primitive-color-brand-primary-700);
+  /* inverted primary button hover/active/disabled states */
+  --pos-color-dark-button-inverted-text: var(--pos-color-dark-interactive);
+  --pos-color-dark-button-inverted-frame: var(--pos-primitive-color-black);
+  --pos-color-dark-button-inverted-hover-background: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-dark-button-inverted-hover-text: var(--pos-color-dark-interactive-hover);
+  --pos-color-dark-button-inverted-hover-frame: var(--pos-color-dark-icon-interactive-inverted);
+  --pos-color-dark-button-inverted-active-background: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-dark-button-inverted-active-text: var(--pos-color-dark-interactive-active);
+  --pos-color-dark-button-inverted-active-frame: var(--pos-color-dark-icon-interactive-inverted);
+  --pos-color-dark-button-inverted-disabled-background: var(--pos-primitive-color-black-20);
+  --pos-color-dark-button-inverted-disabled-text: var(--pos-color-dark-interactive-text-inverted);
+  --pos-color-dark-button-inverted-disabled-frame: var(--pos-primitive-color-black-20);
+  /* inverted secondary button */
+  --pos-color-dark-button-inverted-secondary-background: transparent;
+  --pos-color-dark-button-inverted-secondary-text: var(--pos-color-dark-interactive-text-inverted);
+  --pos-color-dark-button-inverted-secondary-frame: var(--pos-color-dark-content-icon-disabled);
+  --pos-color-dark-button-inverted-secondary-hover-background: transparent;
+  --pos-color-dark-button-inverted-secondary-hover-text: var(--pos-primitive-color-black);
+  --pos-color-dark-button-inverted-secondary-hover-frame: var(--pos-color-dark-icon-interactive-inverted);
+  --pos-color-dark-button-inverted-secondary-active-background: var(--pos-primitive-color-white-20);
+  --pos-color-dark-button-inverted-secondary-active-text: var(--pos-primitive-color-black);
+  --pos-color-dark-button-inverted-secondary-active-frame: var(--pos-color-dark-icon-interactive-inverted);
+  --pos-color-dark-button-inverted-secondary-disabled-background: transparent;
+  --pos-color-dark-button-inverted-secondary-disabled-text: var(--pos-primitive-color-black-20);
+  --pos-color-dark-button-inverted-secondary-disabled-frame: var(--pos-primitive-color-black-20);
+
+  /* error button */
+  --pos-color-dark-button-error-background: var(--pos-color-dark-important);
+  --pos-color-dark-button-error-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-error-frame: var(--pos-color-dark-important);
+  --pos-color-dark-button-error-hover-background: var(--pos-color-dark-important-hover);
+  --pos-color-dark-button-error-hover-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-error-hover-frame: var(--pos-color-dark-important-hover);
+  --pos-color-dark-button-error-active-background: var(--pos-color-dark-important-active);
+  --pos-color-dark-button-error-active-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-error-active-frame: var(--pos-color-dark-important-active);
+  --pos-color-dark-button-error-disabled-background: var(--pos-color-dark-important-muted);
+  --pos-color-dark-button-error-disabled-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-error-disabled-frame: var(--pos-color-dark-important-muted);
+
+  /* success button */
+  --pos-color-dark-button-success-background: var(--pos-color-dark-confirmation);
+  --pos-color-dark-button-success-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-success-frame: var(--pos-color-dark-confirmation);
+  --pos-color-dark-button-success-hover-background: var(--pos-color-dark-confirmation-hover);
+  --pos-color-dark-button-success-hover-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-success-hover-frame: var(--pos-color-dark-confirmation-hover);
+  --pos-color-dark-button-success-active-background: var(--pos-color-dark-confirmation-active);
+  --pos-color-dark-button-success-active-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-success-active-frame: var(--pos-color-dark-confirmation-active);
+  --pos-color-dark-button-success-disabled-background: var(--pos-color-dark-confirmation-muted);
+  --pos-color-dark-button-success-disabled-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-dark-button-success-disabled-frame: var(--pos-color-dark-confirmation-muted);
 
 
   /* colors user for variety of browser-related UI elements */
   /* ---------------------------------------- */
 
   /* outline for focused elements */
-  --pos-color-dark-focused: #2173c4;
+  --pos-color-dark-focused: var(--pos-primitive-color-brand-supplementary-500);
+  /* focus indicator color for use on dark/inverted backgrounds */
+  --pos-color-dark-focused-inverse: var(--pos-primitive-color-brand-supplementary-600);
 
   /* background color for selected text */
-  --pos-color-dark-selection-background: var(--pos-color-dark-focused);
+  --pos-color-dark-selection-background: var(--pos-primitive-color-brand-supplementary-400);
   /* foreground color for selected text */
-  --pos-color-dark-selection-text: #fff;
+  --pos-color-dark-selection-text: var(--pos-color-dark-content-inverted-text);
 
 
   /* forms */
@@ -312,79 +534,385 @@
   --pos-color-dark-input-placeholder: color-mix(in srgb, var(--pos-color-dark-input-text) 50%, transparent 50%);
 
   /* input field background */
-  --pos-color-dark-input-background: #0c0c0c;
+  --pos-color-dark-input-background: var(--pos-primitive-color-black);
   /* input field text and icon */
-  --pos-color-dark-input-text: #9da3ad;
+  --pos-color-dark-input-text: var(--pos-color-dark-content-text-supplementary);
   /* border around input field */
-  --pos-color-dark-input-frame: #6b7280;
+  --pos-color-dark-input-frame: var(--pos-color-dark-frame-default);
   /* input field background when a pointer is over it */
   --pos-color-dark-input-hover-background: var(--pos-color-dark-input-background);
   /* input field text and icon when a pointer is over it */
-  --pos-color-dark-input-hover-text: var(--pos-color-dark-input-text);
+  --pos-color-dark-input-hover-text: var(--pos-color-dark-content-text-supplementary);
   /* border around input field when a pointer is over it */
-  --pos-color-dark-input-hover-frame: var(--pos-color-dark-input-frame);
-  /* input field background when it is being focused */
-  --pos-color-dark-input-active-background: var(--pos-color-dark-input-background);
-  /* input field text and icon when it is being focused */
-  --pos-color-dark-input-active-text: var(--pos-color-dark-input-text);
-  /* border around input field when it is being focused */
-  --pos-color-dark-input-active-frame: var(--pos-color-dark-interactive-active);
+  --pos-color-dark-input-hover-frame: var(--pos-color-dark-icon-interactive);
+  /* input field background when focused (keyboard-active) — Figma combines hover + active into one variable */
+  --pos-color-dark-input-active-background: var(--pos-color-dark-input-hover-background);
+  /* input field text and icon when focused — same as hover, per Figma's combined Hover+Active variable */
+  --pos-color-dark-input-active-text: var(--pos-color-dark-input-hover-text);
+  /* border around input field when focused — same as hover, per Figma's combined Hover+Active variable */
+  --pos-color-dark-input-active-frame: var(--pos-color-dark-input-hover-frame);
   /* background of disabled input field */
   --pos-color-dark-input-disabled-background: var(--pos-color-dark-input-background);
   /* text and icon of disabled input field */
-  --pos-color-dark-input-disabled-text: color-mix(in srgb, var(--pos-color-dark-input-text) 40%, transparent 60%);
+  --pos-color-dark-input-disabled-text: var(--pos-color-dark-content-text-disabled);
   /* border around input field when it is disabled */
-  --pos-color-dark-input-disabled-frame: color-mix(in srgb, var(--pos-color-dark-input-frame) 40%, transparent 60%);
+  --pos-color-dark-input-disabled-frame: var(--pos-color-dark-frame);
 
 
   /* utility */
   /* ---------------------------------------- */
 
   /* errors, actions that can't be undone */
-  --pos-color-dark-important: #b62324;
-  --pos-color-dark-important-hover: #c73e37;
-  --pos-color-dark-important-disabled: #fccbcb;
+  /* was -red-light (#ffd9d9, a pale pastel) — too close to how HC's own light foreground reads
+     against a dark background; changed 2026-08-27 per feedback: normal -> -mid, hover/active -> -dark. */
+  --pos-color-dark-important: var(--pos-primitive-color-red-400);
+  --pos-color-dark-important-hover: var(--pos-primitive-color-red-200);
+  --pos-color-dark-important-active: var(--pos-primitive-color-red-200);
+  --pos-color-dark-important-muted: var(--pos-primitive-color-red-800);
+  /* quiet status backgrounds for boxes and sections (not for small elements — those use -muted); never darker than the highlight background (dark: never lighter), so content text, link and icon colors keep their contrast */
+  --pos-color-dark-important-background: var(--pos-primitive-color-red-900);
+  --pos-color-dark-important-disabled: var(--pos-color-dark-important-muted); /* old-DS name, kept for compatibility */
   /* warnings, actions that might have unwanted consequences */
-  --pos-color-dark-warning: #f0b357;
-  --pos-color-dark-warning-hover: #fcc064;
-  --pos-color-dark-warning-disabled: #feeaca;
+  --pos-color-dark-warning: var(--pos-primitive-color-yellow-400);
+  --pos-color-dark-warning-hover: var(--pos-primitive-color-yellow-200);
+  --pos-color-dark-warning-active: var(--pos-primitive-color-yellow-200);
+  --pos-color-dark-warning-muted: var(--pos-primitive-color-yellow-800);
+  --pos-color-dark-warning-background: var(--pos-primitive-color-yellow-900);
+  --pos-color-dark-warning-disabled: var(--pos-color-dark-warning-muted); /* old-DS name, kept for compatibility */
   /* confirmations of a successful actions */
-  --pos-color-dark-confirmation: #167b16;
-  --pos-color-dark-confirmation-hover: #198f6a;
-  --pos-color-dark-confirmation-disabled: #bcddd3;
+  --pos-color-dark-confirmation: var(--pos-primitive-color-green-400);
+  --pos-color-dark-confirmation-hover: var(--pos-primitive-color-green-200);
+  --pos-color-dark-confirmation-active: var(--pos-primitive-color-green-200);
+  --pos-color-dark-confirmation-muted: var(--pos-primitive-color-green-800);
+  --pos-color-dark-confirmation-background: var(--pos-primitive-color-green-900);
+  --pos-color-dark-confirmation-disabled: var(--pos-color-dark-confirmation-muted); /* old-DS name, kept for compatibility */
 
+  /* gradient stop tokens */
+  --pos-color-dark-gradient1-from: var(--pos-primitive-color-brand-primary-900);
+  --pos-color-dark-gradient1-to:   var(--pos-primitive-color-brand-primary-1000);
+  --pos-color-dark-gradient2-from: var(--pos-primitive-color-brand-primary-400);
+  --pos-color-dark-gradient2-to:   var(--pos-primitive-color-brand-primary-500);
+
+
+  /* added with the 2026-10-01 palette (gradients, interactive-inverted, supplementary status family) */
+  --pos-color-dark-supplementary: var(--pos-primitive-color-brand-supplementary-400);
+  --pos-color-dark-supplementary-hover: var(--pos-primitive-color-brand-supplementary-200);
+  --pos-color-dark-supplementary-active: var(--pos-primitive-color-brand-supplementary-200);
+  --pos-color-dark-supplementary-muted: var(--pos-primitive-color-brand-supplementary-800);
 }
 
 
+/* high contrast mode */
+/* -------------------------------------------------------------------------------- */
+:root {
+
+  /* general content */
+  /* ---------------------------------------- */
+
+  /* whole page background — black for maximum contrast */
+  --pos-color-a11y-page-background: var(--pos-primitive-color-a11y-background);
+  /* background color used under the content */
+  --pos-color-a11y-content-background: var(--pos-primitive-color-a11y-background);
+  /* content background at 50% opacity */
+  --pos-color-a11y-content-background-50: var(--pos-primitive-color-a11y-background);
+  /* general content text — white for maximum contrast on black */
+  --pos-color-a11y-content-text: var(--pos-primitive-color-a11y-foreground);
+  /* interactive text that is subdued in light/dark — yellow in HC to signal interactivity */
+  --pos-color-a11y-content-text-interactive: var(--pos-primitive-color-a11y-interactive-text);
+  /* general content icons */
+  --pos-color-a11y-content-icon: var(--pos-primitive-color-a11y-foreground);
+  /* icon/graphic that is subdued in light/dark — turquoise in HC to signal interactivity */
+  --pos-color-a11y-content-icon-interactive: var(--pos-primitive-color-a11y-interactive-graphic);
+  /* disabled icons */
+  --pos-color-a11y-content-icon-disabled: var(--pos-primitive-color-a11y-disabled);
+  /* sidenotes, metadata, table headers — white (same prominence for accessibility) */
+  --pos-color-a11y-content-text-supplementary: var(--pos-primitive-color-a11y-foreground);
+  /* supplementary interactive text — yellow in HC to signal interactivity */
+  --pos-color-a11y-content-text-supplementary-interactive: var(--pos-primitive-color-a11y-interactive-text);
+  /* disabled text */
+  --pos-color-a11y-content-text-disabled: var(--pos-primitive-color-a11y-disabled);
+  /* prominent text */
+  --pos-color-a11y-content-text-prominent: var(--pos-primitive-color-a11y-foreground);
+  /* content text on inverted contrasty background */
+  --pos-color-a11y-content-inverted-text: var(--pos-primitive-color-a11y-background);
+  /* icons on inverted contrasty background */
+  --pos-color-a11y-content-inverted-icon: var(--pos-primitive-color-a11y-background);
+  /* subtle border — always visible in HC */
+  --pos-color-a11y-frame: var(--pos-primitive-color-a11y-foreground);
+  /* standard border */
+  --pos-color-a11y-frame-default: var(--pos-primitive-color-a11y-foreground);
+  /* invisible border becomes visible in HC mode for maximum legibility */
+  --pos-color-a11y-frame-transparent: var(--pos-primitive-color-a11y-foreground);
+  /* highlighted elements background — still black (contrast comes from borders) */
+  --pos-color-a11y-highlight-background: var(--pos-primitive-color-a11y-background);
+  /* highlighted elements text */
+  --pos-color-a11y-highlight-text: var(--pos-primitive-color-a11y-foreground);
+  /* standout background — white for contrast against black page */
+  --pos-color-a11y-standout-background: var(--pos-primitive-color-a11y-foreground);
+  /* standout background on hover */
+  --pos-color-a11y-standout-background-hover: var(--pos-primitive-color-a11y-foreground);
+  /* quiet brand-tinted background of cards and sections — never darker than the highlight background (dark: never lighter), so every content text / link / icon color keeps its contrast */
+  --pos-color-a11y-brand-primary-background: var(--pos-color-a11y-highlight-background);
+  --pos-color-a11y-brand-supplementary-background: var(--pos-color-a11y-highlight-background);
+  /* frame of a brand-tinted card / section — one step stronger than its background (light 300 on 200, dark 800 on 900); HC: the usual visible frame */
+  --pos-color-a11y-brand-primary-frame: var(--pos-color-a11y-frame-transparent);
+  --pos-color-a11y-brand-supplementary-frame: var(--pos-color-a11y-frame-transparent);
+  /* banner/stats badge background */
+  --pos-color-a11y-banner-stats: var(--pos-primitive-color-a11y-foreground);
+  /* text on standout background */
+  --pos-color-a11y-standout-text: var(--pos-primitive-color-a11y-background);
+  /* supplementary text on standout background */
+  --pos-color-a11y-standout-text-supplementary: var(--pos-primitive-color-a11y-background);
+  /* dark background for inverted content sections */
+  --pos-color-a11y-inverted-background: var(--pos-primitive-color-a11y-foreground);
+  /* shadow color */
+  --pos-color-a11y-shadow: var(--pos-primitive-color-a11y-background);
+
+
+  /* interactive elements */
+  /* ---------------------------------------- */
+
+  /* interactive text color — yellow for WCAG-compliant contrast on black */
+  --pos-color-a11y-interactive: var(--pos-primitive-color-a11y-interactive-text);
+  --pos-color-a11y-interactive-hover: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-interactive-active: var(--pos-primitive-color-a11y-interactive-text);
+  --pos-color-a11y-interactive-disabled: var(--pos-primitive-color-a11y-disabled);
+  /* interactive text on inverted background */
+  --pos-color-a11y-interactive-text-inverted: var(--pos-primitive-color-a11y-interactive-text-inverted);
+
+  /* interactive icon/graphic color — cyan for WCAG-compliant contrast on black */
+  --pos-color-a11y-icon-interactive: var(--pos-primitive-color-a11y-interactive-graphic);
+  --pos-color-a11y-icon-interactive-hover: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-icon-interactive-active: var(--pos-primitive-color-a11y-interactive-graphic);
+  --pos-color-a11y-icon-interactive-disabled: var(--pos-primitive-color-a11y-disabled);
+  /* interactive icon on an inverted (light) surface, e.g. copy-code button on the dark code block in HC mode */
+  --pos-color-a11y-icon-interactive-inverted: var(--pos-primitive-color-a11y-interactive-graphic-inverted);
+  --pos-color-a11y-interactive-inverted: var(--pos-primitive-color-a11y-interactive-graphic-inverted);
+
+  /* primary action button — cyan background, black text */
+  --pos-color-a11y-button-primary-background: var(--pos-color-a11y-icon-interactive);
+  --pos-color-a11y-button-primary-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-primary-frame: var(--pos-color-a11y-icon-interactive);
+  /* hover goes white (same as its frame) for the strongest contrast (user, 2026-10-01) */
+  --pos-color-a11y-button-primary-hover-background: var(--pos-color-a11y-icon-interactive-hover);
+  --pos-color-a11y-button-primary-hover-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-primary-hover-frame: var(--pos-color-a11y-icon-interactive-hover);
+  --pos-color-a11y-button-primary-active-background: var(--pos-color-a11y-icon-interactive-active);
+  --pos-color-a11y-button-primary-active-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-primary-active-frame: var(--pos-color-a11y-icon-interactive-active);
+  --pos-color-a11y-button-primary-disabled-background: var(--pos-color-a11y-icon-interactive-disabled);
+  --pos-color-a11y-button-primary-disabled-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-primary-disabled-frame: var(--pos-color-a11y-icon-interactive-disabled);
+
+  /* secondary action button — black background, yellow text, cyan border */
+  --pos-color-a11y-button-secondary-background: var(--pos-color-a11y-content-background);
+  --pos-color-a11y-button-secondary-background-transparent: transparent;
+  --pos-color-a11y-button-secondary-text: var(--pos-color-a11y-interactive);
+  --pos-color-a11y-button-secondary-frame: var(--pos-color-a11y-icon-interactive);
+  --pos-color-a11y-button-secondary-hover-background: var(--pos-color-a11y-content-background);
+  --pos-color-a11y-button-secondary-hover-background-transparent: transparent;
+  --pos-color-a11y-button-secondary-hover-text: var(--pos-color-a11y-interactive-hover);
+  --pos-color-a11y-button-secondary-hover-frame: var(--pos-color-a11y-icon-interactive-hover);
+  --pos-color-a11y-button-secondary-active-background: var(--pos-color-a11y-highlight-background);
+  --pos-color-a11y-button-secondary-active-text: var(--pos-color-a11y-interactive-active);
+  --pos-color-a11y-button-secondary-active-frame: var(--pos-color-a11y-icon-interactive-active);
+  --pos-color-a11y-button-secondary-disabled-background: transparent;
+  --pos-color-a11y-button-secondary-disabled-text: var(--pos-color-a11y-interactive-disabled);
+  --pos-color-a11y-button-secondary-disabled-frame: var(--pos-color-a11y-content-icon-disabled);
+
+  /* inverted button — for use on white standout backgrounds */
+  --pos-color-a11y-button-inverted-background: var(--pos-color-a11y-content-background);
+  --pos-color-a11y-button-inverted-text: var(--pos-color-a11y-icon-interactive);
+  --pos-color-a11y-button-inverted-frame: var(--pos-color-a11y-icon-interactive-inverted); /* dark cyan — inverted buttons sit on the white HC inverted surface */
+  --pos-color-a11y-button-inverted-hover-background: var(--pos-color-a11y-icon-interactive);
+  --pos-color-a11y-button-inverted-hover-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-inverted-hover-frame: var(--pos-color-a11y-icon-interactive-inverted); /* dark cyan edge around the bright hover fill on the white inverted surface */
+  /* active = normal (2026-08-26): matches primary, which has no distinct active
+     override in pos-button.css at all — normal/active render identically there too */
+  --pos-color-a11y-button-inverted-active-background: var(--pos-color-a11y-content-background);
+  --pos-color-a11y-button-inverted-active-text: var(--pos-color-a11y-icon-interactive);
+  --pos-color-a11y-button-inverted-active-frame: var(--pos-color-a11y-icon-interactive-inverted); /* dark cyan — inverted buttons sit on the white HC inverted surface */
+  --pos-color-a11y-button-inverted-disabled-background: var(--pos-color-a11y-icon-interactive-disabled);
+  --pos-color-a11y-button-inverted-disabled-text: var(--pos-color-a11y-content-text);
+  --pos-color-a11y-button-inverted-disabled-frame: var(--pos-color-a11y-icon-interactive-disabled);
+
+  /* inverted secondary button — transparent bordered button for white standout backgrounds */
+  --pos-color-a11y-button-inverted-secondary-background: transparent;
+  --pos-color-a11y-button-inverted-secondary-text: var(--pos-color-a11y-interactive-text-inverted);
+  --pos-color-a11y-button-inverted-secondary-frame: var(--pos-color-a11y-content-icon-disabled);
+  --pos-color-a11y-button-inverted-secondary-hover-background: transparent;
+  --pos-color-a11y-button-inverted-secondary-hover-text: var(--pos-primitive-color-a11y-background);
+  --pos-color-a11y-button-inverted-secondary-hover-frame: var(--pos-color-a11y-icon-interactive-inverted);
+  /* active = normal (2026-08-26) — see inverted-active comment above */
+  --pos-color-a11y-button-inverted-secondary-active-background: transparent;
+  --pos-color-a11y-button-inverted-secondary-active-text: var(--pos-color-a11y-interactive-text-inverted);
+  --pos-color-a11y-button-inverted-secondary-active-frame: var(--pos-color-a11y-content-icon-disabled);
+  --pos-color-a11y-button-inverted-secondary-disabled-background: transparent;
+  --pos-color-a11y-button-inverted-secondary-disabled-text: var(--pos-primitive-color-a11y-disabled);
+  --pos-color-a11y-button-inverted-secondary-disabled-frame: var(--pos-primitive-color-a11y-disabled);
+
+  /* error button */
+  --pos-color-a11y-button-error-background: var(--pos-primitive-color-red-200);
+  --pos-color-a11y-button-error-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-error-frame: var(--pos-primitive-color-red-200);
+  /* hover/active of the HC error + success buttons go white for the strongest contrast (user, 2026-10-01) */
+  --pos-color-a11y-button-error-hover-background: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-error-hover-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-error-hover-frame: var(--pos-primitive-color-a11y-foreground);
+  /* active = normal (2026-08-26) — see inverted-active comment above */
+  --pos-color-a11y-button-error-active-background: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-error-active-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-error-active-frame: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-error-disabled-background: var(--pos-primitive-color-red-1000);
+  --pos-color-a11y-button-error-disabled-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-error-disabled-frame: var(--pos-primitive-color-red-1000);
+
+  /* success button */
+  --pos-color-a11y-button-success-background: var(--pos-primitive-color-green-200);
+  --pos-color-a11y-button-success-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-success-frame: var(--pos-primitive-color-green-200);
+  --pos-color-a11y-button-success-hover-background: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-success-hover-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-success-hover-frame: var(--pos-primitive-color-a11y-foreground);
+  /* active = normal (2026-08-26) — see inverted-active comment above */
+  --pos-color-a11y-button-success-active-background: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-success-active-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-success-active-frame: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-button-success-disabled-background: var(--pos-primitive-color-green-1000);
+  --pos-color-a11y-button-success-disabled-text: var(--pos-color-a11y-content-inverted-text);
+  --pos-color-a11y-button-success-disabled-frame: var(--pos-primitive-color-green-1000);
+
+
+  /* colors for browser-related UI elements */
+  /* ---------------------------------------- */
+
+  /* focus indicator — yellow for maximum contrast on black */
+  --pos-color-a11y-focused: var(--pos-primitive-color-a11y-interactive-text);
+  --pos-color-a11y-focused-inverse: var(--pos-primitive-color-a11y-interactive-text-inverted);
+
+  /* selected text */
+  --pos-color-a11y-selection-background: var(--pos-color-a11y-focused);
+  --pos-color-a11y-selection-text: var(--pos-color-a11y-content-inverted-text);
+
+
+  /* forms */
+  /* ---------------------------------------- */
+
+  --pos-color-a11y-input-placeholder: color-mix(in srgb, var(--pos-color-a11y-input-text) 50%, transparent 50%);
+  /* black background, white text, cyan border */
+  --pos-color-a11y-input-background: var(--pos-primitive-color-a11y-background);
+  --pos-color-a11y-input-text: var(--pos-primitive-color-a11y-foreground);
+  --pos-color-a11y-input-frame: var(--pos-primitive-color-a11y-interactive-graphic);
+  --pos-color-a11y-input-hover-background: var(--pos-color-a11y-input-background);
+  --pos-color-a11y-input-hover-text: var(--pos-color-a11y-input-text);
+  --pos-color-a11y-input-hover-frame: var(--pos-color-a11y-icon-interactive-hover);
+  /* focused = same as hover, per Figma's combined Hover+Active variable */
+  --pos-color-a11y-input-active-background: var(--pos-color-a11y-input-hover-background);
+  --pos-color-a11y-input-active-text: var(--pos-color-a11y-input-hover-text);
+  --pos-color-a11y-input-active-frame: var(--pos-color-a11y-input-hover-frame);
+  --pos-color-a11y-input-disabled-background: var(--pos-primitive-color-a11y-disabled);
+  --pos-color-a11y-input-disabled-text: var(--pos-color-a11y-content-text-disabled);
+  --pos-color-a11y-input-disabled-frame: var(--pos-primitive-color-a11y-disabled);
+
+
+  /* utility */
+  /* ---------------------------------------- */
+
+  /* errors — light for normal/hover, deep for active/muted */
+  --pos-color-a11y-important: var(--pos-primitive-color-red-200);
+  --pos-color-a11y-important-hover: var(--pos-primitive-color-red-200);
+  --pos-color-a11y-important-active: var(--pos-primitive-color-red-200);
+  --pos-color-a11y-important-muted: var(--pos-primitive-color-red-800);
+  /* quiet status backgrounds for boxes and sections (not for small elements — those use -muted); never darker than the highlight background (dark: never lighter), so content text, link and icon colors keep their contrast */
+  --pos-color-a11y-important-background: var(--pos-color-a11y-highlight-background);
+  /* warnings — light for all interactive states, deep for muted */
+  --pos-color-a11y-warning: var(--pos-primitive-color-yellow-200);
+  --pos-color-a11y-warning-hover: var(--pos-primitive-color-yellow-200);
+  --pos-color-a11y-warning-active: var(--pos-primitive-color-yellow-200);
+  --pos-color-a11y-warning-muted: var(--pos-primitive-color-yellow-800);
+  --pos-color-a11y-warning-background: var(--pos-color-a11y-highlight-background);
+  /* confirmations — light for normal/hover, deep for active/muted */
+  --pos-color-a11y-confirmation: var(--pos-primitive-color-green-200);
+  --pos-color-a11y-confirmation-hover: var(--pos-primitive-color-green-200);
+  --pos-color-a11y-confirmation-active: var(--pos-primitive-color-green-200);
+  --pos-color-a11y-confirmation-muted: var(--pos-primitive-color-green-800);
+  --pos-color-a11y-confirmation-background: var(--pos-color-a11y-highlight-background);
+
+
+  /* added with the 2026-10-01 palette (gradients, interactive-inverted, supplementary status family) */
+  --pos-color-a11y-supplementary: var(--pos-primitive-color-brand-supplementary-200);
+  --pos-color-a11y-supplementary-hover: var(--pos-primitive-color-brand-supplementary-200);
+  --pos-color-a11y-supplementary-active: var(--pos-primitive-color-brand-supplementary-200);
+  --pos-color-a11y-supplementary-muted: var(--pos-primitive-color-brand-supplementary-800);
+}
+
+
+/* compatibility aliases for old-DS names the new DS doesn't use itself */
+:root {
+  --pos-icon-select-arrow-hover: var(--pos-icon-select-arrow);
+}
+
 /* negotiating colors based on the choosen theme
+   The three blocks below also apply to any element with pos-scheme-light / -dark / -a11y
+   (2026-10-03): a part of the page in another mode than the page itself — the semantic tokens are
+   re-declared on that element and resolve from the mode tokens it inherits (brand themes included).
 /* -------------------------------------------------------------------------------- */
 
 :root,
-:root.pos-theme-light {
+:root.pos-theme-light,
+.pos-scheme-light {
 
   /* general content */
   /* ---------------------------------------- */
   --pos-color-page-background: var(--pos-color-light-page-background);
   --pos-color-content-background: var(--pos-color-light-content-background);
+  --pos-color-content-background-50: var(--pos-color-light-content-background-50);
   --pos-color-content-text: var(--pos-color-light-content-text);
+  --pos-color-content-text-interactive: var(--pos-color-light-content-text-interactive);
   --pos-color-content-icon: var(--pos-color-light-content-icon);
+  --pos-color-content-icon-interactive: var(--pos-color-light-content-icon-interactive);
   --pos-color-content-text-supplementary: var(--pos-color-light-content-text-supplementary);
+  --pos-color-content-text-supplementary-interactive: var(--pos-color-light-content-text-supplementary-interactive);
   --pos-color-content-text-prominent: var(--pos-color-light-content-text-prominent);
   --pos-color-content-inverted-text: var(--pos-color-light-content-inverted-text);
+  --pos-color-content-inverted-icon: var(--pos-color-light-content-inverted-icon);
   --pos-color-frame: var(--pos-color-light-frame);
+  --pos-color-frame-default: var(--pos-color-light-frame-default);
+  --pos-color-frame-transparent: var(--pos-color-light-frame-transparent);
   --pos-color-highlight-background: var(--pos-color-light-highlight-background);
   --pos-color-highlight-text: var(--pos-color-light-content-text);
   --pos-color-standout-background: var(--pos-color-light-standout-background);
   --pos-color-standout-background-hover: var(--pos-color-light-standout-background-hover);
+  --pos-color-brand-primary-background: var(--pos-color-light-brand-primary-background);
+  --pos-color-brand-supplementary-background: var(--pos-color-light-brand-supplementary-background);
+  --pos-color-brand-primary-frame: var(--pos-color-light-brand-primary-frame);
+  --pos-color-brand-supplementary-frame: var(--pos-color-light-brand-supplementary-frame);
   --pos-color-standout-text: var(--pos-color-light-standout-text);
+  --pos-color-standout-text-supplementary: var(--pos-color-light-standout-text-supplementary);
+  --pos-color-banner-stats: var(--pos-color-light-banner-stats);
+  --pos-color-inverted-background: var(--pos-color-light-inverted-background);
+  --pos-color-shadow: var(--pos-color-light-shadow);
 
 
   /* interactive elements */
   /* ---------------------------------------- */
-  --pos-color-interactive: var(--pos-color-light-interactive);
-  --pos-color-interactive-hover: var(--pos-color-light-interactive-hover);
-  --pos-color-interactive-active: var(--pos-color-light-interactive-active);
-  --pos-color-interactive-disabled: var(--pos-color-light-interactive-disabled);
+  --pos-color-interactive: var(--pos-color-light-icon-interactive);
+  --pos-color-interactive-hover: var(--pos-color-light-icon-interactive-hover);
+  --pos-color-interactive-active: var(--pos-color-light-icon-interactive-active);
+  --pos-color-interactive-disabled: var(--pos-color-light-icon-interactive-disabled);
+  --pos-color-interactive-text: var(--pos-color-light-interactive);
+  --pos-color-interactive-text-hover: var(--pos-color-light-interactive-hover);
+  --pos-color-interactive-text-active: var(--pos-color-light-interactive-active);
+  --pos-color-interactive-text-disabled: var(--pos-color-light-interactive-disabled);
+  --pos-color-interactive-inverted: var(--pos-color-light-interactive-inverted);
+  --pos-color-supplementary: var(--pos-color-light-supplementary);
+  --pos-color-supplementary-hover: var(--pos-color-light-supplementary-hover);
+  --pos-color-supplementary-active: var(--pos-color-light-supplementary-active);
+  --pos-color-supplementary-muted: var(--pos-color-light-supplementary-muted);
+  --pos-color-interactive-text-inverted: var(--pos-color-light-interactive-text-inverted);
+
+  --pos-color-content-text-disabled: var(--pos-color-light-content-text-disabled);
+  --pos-color-content-icon-disabled: var(--pos-color-light-content-icon-disabled);
 
   --pos-color-button-primary-background: var(--pos-color-light-button-primary-background);
   --pos-color-button-primary-text: var(--pos-color-light-button-primary-text);
@@ -400,9 +928,11 @@
   --pos-color-button-primary-disabled-frame: var(--pos-color-light-button-primary-disabled-frame);
 
   --pos-color-button-secondary-background: var(--pos-color-light-button-secondary-background);
+  --pos-color-button-secondary-background-transparent: var(--pos-color-light-button-secondary-background-transparent);
   --pos-color-button-secondary-text: var(--pos-color-light-button-secondary-text);
   --pos-color-button-secondary-frame: var(--pos-color-light-button-secondary-frame);
   --pos-color-button-secondary-hover-background: var(--pos-color-light-button-secondary-hover-background);
+  --pos-color-button-secondary-hover-background-transparent: var(--pos-color-light-button-secondary-hover-background-transparent);
   --pos-color-button-secondary-hover-text: var(--pos-color-light-button-secondary-hover-text);
   --pos-color-button-secondary-hover-frame: var(--pos-color-light-button-secondary-hover-frame);
   --pos-color-button-secondary-active-background: var(--pos-color-light-button-secondary-active-background);
@@ -412,10 +942,63 @@
   --pos-color-button-secondary-disabled-text: var(--pos-color-light-button-secondary-disabled-text);
   --pos-color-button-secondary-disabled-frame: var(--pos-color-light-button-secondary-disabled-frame);
 
+  --pos-color-button-inverted-background: var(--pos-color-light-button-inverted-background);
+  --pos-color-button-inverted-text: var(--pos-color-light-button-inverted-text);
+  --pos-color-button-inverted-frame: var(--pos-color-light-button-inverted-frame);
+  --pos-color-button-inverted-hover-background: var(--pos-color-light-button-inverted-hover-background);
+  --pos-color-button-inverted-hover-text: var(--pos-color-light-button-inverted-hover-text);
+  --pos-color-button-inverted-hover-frame: var(--pos-color-light-button-inverted-hover-frame);
+  --pos-color-button-inverted-active-background: var(--pos-color-light-button-inverted-active-background);
+  --pos-color-button-inverted-active-text: var(--pos-color-light-button-inverted-active-text);
+  --pos-color-button-inverted-active-frame: var(--pos-color-light-button-inverted-active-frame);
+  --pos-color-button-inverted-disabled-background: var(--pos-color-light-button-inverted-disabled-background);
+  --pos-color-button-inverted-disabled-text: var(--pos-color-light-button-inverted-disabled-text);
+  --pos-color-button-inverted-disabled-frame: var(--pos-color-light-button-inverted-disabled-frame);
+
+  --pos-color-button-inverted-secondary-background: var(--pos-color-light-button-inverted-secondary-background);
+  --pos-color-button-inverted-secondary-text: var(--pos-color-light-button-inverted-secondary-text);
+  --pos-color-button-inverted-secondary-frame: var(--pos-color-light-button-inverted-secondary-frame);
+  --pos-color-button-inverted-secondary-hover-background: var(--pos-color-light-button-inverted-secondary-hover-background);
+  --pos-color-button-inverted-secondary-hover-text: var(--pos-color-light-button-inverted-secondary-hover-text);
+  --pos-color-button-inverted-secondary-hover-frame: var(--pos-color-light-button-inverted-secondary-hover-frame);
+  --pos-color-button-inverted-secondary-active-background: var(--pos-color-light-button-inverted-secondary-active-background);
+  --pos-color-button-inverted-secondary-active-text: var(--pos-color-light-button-inverted-secondary-active-text);
+  --pos-color-button-inverted-secondary-active-frame: var(--pos-color-light-button-inverted-secondary-active-frame);
+  --pos-color-button-inverted-secondary-disabled-background: var(--pos-color-light-button-inverted-secondary-disabled-background);
+  --pos-color-button-inverted-secondary-disabled-text: var(--pos-color-light-button-inverted-secondary-disabled-text);
+  --pos-color-button-inverted-secondary-disabled-frame: var(--pos-color-light-button-inverted-secondary-disabled-frame);
+
+  --pos-color-button-error-background: var(--pos-color-light-button-error-background);
+  --pos-color-button-error-text: var(--pos-color-light-button-error-text);
+  --pos-color-button-error-frame: var(--pos-color-light-button-error-frame);
+  --pos-color-button-error-hover-background: var(--pos-color-light-button-error-hover-background);
+  --pos-color-button-error-hover-text: var(--pos-color-light-button-error-hover-text);
+  --pos-color-button-error-hover-frame: var(--pos-color-light-button-error-hover-frame);
+  --pos-color-button-error-active-background: var(--pos-color-light-button-error-active-background);
+  --pos-color-button-error-active-text: var(--pos-color-light-button-error-active-text);
+  --pos-color-button-error-active-frame: var(--pos-color-light-button-error-active-frame);
+  --pos-color-button-error-disabled-background: var(--pos-color-light-button-error-disabled-background);
+  --pos-color-button-error-disabled-text: var(--pos-color-light-button-error-disabled-text);
+  --pos-color-button-error-disabled-frame: var(--pos-color-light-button-error-disabled-frame);
+
+  --pos-color-button-success-background: var(--pos-color-light-button-success-background);
+  --pos-color-button-success-text: var(--pos-color-light-button-success-text);
+  --pos-color-button-success-frame: var(--pos-color-light-button-success-frame);
+  --pos-color-button-success-hover-background: var(--pos-color-light-button-success-hover-background);
+  --pos-color-button-success-hover-text: var(--pos-color-light-button-success-hover-text);
+  --pos-color-button-success-hover-frame: var(--pos-color-light-button-success-hover-frame);
+  --pos-color-button-success-active-background: var(--pos-color-light-button-success-active-background);
+  --pos-color-button-success-active-text: var(--pos-color-light-button-success-active-text);
+  --pos-color-button-success-active-frame: var(--pos-color-light-button-success-active-frame);
+  --pos-color-button-success-disabled-background: var(--pos-color-light-button-success-disabled-background);
+  --pos-color-button-success-disabled-text: var(--pos-color-light-button-success-disabled-text);
+  --pos-color-button-success-disabled-frame: var(--pos-color-light-button-success-disabled-frame);
+
 
   /* colors user for variety of browser-related UI elements */
   /* ---------------------------------------- */
   --pos-color-focused: var(--pos-color-light-focused);
+  --pos-color-focused-inverse: var(--pos-color-light-focused-inverse);
 
   --pos-color-selection-background: var(--pos-color-light-selection-background);
   --pos-color-selection-text: var(--pos-color-light-selection-text);
@@ -439,46 +1022,96 @@
   --pos-color-input-disabled-frame: var(--pos-color-light-input-disabled-frame);
 
 
+
   /* utility */
   /* ---------------------------------------- */
   --pos-color-important: var(--pos-color-light-important);
   --pos-color-important-hover: var(--pos-color-light-important-hover);
-  --pos-color-important-disabled: var(--pos-color-light-important-disabled);
+  --pos-color-important-active: var(--pos-color-light-important-active);
+  --pos-color-important-muted: var(--pos-color-light-important-muted);
+  --pos-color-important-background: var(--pos-color-light-important-background);
+  /* -disabled: old-DS token name, kept as a permanent alias of -muted so a product
+     migrating from the old design system still resolves (RULES.md 1.9) */
+  --pos-color-important-disabled: var(--pos-color-important-muted);
   --pos-color-warning: var(--pos-color-light-warning);
   --pos-color-warning-hover: var(--pos-color-light-warning-hover);
-  --pos-color-warning-disabled: var(--pos-color-light-warning-disabled);
+  --pos-color-warning-active: var(--pos-color-light-warning-active);
+  --pos-color-warning-muted: var(--pos-color-light-warning-muted);
+  --pos-color-warning-background: var(--pos-color-light-warning-background);
+  --pos-color-warning-disabled: var(--pos-color-warning-muted);
   --pos-color-confirmation: var(--pos-color-light-confirmation);
   --pos-color-confirmation-hover: var(--pos-color-light-confirmation-hover);
-  --pos-color-confirmation-disabled: var(--pos-color-light-confirmation-disabled);
+  --pos-color-confirmation-active: var(--pos-color-light-confirmation-active);
+  --pos-color-confirmation-muted: var(--pos-color-light-confirmation-muted);
+  --pos-color-confirmation-background: var(--pos-color-light-confirmation-background);
+  --pos-color-confirmation-disabled: var(--pos-color-confirmation-muted);
+
+  /* native <select> arrow — CSS-only migration fallback for markup that
+     hasn't adopted the .pos-form-input-wrapper + .pos-form-input-icon
+     pattern yet (see pos-forms.css); baked-color SVG since background-image
+     can't read currentColor/var() from its CSS context. Regenerate if
+     --pos-color-interactive/-disabled ever changes value. */
+  --pos-icon-select-arrow: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%231d4ed8%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-select-arrow-disabled: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%23cedeff%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-upload-bottom: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2724%27%20height%3D%2724%27%20fill%3D%27none%27%20stroke%3D%27%23405568%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2017v2a2%202%200%200%200%202%202h12a2%202%200%200%200%202%20-2v-2%27%2F%3E%3Cpath%20d%3D%27M7%209l5%20-5l5%205%27%2F%3E%3Cpath%20d%3D%27M12%204l0%2012%27%2F%3E%3C%2Fsvg%3E");
 
 }
 
 
-:root.pos-theme-dark:where(.pos-theme-darkEnabled) {
+:root.pos-theme-dark:where(.pos-theme-darkEnabled),
+.pos-scheme-dark {
 
   /* general content */
   /* ---------------------------------------- */
   --pos-color-page-background: var(--pos-color-dark-page-background);
   --pos-color-content-background: var(--pos-color-dark-content-background);
+  --pos-color-content-background-50: var(--pos-color-dark-content-background-50);
   --pos-color-content-text: var(--pos-color-dark-content-text);
+  --pos-color-content-text-interactive: var(--pos-color-dark-content-text-interactive);
   --pos-color-content-icon: var(--pos-color-dark-content-icon);
+  --pos-color-content-icon-interactive: var(--pos-color-dark-content-icon-interactive);
   --pos-color-content-text-supplementary: var(--pos-color-dark-content-text-supplementary);
+  --pos-color-content-text-supplementary-interactive: var(--pos-color-dark-content-text-supplementary-interactive);
   --pos-color-content-text-prominent: var(--pos-color-dark-content-text-prominent);
   --pos-color-content-inverted-text: var(--pos-color-dark-content-inverted-text);
+  --pos-color-content-inverted-icon: var(--pos-color-dark-content-inverted-icon);
   --pos-color-frame: var(--pos-color-dark-frame);
+  --pos-color-frame-default: var(--pos-color-dark-frame-default);
+  --pos-color-frame-transparent: var(--pos-color-dark-frame-transparent);
   --pos-color-highlight-background: var(--pos-color-dark-highlight-background);
   --pos-color-highlight-text: var(--pos-color-dark-content-text);
   --pos-color-standout-background: var(--pos-color-dark-standout-background);
   --pos-color-standout-background-hover: var(--pos-color-dark-standout-background-hover);
+  --pos-color-brand-primary-background: var(--pos-color-dark-brand-primary-background);
+  --pos-color-brand-supplementary-background: var(--pos-color-dark-brand-supplementary-background);
+  --pos-color-brand-primary-frame: var(--pos-color-dark-brand-primary-frame);
+  --pos-color-brand-supplementary-frame: var(--pos-color-dark-brand-supplementary-frame);
   --pos-color-standout-text: var(--pos-color-dark-standout-text);
+  --pos-color-standout-text-supplementary: var(--pos-color-dark-standout-text-supplementary);
+  --pos-color-banner-stats: var(--pos-color-dark-banner-stats);
+  --pos-color-inverted-background: var(--pos-color-dark-inverted-background);
+  --pos-color-shadow: var(--pos-color-dark-shadow);
 
 
   /* interactive elements */
   /* ---------------------------------------- */
-  --pos-color-interactive: var(--pos-color-dark-interactive);
-  --pos-color-interactive-hover: var(--pos-color-dark-interactive-hover);
-  --pos-color-interactive-active: var(--pos-color-dark-interactive-active);
-  --pos-color-interactive-disabled: var(--pos-color-dark-interactive-disabled);
+  --pos-color-interactive: var(--pos-color-dark-icon-interactive);
+  --pos-color-interactive-hover: var(--pos-color-dark-icon-interactive-hover);
+  --pos-color-interactive-active: var(--pos-color-dark-icon-interactive-active);
+  --pos-color-interactive-disabled: var(--pos-color-dark-icon-interactive-disabled);
+  --pos-color-interactive-text: var(--pos-color-dark-interactive);
+  --pos-color-interactive-text-hover: var(--pos-color-dark-interactive-hover);
+  --pos-color-interactive-text-active: var(--pos-color-dark-interactive-active);
+  --pos-color-interactive-text-disabled: var(--pos-color-dark-interactive-disabled);
+  --pos-color-interactive-inverted: var(--pos-color-dark-interactive-inverted);
+  --pos-color-supplementary: var(--pos-color-dark-supplementary);
+  --pos-color-supplementary-hover: var(--pos-color-dark-supplementary-hover);
+  --pos-color-supplementary-active: var(--pos-color-dark-supplementary-active);
+  --pos-color-supplementary-muted: var(--pos-color-dark-supplementary-muted);
+  --pos-color-interactive-text-inverted: var(--pos-color-dark-interactive-text-inverted);
+
+  --pos-color-content-text-disabled: var(--pos-color-dark-content-text-disabled);
+  --pos-color-content-icon-disabled: var(--pos-color-dark-content-icon-disabled);
 
   --pos-color-button-primary-background: var(--pos-color-dark-button-primary-background);
   --pos-color-button-primary-text: var(--pos-color-dark-button-primary-text);
@@ -494,9 +1127,11 @@
   --pos-color-button-primary-disabled-frame: var(--pos-color-dark-button-primary-disabled-frame);
 
   --pos-color-button-secondary-background: var(--pos-color-dark-button-secondary-background);
+  --pos-color-button-secondary-background-transparent: var(--pos-color-dark-button-secondary-background-transparent);
   --pos-color-button-secondary-text: var(--pos-color-dark-button-secondary-text);
   --pos-color-button-secondary-frame: var(--pos-color-dark-button-secondary-frame);
   --pos-color-button-secondary-hover-background: var(--pos-color-dark-button-secondary-hover-background);
+  --pos-color-button-secondary-hover-background-transparent: var(--pos-color-dark-button-secondary-hover-background-transparent);
   --pos-color-button-secondary-hover-text: var(--pos-color-dark-button-secondary-hover-text);
   --pos-color-button-secondary-hover-frame: var(--pos-color-dark-button-secondary-hover-frame);
   --pos-color-button-secondary-active-background: var(--pos-color-dark-button-secondary-active-background);
@@ -506,10 +1141,63 @@
   --pos-color-button-secondary-disabled-text: var(--pos-color-dark-button-secondary-disabled-text);
   --pos-color-button-secondary-disabled-frame: var(--pos-color-dark-button-secondary-disabled-frame);
 
+  --pos-color-button-inverted-background: var(--pos-color-dark-button-inverted-background);
+  --pos-color-button-inverted-text: var(--pos-color-dark-button-inverted-text);
+  --pos-color-button-inverted-frame: var(--pos-color-dark-button-inverted-frame);
+  --pos-color-button-inverted-hover-background: var(--pos-color-dark-button-inverted-hover-background);
+  --pos-color-button-inverted-hover-text: var(--pos-color-dark-button-inverted-hover-text);
+  --pos-color-button-inverted-hover-frame: var(--pos-color-dark-button-inverted-hover-frame);
+  --pos-color-button-inverted-active-background: var(--pos-color-dark-button-inverted-active-background);
+  --pos-color-button-inverted-active-text: var(--pos-color-dark-button-inverted-active-text);
+  --pos-color-button-inverted-active-frame: var(--pos-color-dark-button-inverted-active-frame);
+  --pos-color-button-inverted-disabled-background: var(--pos-color-dark-button-inverted-disabled-background);
+  --pos-color-button-inverted-disabled-text: var(--pos-color-dark-button-inverted-disabled-text);
+  --pos-color-button-inverted-disabled-frame: var(--pos-color-dark-button-inverted-disabled-frame);
+
+  --pos-color-button-inverted-secondary-background: var(--pos-color-dark-button-inverted-secondary-background);
+  --pos-color-button-inverted-secondary-text: var(--pos-color-dark-button-inverted-secondary-text);
+  --pos-color-button-inverted-secondary-frame: var(--pos-color-dark-button-inverted-secondary-frame);
+  --pos-color-button-inverted-secondary-hover-background: var(--pos-color-dark-button-inverted-secondary-hover-background);
+  --pos-color-button-inverted-secondary-hover-text: var(--pos-color-dark-button-inverted-secondary-hover-text);
+  --pos-color-button-inverted-secondary-hover-frame: var(--pos-color-dark-button-inverted-secondary-hover-frame);
+  --pos-color-button-inverted-secondary-active-background: var(--pos-color-dark-button-inverted-secondary-active-background);
+  --pos-color-button-inverted-secondary-active-text: var(--pos-color-dark-button-inverted-secondary-active-text);
+  --pos-color-button-inverted-secondary-active-frame: var(--pos-color-dark-button-inverted-secondary-active-frame);
+  --pos-color-button-inverted-secondary-disabled-background: var(--pos-color-dark-button-inverted-secondary-disabled-background);
+  --pos-color-button-inverted-secondary-disabled-text: var(--pos-color-dark-button-inverted-secondary-disabled-text);
+  --pos-color-button-inverted-secondary-disabled-frame: var(--pos-color-dark-button-inverted-secondary-disabled-frame);
+
+  --pos-color-button-error-background: var(--pos-color-dark-button-error-background);
+  --pos-color-button-error-text: var(--pos-color-dark-button-error-text);
+  --pos-color-button-error-frame: var(--pos-color-dark-button-error-frame);
+  --pos-color-button-error-hover-background: var(--pos-color-dark-button-error-hover-background);
+  --pos-color-button-error-hover-text: var(--pos-color-dark-button-error-hover-text);
+  --pos-color-button-error-hover-frame: var(--pos-color-dark-button-error-hover-frame);
+  --pos-color-button-error-active-background: var(--pos-color-dark-button-error-active-background);
+  --pos-color-button-error-active-text: var(--pos-color-dark-button-error-active-text);
+  --pos-color-button-error-active-frame: var(--pos-color-dark-button-error-active-frame);
+  --pos-color-button-error-disabled-background: var(--pos-color-dark-button-error-disabled-background);
+  --pos-color-button-error-disabled-text: var(--pos-color-dark-button-error-disabled-text);
+  --pos-color-button-error-disabled-frame: var(--pos-color-dark-button-error-disabled-frame);
+
+  --pos-color-button-success-background: var(--pos-color-dark-button-success-background);
+  --pos-color-button-success-text: var(--pos-color-dark-button-success-text);
+  --pos-color-button-success-frame: var(--pos-color-dark-button-success-frame);
+  --pos-color-button-success-hover-background: var(--pos-color-dark-button-success-hover-background);
+  --pos-color-button-success-hover-text: var(--pos-color-dark-button-success-hover-text);
+  --pos-color-button-success-hover-frame: var(--pos-color-dark-button-success-hover-frame);
+  --pos-color-button-success-active-background: var(--pos-color-dark-button-success-active-background);
+  --pos-color-button-success-active-text: var(--pos-color-dark-button-success-active-text);
+  --pos-color-button-success-active-frame: var(--pos-color-dark-button-success-active-frame);
+  --pos-color-button-success-disabled-background: var(--pos-color-dark-button-success-disabled-background);
+  --pos-color-button-success-disabled-text: var(--pos-color-dark-button-success-disabled-text);
+  --pos-color-button-success-disabled-frame: var(--pos-color-dark-button-success-disabled-frame);
+
 
   /* colors user for variety of browser-related UI elements */
   /* ---------------------------------------- */
   --pos-color-focused: var(--pos-color-dark-focused);
+  --pos-color-focused-inverse: var(--pos-color-dark-focused-inverse);
 
   --pos-color-selection-background: var(--pos-color-dark-selection-background);
   --pos-color-selection-text: var(--pos-color-dark-selection-text);
@@ -533,17 +1221,268 @@
   --pos-color-input-disabled-frame: var(--pos-color-dark-input-disabled-frame);
 
 
+
   /* utility */
   /* ---------------------------------------- */
   --pos-color-important: var(--pos-color-dark-important);
   --pos-color-important-hover: var(--pos-color-dark-important-hover);
-  --pos-color-important-disabled: var(--pos-color-dark-important-disabled);
+  --pos-color-important-active: var(--pos-color-dark-important-active);
+  --pos-color-important-muted: var(--pos-color-dark-important-muted);
+  --pos-color-important-background: var(--pos-color-dark-important-background);
+  --pos-color-important-disabled: var(--pos-color-important-muted);
   --pos-color-warning: var(--pos-color-dark-warning);
   --pos-color-warning-hover: var(--pos-color-dark-warning-hover);
-  --pos-color-warning-disabled: var(--pos-color-dark-warning-disabled);
+  --pos-color-warning-active: var(--pos-color-dark-warning-active);
+  --pos-color-warning-muted: var(--pos-color-dark-warning-muted);
+  --pos-color-warning-background: var(--pos-color-dark-warning-background);
+  --pos-color-warning-disabled: var(--pos-color-warning-muted);
   --pos-color-confirmation: var(--pos-color-dark-confirmation);
   --pos-color-confirmation-hover: var(--pos-color-dark-confirmation-hover);
-  --pos-color-confirmation-disabled: var(--pos-color-dark-confirmation-disabled);
+  --pos-color-confirmation-active: var(--pos-color-dark-confirmation-active);
+  --pos-color-confirmation-muted: var(--pos-color-dark-confirmation-muted);
+  --pos-color-confirmation-background: var(--pos-color-dark-confirmation-background);
+  --pos-color-confirmation-disabled: var(--pos-color-confirmation-muted);
+
+  /* native <select> arrow fallback — see the matching note in the light block above */
+  --pos-icon-select-arrow: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%236897ff%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-select-arrow-disabled: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%231949d3%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-upload-bottom: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2724%27%20height%3D%2724%27%20fill%3D%27none%27%20stroke%3D%27%23f3f5f8%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2017v2a2%202%200%200%200%202%202h12a2%202%200%200%200%202%20-2v-2%27%2F%3E%3Cpath%20d%3D%27M7%209l5%20-5l5%205%27%2F%3E%3Cpath%20d%3D%27M12%204l0%2012%27%2F%3E%3C%2Fsvg%3E");
+
+  /* gradients */
+  /* ---------------------------------------- */
+  --pos-color-gradient1-from: var(--pos-color-dark-gradient1-from);
+  --pos-color-gradient1-to:   var(--pos-color-dark-gradient1-to);
+  --pos-color-gradient2-from: var(--pos-color-dark-gradient2-from);
+  --pos-color-gradient2-to:   var(--pos-color-dark-gradient2-to);
+
+  /* shadows — stronger in dark mode */
+  /* ---------------------------------------- */
+  --pos-primitive-shadow-flat:          0 1px 1px rgba(0, 0, 0, .50), 0 0 2px rgba(0, 0, 0, .50);
+  /* dark: a black inner shadow is invisible on the black page bg, so the recess also gets a faint light rim */
+  --pos-primitive-shadow-inner:         inset 0 1px 3px rgba(0, 0, 0, .60), inset 0 0 0 1px rgba(255, 255, 255, .14);
+  --pos-primitive-shadow-small:         0 0 5px rgba(0, 0, 0, .40);
+  --pos-primitive-shadow-medium:        0 4px 6px rgba(0, 0, 0, .20);
+  --pos-primitive-shadow-layered:       0 8px 8px 0 rgba(0, 0, 0, .20), 0 15px 20px 0 rgba(0, 0, 0, .20), 0 1px 1px 0 rgba(0, 0, 0, .50);
+  --pos-primitive-shadow-large:         0 10px 30px rgba(0, 0, 0, .70);
+  --pos-primitive-shadow-blurred:       0 18px 40px rgba(0, 0, 0, .50);
+  --pos-primitive-shadow-bevel:         inset 0 1px 0 rgba(255, 255, 255, .10), inset 0 -1px 0 rgba(0, 0, 0, .30);
+
+  /* select arrow — light on dark bg */
+
+}
+
+
+:root.pos-theme-a11y:where(.pos-theme-a11yEnabled),
+.pos-scheme-a11y {
+
+  /* general content */
+  /* ---------------------------------------- */
+  --pos-color-page-background:                 var(--pos-color-a11y-page-background);
+  --pos-color-content-background:              var(--pos-color-a11y-content-background);
+  --pos-color-content-background-50:           var(--pos-color-a11y-content-background-50);
+  --pos-color-content-text:                              var(--pos-color-a11y-content-text);
+  --pos-color-content-text-interactive:                  var(--pos-color-a11y-content-text-interactive);
+  --pos-color-content-icon:                              var(--pos-color-a11y-content-icon);
+  --pos-color-content-icon-interactive:                  var(--pos-color-a11y-content-icon-interactive);
+  --pos-color-content-text-supplementary:                var(--pos-color-a11y-content-text-supplementary);
+  --pos-color-content-text-supplementary-interactive:    var(--pos-color-a11y-content-text-supplementary-interactive);
+  --pos-color-content-text-prominent:          var(--pos-color-a11y-content-text-prominent);
+  --pos-color-content-inverted-text:           var(--pos-color-a11y-content-inverted-text);
+  --pos-color-content-inverted-icon:           var(--pos-color-a11y-content-inverted-icon);
+  --pos-color-frame:                           var(--pos-color-a11y-frame);
+  --pos-color-frame-default:                   var(--pos-color-a11y-frame-default);
+  --pos-color-frame-transparent:               var(--pos-color-a11y-frame-transparent);
+  --pos-color-highlight-background:            var(--pos-color-a11y-highlight-background);
+  --pos-color-highlight-text:                  var(--pos-color-a11y-content-text);
+  --pos-color-standout-background:             var(--pos-color-a11y-standout-background);
+  --pos-color-standout-background-hover:       var(--pos-color-a11y-standout-background-hover);
+  --pos-color-brand-primary-background:        var(--pos-color-a11y-brand-primary-background);
+  --pos-color-brand-supplementary-background:  var(--pos-color-a11y-brand-supplementary-background);
+  --pos-color-brand-primary-frame:             var(--pos-color-a11y-brand-primary-frame);
+  --pos-color-brand-supplementary-frame:       var(--pos-color-a11y-brand-supplementary-frame);
+  --pos-color-standout-text:                   var(--pos-color-a11y-standout-text);
+  --pos-color-standout-text-supplementary:     var(--pos-color-a11y-standout-text-supplementary);
+  --pos-color-banner-stats:                    var(--pos-color-a11y-banner-stats);
+  --pos-color-inverted-background:             var(--pos-color-a11y-inverted-background);
+  --pos-color-shadow:                          var(--pos-color-a11y-shadow);
+
+
+  /* interactive elements */
+  /* ---------------------------------------- */
+  --pos-color-interactive:                     var(--pos-color-a11y-icon-interactive);
+  --pos-color-interactive-hover:               var(--pos-color-a11y-icon-interactive-hover);
+  --pos-color-interactive-active:              var(--pos-color-a11y-icon-interactive-active);
+  --pos-color-interactive-disabled:            var(--pos-color-a11y-icon-interactive-disabled);
+  --pos-color-interactive-text:                var(--pos-color-a11y-interactive);
+  --pos-color-interactive-text-hover:          var(--pos-color-a11y-interactive-hover);
+  --pos-color-interactive-text-active:         var(--pos-color-a11y-interactive-active);
+  --pos-color-interactive-text-disabled:       var(--pos-color-a11y-interactive-disabled);
+  --pos-color-interactive-inverted:            var(--pos-color-a11y-icon-interactive-inverted);
+  --pos-color-supplementary: var(--pos-color-a11y-supplementary);
+  --pos-color-supplementary-hover: var(--pos-color-a11y-supplementary-hover);
+  --pos-color-supplementary-active: var(--pos-color-a11y-supplementary-active);
+  --pos-color-supplementary-muted: var(--pos-color-a11y-supplementary-muted);
+
+  /* gradients — no decoration in HC: flat colors (user, 2026-10-01). Gradient 1 (subtle, normal
+     text on it) = the plain HC background, so the normal (white) text stays legible. Gradient 2
+     (strong highlight, inverted text on it) = the HC standout surface, a flat white highlight with
+     black inverted text — like standout in HC (user, 2026-10-02; was the black page background,
+     where the black inverted text was invisible). */
+  --pos-color-gradient1-from:                  var(--pos-color-a11y-page-background);
+  --pos-color-gradient1-to:                    var(--pos-color-a11y-page-background);
+  --pos-color-gradient2-from:                  var(--pos-color-a11y-standout-background);
+  --pos-color-gradient2-to:                    var(--pos-color-a11y-standout-background);
+  --pos-color-interactive-text-inverted:       var(--pos-color-a11y-interactive-text-inverted);
+
+  --pos-color-content-text-disabled:           var(--pos-color-a11y-content-text-disabled);
+  --pos-color-content-icon-disabled:           var(--pos-color-a11y-content-icon-disabled);
+
+  --pos-color-button-primary-background:                         var(--pos-color-a11y-button-primary-background);
+  --pos-color-button-primary-text:                               var(--pos-color-a11y-button-primary-text);
+  --pos-color-button-primary-frame:                              var(--pos-color-a11y-button-primary-frame);
+  --pos-color-button-primary-hover-background:                   var(--pos-color-a11y-button-primary-hover-background);
+  --pos-color-button-primary-hover-text:                         var(--pos-color-a11y-button-primary-hover-text);
+  --pos-color-button-primary-hover-frame:                        var(--pos-color-a11y-button-primary-hover-frame);
+  --pos-color-button-primary-active-background:                  var(--pos-color-a11y-button-primary-active-background);
+  --pos-color-button-primary-active-text:                        var(--pos-color-a11y-button-primary-active-text);
+  --pos-color-button-primary-active-frame:                       var(--pos-color-a11y-button-primary-active-frame);
+  --pos-color-button-primary-disabled-background:                var(--pos-color-a11y-button-primary-disabled-background);
+  --pos-color-button-primary-disabled-text:                      var(--pos-color-a11y-button-primary-disabled-text);
+  --pos-color-button-primary-disabled-frame:                     var(--pos-color-a11y-button-primary-disabled-frame);
+
+  --pos-color-button-secondary-background:                       var(--pos-color-a11y-button-secondary-background);
+  --pos-color-button-secondary-background-transparent:           var(--pos-color-a11y-button-secondary-background-transparent);
+  --pos-color-button-secondary-text:                             var(--pos-color-a11y-button-secondary-text);
+  --pos-color-button-secondary-frame:                            var(--pos-color-a11y-button-secondary-frame);
+  --pos-color-button-secondary-hover-background:                 var(--pos-color-a11y-button-secondary-hover-background);
+  --pos-color-button-secondary-hover-background-transparent:     var(--pos-color-a11y-button-secondary-hover-background-transparent);
+  --pos-color-button-secondary-hover-text:                       var(--pos-color-a11y-button-secondary-hover-text);
+  --pos-color-button-secondary-hover-frame:                      var(--pos-color-a11y-button-secondary-hover-frame);
+  --pos-color-button-secondary-active-background:                var(--pos-color-a11y-button-secondary-active-background);
+  --pos-color-button-secondary-active-text:                      var(--pos-color-a11y-button-secondary-active-text);
+  --pos-color-button-secondary-active-frame:                     var(--pos-color-a11y-button-secondary-active-frame);
+  --pos-color-button-secondary-disabled-background:              var(--pos-color-a11y-button-secondary-disabled-background);
+  --pos-color-button-secondary-disabled-text:                    var(--pos-color-a11y-button-secondary-disabled-text);
+  --pos-color-button-secondary-disabled-frame:                   var(--pos-color-a11y-button-secondary-disabled-frame);
+
+  --pos-color-button-inverted-background:                        var(--pos-color-a11y-button-inverted-background);
+  --pos-color-button-inverted-text:                              var(--pos-color-a11y-button-inverted-text);
+  --pos-color-button-inverted-frame:                             var(--pos-color-a11y-button-inverted-frame);
+  --pos-color-button-inverted-hover-background:                  var(--pos-color-a11y-button-inverted-hover-background);
+  --pos-color-button-inverted-hover-text:                        var(--pos-color-a11y-button-inverted-hover-text);
+  --pos-color-button-inverted-hover-frame:                       var(--pos-color-a11y-button-inverted-hover-frame);
+  --pos-color-button-inverted-active-background:                 var(--pos-color-a11y-button-inverted-active-background);
+  --pos-color-button-inverted-active-text:                       var(--pos-color-a11y-button-inverted-active-text);
+  --pos-color-button-inverted-active-frame:                      var(--pos-color-a11y-button-inverted-active-frame);
+  --pos-color-button-inverted-disabled-background:               var(--pos-color-a11y-button-inverted-disabled-background);
+  --pos-color-button-inverted-disabled-text:                     var(--pos-color-a11y-button-inverted-disabled-text);
+  --pos-color-button-inverted-disabled-frame:                    var(--pos-color-a11y-button-inverted-disabled-frame);
+
+  --pos-color-button-inverted-secondary-background:              var(--pos-color-a11y-button-inverted-secondary-background);
+  --pos-color-button-inverted-secondary-text:                    var(--pos-color-a11y-button-inverted-secondary-text);
+  --pos-color-button-inverted-secondary-frame:                   var(--pos-color-a11y-button-inverted-secondary-frame);
+  --pos-color-button-inverted-secondary-hover-background:        var(--pos-color-a11y-button-inverted-secondary-hover-background);
+  --pos-color-button-inverted-secondary-hover-text:              var(--pos-color-a11y-button-inverted-secondary-hover-text);
+  --pos-color-button-inverted-secondary-hover-frame:             var(--pos-color-a11y-button-inverted-secondary-hover-frame);
+  --pos-color-button-inverted-secondary-active-background:       var(--pos-color-a11y-button-inverted-secondary-active-background);
+  --pos-color-button-inverted-secondary-active-text:             var(--pos-color-a11y-button-inverted-secondary-active-text);
+  --pos-color-button-inverted-secondary-active-frame:            var(--pos-color-a11y-button-inverted-secondary-active-frame);
+  --pos-color-button-inverted-secondary-disabled-background:     var(--pos-color-a11y-button-inverted-secondary-disabled-background);
+  --pos-color-button-inverted-secondary-disabled-text:           var(--pos-color-a11y-button-inverted-secondary-disabled-text);
+  --pos-color-button-inverted-secondary-disabled-frame:          var(--pos-color-a11y-button-inverted-secondary-disabled-frame);
+
+  --pos-color-button-error-background:                           var(--pos-color-a11y-button-error-background);
+  --pos-color-button-error-text:                                 var(--pos-color-a11y-button-error-text);
+  --pos-color-button-error-frame:                                var(--pos-color-a11y-button-error-frame);
+  --pos-color-button-error-hover-background:                     var(--pos-color-a11y-button-error-hover-background);
+  --pos-color-button-error-hover-text:                           var(--pos-color-a11y-button-error-hover-text);
+  --pos-color-button-error-hover-frame:                          var(--pos-color-a11y-button-error-hover-frame);
+  --pos-color-button-error-active-background:                    var(--pos-color-a11y-button-error-active-background);
+  --pos-color-button-error-active-text:                          var(--pos-color-a11y-button-error-active-text);
+  --pos-color-button-error-active-frame:                         var(--pos-color-a11y-button-error-active-frame);
+  --pos-color-button-error-disabled-background:                  var(--pos-color-a11y-button-error-disabled-background);
+  --pos-color-button-error-disabled-text:                        var(--pos-color-a11y-button-error-disabled-text);
+  --pos-color-button-error-disabled-frame:                       var(--pos-color-a11y-button-error-disabled-frame);
+
+  --pos-color-button-success-background:                         var(--pos-color-a11y-button-success-background);
+  --pos-color-button-success-text:                               var(--pos-color-a11y-button-success-text);
+  --pos-color-button-success-frame:                              var(--pos-color-a11y-button-success-frame);
+  --pos-color-button-success-hover-background:                   var(--pos-color-a11y-button-success-hover-background);
+  --pos-color-button-success-hover-text:                         var(--pos-color-a11y-button-success-hover-text);
+  --pos-color-button-success-hover-frame:                        var(--pos-color-a11y-button-success-hover-frame);
+  --pos-color-button-success-active-background:                  var(--pos-color-a11y-button-success-active-background);
+  --pos-color-button-success-active-text:                        var(--pos-color-a11y-button-success-active-text);
+  --pos-color-button-success-active-frame:                       var(--pos-color-a11y-button-success-active-frame);
+  --pos-color-button-success-disabled-background:                var(--pos-color-a11y-button-success-disabled-background);
+  --pos-color-button-success-disabled-text:                      var(--pos-color-a11y-button-success-disabled-text);
+  --pos-color-button-success-disabled-frame:                     var(--pos-color-a11y-button-success-disabled-frame);
+
+
+  /* colors for browser-related UI elements */
+  /* ---------------------------------------- */
+  --pos-color-focused:                var(--pos-color-a11y-focused);
+  --pos-color-focused-inverse:        var(--pos-color-a11y-focused-inverse);
+
+  --pos-color-selection-background:   var(--pos-color-a11y-selection-background);
+  --pos-color-selection-text:         var(--pos-color-a11y-selection-text);
+
+
+  /* forms */
+  /* ---------------------------------------- */
+  --pos-color-input-placeholder:        var(--pos-color-a11y-input-placeholder);
+  --pos-color-input-background:         var(--pos-color-a11y-input-background);
+  --pos-color-input-text:               var(--pos-color-a11y-input-text);
+  --pos-color-input-frame:              var(--pos-color-a11y-input-frame);
+  --pos-color-input-hover-background:   var(--pos-color-a11y-input-hover-background);
+  --pos-color-input-hover-text:         var(--pos-color-a11y-input-hover-text);
+  --pos-color-input-hover-frame:        var(--pos-color-a11y-input-hover-frame);
+  --pos-color-input-active-background:  var(--pos-color-a11y-input-active-background);
+  --pos-color-input-active-text:        var(--pos-color-a11y-input-active-text);
+  --pos-color-input-active-frame:       var(--pos-color-a11y-input-active-frame);
+  --pos-color-input-disabled-background: var(--pos-color-a11y-input-disabled-background);
+  --pos-color-input-disabled-text:      var(--pos-color-a11y-input-disabled-text);
+  --pos-color-input-disabled-frame:     var(--pos-color-a11y-input-disabled-frame);
+
+
+
+  /* utility */
+  /* ---------------------------------------- */
+  --pos-color-important:               var(--pos-color-a11y-important);
+  --pos-color-important-hover:         var(--pos-color-a11y-important-hover);
+  --pos-color-important-active:        var(--pos-color-a11y-important-active);
+  --pos-color-important-muted:         var(--pos-color-a11y-important-muted);
+  --pos-color-important-background:    var(--pos-color-a11y-important-background);
+  --pos-color-important-disabled:      var(--pos-color-important-muted);
+  --pos-color-warning:                 var(--pos-color-a11y-warning);
+  --pos-color-warning-hover:           var(--pos-color-a11y-warning-hover);
+  --pos-color-warning-active:          var(--pos-color-a11y-warning-active);
+  --pos-color-warning-muted:           var(--pos-color-a11y-warning-muted);
+  --pos-color-warning-background:      var(--pos-color-a11y-warning-background);
+  --pos-color-warning-disabled:        var(--pos-color-warning-muted);
+  --pos-color-confirmation:            var(--pos-color-a11y-confirmation);
+  --pos-color-confirmation-hover:      var(--pos-color-a11y-confirmation-hover);
+  --pos-color-confirmation-active:     var(--pos-color-a11y-confirmation-active);
+  --pos-color-confirmation-muted:      var(--pos-color-a11y-confirmation-muted);
+  --pos-color-confirmation-background: var(--pos-color-a11y-confirmation-background);
+  --pos-color-confirmation-disabled:   var(--pos-color-confirmation-muted);
+
+  /* native <select> arrow fallback — see the matching note in the light block above */
+  --pos-icon-select-arrow:             url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%2300c2ff%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-select-arrow-disabled:    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%23747474%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+  --pos-icon-upload-bottom:    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2724%27%20height%3D%2724%27%20fill%3D%27none%27%20stroke%3D%27%23f2f2f2%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2017v2a2%202%200%200%200%202%202h12a2%202%200%200%200%202%20-2v-2%27%2F%3E%3Cpath%20d%3D%27M7%209l5%20-5l5%205%27%2F%3E%3Cpath%20d%3D%27M12%204l0%2012%27%2F%3E%3C%2Fsvg%3E");
+
+  /* shadows — none in HC (borders replace elevation for separation) */
+  /* ---------------------------------------- */
+  --pos-primitive-shadow-flat:         none;
+  --pos-primitive-shadow-inner:        none;
+  --pos-primitive-shadow-small:        none;
+  --pos-primitive-shadow-medium:       none;
+  --pos-primitive-shadow-layered:      none;
+  --pos-primitive-shadow-large:        none;
+  --pos-primitive-shadow-blurred:      none;
+  --pos-primitive-shadow-bevel:        none;
+
+  /* select arrow — turquoise in HC */
 
 }
 
@@ -555,25 +1494,52 @@
     /* ---------------------------------------- */
     --pos-color-page-background: var(--pos-color-dark-page-background);
     --pos-color-content-background: var(--pos-color-dark-content-background);
+    --pos-color-content-background-50: var(--pos-color-dark-content-background-50);
     --pos-color-content-text: var(--pos-color-dark-content-text);
+    --pos-color-content-text-interactive: var(--pos-color-dark-content-text-interactive);
     --pos-color-content-icon: var(--pos-color-dark-content-icon);
+    --pos-color-content-icon-interactive: var(--pos-color-dark-content-icon-interactive);
     --pos-color-content-text-supplementary: var(--pos-color-dark-content-text-supplementary);
+    --pos-color-content-text-supplementary-interactive: var(--pos-color-dark-content-text-supplementary-interactive);
     --pos-color-content-text-prominent: var(--pos-color-dark-content-text-prominent);
     --pos-color-content-inverted-text: var(--pos-color-dark-content-inverted-text);
     --pos-color-frame: var(--pos-color-dark-frame);
+    --pos-color-frame-default: var(--pos-color-dark-frame-default);
+    --pos-color-frame-transparent: var(--pos-color-dark-frame-transparent);
     --pos-color-highlight-background: var(--pos-color-dark-highlight-background);
     --pos-color-highlight-text: var(--pos-color-dark-highlight-text);
     --pos-color-standout-background: var(--pos-color-dark-standout-background);
     --pos-color-standout-background-hover: var(--pos-color-dark-standout-background-hover);
+    --pos-color-brand-primary-background: var(--pos-color-dark-brand-primary-background);
+    --pos-color-brand-supplementary-background: var(--pos-color-dark-brand-supplementary-background);
+    --pos-color-brand-primary-frame: var(--pos-color-dark-brand-primary-frame);
+    --pos-color-brand-supplementary-frame: var(--pos-color-dark-brand-supplementary-frame);
     --pos-color-standout-text: var(--pos-color-dark-standout-text);
+    --pos-color-standout-text-supplementary: var(--pos-color-dark-standout-text-supplementary);
+    --pos-color-banner-stats: var(--pos-color-dark-banner-stats);
+    --pos-color-inverted-background: var(--pos-color-dark-inverted-background);
+    --pos-color-shadow: var(--pos-color-dark-shadow);
 
 
     /* interactive elements */
     /* ---------------------------------------- */
-    --pos-color-interactive: var(--pos-color-dark-interactive);
-    --pos-color-interactive-hover: var(--pos-color-dark-interactive-hover);
-    --pos-color-interactive-active: var(--pos-color-dark-interactive-active);
-    --pos-color-interactive-disabled: var(--pos-color-dark-interactive-disabled);
+    --pos-color-interactive: var(--pos-color-dark-icon-interactive);
+    --pos-color-interactive-hover: var(--pos-color-dark-icon-interactive-hover);
+    --pos-color-interactive-active: var(--pos-color-dark-icon-interactive-active);
+    --pos-color-interactive-disabled: var(--pos-color-dark-icon-interactive-disabled);
+    --pos-color-interactive-text: var(--pos-color-dark-interactive);
+    --pos-color-interactive-text-hover: var(--pos-color-dark-interactive-hover);
+    --pos-color-interactive-text-active: var(--pos-color-dark-interactive-active);
+    --pos-color-interactive-text-disabled: var(--pos-color-dark-interactive-disabled);
+    --pos-color-interactive-inverted: var(--pos-color-dark-interactive-inverted);
+    --pos-color-supplementary: var(--pos-color-dark-supplementary);
+    --pos-color-supplementary-hover: var(--pos-color-dark-supplementary-hover);
+    --pos-color-supplementary-active: var(--pos-color-dark-supplementary-active);
+    --pos-color-supplementary-muted: var(--pos-color-dark-supplementary-muted);
+    --pos-color-interactive-text-inverted: var(--pos-color-dark-interactive-text-inverted);
+
+    --pos-color-content-text-disabled: var(--pos-color-dark-content-text-disabled);
+    --pos-color-content-icon-disabled: var(--pos-color-dark-content-icon-disabled);
 
     --pos-color-button-primary-background: var(--pos-color-dark-button-primary-background);
     --pos-color-button-primary-text: var(--pos-color-dark-button-primary-text);
@@ -589,9 +1555,11 @@
     --pos-color-button-primary-disabled-frame: var(--pos-color-dark-button-primary-disabled-frame);
 
     --pos-color-button-secondary-background: var(--pos-color-dark-button-secondary-background);
+    --pos-color-button-secondary-background-transparent: var(--pos-color-dark-button-secondary-background-transparent);
     --pos-color-button-secondary-text: var(--pos-color-dark-button-secondary-text);
     --pos-color-button-secondary-frame: var(--pos-color-dark-button-secondary-frame);
     --pos-color-button-secondary-hover-background: var(--pos-color-dark-button-secondary-hover-background);
+    --pos-color-button-secondary-hover-background-transparent: var(--pos-color-dark-button-secondary-hover-background-transparent);
     --pos-color-button-secondary-hover-text: var(--pos-color-dark-button-secondary-hover-text);
     --pos-color-button-secondary-hover-frame: var(--pos-color-dark-button-secondary-hover-frame);
     --pos-color-button-secondary-active-background: var(--pos-color-dark-button-secondary-active-background);
@@ -601,10 +1569,63 @@
     --pos-color-button-secondary-disabled-text: var(--pos-color-dark-button-secondary-disabled-text);
     --pos-color-button-secondary-disabled-frame: var(--pos-color-dark-button-secondary-disabled-frame);
 
+    --pos-color-button-inverted-background: var(--pos-color-dark-button-inverted-background);
+    --pos-color-button-inverted-text: var(--pos-color-dark-button-inverted-text);
+    --pos-color-button-inverted-frame: var(--pos-color-dark-button-inverted-frame);
+    --pos-color-button-inverted-hover-background: var(--pos-color-dark-button-inverted-hover-background);
+    --pos-color-button-inverted-hover-text: var(--pos-color-dark-button-inverted-hover-text);
+    --pos-color-button-inverted-hover-frame: var(--pos-color-dark-button-inverted-hover-frame);
+    --pos-color-button-inverted-active-background: var(--pos-color-dark-button-inverted-active-background);
+    --pos-color-button-inverted-active-text: var(--pos-color-dark-button-inverted-active-text);
+    --pos-color-button-inverted-active-frame: var(--pos-color-dark-button-inverted-active-frame);
+    --pos-color-button-inverted-disabled-background: var(--pos-color-dark-button-inverted-disabled-background);
+    --pos-color-button-inverted-disabled-text: var(--pos-color-dark-button-inverted-disabled-text);
+    --pos-color-button-inverted-disabled-frame: var(--pos-color-dark-button-inverted-disabled-frame);
+
+    --pos-color-button-inverted-secondary-background: var(--pos-color-dark-button-inverted-secondary-background);
+    --pos-color-button-inverted-secondary-text: var(--pos-color-dark-button-inverted-secondary-text);
+    --pos-color-button-inverted-secondary-frame: var(--pos-color-dark-button-inverted-secondary-frame);
+    --pos-color-button-inverted-secondary-hover-background: var(--pos-color-dark-button-inverted-secondary-hover-background);
+    --pos-color-button-inverted-secondary-hover-text: var(--pos-color-dark-button-inverted-secondary-hover-text);
+    --pos-color-button-inverted-secondary-hover-frame: var(--pos-color-dark-button-inverted-secondary-hover-frame);
+    --pos-color-button-inverted-secondary-active-background: var(--pos-color-dark-button-inverted-secondary-active-background);
+    --pos-color-button-inverted-secondary-active-text: var(--pos-color-dark-button-inverted-secondary-active-text);
+    --pos-color-button-inverted-secondary-active-frame: var(--pos-color-dark-button-inverted-secondary-active-frame);
+    --pos-color-button-inverted-secondary-disabled-background: var(--pos-color-dark-button-inverted-secondary-disabled-background);
+    --pos-color-button-inverted-secondary-disabled-text: var(--pos-color-dark-button-inverted-secondary-disabled-text);
+    --pos-color-button-inverted-secondary-disabled-frame: var(--pos-color-dark-button-inverted-secondary-disabled-frame);
+
+    --pos-color-button-error-background: var(--pos-color-dark-button-error-background);
+    --pos-color-button-error-text: var(--pos-color-dark-button-error-text);
+    --pos-color-button-error-frame: var(--pos-color-dark-button-error-frame);
+    --pos-color-button-error-hover-background: var(--pos-color-dark-button-error-hover-background);
+    --pos-color-button-error-hover-text: var(--pos-color-dark-button-error-hover-text);
+    --pos-color-button-error-hover-frame: var(--pos-color-dark-button-error-hover-frame);
+    --pos-color-button-error-active-background: var(--pos-color-dark-button-error-active-background);
+    --pos-color-button-error-active-text: var(--pos-color-dark-button-error-active-text);
+    --pos-color-button-error-active-frame: var(--pos-color-dark-button-error-active-frame);
+    --pos-color-button-error-disabled-background: var(--pos-color-dark-button-error-disabled-background);
+    --pos-color-button-error-disabled-text: var(--pos-color-dark-button-error-disabled-text);
+    --pos-color-button-error-disabled-frame: var(--pos-color-dark-button-error-disabled-frame);
+
+    --pos-color-button-success-background: var(--pos-color-dark-button-success-background);
+    --pos-color-button-success-text: var(--pos-color-dark-button-success-text);
+    --pos-color-button-success-frame: var(--pos-color-dark-button-success-frame);
+    --pos-color-button-success-hover-background: var(--pos-color-dark-button-success-hover-background);
+    --pos-color-button-success-hover-text: var(--pos-color-dark-button-success-hover-text);
+    --pos-color-button-success-hover-frame: var(--pos-color-dark-button-success-hover-frame);
+    --pos-color-button-success-active-background: var(--pos-color-dark-button-success-active-background);
+    --pos-color-button-success-active-text: var(--pos-color-dark-button-success-active-text);
+    --pos-color-button-success-active-frame: var(--pos-color-dark-button-success-active-frame);
+    --pos-color-button-success-disabled-background: var(--pos-color-dark-button-success-disabled-background);
+    --pos-color-button-success-disabled-text: var(--pos-color-dark-button-success-disabled-text);
+    --pos-color-button-success-disabled-frame: var(--pos-color-dark-button-success-disabled-frame);
+
 
     /* colors user for variety of browser-related UI elements */
     /* ---------------------------------------- */
     --pos-color-focused: var(--pos-color-dark-focused);
+    --pos-color-focused-inverse: var(--pos-color-dark-focused-inverse);
 
     --pos-color-selection-background: var(--pos-color-dark-selection-background);
     --pos-color-selection-text: var(--pos-color-dark-selection-text);
@@ -632,13 +1653,36 @@
     /* ---------------------------------------- */
     --pos-color-important: var(--pos-color-dark-important);
     --pos-color-important-hover: var(--pos-color-dark-important-hover);
-    --pos-color-important-disabled: var(--pos-color-dark-important-disabled);
+    --pos-color-important-active: var(--pos-color-dark-important-active);
+    --pos-color-important-muted: var(--pos-color-dark-important-muted);
+    --pos-color-important-background: var(--pos-color-dark-important-background);
+    --pos-color-important-disabled: var(--pos-color-important-muted);
     --pos-color-warning: var(--pos-color-dark-warning);
     --pos-color-warning-hover: var(--pos-color-dark-warning-hover);
-    --pos-color-warning-disabled: var(--pos-color-dark-warning-disabled);
+    --pos-color-warning-active: var(--pos-color-dark-warning-active);
+    --pos-color-warning-muted: var(--pos-color-dark-warning-muted);
+    --pos-color-warning-background: var(--pos-color-dark-warning-background);
+    --pos-color-warning-disabled: var(--pos-color-warning-muted);
     --pos-color-confirmation: var(--pos-color-dark-confirmation);
     --pos-color-confirmation-hover: var(--pos-color-dark-confirmation-hover);
-    --pos-color-confirmation-disabled: var(--pos-color-dark-confirmation-disabled);
+    --pos-color-confirmation-active: var(--pos-color-dark-confirmation-active);
+    --pos-color-confirmation-muted: var(--pos-color-dark-confirmation-muted);
+    --pos-color-confirmation-background: var(--pos-color-dark-confirmation-background);
+    --pos-color-confirmation-disabled: var(--pos-color-confirmation-muted);
+
+    /* native <select> arrow fallback — see the matching note in the light block above */
+    --pos-icon-select-arrow: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%236897ff%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+    --pos-icon-select-arrow-disabled: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2716%27%20height%3D%2716%27%3E%3Cpath%20fill%3D%27none%27%20stroke%3D%27%231949d3%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20d%3D%27M6%209l6%206l6%20-6%27%2F%3E%3C%2Fsvg%3E");
+    --pos-icon-upload-bottom: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%272%202%2020%2020%27%20width%3D%2724%27%20height%3D%2724%27%20fill%3D%27none%27%20stroke%3D%27%23f3f5f8%27%20stroke-width%3D%271.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2017v2a2%202%200%200%200%202%202h12a2%202%200%200%200%202%20-2v-2%27%2F%3E%3Cpath%20d%3D%27M7%209l5%20-5l5%205%27%2F%3E%3Cpath%20d%3D%27M12%204l0%2012%27%2F%3E%3C%2Fsvg%3E");
+
+    /* gradients */
+    /* ---------------------------------------- */
+    --pos-color-gradient1-from: var(--pos-color-dark-gradient1-from);
+    --pos-color-gradient1-to:   var(--pos-color-dark-gradient1-to);
+    --pos-color-gradient2-from: var(--pos-color-dark-gradient2-from);
+    --pos-color-gradient2-to:   var(--pos-color-dark-gradient2-to);
+
+    /* select arrow — light on dark bg */
 
   }
 }
@@ -650,6 +1694,12 @@
 :root {
   /* eased black-to-transparent gradient used as background for text and icons to improve legibility */
   --pos-gradient-legibility: linear-gradient(hsl(0, 0%, 0%) 0%, hsla(0, 0%, 0%, 0.738) 19%, hsla(0, 0%, 0%, 0.541) 34%, hsla(0, 0%, 0%, 0.382) 47%, hsla(0, 0%, 0%, 0.278) 56.5%, hsla(0, 0%, 0%, 0.194) 65%, hsla(0, 0%, 0%, 0.126) 73%, hsla(0, 0%, 0%, 0.075) 80.2%, hsla(0, 0%, 0%, 0.042) 86.1%, hsla(0, 0%, 0%, 0.021) 91%, hsla(0, 0%, 0%, 0.008) 95.2%, hsla(0, 0%, 0%, 0.002) 98.2%, hsla(0, 0%, 0%, 0) 100%);
+
+  /* gradient stop tokens */
+  --pos-color-gradient1-from: var(--pos-color-light-gradient1-from);
+  --pos-color-gradient1-to:   var(--pos-color-light-gradient1-to);
+  --pos-color-gradient2-from: var(--pos-color-light-gradient2-from);
+  --pos-color-gradient2-to:   var(--pos-color-light-gradient2-to);
 }
 
 
@@ -658,11 +1708,52 @@
 /* ================================================================================ */
 :root {
   /* default font for the whole page */
-  --pos-font-default: system-ui, sans-serif;
+  --pos-font-default: var(--pos-primitive-font-inter);
   /* headings */
-  --pos-font-heading: 'Source Code Pro', 'Consolas', monospace;
+  --pos-font-heading: var(--pos-primitive-font-google-sans);
   /* code */
-  --pos-font-code: monospace;
+  --pos-font-code: var(--pos-primitive-font-roboto-mono);
+  /* badge / label */
+  --pos-font-badge: var(--pos-primitive-font-inter);
+  /* buttons */
+  --pos-font-buttons:   var(--pos-primitive-font-inter);
+  /* sidenotes — secondary / meta texts */
+  --pos-font-sidenotes: var(--pos-primitive-font-inter);
+
+  /* font weight scale */
+  --pos-font-weight-extralight: 200;
+  --pos-font-weight-light:      300;
+  --pos-font-weight-normal:     400;
+  --pos-font-weight-medium:     500;
+  --pos-font-weight-bold:       700;
+  --pos-font-weight-extrabold:  800;
+
+  /* font size scale — rem for scalability (scales with html font-size) */
+  --pos-font-size-xxxs: 0.5rem;    /*  8px at default */
+  --pos-font-size-xxs:  0.625rem;  /* 10px at default */
+  --pos-font-size-xs:   0.75rem;   /* 12px at default */
+  --pos-font-size-ss:   0.875rem;  /* 14px at default */
+  --pos-font-size-s:    1rem;      /* 16px at default */
+  --pos-font-size-m:    1.25rem;   /* 20px at default */
+  --pos-font-size-l:    1.5rem;    /* 24px at default */
+  --pos-font-size-xl:   2rem;      /* 32px at default */
+  --pos-font-size-xxl:  3rem;      /* 48px at default */
+
+  /* body text sizes */
+  --pos-font-size-body:       var(--pos-font-size-s);   /* 1rem / 16px */
+  --pos-font-size-body-small: var(--pos-font-size-ss);  /* 0.875rem / 14px */
+
+  /* button text sizes */
+  --pos-font-size-big-button-text:   var(--pos-font-size-s);   /* 1rem */
+  --pos-font-size-small-button-text: var(--pos-font-size-xs);  /* 0.75rem */
+
+  /* line height scale — rem for proportional scaling with font size */
+  --pos-line-height-xs:  0.625rem;  /* 10px at default */
+  --pos-line-height-s:   1rem;      /* 16px at default */
+  --pos-line-height-m:   1.25rem;   /* 20px at default */
+  --pos-line-height-l:   1.75rem;   /* 28px at default */
+  --pos-line-height-xl:  2rem;      /* 32px at default */
+  --pos-line-height-xxl: 3rem;      /* 48px at default */
 }
 
 
@@ -765,34 +1856,56 @@
 :root {
 
   /* padding for cards, boxes */
-  --pos-padding-card: 24px;
+  --pos-padding-card: var(--pos-primitive-size-3);
   /* padding for cells in a table */
-  --pos-padding-cell: 16px;
+  --pos-padding-cell: var(--pos-primitive-size-2);
   /* padding around whole page content */
-  --pos-padding-page: 16px;
+  --pos-padding-page: var(--pos-primitive-size-2);
 
   /* gap between elements in a section, probably not usable as it all depends on the fonts x-heights and so many various factors */
   --pos-gap-section-elements: 1rem;
-  /* gap between section title and content */
-  --pos-gap-title-content: 32px;
+  /* gap between the page main title and its content (= Figma: Gaps/header-content) */
+  --pos-gap-title-content: var(--pos-primitive-size-5);
+  /* gap between a section title and its content (= Figma: Gaps/section title-content) */
+  --pos-gap-section-title-content: var(--pos-primitive-size-2);
   /* gap between sections */
-  --pos-gap-section-section: 40px;
+  --pos-gap-section-section: var(--pos-primitive-size-4);
   /* gap between cards */
-  --pos-gap-card-card: 16px;
+  --pos-gap-card-card: var(--pos-primitive-size-3);
   /* gap between text content */
-  --pos-gap-text-text: 16px;
+  --pos-gap-text-text: var(--pos-primitive-size-2);
   /* gap between elements in a card */
-  --pos-gap-card-elements: 16px;
+  --pos-gap-card-elements: var(--pos-primitive-size-2);
   /* gap before the footer */
-  --pos-gap-content-footer: 40px;
+  --pos-gap-content-footer: var(--pos-primitive-size-5);
   /* gap between buttons of standard size */
-  --pos-gap-button-button: 16px;
+  --pos-gap-button-button: var(--pos-primitive-size-2);
   /* gap between buttons of small size */
-  --pos-gap-button-button-small: 8px;
+  --pos-gap-button-button-small: var(--pos-primitive-size-1);
   /* gap between tags */
-  --pos-gap-tag-tag: .5em .5em;
+  --pos-gap-tag-tag: var(--pos-primitive-size-15);
+  /* tag padding */
+  --pos-padding-tag: var(--pos-primitive-size-15);       /* 12px inline */
+  --pos-padding-tag-block: var(--pos-primitive-size-05); /* 4px block */
+  /* chip padding */
+  --pos-padding-chip: var(--pos-primitive-size-1);       /* 8px inline */
+  --pos-padding-chip-block: var(--pos-primitive-size-05); /* 4px block */
   /* gap between form inputs */
-  --pos-gap-input-input: 16px;
+  --pos-gap-input-input: var(--pos-primitive-size-2);
+  /* gap between input and adjacent button (negative — they share a border) */
+  --pos-gap-input-button: var(--pos-primitive-size-n05);
+  /* gap between steps in a stepper/wizard */
+  --pos-gap-step-step: var(--pos-primitive-size-3);
+  /* gap between the last step and its action button */
+  --pos-gap-step-button: var(--pos-primitive-size-3);
+
+  /* icon sizes */
+  --pos-size-icon-xs:  var(--pos-primitive-size-15);  /* 12px */
+  --pos-size-icon-s:   var(--pos-primitive-size-2);   /* 16px */
+  --pos-size-icon-m:   var(--pos-primitive-size-25);  /* 20px */
+  --pos-size-icon-l:   var(--pos-primitive-size-3);   /* 24px */
+  --pos-size-icon-xl:  var(--pos-primitive-size-4);   /* 32px */
+  --pos-size-icon-xxl: var(--pos-primitive-size-8);   /* 64px */
 
 }
 
@@ -802,17 +1915,21 @@
 /* ================================================================================ */
 :root {
   /* border radius for content panels */
-  --pos-radius-panel: 4px;
+  --pos-radius-panel:        var(--pos-primitive-radius-mid-rounded);
   /* border radius for a popup */
-  --pos-radius-popup: 4px;
-  /* border radius for ????? */
-  --pos-radius-card: 4px;
+  --pos-radius-popup:        var(--pos-primitive-radius-mid-rounded);
+  /* border radius for a card */
+  --pos-radius-card:         var(--pos-primitive-radius-mid-rounded);
   /* border radius for a button */
-  --pos-radius-button: 4px;
+  --pos-radius-button:       var(--pos-primitive-radius-slightly-rounded);
+  /* border radius for a focused button (+2 offset above button corner) */
+  --pos-radius-button-focus: var(--pos-primitive-radius-slightly-rounded-2);
   /* border radius for an input */
-  --pos-radius-input: 0;
+  --pos-radius-input:        var(--pos-primitive-radius-sharp);
   /* border radius for a tag */
-  --pos-radius-tag: 4px;
+  --pos-radius-tag:          var(--pos-primitive-radius-slightly-rounded);
+  /* border radius for a chip (pill shape) */
+  --pos-radius-chip:         var(--pos-primitive-radius-pill);
 }
 
 
@@ -821,15 +1938,13 @@
 /* ================================================================================ */
 :root {
   /* horizontal padding for inputs */
-  --pos-padding-input: 8px;
+  --pos-padding-input: 0.5rem;   /* 8px at default */
   /* input heights (should match buttons computed height */
-  --pos-height-input: 44px;
+  --pos-height-input: 2.75rem;   /* 44px at default */
   /* border width for inputs */
   --pos-border-input: 1px;
   /* arrow icon for <select> inputs */
-  --pos-icon-select-arrow: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.1' id='Regular' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 12 12' style='enable-background:new 0 0 12 12;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E.st0%7Bfill:none;stroke:rgb(107, 114, 128);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;%7D%3C/style%3E%3Cpath class='st0' d='M11.3,3.4l-5,5c-0.1,0.1-0.4,0.1-0.5,0c0,0,0,0,0,0l-5-5'/%3E%3C/svg%3E");
   /* arrow icon for <select> input when focused or hovered with a pointer */
-  --pos-icon-select-arrow-hover: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.1' id='Regular' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 12 12' style='enable-background:new 0 0 12 12;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E.st0%7Bfill:none;stroke:rgb(34, 77, 142);stroke-width:1;stroke-linecap:round;stroke-linejoin:round;%7D%3C/style%3E%3Cpath class='st0' d='M11.3,3.4l-5,5c-0.1,0.1-0.4,0.1-0.5,0c0,0,0,0,0,0l-5-5'/%3E%3C/svg%3E");
 }
 
 
@@ -838,9 +1953,11 @@
 /* ================================================================================ */
 :root {
   /* horizontal padding for inputs */
-  --pos-padding-button: 8px;
-  /* input heights (should match buttons computed height */
+  --pos-padding-button: 1rem;        /* 16px at default */
+  --pos-padding-button-small: 0.5rem; /* 8px at default */
   --pos-height-button: var(--pos-height-input);
+  /* small button height (segmented control small variant) */
+  --pos-height-button-small: 1.875rem;  /* 30px at default */
   /* border width for inputs */
   --pos-border-button: var(--pos-border-input);
 }
@@ -851,12 +1968,29 @@
 /* ================================================================================ */
 :root {
   --pos-transition-ui-detail: cubic-bezier(.3, 1, .06, 1);
+  /* spinner rotation duration — used by pos-spinner component */
+  --pos-spinner-duration: 1.4s;
 }
 
 
 
 /* shadows */
 /* ================================================================================ */
+
+/* primitive shadow tokens — source: Figma effect styles (Elevation/*) */
 :root {
-  --pos-shadow-popover: 0 8px 8px 0 rgb(78, 78, 78, .05), 0 15px 20px 0 rgb(0, 0, 0, .05), 0 1px 1px 0 rgb(91, 91, 91, .20);
+  --pos-primitive-shadow-flat:          0 1px 1px rgba(0, 0, 0, .10), 0 0 2px rgba(0, 0, 0, .10);
+  --pos-primitive-shadow-inner:         inset 0 0 10px rgba(0, 0, 0, .06);
+  --pos-primitive-shadow-small:         0 0 5px rgba(0, 0, 0, .10);
+  --pos-primitive-shadow-medium:        0 4px 6px rgba(0, 0, 0, .05);
+  --pos-primitive-shadow-layered:       0 8px 8px 0 rgba(0, 0, 0, .05), 0 15px 20px 0 rgba(0, 0, 0, .05), 0 1px 1px 0 rgba(0, 0, 0, .15);
+  --pos-primitive-shadow-large:         0 10px 30px rgba(0, 0, 0, .30);
+  --pos-primitive-shadow-blurred:       0 18px 40px rgba(0, 0, 0, .20);
+  --pos-primitive-shadow-focused-field: 0 0 10px rgba(131, 38, 255, 1);
+  --pos-primitive-shadow-bevel:         inset 0 1px 0 rgba(255, 255, 255, .20), inset 0 -1px 0 rgba(0, 0, 0, .15);
+}
+
+/* semantic shadow tokens */
+:root {
+  --pos-shadow-popover: var(--pos-primitive-shadow-layered);
 }

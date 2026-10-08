@@ -26,6 +26,7 @@
   .pos-pagination .pos-pagination-next {
     height: 1.25em !important;
     padding-inline: .75em;
+    color: var(--pos-color-content-icon-interactive);
   }
 
   .pos-pagination ul {
@@ -42,10 +43,21 @@
     justify-content: center;
 
     border-radius: var(--pos-radius-button);
+    text-decoration: none;
+    font-weight: normal;
+    color: var(--pos-color-content-text-interactive);
   }
 
   .pos-pagination a[aria-current="true"] {
-    border: 1px solid var(--pos-color-interactive);
+    background-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+    font-weight: bold;
+  }
+
+  .pos-pagination ul a[aria-current="true"]:hover:not([aria-disabled="true"]) {
+    background-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+    cursor: default;
   }
 
 }

@@ -1,0 +1,176 @@
+/*
+  Choice button — icon + label selection button, used in groups.
+
+  Group wrapper:
+    .pos-tile-btn-group                — horizontal: buttons in a row, square tiles
+    .pos-tile-btn-group--vertical      — vertical: buttons stacked, wide/landscape tiles
+
+  Button:
+    .pos-tile-btn                      — base button (normal state)
+    .pos-tile-btn--selected            — selected / active state
+    .pos-tile-btn[aria-pressed="true"] — same via ARIA
+
+  Internal elements:
+    .pos-tile-btn-icon                 — icon area
+    .pos-tile-btn-label                — text label
+*/
+
+
+
+@layer common-styling {
+
+  /* group wrapper
+  ============================================================================ */
+  .pos-tile-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--pos-gap-card-card);
+  }
+
+  .pos-tile-btn-group--vertical {
+    flex-direction: column;
+    max-width: 18.75rem;
+    gap: var(--pos-gap-button-button-small);
+  }
+
+
+  /* tile button — base
+  ============================================================================ */
+  .pos-tile-btn,
+  .pos-tile-btn * {
+    box-sizing: border-box;
+  }
+
+  .pos-tile-btn {
+    all: unset;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pos-gap-button-button-small);
+    padding: var(--pos-padding-button);
+    width: 5rem;
+    height: 5rem;
+    text-align: center;
+
+    font-family: var(--pos-font-buttons);
+    font-size: var(--pos-font-size-small-button-text);
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--pos-color-content-text-interactive);
+    background-color: var(--pos-color-page-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-button);
+    transition: border-color 0.1s, background-color 0.1s, color 0.1s, outline-color 0.15s;
+  }
+
+  .pos-tile-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pos-color-content-icon-interactive);
+    transition: color 0.1s;
+  }
+
+  .pos-tile-btn-icon svg {
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+  }
+
+
+  /* vertical orientation: wide/landscape tiles — icon left, label right
+  ============================================================================ */
+  .pos-tile-btn-group--vertical .pos-tile-btn {
+    flex-direction: row;
+    width: 100%;
+    height: 2.75rem;
+    text-align: left;
+    justify-content: flex-start;
+    padding-inline: var(--pos-padding-button);
+    gap: var(--pos-gap-button-button-small);
+  }
+
+
+  /* hover
+  ============================================================================ */
+  .pos-tile-btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    border-color: var(--pos-color-interactive);
+    color: var(--pos-color-interactive-text);
+  }
+
+  .pos-tile-btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .pos-tile-btn-icon {
+    color: var(--pos-color-interactive);
+  }
+
+
+  /* focus
+  ============================================================================ */
+  .pos-tile-btn:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+
+  /* selected
+  ============================================================================ */
+  .pos-tile-btn--selected,
+  .pos-tile-btn[aria-pressed="true"] {
+    background-color: var(--pos-color-button-primary-background);
+    border-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+    font-weight: 600;
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+  }
+
+  .pos-tile-btn--selected .pos-tile-btn-icon,
+  .pos-tile-btn[aria-pressed="true"] .pos-tile-btn-icon {
+    color: var(--pos-color-button-primary-text);
+  }
+
+  .pos-tile-btn--selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  .pos-tile-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-button-primary-background);
+    border-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+  }
+
+  .pos-tile-btn--selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .pos-tile-btn-icon,
+  .pos-tile-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) .pos-tile-btn-icon {
+    color: var(--pos-color-button-primary-text);
+  }
+
+
+  /* disabled — keeps pointer events so the not-allowed cursor shows over the whole tile
+     (RULES.md 4.12); the hover rules above skip disabled tiles
+  ============================================================================ */
+  .pos-tile-btn:disabled,
+  .pos-tile-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    color: var(--pos-color-content-text-disabled);
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+  }
+
+  .pos-tile-btn:disabled .pos-tile-btn-icon,
+  .pos-tile-btn[aria-disabled="true"] .pos-tile-btn-icon {
+    color: var(--pos-color-content-text-disabled);
+  }
+
+  /* selected + disabled */
+  .pos-tile-btn--selected:disabled,
+  .pos-tile-btn[aria-pressed="true"]:disabled {
+    background-color: var(--pos-color-button-primary-disabled-background);
+    border-color: var(--pos-color-button-primary-disabled-frame);
+    color: var(--pos-color-button-primary-disabled-text);
+  }
+
+  .pos-tile-btn--selected:disabled .pos-tile-btn-icon,
+  .pos-tile-btn[aria-pressed="true"]:disabled .pos-tile-btn-icon {
+    color: var(--pos-color-button-primary-disabled-text);
+  }
+
+}

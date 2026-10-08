@@ -1,0 +1,269 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/migration-plan' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Migration Plan</h1>
+          <p>For existing products moving from the old design system to this one. Starting a new project? See <a href="/style-guide/get-started" class="pos-link">Setup</a>.</p>
+          <p>How a product moves from the old design system to this one. The module now contains only the new design system: updating it to version 2.0.0 switches a product over &mdash; the layout keeps the same <code class="pos-code pos-code--small">init</code> call.</p>
+        </header>
+
+        {% capture old_ds_button %}
+          <a href="https://github.com/Platform-OS/pos-modules/tree/master/pos-module-common-styling" class="pos-button pos-button-secondary pos-button-small" target="_blank" rel="noopener noreferrer">View the old design system on GitHub<span class="pos-label">(opens in new tab)</span></a>
+        {% endcapture %}
+        <div class="migration-old-ds">
+          {% render 'modules/common-styling/content/alert', type: 'info', title: 'Looking for the old design system?', content: 'It is no longer part of this module version — products keep using it (module 1.x, master branch of the pos-modules repository) until they migrate. Its source is on GitHub (master branch):', buttons: old_ds_button %}
+        </div>
+
+        <!-- ── Where each design system lives ────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Where each design system lives</h2>
+          <table class="styleguide-token-table migration-table">
+            <thead>
+              <tr><th></th><th>Old design system</th><th>This design system</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="t-desc-cell">Where</td>
+                <td><code class="pos-code pos-code--small">master</code> branch, module 1.x &mdash; what products ship today</td>
+                <td><code class="pos-code pos-code--small">design-refactor</code> branch &mdash; version 2.0.0</td>
+              </tr>
+              <tr>
+                <td class="t-desc-cell">Init partial</td>
+                <td><code class="pos-code pos-code--small">partials/init.liquid</code></td>
+                <td><code class="pos-code pos-code--small">partials/init.liquid</code> &mdash; same name, new content</td>
+              </tr>
+              <tr>
+                <td class="t-desc-cell">CSS</td>
+                <td><code class="pos-code pos-code--small">style/pos-*.css</code>, hardcoded hex values</td>
+                <td><code class="pos-code pos-code--small">style/pos-primitives.css</code> &rarr; <code class="pos-code pos-code--small">style/pos-config.css</code> &rarr; <code class="pos-code pos-code--small">style/pos-*.css</code></td>
+              </tr>
+              <tr>
+                <td class="t-desc-cell">Tokens &amp; specs</td>
+                <td>&mdash;</td>
+                <td><code class="pos-code pos-code--small">tokens/</code> &mdash; <code class="pos-code pos-code--small">ds-index.json</code>, <code class="pos-code pos-code--small">token-map.json</code>, <code class="pos-code pos-code--small">components/*.json</code></td>
+              </tr>
+              <tr>
+                <td class="t-desc-cell">Docs</td>
+                <td><code class="pos-code pos-code--small">/style-guide</code></td>
+                <td><code class="pos-code pos-code--small">/style-guide</code> (this site)</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Migration steps ─────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Migration steps</h2>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">1</span>
+              <h3 class="pos-heading-3">Update the module</h3>
+            </div>
+            <p>Update common-styling to version 2.0.0. The layout keeps the same call &mdash; it now loads this design system:</p>
+            <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&#123;% render 'modules/common-styling/init', reset: true %&#125;</code></pre>
+            <p>Keep <code class="pos-code pos-code--small">reset: true</code> if you used it, and <code class="pos-code pos-code--small">pos-app</code> on the main container.</p>
+          </div>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">2</span>
+              <h3 class="pos-heading-3">Check your markup and tokens</h3>
+            </div>
+            <p>Class names are unchanged (<code class="pos-code pos-code--small">pos-</code> names are never renamed). Token names this design system renamed still work as aliases (<code class="pos-code pos-code--small">ds-index.json</code> &rsaquo; <code class="pos-code pos-code--small">deprecated</code>) &mdash; move your code off them with the codemod, dry run first:</p>
+            <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">npm run codemod:deprecated -- ../my-app
+npm run codemod:deprecated -- ../my-app --write</code></pre>
+          </div>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">3</span>
+              <h3 class="pos-heading-3">Check your own CSS</h3>
+            </div>
+            <p>Lists hardcoded colors, unknown classes and tokens, inline styles and backslash render paths in your app:</p>
+            <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">npm run check:ui -- ../my-app</code></pre>
+          </div>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">4</span>
+              <h3 class="pos-heading-3">Review visually</h3>
+            </div>
+            <p>In light, dark and high contrast. The palette and several components look different on purpose &mdash; sign off on the visual changes.</p>
+          </div>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">5</span>
+              <h3 class="pos-heading-3">JavaScript</h3>
+            </div>
+            <p><code class="pos-code pos-code--small">init</code> initializes password, multiselect, upload and markdown fields, popovers, dialogs, collapsible lists, code highlighting and <code class="pos-code pos-code--small">data-load-content</code> automatically, like the old init did. If a page creates these instances itself, turn that off:</p>
+            <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&#123;% render 'modules/common-styling/init', auto_init_components: false %&#125;</code></pre>
+          </div>
+
+          <div class="migration-step">
+            <div class="migration-step-header">
+              <span class="migration-step-number">6</span>
+              <h3 class="pos-heading-3">Themes <span class="pos-chip pos-chip--tiny">optional</span></h3>
+            </div>
+            <p>Opt-in classes on <code class="pos-code pos-code--small">&lt;html&gt;</code> &mdash; no markup change in components:</p>
+            <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- follow the OS --&gt;
+&lt;html class="pos-theme-darkEnabled"&gt;
+
+&lt;!-- dark --&gt;
+&lt;html class="pos-theme-dark pos-theme-darkEnabled"&gt;
+
+&lt;!-- high contrast (manual only) --&gt;
+&lt;html class="pos-theme-a11y pos-theme-a11yEnabled"&gt;</code></pre>
+          </div>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Rollback ────────────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Rollback</h2>
+          <p>A product stays on, or goes back to, the 1.x release on <code class="pos-code pos-code--small">master</code> (1.38.8) &mdash; nothing else to undo.</p>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── What does NOT need to change ──────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">What does not need to change</h2>
+          <ul class="migration-no-change-list">
+            <li>Liquid template markup &mdash; class names are stable</li>
+            <li>JS event listeners &mdash; custom event names are stable</li>
+            <li><code class="pos-code pos-code--small">window.pos.modules.*</code> API calls &mdash; JS API is stable</li>
+            <li>GraphQL queries and backend code &mdash; the design system is frontend-only</li>
+          </ul>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Migration order ────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Suggested migration order</h2>
+          <p>Migrate in order of visual isolation &mdash; start with the products that have the least shared UI.</p>
+          <table class="styleguide-token-table migration-table">
+            <tbody>
+              <tr><td class="migration-order-num">1</td><td>New standalone tools / admin pages</td><td class="t-desc-cell">Low risk, isolated, no shared UI dependencies</td></tr>
+              <tr><td class="migration-order-num">2</td><td>Instance portal</td><td class="t-desc-cell">Contained scope, already uses common-styling</td></tr>
+              <tr><td class="migration-order-num">3</td><td>User-facing modules (chat, profile, etc.)</td><td class="t-desc-cell">Medium risk &mdash; more surface area, more components in use</td></tr>
+              <tr><td class="migration-order-num">4</td><td>Core platform pages</td><td class="t-desc-cell">Highest risk &mdash; most shared UI, migrate last</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  .migration-step {
+    margin-block-start: var(--pos-primitive-size-5);
+    padding-block-start: var(--pos-primitive-size-4);
+    border-block-start: 1px solid var(--pos-color-frame);
+  }
+
+  .migration-step:first-of-type {
+    border-block-start: none;
+    padding-block-start: 0;
+    margin-block-start: var(--pos-primitive-size-3);
+  }
+
+  .migration-step-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--pos-primitive-size-2);
+    margin-block-end: var(--pos-primitive-size-2);
+  }
+
+  .migration-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--pos-color-interactive);
+    color: var(--pos-color-content-inverted-text);
+    font-size: var(--pos-font-size-xs);
+    font-weight: var(--pos-font-weight-bold);
+    font-family: var(--pos-font-buttons);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .migration-step p,
+  .migration-step pre {
+    margin-block-start: var(--pos-primitive-size-2);
+  }
+
+  .migration-step p:first-of-type {
+    margin-block-start: 0;
+  }
+
+  .styleguide-token-table thead tr {
+    background: var(--pos-color-highlight-background);
+  }
+
+  .styleguide-token-table th {
+    padding: var(--pos-primitive-size-125) var(--pos-primitive-size-2);
+    text-align: left;
+    font-size: var(--pos-font-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pos-color-content-text-supplementary);
+    border-bottom: 1px solid var(--pos-color-frame);
+  }
+
+  .styleguide-ds-article .pos-code--block {
+    margin-block-end: var(--pos-primitive-size-2);
+  }
+
+  .migration-no-change-list {
+    margin-block-start: var(--pos-primitive-size-2);
+    padding-inline-start: var(--pos-primitive-size-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-primitive-size-1);
+  }
+
+  /* info box under the header: section spacing below it instead of a divider */
+  .migration-old-ds {
+    margin-block-end: var(--pos-gap-section-section);
+  }
+
+  .migration-table {
+    margin-block-start: var(--pos-primitive-size-3);
+  }
+
+  /* prose cells: break at word boundaries (the shared token-table style breaks anywhere) */
+  .migration-table td {
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .migration-order-num {
+    font-weight: var(--pos-font-weight-bold);
+    color: var(--pos-color-content-text-prominent);
+  }
+</style>

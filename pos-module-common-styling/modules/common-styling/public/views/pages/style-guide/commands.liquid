@@ -1,0 +1,235 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/commands' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">AI Commands</h1>
+          <p>What Claude Code does for you in this repository: an automatic review after every edit, specialist review skills, a guard agent for whole changes, slash commands for bigger jobs &mdash; and the same checks as npm scripts you can run yourself.</p>
+        </header>
+
+        <hr class="intro-divider">
+
+        <!-- ── Automatic review ─────────────────────────────────────── -->
+        <section id="commands-automatic">
+          <h2 class="pos-heading-2">Automatic review</h2>
+          <p>You don&rsquo;t need to call anything for the everyday checks. After every file Claude Code edits or creates in the new design system &mdash; <code class="pos-code pos-code--small">style/</code> CSS, <code class="pos-code pos-code--small">tokens/</code> JSON, the <code class="pos-code pos-code--small">/style-guide</code> pages and partials, the example <code class="pos-code pos-code--small">app/</code> &mdash; a review hook runs the contrast, catalog and UI-code checks on it and tells Claude which review skills apply. Claude then reports any problem to you right away: what broke, the measured value against the requirement, and the fix options &mdash; and asks before changing a design or a token.</p>
+          <table class="styleguide-token-table cmd-table">
+            <colgroup><col class="cmd-col-name"><col class="cmd-col-desc"><col class="cmd-col-when"></colgroup>
+            <thead><tr><th>Part</th><th>What it does</th><th>Runs</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">review hook</code></td>
+                <td>Runs <code class="pos-code pos-code--small">check:contrast</code>, <code class="pos-code pos-code--small">check:catalog</code> and <code class="pos-code pos-code--small">check:ui</code> on the edited file and names the review skills for that kind of file. Never edits, never blocks. Setup: <code class="pos-code pos-code--small">.claude/settings.json</code> &rarr; <code class="pos-code pos-code--small">scripts/review-hook.mjs</code>.</td>
+                <td class="t-desc-cell">Automatically, after every edit by Claude Code &mdash; when Claude Code is started in <code class="pos-code pos-code--small">pos-module-common-styling</code></td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">ds-guard</code></td>
+                <td>Read-only guard agent for a whole piece of work: checks every changed file (right components, real classes and tokens, no hardcoded colors, contrast in all three themes) and reviews it through the four review skills below. Returns findings with fix options.</td>
+                <td class="t-desc-cell">Before Claude reports UI / DS work done &mdash; or ask any time: &ldquo;run ds-guard&rdquo;</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Not covered automatically: files you change yourself outside Claude Code (in your own editor) &mdash; run <code class="pos-code pos-code--small">npm run check</code> for those.</p>
+        </section>
+
+        <!-- ── Review skills ────────────────────────────────────────── -->
+        <section id="commands-skills">
+          <h2 class="pos-heading-2">Review skills</h2>
+          <p>Specialist lenses Claude applies on its own when the review hook names them. You can also call one directly, e.g. <code class="pos-code pos-code--small">/a11y-review</code>.</p>
+          <table class="styleguide-token-table cmd-table">
+            <colgroup><col class="cmd-col-name"><col class="cmd-col-desc"><col class="cmd-col-when"></colgroup>
+            <thead><tr><th>Skill</th><th>Looks at</th><th>Applied to</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">/ui-design-review</code></td>
+                <td>UI designer: contrast, token choice, typography pairs, spacing, states, elevation (none in high contrast), light / dark / high-contrast parity, consistency with existing components.</td>
+                <td class="t-desc-cell">CSS, tokens, component markup, app UI</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">/ux-review</code></td>
+                <td>UX designer: the right component for the job (each spec&rsquo;s when / when-not), one primary action per screen, feedback, empty / error / loading states, labels and copy, destructive actions.</td>
+                <td class="t-desc-cell">Pages, partials, forms, flows</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">/frontend-review</code></td>
+                <td>Frontend developer: semantic HTML, DS classes and tokens only, Liquid correctness, vanilla JS conventions, spec / partial sync, build steps, no new dependencies.</td>
+                <td class="t-desc-cell">CSS, Liquid, JS / TS, spec JSON</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">/a11y-review</code></td>
+                <td>Accessibility (WCAG 2.2 AA): contrast in all three themes, keyboard, focus, labels and ARIA, non-color cues, touch targets, motion.</td>
+                <td class="t-desc-cell">Anything visual or interactive</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">/build-ui-with-pos-ds</code></td>
+                <td>Procedure for building UI <em>with</em> the DS (app, other modules): pick components from <code class="pos-code pos-code--small">ds-index.json</code>, copy the spec markup, pair colors as in <code class="pos-code pos-code--small">AGENTS.md</code>, check before reporting.</td>
+                <td class="t-desc-cell">Building pages and forms with the DS</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ── Slash commands ───────────────────────────────────────── -->
+        <section id="commands-slash">
+          <h2 class="pos-heading-2">Slash commands</h2>
+          <p>Bigger, multi-step jobs you start yourself.</p>
+
+        <table class="styleguide-token-table cmd-table">
+          <colgroup>
+            <col style="width: 22%">
+            <col style="width: 38%">
+            <col style="width: 20%">
+            <col style="width: 20%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+              <th>Input</th>
+              <th>Output</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td><code class="pos-code pos-code--small cmd-chip">/token-sync</code></td>
+              <td>Compare Figma variables against CSS tokens. Uses a snapshot cache for fast incremental runs. Produces a full match&thinsp;/&thinsp;mismatch&thinsp;/&thinsp;missing report grouped by collection. Read-only &mdash; never modifies CSS.</td>
+              <td class="t-desc-cell">&mdash; (runs against the connected Figma file and local CSS)</td>
+              <td class="t-desc-cell">Match / mismatch / missing report grouped by collection</td>
+            </tr>
+
+            <tr>
+              <td><code class="pos-code pos-code--small cmd-chip">/check-tokens</code></td>
+              <td>Audit a component&rsquo;s CSS for dark&thinsp;/&thinsp;light mode compatibility. Flags hardcoded colors, primitive color tokens used directly in components, and light- or dark-only tokens that won&rsquo;t switch automatically.</td>
+              <td class="t-desc-cell">Component name (e.g. <code class="pos-code pos-code--small">button</code>, <code class="pos-code pos-code--small">tag</code>)</td>
+              <td class="t-desc-cell">Token violations report: hardcoded values, primitive refs, dark/light-only tokens, verdict</td>
+            </tr>
+
+            <tr>
+              <td><code class="pos-code pos-code--small cmd-chip">/create-component</code></td>
+              <td>Create a new DS component end-to-end: CSS file (semantic tokens; component tokens in <code class="pos-code pos-code--small">pos-config.css</code> only for button and form fields), documentation page, AI-readable JSON spec, and <code class="pos-code pos-code--small">COMPONENTS.md</code> entry. Runs <code class="pos-code pos-code--small">/check-tokens</code> as a mandatory validation step.</td>
+              <td class="t-desc-cell">Component name (e.g. <code class="pos-code pos-code--small">button</code>, <code class="pos-code pos-code--small">collapsible</code>)</td>
+              <td class="t-desc-cell">CSS, tokens, AI JSON spec, doc page, COMPONENTS.md entry</td>
+            </tr>
+
+            <tr>
+              <td>
+                <code class="pos-code pos-code--small cmd-chip">/insp-to-code</code>
+              </td>
+              <td>Reference image &rarr; DS-based code. Analyzes a reference image and implements the UI as Liquid&thinsp;/&thinsp;HTML using DS components, semantic tokens, and DS conventions. No hardcoded values. Flags any element that has no DS equivalent.</td>
+              <td class="t-desc-cell">Reference image (file path or shared in conversation)</td>
+              <td class="t-desc-cell">Liquid/HTML code + DS mapping decisions + deviations report</td>
+            </tr>
+
+          </tbody>
+        </table>
+        </section>
+
+        <!-- ── npm checks ───────────────────────────────────────────── -->
+        <section id="commands-npm">
+          <h2 class="pos-heading-2">Checks you can run yourself</h2>
+          <p>The same checks the hook runs &mdash; for work done outside Claude Code, or before a commit. Run them from <code class="pos-code pos-code--small">pos-module-common-styling</code>.</p>
+          <table class="styleguide-token-table cmd-table">
+            <colgroup><col class="cmd-col-name"><col class="cmd-col-desc"><col class="cmd-col-when"></colgroup>
+            <thead><tr><th>Command</th><th>What it checks</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run check</code></td>
+                <td>All three checks below.</td>
+                <td class="t-desc-cell">Stops at the first check with a problem</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run check:contrast</code></td>
+                <td>Every prescribed text / icon / frame color pair &mdash; including every button variant and state &mdash; in light, dark and high contrast, for every <a href="/style-guide/foundations/themes" class="pos-link">brand theme</a>, against WCAG AA.</td>
+                <td class="t-desc-cell">Failing pairs with the theme, mode, measured ratio and fix options (nearest passing step for the foreground and for the background)</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run check:ui</code></td>
+                <td>UI code: hardcoded colors, invented <code class="pos-code pos-code--small">pos-</code> classes, unknown / primitive / deprecated tokens, inline styles, backslash render paths. Add a file or folder to check app code; <code class="pos-code pos-code--small">--docs</code> adds the docs pages.</td>
+                <td class="t-desc-cell">File, line and rule for every finding</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run check:catalog</code></td>
+                <td>The AI-facing catalog (<code class="pos-code pos-code--small">ds-index.json</code>, specs, <code class="pos-code pos-code--small">AGENTS.md</code>, <code class="pos-code pos-code--small">llms.txt</code>) lists only components, classes and tokens that really exist.</td>
+                <td class="t-desc-cell">Missing entries and unknown names</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run codemod:deprecated</code></td>
+                <td>For an app that uses the DS: replaces deprecated DS names in <em>that app&rsquo;s</em> code with their replacement. Dry run by default, <code class="pos-code pos-code--small">--write</code> applies; never touches the DS itself.</td>
+                <td class="t-desc-cell">List of changes (changed files with <code class="pos-code pos-code--small">--write</code>)</td>
+              </tr>
+              <tr>
+                <td><code class="pos-code pos-code--small cmd-chip">npm run build:themes</code></td>
+                <td>Not a check: generates the brand themes. Builds the 10-step brand primary and supplementary scales of every theme in <code class="pos-code pos-code--small">tokens/themes.json</code> into <code class="pos-code pos-code--small">style/pos-themes.css</code>. Run it after adding or changing a theme, then <code class="pos-code pos-code--small">check:contrast</code>.</td>
+                <td class="t-desc-cell">Number of themes built; a note when a base color fits no scale step exactly</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  .cmd-table thead tr {
+    background: var(--pos-color-highlight-background);
+  }
+
+  .cmd-table th {
+    padding: var(--pos-primitive-size-125) var(--pos-primitive-size-2);
+    text-align: left;
+    font-size: var(--pos-font-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pos-color-content-text-supplementary);
+    border-bottom: 1px solid var(--pos-color-frame);
+  }
+
+  .styleguide-ds-article {
+    font-size: var(--pos-font-size-body-small);
+  }
+
+  .cmd-table .cmd-col-name { width: 22%; }
+  .cmd-table .cmd-col-desc { width: 50%; }
+  .cmd-table .cmd-col-when { width: 28%; }
+
+  .cmd-table {
+    margin-block: var(--pos-gap-section-title-content);
+  }
+
+  .cmd-table td {
+    vertical-align: top;
+    /* prose cells: break at word boundaries (the shared token-table style breaks anywhere, for long token names) */
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .cmd-chip {
+    display: inline-block;
+    background: var(--pos-color-highlight-background);
+    color: var(--pos-color-content-text);
+    border-color: transparent;
+    font-size: var(--pos-font-size-xs);
+    white-space: nowrap;
+  }
+
+  .cmd-table .styleguide-ds-new-badge {
+    display: block;
+    margin-block-start: var(--pos-primitive-size-1);
+  }
+</style>

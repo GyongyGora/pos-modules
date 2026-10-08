@@ -1,0 +1,290 @@
+{% comment %}
+  Design system documentation — left sidebar navigation.
+  Pass `active` variable with the current page URL.
+  Example: {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/workflow' %}
+{% endcomment %}
+
+{% parse_json nav_items %}
+[
+  {
+    "label": "Introduction",
+    "icon": "bookmarksDocument",
+    "children": [
+      { "label": "Explore",            "url": "/style-guide/overview" },
+      { "label": "Setup",             "url": "/style-guide/get-started" },
+      { "label": "Migration plan",    "url": "/style-guide/migration-plan" },
+      { "label": "AI Commands",       "url": "/style-guide/commands" },
+      { "label": "Component anatomy", "url": "/style-guide/component-anatomy" },
+      { "label": "Workflow",          "url": "/style-guide/workflow" }
+    ]
+  },
+  {
+    "label": "Core",
+    "icon": "layers-stacked",
+    "children": [
+      { "label": "Palettes",     "url": "/style-guide/foundations/palettes", "badge": "new" },
+      { "label": "Themes",       "url": "/style-guide/foundations/themes", "badge": "new" },
+      { "label": "Tokens",       "url": "/style-guide/foundations/tokens" },
+      { "label": "Icons",        "url": "/style-guide/foundations/icons" },
+      { "label": "Typography",   "url": "/style-guide/foundations/typography" },
+      { "label": "Elevation",    "url": "/style-guide/foundations/elevation" },
+      { "label": "Interactions", "url": "/style-guide/foundations/interactions" }
+    ]
+  },
+  {
+    "label": "Components",
+    "icon": "3d-box-corner",
+    "children": [
+      { "label": "Avatar",             "url": "/style-guide/component-template#comp-section-avatar" },
+      { "label": "Badge",              "url": "/style-guide/component-template#comp-section-badge", "badge": "new" },
+      { "label": "Button",             "url": "/style-guide/component-template#comp-section-button" },
+      { "label": "Checkbox",           "url": "/style-guide/component-template#comp-section-checkbox" },
+      { "label": "Chip",               "url": "/style-guide/component-template#comp-section-chip",        "badge": "new" },
+      { "label": "Choice button",      "url": "/style-guide/component-template#comp-section-tile-btn",   "badge": "new" },
+      { "label": "Code",               "url": "/style-guide/component-template#comp-section-code",        "badge": "new" },
+      { "label": "Control icons",      "url": "/style-guide/component-template#comp-section-control-icons", "badge": "new" },
+      { "label": "Dropdown button",    "url": "/style-guide/component-template#comp-section-dropdown-button", "badge": "new" },
+      { "label": "Link",               "url": "/style-guide/component-template#comp-section-link" },
+      { "label": "Multiselect",        "url": "/style-guide/component-template#comp-section-multiselect" },
+      { "label": "Password input",     "url": "/style-guide/component-template#comp-section-password" },
+      { "label": "Popover",            "url": "/style-guide/component-template#comp-section-popover-content", "badge": "new" },
+      { "label": "Radio",              "url": "/style-guide/component-template#comp-section-radio" },
+      { "label": "Segmented button",   "url": "/style-guide/component-template#comp-section-segmented",  "badge": "new" },
+      { "label": "Select",             "url": "/style-guide/component-template#comp-section-select" },
+      { "label": "Slider",             "url": "/style-guide/component-template#comp-section-slider", "badge": "new" },
+      { "label": "Switch button",      "url": "/style-guide/component-template#comp-section-switch-card", "badge": "new" },
+      { "label": "Tag",                "url": "/style-guide/component-template#comp-section-tag" },
+      { "label": "Input",              "url": "/style-guide/component-template#comp-section-text-input" },
+      { "label": "Textarea",           "url": "/style-guide/component-template#comp-section-textarea" },
+      { "label": "Toggle button",      "url": "/style-guide/component-template#comp-section-toggle-btn" },
+      { "label": "Toast",              "url": "/style-guide/component-template#comp-section-toast" },
+      { "label": "Tooltip",            "url": "/style-guide/component-template#comp-section-tooltip" }
+    ]
+  },
+  {
+    "label": "Complex components",
+    "icon": "module-three-1",
+    "children": [
+      { "label": "Alert card",   "url": "/style-guide/component-template#comp-section-alert-card" },
+      { "label": "Card",         "url": "/style-guide/component-template#comp-section-card" },
+      { "label": "Collapsible list", "url": "/style-guide/component-template#comp-section-collapsible-list" },
+      { "label": "Dialog",       "url": "/style-guide/component-template#comp-section-dialog" },
+      { "label": "Feature card",      "url": "/style-guide/component-template#comp-section-feature-card",    "badge": "new" },
+      { "label": "File upload",       "url": "/style-guide/component-template#comp-section-file-upload" },
+      { "label": "Markdown editor",   "url": "/style-guide/component-template#comp-section-markdown" },
+      { "label": "Pagination",   "url": "/style-guide/component-template#comp-section-pagination" },
+      { "label": "Popover menu", "url": "/style-guide/component-template#comp-section-popover" },
+      { "label": "Tab",          "url": "/style-guide/component-template#comp-section-tab" },
+      { "label": "Table",        "url": "/style-guide/component-template#comp-section-table" },
+      { "label": "Breadcrumb", "url": "/style-guide/component-template#comp-section-breadcrumb" }
+    ]
+  }
+]
+{% endparse_json %}
+
+<div class="styleguide-ds-nav-search">
+  <label class="pos-label" for="styleguide-nav-search">Search</label>
+  <div class="styleguide-nav-search-wrapper">
+    <span class="styleguide-nav-search-icon" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'search' %}</span>
+    <input type="search" id="styleguide-nav-search" class="pos-form-input" placeholder="Find components…" autocomplete="off">
+    <button type="button" class="styleguide-nav-search-clear" id="styleguide-nav-search-clear" aria-label="Clear search">{% render 'modules/common-styling/icon', icon: 'x' %}</button>
+  </div>
+</div>
+
+<ul class="pos-collapsible">
+  {% for section in nav_items %}
+    {% liquid
+      assign active_child = section.children | array_detect: url: active
+      unless active_child
+        for child in section.children
+          assign child_base = child.url | split: '#' | first
+          if child_base == active
+            assign active_child = child
+            break
+          endif
+          assign active_child = child.children | array_detect: url: active
+          if active_child
+            break
+          endif
+        endfor
+      endunless
+    %}
+    <li>
+      <span class="styleguide-ds-nav-section-label">
+        {% if section.icon %}
+          {% render 'modules/common-styling/icon', icon: section.icon %}
+        {% endif %}
+        {{ section.label }}
+      </span>
+      <button type="button" class="pos-collapsible-toggle" aria-expanded="false" aria-controls="pos-collapsible-{{ section.label | slugify }}">
+        {% render 'modules/common-styling/icon', icon: 'dashRight' %}
+        <span class="pos-label">Expand "{{ section.label }}"</span>
+      </button>
+      <div id="pos-collapsible-{{ section.label | slugify }}" class="pos-collapsible-children"{% unless active_child %} inert{% endunless %}>
+        {% render 'modules/common-styling/navigation/collapsible', items: section.children, inert: true, active: active %}
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+
+<div class="styleguide-ds-theme-toggle-wrapper">
+  <div class="pos-segmented-control pos-segmented-control--subtle pos-segmented-control--small" role="group" aria-label="Color scheme" id="styleguide-theme-toggle">
+    <button type="button" class="pos-segmented-control-btn pos-segmented-control-btn--active" aria-pressed="true" data-theme="light" aria-label="Light mode">
+      {% render 'modules/common-styling/icon', icon: 'brightness' %}
+    </button>
+    <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-theme="dark" aria-label="Dark mode">
+      {% render 'modules/common-styling/icon', icon: 'moon' %}
+    </button>
+    <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-theme="a11y" aria-label="High contrast mode">
+      {% render 'modules/common-styling/icon', icon: 'contrast' %}
+    </button>
+  </div>
+
+  <div class="pos-segmented-control pos-segmented-control--subtle pos-segmented-control--small" role="group" aria-label="Text size" id="styleguide-font-toggle">
+    <button type="button" class="pos-segmented-control-btn pos-segmented-control-btn--active" aria-pressed="true" data-font="default" aria-label="Default text size">A</button>
+    <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-font="large" aria-label="Large text size" style="font-size:1.1em">A</button>
+    <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-font="xl" aria-label="Extra large text size" style="font-size:1.25em">A</button>
+  </div>
+</div>
+
+
+<script>
+  (function() {
+    var themeToggle = document.getElementById('styleguide-theme-toggle');
+    var html = document.documentElement;
+
+    function applyTheme(theme) {
+      html.classList.remove('pos-theme-darkEnabled', 'pos-theme-dark', 'pos-theme-a11yEnabled', 'pos-theme-a11y');
+      if (theme === 'dark') {
+        html.classList.add('pos-theme-darkEnabled', 'pos-theme-dark');
+      } else if (theme === 'a11y') {
+        html.classList.add('pos-theme-a11yEnabled', 'pos-theme-a11y');
+      }
+      themeToggle.querySelectorAll('.pos-segmented-control-btn').forEach(function(b) {
+        var active = b.dataset.theme === theme;
+        b.classList.toggle('pos-segmented-control-btn--active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    var saved = localStorage.getItem('styleguide-theme');
+    if (saved === 'dark' || saved === 'a11y') applyTheme(saved);
+
+    themeToggle.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-theme]');
+      if (!btn) return;
+      var theme = btn.dataset.theme;
+      applyTheme(theme);
+      localStorage.setItem('styleguide-theme', theme);
+    });
+  })();
+
+  // font size toggle
+  (function() {
+    var fontToggle = document.getElementById('styleguide-font-toggle');
+    var html = document.documentElement;
+    var sizes = { default: '100%', large: '112.5%', xl: '125%' };
+
+    function applyFont(size) {
+      html.style.fontSize = sizes[size] || '100%';
+      requestAnimationFrame(function() { window.dispatchEvent(new Event('resize')); });
+      fontToggle.querySelectorAll('.pos-segmented-control-btn').forEach(function(b) {
+        var active = b.dataset.font === size;
+        b.classList.toggle('pos-segmented-control-btn--active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      // sync right sidebar a11y toggle if present
+      var a11yToggle = document.getElementById('comp-a11y-text-size');
+      if (a11yToggle) a11yToggle.checked = (size === 'xl');
+    }
+
+    var savedFont = localStorage.getItem('styleguide-font');
+    if (savedFont && sizes[savedFont]) applyFont(savedFont);
+
+    fontToggle.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-font]');
+      if (!btn) return;
+      var size = btn.dataset.font;
+      applyFont(size);
+      localStorage.setItem('styleguide-font', size);
+    });
+  })();
+
+  // accordion: only one top-level section open at a time
+  (function() {
+    var topNav = document.querySelector('.styleguide-ds-sidebar .pos-collapsible');
+    if (!topNav) return;
+    topNav.addEventListener('click', function(e) {
+      var btn = e.target.closest('.pos-collapsible-toggle');
+      if (!btn || btn.closest('li').parentElement !== topNav) return;
+      requestAnimationFrame(function() {
+        if (btn.getAttribute('aria-expanded') !== 'true') return;
+        Array.from(topNav.children).forEach(function(li) {
+          var other = li.querySelector('.pos-collapsible-toggle');
+          if (other && other !== btn && other.getAttribute('aria-expanded') === 'true') {
+            other.click();
+          }
+        });
+      });
+    });
+  })();
+
+  // nav search filter + clear button
+  (function() {
+    var input = document.getElementById('styleguide-nav-search');
+    var clearBtn = document.getElementById('styleguide-nav-search-clear');
+    var nav = input.closest('.styleguide-ds-sidebar').querySelector('.pos-collapsible');
+
+    function getLinkText(anchor) {
+      // collect only text nodes (skip badge chip spans)
+      var text = '';
+      anchor.childNodes.forEach(function(node) {
+        if (node.nodeType === 3) text += node.textContent;
+      });
+      return text.trim().toLowerCase();
+    }
+
+    function filterNav(q) {
+      // Pass 1: show/hide individual nav link <li> (those with a direct <a> child)
+      nav.querySelectorAll('li:has(> a)').forEach(function(li) {
+        var text = getLinkText(li.querySelector('a'));
+        li.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+
+      // Pass 2: show/hide section header <li> based on whether any child link is visible
+      nav.querySelectorAll('li:not(:has(> a))').forEach(function(sectionLi) {
+        var childrenDiv = sectionLi.querySelector('.pos-collapsible-children');
+        var anyVisible = Array.from(sectionLi.querySelectorAll('li:has(> a)')).some(function(li) {
+          return li.style.display !== 'none';
+        });
+        sectionLi.style.display = (!q || anyVisible) ? '' : 'none';
+        if (q && anyVisible && childrenDiv) childrenDiv.removeAttribute('inert');
+      });
+    }
+
+    function updateClear() {
+      var active = input.value || document.activeElement === input;
+      clearBtn.style.opacity = active ? '1' : '0';
+      clearBtn.style.pointerEvents = active ? 'auto' : 'none';
+    }
+
+    input.addEventListener('input', function() {
+      filterNav(input.value.trim().toLowerCase());
+      updateClear();
+    });
+
+    input.addEventListener('focus', updateClear);
+    input.addEventListener('blur', updateClear);
+
+    clearBtn.addEventListener('click', function() {
+      input.value = '';
+      filterNav('');
+      updateClear();
+      input.focus();
+    });
+
+    updateClear();
+  })();
+</script>
+
+

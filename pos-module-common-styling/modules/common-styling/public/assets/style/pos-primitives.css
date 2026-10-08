@@ -1,0 +1,167 @@
+/*
+  Design token primitives — raw values, no semantic meaning.
+  These are the palette. Never reference these directly in components —
+  always go through semantic or component tokens in pos-config.css.
+
+  Exception: primitive spacing/size values may be referenced directly
+  in components only when no suitable semantic token exists.
+
+  Source: tokens/--- BT Primitives/Primitives.tokens.json
+*/
+
+/* border radius scale
+============================================================================ */
+:root {
+  --pos-primitive-radius-sharp:              0px;
+  --pos-primitive-radius-slightly-rounded:   4px;
+  --pos-primitive-radius-slightly-rounded-2: 6px;
+  --pos-primitive-radius-mid-rounded:        8px;
+  --pos-primitive-radius-rounded:            16px;
+  --pos-primitive-radius-pill:               40px;
+  --pos-primitive-radius-full:               999px;
+}
+
+/* size scale  (1 unit = 8px)
+============================================================================ */
+:root {
+  --pos-primitive-size-n05: -4px;   /* -0.5 unit */
+  --pos-primitive-size-0:    0px;   /*  0   unit */
+  --pos-primitive-size-05:   4px;   /*  0.5 unit */
+  --pos-primitive-size-1:    8px;   /*  1   unit */
+  --pos-primitive-size-125:  10px;  /*  1.25 unit */
+  --pos-primitive-size-15:   12px;  /*  1.5 unit */
+  --pos-primitive-size-175:  14px;  /*  1.75 unit */
+  --pos-primitive-size-2:    16px;  /*  2   unit */
+  --pos-primitive-size-25:   20px;  /*  2.5 unit */
+  --pos-primitive-size-3:    24px;  /*  3   unit */
+  --pos-primitive-size-35:   28px;  /*  3.5 unit */
+  --pos-primitive-size-4:    32px;  /*  4   unit */
+  --pos-primitive-size-5:    40px;  /*  5   unit */
+  --pos-primitive-size-6:    48px;  /*  6   unit */
+  --pos-primitive-size-7:    56px;  /*  7   unit */
+  --pos-primitive-size-8:    64px;  /*  8   unit */
+  --pos-primitive-size-9:    72px;  /*  9   unit */
+  --pos-primitive-size-10:   80px;  /* 10   unit */
+}
+
+/* font families
+============================================================================ */
+/* Source: BT Typography variables-theme / Family */
+:root {
+  --pos-primitive-font-google-sans: 'Google Sans', system-ui, sans-serif;
+  --pos-primitive-font-inter:       'Inter', system-ui, sans-serif;
+  --pos-primitive-font-roboto-mono: 'Roboto Mono', monospace;
+}
+
+/* brand colors
+============================================================================ */
+:root {
+  /* 10-step color scales (2026-10-01) — generated in OKLCH by the palettes tool (style-guide/palettes.js,
+     /style-guide/foundations/palettes); every step shares one contrast target across all scales.
+     100–300 light bg (text OK) · 400 dark text · 500 dark graphics ·
+     600 light graphics · 700 light text · 800–1000 dark bg (text OK). 300 / 800 also serve strokes and hovers. */
+  --pos-primitive-color-brand-primary-100: #f5f8ff;
+  --pos-primitive-color-brand-primary-200: #e8efff;
+  --pos-primitive-color-brand-primary-300: #cedeff;
+  --pos-primitive-color-brand-primary-400: #6897ff;
+  --pos-primitive-color-brand-primary-500: #3a71fe;
+  --pos-primitive-color-brand-primary-600: #1d4ed8;
+  --pos-primitive-color-brand-primary-700: #1949d3;
+  --pos-primitive-color-brand-primary-800: #010087;
+  --pos-primitive-color-brand-primary-900: #01005b;
+  --pos-primitive-color-brand-primary-1000: #000039;
+
+  --pos-primitive-color-brand-supplementary-100: #f9f7ff;
+  --pos-primitive-color-brand-supplementary-200: #f0edff;
+  --pos-primitive-color-brand-supplementary-300: #e0d9ff;
+  --pos-primitive-color-brand-supplementary-400: #a686ff;
+  --pos-primitive-color-brand-supplementary-500: #9057ff;
+  --pos-primitive-color-brand-supplementary-600: #8326ff;
+  --pos-primitive-color-brand-supplementary-700: #7500ea;
+  --pos-primitive-color-brand-supplementary-800: #32006c;
+  --pos-primitive-color-brand-supplementary-900: #1f0047;
+  --pos-primitive-color-brand-supplementary-1000: #11002c;
+
+  --pos-primitive-color-red-100: #fef7f6;
+  --pos-primitive-color-red-200: #fdebe9;
+  --pos-primitive-color-red-300: #fad5d0;
+  --pos-primitive-color-red-400: #f17567;
+  --pos-primitive-color-red-500: #cd5549;
+  --pos-primitive-color-red-600: #c34b41;
+  --pos-primitive-color-red-700: #a22d26;
+  --pos-primitive-color-red-800: #4b0b08;
+  --pos-primitive-color-red-900: #300504;
+  --pos-primitive-color-red-1000: #1d0201;
+
+  --pos-primitive-color-yellow-100: #fff7ed;
+  --pos-primitive-color-yellow-200: #ffedd4;
+  --pos-primitive-color-yellow-300: #ffd8a1;
+  --pos-primitive-color-yellow-400: #cc8e20;
+  --pos-primitive-color-yellow-500: #a77100;
+  --pos-primitive-color-yellow-600: #9b6800;
+  --pos-primitive-color-yellow-700: #785000;
+  --pos-primitive-color-yellow-800: #342000;
+  --pos-primitive-color-yellow-900: #201200;
+  --pos-primitive-color-yellow-1000: #120800;
+
+  --pos-primitive-color-green-100: #e2fff1;
+  --pos-primitive-color-green-200: #b2ffde;
+  --pos-primitive-color-green-300: #86f2c7;
+  --pos-primitive-color-green-400: #3cad85;
+  --pos-primitive-color-green-500: #018d67;
+  --pos-primitive-color-green-600: #008360;
+  --pos-primitive-color-green-700: #006448;
+  --pos-primitive-color-green-800: #002a1c;
+  --pos-primitive-color-green-900: #001910;
+  --pos-primitive-color-green-1000: #000d07;
+
+}
+
+/* greyscale colors
+============================================================================ */
+:root {
+  --pos-primitive-color-black:           #000000;
+  --pos-primitive-color-black-50:        rgb(0 0 0 / 50%);
+  --pos-primitive-color-black-20:        rgb(0 0 0 / 20%);
+  --pos-primitive-color-grey-dark-1:     #374151;
+  --pos-primitive-color-grey-dark-2:     #405568;
+  --pos-primitive-color-grey-dark-3:     #1a1d21;
+  --pos-primitive-color-grey-dark-3-50:  rgb(26 29 33 / 50%);
+  --pos-primitive-color-grey-dark-4:     #15171b; /* was #121418 — lifted halfway between the dark page bg (grey-dark-5) and content bg (grey-dark-3), 2026-10-02 */
+  --pos-primitive-color-grey-dark-5: #0b0d11; /* near-black dark-mode page bg (2026-10-01) */
+  --pos-primitive-color-grey-dark-6:     #5c6270; /* light supplementary text — passes 4.5:1 on every 300 tint too (2026-10-02) */
+  --pos-primitive-color-grey:            #646b79;
+  --pos-primitive-color-grey-light-1:    #e2e8f0;
+  --pos-primitive-color-grey-light-2:    #e7ecf3;
+  --pos-primitive-color-grey-light-3:    #f3f5f8;
+  --pos-primitive-color-grey-medium:     #a8b6cd;
+  --pos-primitive-color-white:           #ffffff;
+  --pos-primitive-color-white-50:        rgb(255 255 255 / 50%);
+  --pos-primitive-color-white-20:        rgb(255 255 255 / 20%);
+  --pos-primitive-color-transparent:     rgb(255 255 255 / 0%);
+}
+
+/* utility / status colors
+============================================================================ */
+:root {
+  /* red (important / error) */
+
+  /* yellow (warning) */
+
+  /* green (confirmation / success) */
+
+  /* dark-mode variants — optimized for dark backgrounds */
+
+}
+
+/* high contrast primitives
+============================================================================ */
+:root {
+  --pos-primitive-color-a11y-interactive-graphic:          #00c2ff;
+  --pos-primitive-color-a11y-interactive-graphic-inverted: #0b7b7b; /* was #0d7c7c — darkened just enough for 4.5:1 text on the HC inverted surface (2026-10-02) */
+  --pos-primitive-color-a11y-interactive-text:             #fff500;
+  --pos-primitive-color-a11y-interactive-text-inverted:    #8b4b0a;
+  --pos-primitive-color-a11y-disabled:                     #747474;
+  --pos-primitive-color-a11y-foreground:                   #f2f2f2;
+  --pos-primitive-color-a11y-background:                   #0d0d0d;
+}

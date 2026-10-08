@@ -1,38 +1,45 @@
 {
   "scripts": {
-    "postinstall": "npx playwright install chromium",
-    "build": "rollup --config",
-    "pw-tests": "playwright test tests --project=style-guide-tests"
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && rollup --config",
+    "deploy": "npm run build && pos-cli deploy production",
+    "deploy:dev": "npm run build && pos-cli deploy staging",
+    "pw-tests": "playwright test tests --project=style-guide-tests",
+    "check:catalog": "node scripts/check-catalog.mjs",
+    "codemod:deprecated": "node scripts/codemods/deprecated-tokens.mjs",
+    "check:ui": "node scripts/check-ui.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check": "node scripts/check-catalog.mjs && node scripts/check-contrast.mjs && node scripts/check-ui.mjs",
+    "build:themes": "node scripts/build-themes.mjs",
+    "build:icons": "node scripts/build-icons.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "1.47.2",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@tabler/icons": "^3.49.0",
     "@types/node": "^24.0.10",
     "glob": "^13.0.0",
     "rollup": "^4.53.3",
-    "rollup-plugin-styler": "^2.0.0"
+    "rollup-plugin-styler": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "name": "pos-module-common-styling",
-  "description": "WIP",
-  "version": "1.0.0",
-  "main": "index.js",
+  "description": "platformOS common-styling module: the pOS design system (tokens, component CSS, JS and docs site)",
+  "version": "2.0.0",
   "dependencies": {
-    "@stackoverflow/stacks-editor": "^0.15.3",
     "@uppy/aws-s3": "^5.1.0",
     "@uppy/core": "^5.2.0",
     "@uppy/dashboard": "^5.1.0",
     "@uppy/drag-drop": "^5.1.0",
     "@uppy/image-editor": "^4.1.0",
-    "@uppy/webcam": "^5.1.0",
-    "easymde": "^2.20.0",
-    "highlight.js": "^11.11.1",
-    "postcss": "^8.5.26",
-    "rollup-plugin-postcss": "^4.0.2"
+    "@uppy/webcam": "^5.1.0"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "private": true
 }

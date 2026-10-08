@@ -1,0 +1,30 @@
+/*
+  spinner component
+
+  A rotating 8-spoke icon indicating an ongoing process.
+  Applied as a CSS class on an SVG element — the SVG markup (loading.svg strokes)
+  is provided by the developer or the pos-button loading state.
+
+  Sizes are set via width/height on the SVG element:
+    default (button context): 1em × 1em
+    standard standalone:      1.5rem × 1.5rem
+    small:                    1rem × 1rem
+*/
+
+
+
+@layer common-styling {
+
+  .pos-spinner {
+    animation: pos-spinner-spin var(--pos-spinner-duration) linear infinite;
+    transform-origin: center;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @keyframes pos-spinner-spin {
+    to { transform: rotate(360deg); }
+  }
+
+}

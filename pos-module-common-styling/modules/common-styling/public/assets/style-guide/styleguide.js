@@ -1,212 +1,59 @@
 /*
-  handling various aspects of the style guide
-  that can be found under /style-guide
+  New DS documentation — styleguide.js
+
+  Handles interactive behavior for the new design system documentation at /style-guide.
+
+  Contents:
+    - Nav: initialize pos-collapsible for the sidebar navigation
 */
 
 
 
-// purpose:   the main style guide namespace
-// ************************************************************************
-const posStyleGuide = function(){
+document.addEventListener('DOMContentLoaded', () => {
 
-  // cache 'this' value not to be overwritten later
-  const module = this;
+  // collapsible sidebar nav
+  const nav = document.querySelector('.styleguide-ds-sidebar .pos-collapsible');
+  if (nav) {
+    new pos.modules.collapsible({ container: nav, id: 'docs-nav' });
 
-  // purpose:		initializes the module
-  // ------------------------------------------------------------------------
-  module.init = () => {
-    posStyleGuide.colors();
-  };
+    // sync aria-expanded to match server-rendered inert state (pos-collapsible only
+    // sets aria-expanded on user interaction, not on init)
+    nav.querySelectorAll(':scope > li').forEach(function(li) {
+      var children = li.querySelector('.pos-collapsible-children');
+      var toggle = li.querySelector('.pos-collapsible-toggle');
+      if (children && toggle && !children.inert) {
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+    });
 
-  module.init();
-  
-};
-
-
-
-// purpose:		handles the color section
-// ************************************************************************
-posStyleGuide.colors = () => {
-  
-  // cache 'this' value not to be overwritten later
-  const module = this;
-
-  // purpose:		settings that are being used across the module
-  // ------------------------------------------------------------------------
-  module.settings = {};
-  // the container with the colors (dom node)
-  module.settings.container = document.querySelector('#colors');
-  // the list with the properties color (dom nodes)
-  module.settings.propertiesList = module.settings.container.querySelectorAll('.styleguide-color-container');
-  // icons (dom nodes)
-  module.settings.iconNodes = document.querySelectorAll('#icons svg');
-
-
-  // purpose:   initializes module
-  // ------------------------------------------------------------------------
-  module.init = () => {
-    module.showBackgroundColor();
-    module.showFontDetails();
-    module.showHeadingsDetails();
-    module.copyCode();
-    module.wrapIcons();
-    module.showIconNames();
-    module.copyIcon();
-    module.addMeasurements();
-  };
-
-
-  // purpose:		convert the color from rgb[a] to hex
-  // arguments: color in rgb[a]
-  // returns:   color in hex
-  // ------------------------------------------------------------------------
-  function rgbaToHex(color){
-    // skip if already in hex
-    if(color.indexOf('#') != -1) return color;
-    // skip for more advanced color functions using 
-    if(color.indexOf('rgb') != 0) return false;
-
-    color = color
-                .replace('rgba', '')
-                .replace('rgb', '')
-                .replace('(', '')
-                .replace(')', '');
-    color = color.split(',');
-
-    return  '#'
-            + ( '0' + parseInt(color[0], 10).toString(16) ).slice(-2)
-            + ( '0' + parseInt(color[1], 10).toString(16) ).slice(-2)
-            + ( '0' + parseInt(color[2], 10).toString(16) ).slice(-2);
+    // clicking section header text also toggles the submenu
+    nav.querySelectorAll(':scope > li:not(:has(> a))').forEach(function(li) {
+      li.addEventListener('click', function(e) {
+        if (e.target.closest('.pos-collapsible-toggle')) return;
+        if (e.target.closest('a')) return; // ignore clicks on submenu links
+        const toggle = li.querySelector('.pos-collapsible-toggle');
+        if (toggle) toggle.click();
+      });
+    });
   }
 
+  // animated details — delegated to pos-behavior-expand-collapse.js
+  document.querySelectorAll('.styleguide-ds-details').forEach(details => {
+    window.pos.behaviors.expandCollapse(details);
+  });
 
-  // purpose:		finds the background color and shows it in corresponding place
-  // ------------------------------------------------------------------------
-  module.showBackgroundColor = () => {
-    module.settings.propertiesList.forEach(element => {
-      element.querySelector('.styleguide-color-hex').textContent = rgbaToHex(window.getComputedStyle(element.querySelector('.styleguide-color')).getPropertyValue('background-color')) || '';
-    });
-  };
+  // before/after sync view tabs
+  const tabsContainer = document.querySelector('.sync-panel-tabs');
 
-
-  // purpose:		prints the fonts details
-  // ------------------------------------------------------------------------
-  module.showFontDetails = () => {
-    document.querySelectorAll('#fonts .styleguide-typography-content-family').forEach(element => {
-      element.textContent = window.getComputedStyle(element.closest('div').querySelector('.styleguide-fonts-example strong')).getPropertyValue('font-family');
-    });
-    document.querySelectorAll('#fonts .styleguide-typography-content-size').forEach(element => {
-      element.textContent = window.getComputedStyle(element.closest('div').querySelector('p')).getPropertyValue('font-size');
-    });
-  };
-
-
-  // purpose:		prints the headings details
-  // ------------------------------------------------------------------------
-  module.showHeadingsDetails = () => {
-    document.querySelectorAll('#headings .styleguide-details, #text-styles .styleguide-details').forEach(element => {
-      const headingComputedStyle = window.getComputedStyle(element.closest('.styleguide-columns').querySelector('.styleguide-example'));
-      
-      element.querySelector('.styleguide-typography-content-family').textContent = headingComputedStyle.getPropertyValue('font-family');
-      element.querySelector('.styleguide-typography-content-color').innerHTML = `<span class="styleguide-typography-swatch"></span><span class="styleguide-typography-color">${headingComputedStyle.getPropertyValue('color')}</span> <span class="styleguide-typography-color">${rgbaToHex(headingComputedStyle.getPropertyValue('color'))}</span>`;
-      element.querySelector('.styleguide-typography-swatch').style.backgroundColor = headingComputedStyle.getPropertyValue('color');
-      element.querySelector('.styleguide-typography-content-size').textContent = headingComputedStyle.getPropertyValue('font-size'); + '(' +  + ')';
-      element.querySelector('.styleguide-typography-content-weight').textContent = headingComputedStyle.getPropertyValue('font-weight');
-      element.querySelector('.styleguide-typography-content-lineheight').textContent = headingComputedStyle.getPropertyValue('line-height');
-    });
-  };
-
-
-  // purpose:		adds 'copy code' button to the code examples
-  // ------------------------------------------------------------------------
-  module.copyCode = () => {
-    // copy button template to be appened to each code examples (dom node)
-    const copyButton = document.querySelector('#styleguide-copy');
-    // class name to toggle when the code is copied (string)
-    const doneButtonClass = 'styleguide-copy-done';
-
-
-    document.querySelectorAll('.styleguide-code').forEach(element => {
-      element.appendChild(copyButton.content.cloneNode(true));
-
-      element.querySelector('.styleguide-copy').addEventListener('click', event => {
-        // text to copy to the clipboard (string)
-        const text = element.querySelector('pre code').textContent.trim();
-
-        // copy code to clipboard
-        navigator.clipboard.writeText(text).then(() => {
-          event.target.classList.add(doneButtonClass);
-
-          // remove the class after some time
-          setTimeout(() => {
-            event.target.classList.remove(doneButtonClass);
-          }, 800);
+  if (tabsContainer) {
+    tabsContainer.querySelectorAll('.pos-segmented-control-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panelId = btn.dataset.panel;
+        document.querySelectorAll('.sync-view-panel').forEach(panel => {
+          panel.hidden = panel.id !== panelId;
         });
       });
     });
   }
 
-
-  // purpose:		wrap icons in list elements
-  // ------------------------------------------------------------------------
-  module.wrapIcons = () => {
-
-    module.settings.iconNodes.forEach(item => {
-      let wrapper = document.createElement('li');
-
-      item.parentNode.insertBefore(wrapper, item);
-      wrapper.appendChild(item);
-    });
-
-  };
-
-
-  // purpose:		show icon names
-  // ------------------------------------------------------------------------
-  module.showIconNames = () => {
-    
-    module.settings.iconNodes.forEach(item => {
-      item.insertAdjacentHTML('afterend', `<span>${item.getAttribute('data-icon')}</span>`);
-      item.parentElement.title = `Copy '${item.getAttribute('data-icon')}' icon code to clipboard`;
-    });
-
-  };
-
-
-  // purpose:   copies the icon render function to clipboard on click
-  // ------------------------------------------------------------------------
-  module.copyIcon = () => {
-    module.settings.iconNodes.forEach(icon => {
-      icon.parentElement.addEventListener('click', () => {
-        let name = icon.getAttribute('data-icon');
-
-        navigator.clipboard.writeText(`{% render 'modules/common-styling/icon', icon: '${name}' %}`).then(() => {
-          icon.parentElement.classList.add('styleguide-icon-copied');
-
-          setTimeout(() => {
-            icon.parentElement.classList.remove('styleguide-icon-copied');
-          }, 800);
-        }, () => {
-          new Error('Could not copy the code to clipboard');
-        });
-      });
-    });
-  };
-
-
-  // purpose:   adds measurements to the spacings section
-  // ------------------------------------------------------------------------
-  module.addMeasurements = () => {
-    document.querySelectorAll('#spacings .styleguide-spacings-example').forEach(element => {
-      element.innerHTML += `<div class="styleguide-spacings-example-value">${(window.getComputedStyle(element.parentElement.querySelector('.styleguide-placeholder-input:last-child'))).getPropertyValue('margin-block-start')}</div>`;
-    });
-  };
-
-
-
-  module.init();
-};
-
-
-
-new posStyleGuide();
+});

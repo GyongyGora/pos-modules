@@ -1,0 +1,707 @@
+{% comment %}
+  Generated from tokens/components/chip.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md section 6.4) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields (usageExample especially) can legitimately contain literal Liquid-looking example code, which would otherwise be executed as real template code instead of staying inert JSON text.
+{% endcomment %}
+<script type="application/json" id="comp-spec-chip">
+{% raw %}
+{
+  "_about": "Component spec for pos-chip (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Chip\" section. Reuses the existing inspect-chip.liquid's full variant set wholesale (verified-accurate, currently-live data — richer than COMP_CONFIGS['chip'].tokens, which only keys by state, not by intent) plus usage prose from COMP_CONFIGS['chip'].usage. This component's preview shows multiple visually distinct sub-variants side by side, so per the 2026-08-25/26 rule it got a NEW \"Prominence\" toggle (normal/prominent) added to the Variants tab, position 1 — filters the preview to one at a time (option B2). The Tokens tab derives the exact variant key live from the visible preview element's own classList (getXVariantSections in styleguide-component-page.js), not a static pick, since this component already has its own pre-existing Intent/Size toggles this new one composes with. Regenerate the spec partial with the script in RULES.md 6.4 if pos-chip.css changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). 2026-10-02: warning text uses --pos-color-warning (the text step) like the other status variants, not warning-active.",
+  "component": "chip",
+  "name": "Chip",
+  "description": "A compact, non-interactive label that shows the status, category or type of an item (e.g. \"Published\", \"Draft\", \"In review\"), often used in tables and lists.",
+  "whenToUse": [
+    "Displaying the status of an item — e.g. \"Published\", \"Draft\", \"In review\".",
+    "Showing a category, type, or label in a compact badge format on a content item.",
+    "Communicating urgency or outcome with semantic color: <code>pos-chip-error</code> for failures, <code>pos-chip-success</code> for completions, <code>pos-chip-warning</code> for caution states.",
+    "Add <code>pos-chip--prominent</code> for higher-contrast solid-background emphasis when the chip needs to stand out more."
+  ],
+  "whenNotToUse": [
+    "The label needs to be interactive (clickable, selectable, or removable) — use a <strong>Tag</strong> component instead.",
+    "The label text is long or needs to wrap — chips are single-line only.",
+    "Displaying numeric counts or quantities — use a badge or counter instead."
+  ],
+  "do": [
+    "Use <code>&lt;span&gt;</code> as the element — chips are purely presentational and non-interactive.",
+    "Always apply an intent class (<code>pos-chip-warning</code>, <code>pos-chip-success</code>, <code>pos-chip-error</code>, <code>pos-chip-neutral</code>) — the base <code>pos-chip</code> alone has no background color.",
+    "Keep labels to 1–3 words — chips must be scannable at a glance."
+  ],
+  "dont": [
+    "Use a chip for primary actions or CTAs — use a button instead.",
+    "Apply semantic colors arbitrarily — color signals meaning: warning = caution, error = failure/urgent, success = positive/complete.",
+    "Use <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code> as the element — chips are non-interactive."
+  ],
+  "accessibility": [
+    "Because chips are non-interactive, no keyboard focus or ARIA roles are needed on the chip element itself.",
+    "If a chip communicates status inside a dynamic list, wrap the container in <code>aria-live=\"polite\"</code>."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "intent class",
+      "type": "'pos-chip-neutral' | '-warning' | '-success' | '-error'",
+      "default": "required (no default)",
+      "description": "The base pos-chip class alone has no background color — an intent class is mandatory."
+    },
+    {
+      "name": "pos-chip--prominent",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Higher-contrast solid-background emphasis — swaps background/text colors."
+    },
+    {
+      "name": "pos-chip--tiny",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Smaller size variant."
+    }
+  ],
+  "dimensions": {
+    "intent": [
+      "warning",
+      "success",
+      "error",
+      "neutral"
+    ],
+    "prominence": [
+      "normal",
+      "prominent"
+    ],
+    "size": [
+      "default",
+      "tiny"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-radius-chip",
+        "figma": "Radius/Pill",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-badge",
+        "figma": "Family/badge",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-xs",
+        "figma": "Size/font XS",
+        "swatch": false
+      }
+    ],
+    "layout_tiny": [
+      {
+        "css": "--pos-radius-chip",
+        "figma": "Radius/Pill",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-badge",
+        "figma": "Family/badge",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-xxxs",
+        "figma": "Size/font XXXS",
+        "swatch": false
+      }
+    ]
+  },
+  "variants": {
+    "warning": {
+      "selector": ".pos-chip.pos-chip-warning:not(.pos-chip--prominent):not(.pos-chip--tiny)",
+      "label": "Warning",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "warning-prominent": {
+      "selector": ".pos-chip.pos-chip-warning.pos-chip--prominent:not(.pos-chip--tiny)",
+      "label": "Warning — Prominent",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-active",
+                  "figma": "Utility/Warning Active",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "success": {
+      "selector": ".pos-chip.pos-chip-success:not(.pos-chip--prominent):not(.pos-chip--tiny)",
+      "label": "Success",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "success-prominent": {
+      "selector": ".pos-chip.pos-chip-success.pos-chip--prominent:not(.pos-chip--tiny)",
+      "label": "Success — Prominent",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "error": {
+      "selector": ".pos-chip.pos-chip-error:not(.pos-chip--prominent):not(.pos-chip--tiny)",
+      "label": "Error",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "error-prominent": {
+      "selector": ".pos-chip.pos-chip-error.pos-chip--prominent:not(.pos-chip--tiny)",
+      "label": "Error — Prominent",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "neutral": {
+      "selector": ".pos-chip.pos-chip-neutral:not(.pos-chip--prominent):not(.pos-chip--tiny)",
+      "label": "Neutral",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "neutral-prominent": {
+      "selector": ".pos-chip.pos-chip-neutral.pos-chip--prominent:not(.pos-chip--tiny)",
+      "label": "Neutral — Prominent",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    },
+    "warning-tiny": {
+      "selector": ".pos-chip.pos-chip-warning.pos-chip--tiny:not(.pos-chip--prominent)",
+      "label": "Warning — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "warning-prominent-tiny": {
+      "selector": ".pos-chip.pos-chip-warning.pos-chip--prominent.pos-chip--tiny",
+      "label": "Warning Prominent — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-active",
+                  "figma": "Utility/Warning Active",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "success-tiny": {
+      "selector": ".pos-chip.pos-chip-success.pos-chip--tiny:not(.pos-chip--prominent)",
+      "label": "Success — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "success-prominent-tiny": {
+      "selector": ".pos-chip.pos-chip-success.pos-chip--prominent.pos-chip--tiny",
+      "label": "Success Prominent — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "error-tiny": {
+      "selector": ".pos-chip.pos-chip-error.pos-chip--tiny:not(.pos-chip--prominent)",
+      "label": "Error — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "error-prominent-tiny": {
+      "selector": ".pos-chip.pos-chip-error.pos-chip--prominent.pos-chip--tiny",
+      "label": "Error Prominent — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "neutral-tiny": {
+      "selector": ".pos-chip.pos-chip-neutral.pos-chip--tiny:not(.pos-chip--prominent)",
+      "label": "Neutral — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    },
+    "neutral-prominent-tiny": {
+      "selector": ".pos-chip.pos-chip-neutral.pos-chip--prominent.pos-chip--tiny",
+      "label": "Neutral Prominent — Tiny",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout_tiny"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<!-- Normal -->\n<span class=\"pos-chip pos-chip-neutral\">Under Evaluation</span>\n\n<!-- Prominent -->\n<span class=\"pos-chip pos-chip-neutral pos-chip--prominent\">Under Evaluation</span>"
+}
+{% endraw %}
+</script>

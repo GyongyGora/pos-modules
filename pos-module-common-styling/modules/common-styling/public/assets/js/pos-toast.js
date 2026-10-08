@@ -11,6 +11,7 @@
     error
     success
     info
+    warning
 */
 
 
@@ -42,6 +43,8 @@ window.pos.modules.toast = function(type, message, userSettings){
   module.settings.notification = null;
   // if you want to overwrite the default autohide (bool)
   module.settings.autohide = (userSettings?.autohide !== undefined) ? userSettings.autohide : (type === 'success') ? true : false;
+  // show the severity badge icon — off by default so existing callers render unchanged (bool)
+  module.settings.icon = (userSettings?.icon !== undefined) ? userSettings.icon : false;
   // if you want a delay before the notification appears, miliseconds (int)
   module.settings.delay = (userSettings?.delay) ? userSettings.delay : false;
   // to enable debug mode (bool)
@@ -83,6 +86,11 @@ window.pos.modules.toast = function(type, message, userSettings){
     // add class corresponding to the severity
     module.settings.notification.classList.add(`pos-toast-${type}`);
 
+    // show the severity badge icon, if enabled
+    if(module.settings.icon){
+      module.settings.notification.classList.add('pos-toast-has-icon');
+    }
+
     // apply the message to content
     module.settings.notification.querySelector(module.settings.contentSelector).innerHTML = message;
 
@@ -107,8 +115,11 @@ window.pos.modules.toast = function(type, message, userSettings){
     // we don't need the autohide feature anymore
     clearTimeout(autoHideTimeout);
 
-    // add a class that will animate removing the node
-    module.settings.notification.classList.add('pos-toast-unloading');
+    // add a class that will animate removing the node — pos-toast-unloading is the legacy
+    // exit animation (style/pos-toast.css, kept for old-DS consumers); pos-anim-dismiss--out
+    // is the shared new-DS dismiss animation (pos-behaviors.css) and is what actually plays
+    // wherever it's loaded, since style/pos-toast.css no longer defines pos-toast-unloading
+    module.settings.notification.classList.add('pos-toast-unloading', 'pos-anim-dismiss--out');
 
     // remove the node from DOM as it's not needed anymore
     module.settings.notification.addEventListener('animationend', () => {

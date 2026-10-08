@@ -1,0 +1,40 @@
+{
+  "key": "badge",
+  "label": "Badge",
+  "description": "A small status/count indicator overlaid on another element (e.g. a notification count on an icon).",
+  "navGroup": "Components",
+  "badge": "new",
+  "rootSelector": ".pos-badge",
+  "states": ["normal", "hover", "disabled"],
+  "controls": ["state"],
+  "multiVariant": false,
+  "useWhen": [
+    "Showing an unread count or a short status label attached to another element.",
+    "The information is a quick-glance supplement, not the primary content."
+  ],
+  "avoidWhen": [
+    "The count or status is critical information the user must not miss — use a Tag or Alert instead.",
+    "The label needs to wrap to multiple lines — badges are for very short content only."
+  ],
+  "do": [
+    "Keep badge content to a number or 1-2 characters.",
+    "Position the badge consistently relative to its anchor element."
+  ],
+  "dont": [
+    "Use a badge as an interactive control — it is a label, not a button.",
+    "Stack more than one badge on the same element."
+  ],
+  "accessibility": [
+    "Provide the full context via aria-label on the anchor element (e.g. \"Notifications, 3 unread\") — the badge's visual text alone is not sufficient for screen readers."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "count",
+      "type": "text content",
+      "default": "none",
+      "description": "The number or short label shown inside the badge."
+    }
+  ],
+  "usageExample": "<div class=\"pos-badge-anchor\">\n  <!-- icon -->\n  <span class=\"pos-badge\">3</span>\n</div>"
+}

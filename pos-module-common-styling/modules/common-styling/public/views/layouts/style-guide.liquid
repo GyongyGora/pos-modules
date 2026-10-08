@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-    <html lang="en" class="pos-app">
-      <head>
-      
-        <meta charset="utf-8">
-        <meta name="description" content="Style guide and components library for your platformOS application.">
+<html lang="en" class="pos-app">
+  <head>
 
-        <title>Style Guide and Components</title>
-    
-        {% render 'modules/common-styling/init', reset: true %}
-        <link rel="stylesheet" href="{{ 'modules/common-styling/style-guide/styleguide.css' | asset_url }}" type="text/css">
-        <script src="{{ 'modules/common-styling/style-guide/styleguide.js' | asset_url }}" defer></script>
-    
-        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes">
-    
-      </head>
-      <body>
-        
-        {{ content_for_layout }}
+    <meta charset="utf-8">
+    <meta name="description" content="pOS design system documentation.">
 
-        {% liquid
-          render 'modules/common-styling/toasts'
-        %}
-    
-      </body>
-  </html>
+    <title>pOS Design System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap">
+    {% render 'modules/common-styling/init', reset: true, auto_init_components: false %}
+    <link rel="stylesheet" href="{{ 'modules/common-styling/style-guide/styleguide.css' | asset_url }}" type="text/css">
+    <script src="{{ 'modules/common-styling/js/pos-debug.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/js/pos-collapsible.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/js/pos-segmented-control.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/js/pos-popover.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/js/dependency-highlightJs.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/js/pos-code-copy.js' | asset_url }}" defer></script>
+    <script src="{{ 'modules/common-styling/style-guide/styleguide.js' | asset_url }}" defer></script>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes">
+
+  </head>
+  <body>
+
+    {{ content_for_layout }}
+
+  </body>
+</html>

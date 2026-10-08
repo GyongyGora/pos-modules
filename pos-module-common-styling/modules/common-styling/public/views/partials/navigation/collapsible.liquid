@@ -1,8 +1,3 @@
-{% doc %}
-  @param {boolean} [inert] - whether to render without collapsible class
-  @param {boolean} [active] - active URL to highlight
-  @param {object} items - array of navigation items with url, label, children
-{% enddoc %}
 {% liquid
   assign inert = inert | default: false
   assign active = active | default: false
@@ -18,11 +13,12 @@
       <li{% if active == item.url %} class="pos-collapsible-active"{% endif %}>
         {% if item.url %}<a href="{{ item.url }}">{% endif %}
           {{ item.label }}
+          {% if item.badge == 'new' %}<span class="pos-chip pos-chip-success pos-chip--tiny">NEW</span>{% elsif item.badge == 'review' %}<span class="pos-chip pos-chip-warning pos-chip--tiny">Review</span>{% elsif item.badge == 'in-progress' %}<span class="pos-chip pos-chip-warning pos-chip--tiny">In progress</span>{% elsif item.badge == 'internal' %}<span class="pos-chip pos-chip-error pos-chip--tiny">Internal</span>{% elsif item.badge == 'coming-soon' %}<span class="pos-chip pos-chip-neutral pos-chip--tiny">Soon</span>{% elsif item.badge == 'legacy' %}<span class="pos-chip pos-chip-neutral pos-chip--tiny">Legacy</span>{% endif %}
         {% if item.url %}</a>{% endif %}
 
         {% if item.children.size > 0 %}
           <button type="button" class="pos-collapsible-toggle" aria-expanded="false" aria-controls="pos-collapsible-{{ item.label | slugify }}">
-            {% render 'modules/common-styling/icon', icon: 'dashRight', class: null %}
+            {% render 'modules/common-styling/icon', icon: 'dashRight' %}
             <span class="pos-label">Expand "{{ item.label }}"</span>
           </button>
         {% endif %}
@@ -59,3 +55,4 @@
 
 {{ output | html_safe }}
 {% return output %}
+

@@ -1,0 +1,242 @@
+{% comment %}
+  Generated from tokens/components/toggle-btn.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-toggle-btn">
+{% raw %}
+{
+  "_about": "Component spec for pos-toggle-btn (style/pos-toggle-btn.css). Built 2026-09-04 as a brand-new, standalone component (Figma link + screenshot) — a plain on/off switch with no label/card wrapper, distinct from Switch button (which is a full-width labeled card) and Segmented button (multi-option pill). Note: style/pos-toggle.css already existed under a very similar name, but it is entirely docs-site-scoped (.styleguide-toggle*, the docs page's own theme-toggle pill) — not a real DS component, so this new component was placed in its own pos-toggle-btn.css file rather than reusing or renaming that one, to avoid conflating the two. Four states: off (--pos-color-content-icon, 'Graphic Normal'), on (--pos-color-interactive, 'Graphic Interactive'), off+disabled (--pos-color-content-icon-disabled, 'Graphic Disabled'), on+disabled (--pos-color-button-primary-disabled-background, 'Button Prim Bg Disabled' — neutral grey in dark mode) — all 4 track colors are real, already-existing tokens exactly matching the user's own token names. The thumb stays a single consistent color across all 4 states (--pos-color-page-background, theme-reactive white/dark-surface), following the same established pattern as Switch button's own toggle thumb (pos-switch-card.css) rather than a hardcoded white. Regenerate spec-toggle-btn.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. 2026-09-04: added a dedicated Focus state — --pos-color-focused only ever applies during :focus-visible, so it was removed from shared.layout (previously listed under every other state) and now lives only in this new state (same issue and fix as Tab). 2026-10-02: props list added (was empty) from the real CSS classes / attributes. 2026-10-02: hover added in both states (it had none) — tokens listed in the off / on states with a hover role. Disabled checked fill/frame borrows the primary button disabled tokens (--pos-color-button-primary-disabled-background / -frame) — documented exception to RULES.md 2.2, see COMPONENT-RULES.md.",
+  "component": "toggle-btn",
+  "name": "Toggle button",
+  "description": "A standalone on/off switch — no label or card wrapper. Use Switch button instead when the toggle needs a full-width label and description.",
+  "whenToUse": [
+    "A single, standalone on/off setting inline with other content (e.g. next to a label you already control elsewhere, or inside a table cell).",
+    "Building a custom control layout where Switch button's fixed label/icon/card structure doesn't fit."
+  ],
+  "whenNotToUse": [
+    "A full-width labeled setting row — use Switch button instead, it already includes the label, optional icon, and card styling.",
+    "Choosing one of 3+ mutually exclusive options — use Segmented button instead."
+  ],
+  "do": [
+    "Always pair with a visible or programmatically-associated label (e.g. wrap in your own <label>, or use aria-label/aria-labelledby) — the track alone has no accessible name.",
+    "Use role=\"switch\" on the checkbox input, not just type=\"checkbox\" alone."
+  ],
+  "dont": [
+    "Use as a substitute for Switch button when a label and description are needed — build that with Switch button, not by manually adding text next to this component.",
+    "Render more than one visual state at once — only one of Off/On/Off-disabled/On-disabled applies to a given instance."
+  ],
+  "accessibility": [
+    "role=\"switch\" on the <input type=\"checkbox\"> announces it as a two-state switch, not a plain checkbox, to assistive technology.",
+    "The visible focus ring only appears via :focus-visible, so it does not show on a plain mouse click."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "checked",
+      "type": "boolean attribute on .pos-toggle-btn-input",
+      "default": "false",
+      "description": "On / off state. The input is a real checkbox with role=\"switch\", so the state is announced and keyboard-operable (Space) without extra JS."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute on .pos-toggle-btn-input",
+      "default": "false",
+      "description": "Not operable; the track uses the disabled colors in both the on and the off state."
+    },
+    {
+      "name": "accessible name",
+      "type": "aria-label on the input, or a visible <label for>",
+      "default": "required",
+      "description": "The switch has no text of its own — give it a name that says what it turns on (e.g. aria-label=\"Email notifications\")."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "toggle-btn"
+    ],
+    "state": [
+      "off",
+      "on",
+      "off-disabled",
+      "on-disabled",
+      "focus"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-primitive-radius-full",
+        "figma": "Radius/Full",
+        "role": "Track and thumb corner radius (fully pill-shaped/circular)",
+        "swatch": false
+      }
+    ],
+    "thumb": [
+      {
+        "css": "--pos-color-page-background",
+        "figma": "Backgrounds/Page Background",
+        "role": "Thumb color — consistent across all 4 states, same pattern as Switch button's own toggle thumb",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "toggle-btn": {
+      "label": "Toggle button",
+      "classes": [
+        "pos-toggle-btn"
+      ],
+      "states": {
+        "off": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Track background — off/unchecked",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Track on hover (off) — one step stronger than the resting track",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Hover frame, 2px off the track — only visible in high contrast, where the track color cannot get stronger",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.thumb"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        },
+        "on": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Track background — on/checked",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Track on hover (on) — the interactive hover step",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Hover frame, 2px off the track — only visible in high contrast",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.thumb"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        },
+        "off-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Track background — off, disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.thumb"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        },
+        "on-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "role": "Track background — on, disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.thumb"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Track background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Keyboard focus outline (Tab-key navigation only)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.thumb"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<label class=\"pos-toggle-btn\">\n  <input type=\"checkbox\" role=\"switch\" class=\"pos-toggle-btn-input\">\n  <span class=\"pos-toggle-btn-track\" aria-hidden=\"true\"></span>\n</label>"
+}
+{% endraw %}
+</script>

@@ -1,0 +1,131 @@
+{
+  "Panel corner": {
+    "$type": "number",
+    "$value": 8,
+    "$description": "Border radius for base containers and larger surfaces.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230387",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:d7b320f255b81b1cb506bcfe7e570b7034db427b/-1:-1",
+        "targetVariableName": "Radius/radius Mid Rounded",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Popup corner": {
+    "$type": "number",
+    "$value": 8,
+    "$description": "Border radius for popup elements (modals, dialogs).",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230390",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:d7b320f255b81b1cb506bcfe7e570b7034db427b/-1:-1",
+        "targetVariableName": "Radius/radius Mid Rounded",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Card corner": {
+    "$type": "number",
+    "$value": 8,
+    "$description": "Border radius for cards.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230391",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:d7b320f255b81b1cb506bcfe7e570b7034db427b/-1:-1",
+        "targetVariableName": "Radius/radius Mid Rounded",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Button corner": {
+    "$type": "number",
+    "$value": 4,
+    "$description": "Border radius for buttons.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230388",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:57691c4fa6924268d16ab79f3127c27e5c0ef2ba/-1:-1",
+        "targetVariableName": "Radius/radius Slightly Rounded",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Button focus corner": {
+    "$type": "number",
+    "$value": 6,
+    "$description": "Slightly larger border radius in focus state, to reinforce interactive feedback.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:16059:50423",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:2405cfe8b0f29b262221a09a98af41f503b14882/-1:-1",
+        "targetVariableName": "Radius/radius Slightly Rounded +2",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Input corner": {
+    "$type": "number",
+    "$value": 0,
+    "$description": "Border radius for input fields. Should differ visually from the button corner radius.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230389",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:43077ab212a563d1c8dbe1c5b78934bdb592c1d4/-1:-1",
+        "targetVariableName": "Radius/radius Sharp",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "Tag corner": {
+    "$type": "number",
+    "$value": 4,
+    "$description": "Border radius for tags.",
+    "$extensions": {
+      "com.figma.variableId": "VariableID:12805:230392",
+      "com.figma.scopes": [
+        "CORNER_RADIUS"
+      ],
+      "com.figma.aliasData": {
+        "targetVariableId": "VariableID:57691c4fa6924268d16ab79f3127c27e5c0ef2ba/-1:-1",
+        "targetVariableName": "Radius/radius Slightly Rounded",
+        "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+        "targetVariableSetName": "--- BT Primitives"
+      },
+      "com.figma.isOverride": true
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "High fidelity mode"
+  }
+}

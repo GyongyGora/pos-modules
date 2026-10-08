@@ -1,0 +1,265 @@
+{
+  "_about": "Component spec for pos-tooltip (style/pos-tooltip.css). Built 2026-09-04 as a small attribute-driven utility (data-tooltip=\"text\" directly on an icon-only control, no wrapper markup) to satisfy RULES.md 4.2's mandatory icon-only-control-needs-a-tooltip rule, then given a full standalone Variants/Usage/Tokens doc entry 2026-09-08. Single representative variant (no Variant toggle — there is only one visual form). States are Normal (tooltip not shown — the target element looks completely unaffected, so this state has zero applicable tokens, same pattern as Popover's Closed state) and Visible (shown on real :hover/:focus-visible, or simulated here via .pos-debug-tooltip-visible for the static preview toggle). Colors were corrected from the very first build (which used the then-unused --pos-color-standout-background/-text pair): background is --pos-color-content-icon (the plain default icon token — dark grey light, light grey dark, white HC) and text is --pos-color-content-inverted-text (white light, black dark/HC), not the standout tokens. font-family/font-weight added 2026-09-08 to match this rulebook's Typography-pairing rule (7.2) and for consistency with Chip/Tag's own floating-label treatment (same --pos-font-badge family) — the very first build only set font-size, leaving the family to silently inherit from the page default. 2026-10-06: second type icon-text added (in sync with the Figma Tooltip's Type property: text / icon-text) — .pos-tooltip-anchor + .pos-tooltip (role=tooltip, aria-describedby), icon + one or two lines, non-interactive (no link). Docs controls: Type (Text / Icon-text, = the variants) and State (Hidden / Visible). 2026-10-06: bottom padding 4px like the top (Figma had 8px).",
+  "component": "tooltip",
+  "name": "Tooltip",
+  "description": "A small contextual label that appears above an element on hover or keyboard focus, without requiring a click or taking up permanent layout space.",
+  "whenToUse": [
+    "Icon-only controls — every icon-only button/action always needs one (RULES.md 4.2), reusing its own aria-label text.",
+    "A short, supplementary hint that clarifies an already-visible control's purpose (e.g. confirming what a \"+\" button adds).",
+    "Icon-text type: a hint that needs a little more than a label — an icon and one or two short lines (the second bold)."
+  ],
+  "whenNotToUse": [
+    "Content the user must be able to select, copy, or interact with — a tooltip disappears on blur/mouseout and cannot hold focus.",
+    "Essential information with no other way to discover it — a tooltip is a supplement, never the only source of an instruction.",
+    "Touch-only interfaces with no hover/focus-visible equivalent — provide a visible label or a tap-triggered alternative instead."
+  ],
+  "do": [
+    "Always set the exact same text in both aria-label and data-tooltip on the target element — the tooltip is a visual echo of the accessible name, not separate content.",
+    "Keep the text to a few words — the bubble does not wrap (white-space: nowrap).",
+    "Icon-text type: wrap the control in .pos-tooltip-anchor, put the .pos-tooltip bubble right after it with role=\"tooltip\" and an id, and point the control's aria-describedby at that id."
+  ],
+  "dont": [
+    "Put interactive content (links, buttons) inside a tooltip — it disappears the moment focus/hover moves toward it.",
+    "Use a tooltip as the only label for a control that also needs a real aria-label — always pair the two.",
+    "Use the icon-text type for a long explanation or a link — use a popover instead."
+  ],
+  "accessibility": [
+    "Shown on both :hover AND :focus-visible, so keyboard users see the same information mouse users do.",
+    "Purely visual/supplementary — screen readers announce the element's own aria-label, not the tooltip bubble (attr(data-tooltip) content is not exposed to the accessibility tree), so the two must always carry the same text.",
+    "pointer-events: none on the bubble itself — it can never trap focus or intercept a click meant for the element underneath it.",
+    "Icon-text type: the bubble is real text (role=\"tooltip\") announced as the control's description through aria-describedby; the icon is decorative. It shows on hover and while focus is inside the anchor."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "data-tooltip",
+      "type": "attribute (text type)",
+      "default": "none",
+      "description": "The tooltip's visible text — set it on the interactive element itself, no wrapper needed. Always mirror the element's aria-label."
+    },
+    {
+      "name": ".pos-tooltip-anchor",
+      "type": "wrapper (icon-text type)",
+      "default": "none",
+      "description": "Wraps the control and the bubble; the bubble shows on its hover and while focus is inside it."
+    },
+    {
+      "name": "role=\"tooltip\" + id",
+      "type": "attributes on .pos-tooltip (icon-text type)",
+      "default": "none",
+      "description": "The bubble is real text; give it role=\"tooltip\" and an id."
+    },
+    {
+      "name": "aria-describedby",
+      "type": "attribute on the control (icon-text type)",
+      "default": "none",
+      "description": "Points at the bubble's id, so screen readers announce it as the control's description."
+    },
+    {
+      "name": "<strong> line",
+      "type": "content of .pos-tooltip-text",
+      "default": "none",
+      "description": "Optional second line, shown bold."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "text",
+      "icon-text"
+    ],
+    "state": [
+      "normal",
+      "visible"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "text": {
+      "label": "Text",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": []
+        },
+        "visible": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Bubble background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Bubble text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Bubble text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Bubble text size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-medium",
+                  "figma": "Weight/medium",
+                  "role": "Bubble text weight",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Bubble padding (half this value vertically, full value horizontally) and the gap between the bubble and its target element",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-tag",
+                  "figma": "Tag corner",
+                  "role": "Bubble corner radius",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "icon-text": {
+      "label": "Icon-text",
+      "classes": [
+        "pos-tooltip-anchor",
+        "pos-tooltip",
+        "pos-tooltip-text"
+      ],
+      "states": {
+        "normal": {
+          "sections": []
+        },
+        "visible": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Bubble background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Bubble text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "role": "Icon",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding top / bottom",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-125",
+                  "figma": "Size/1.25 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Icon–text gap, gap above the control",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-n05",
+                  "figma": "Size/-0.5 unit",
+                  "role": "Pull between the two text lines",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Bubble radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Text font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Text line height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-normal",
+                  "figma": "Weight/normal",
+                  "role": "First line weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Second (strong) line weight",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<!-- text -->\n<button type=\"button\" class=\"pos-button pos-button--icon-only\" aria-label=\"Add new\" data-tooltip=\"Add new\">\n  <!-- icon -->\n</button>\n\n<!-- icon-text -->\n<span class=\"pos-tooltip-anchor\">\n  <button type=\"button\" class=\"pos-button\" aria-describedby=\"logo-tip\">Logo settings</button>\n  <span class=\"pos-tooltip\" role=\"tooltip\" id=\"logo-tip\">\n    <!-- icon, aria_hidden: true -->\n    <span class=\"pos-tooltip-text\">\n      <span>More related info on the documentation site:</span>\n      <strong>Setting your logo in the component library</strong>\n    </span>\n  </span>\n</span>"
+}

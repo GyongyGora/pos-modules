@@ -1,0 +1,222 @@
+{% comment %}
+  Generated from tokens/components/file-upload.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-file-upload">
+{% raw %}
+{
+  "_about": "Component spec for pos-upload (style/pos-upload.css + views/partials/forms/upload.liquid + assets/js/pos-upload.js). Built 2026-09-04 from the real, already-shipped CSS/JS — style/pos-upload.css already existed (99 lines) before this spec, just never had a Tokens-panel spec, docs page, or nav wiring. Genuinely different from every other component built so far: it restyles the Uppy library (@uppy/core, @uppy/dashboard, @uppy/aws-s3, @uppy/image-editor — real npm dependencies, already bundled into assets/js/dependency-uppy.js, not a new external dependency), whose Dashboard DOM is generated entirely by Uppy's own JS at runtime — forms/upload.liquid only renders an empty <div class=\"pos-upload-dashboard\"></div> placeholder. A real, pre-existing gap was found and fixed while building this: init.liquid (the DS page shell) linked dependency-uppy.css but never actually loaded/initialized dependency-uppy.js or pos-upload.js at all — .pos-upload elements silently did nothing anywhere in the new DS until now. Fixed by adding the auto-init block to init.liquid. The docs preview mounts a REAL, live Uppy Dashboard (drag-drop, browse, file list all genuinely interactive) rather than a hand-approximated static mockup — real usage upload attempts fail gracefully since the preview has no real backend presigned URL (upload_url: '#'), same non-functional-but-visually-real category as Popover's disabled demo links. No Variant/State toggle exists — Uppy manages its own internal interaction state (drag-over, file-added, etc.) which cannot be simulated via a debug class the way .pos-close's hover/focus can; this is documented as a single static representative view, the same known limitation already accepted for Card/Feature card. The code snippet shown in the docs is a static hand-written string (STATIC_CODE_SNIPPETS in styleguide-component-page.js, same mechanism Popover uses), not a clone of the live preview's DOM — cloning would capture Uppy's internally-generated markup, which is not something a developer using this component would ever hand-write themselves; the real, correct usage is the simple wrapper markup plus the JS init call, exactly what forms/upload.liquid + pos-upload.js's own doc comment already show. --pos-color-highlight-text (originally used for the 'Drop files here' panel title) has no Figma variable (figma: null); it was replaced by --pos-color-content-text on 2026-09-04 (see below). Regenerate spec-file-upload.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. 2026-09-04, caught via live DevTools inspection: the preview wrapper had no explicit width (relying on an ambiguous 100% inside a centered flex column), which resolved to only ~155px — too narrow for Uppy's own internal file-item layout (thumbnail, status text, retry button), causing severe overlap once a file was added. Fixed with an explicit width:400px (max-width:100% for narrow viewports) on the preview wrapper — confirmed working at 300px, 400px used for extra margin. 2026-09-04, real bug found live in HC/dark mode: Uppy's own StatusBar (per-file upload progress/error/retry bar) only ever switches color via its own separate prefers-color-scheme media query, never this DS's theme toggle — it stayed stuck in Uppy's light colors (white background, hardcoded red/orange) regardless of theme. Added explicit token-driven overrides for .uppy-StatusBar and its error/success/retry sub-elements so it now correctly follows the DS theme. 2026-09-04: the drag-and-drop zone border is now dashed (border-style: dashed on .uppy-Dashboard-AddFiles), the standard visual convention for a drop target — the overall Dashboard container and file-item borders stay solid. 2026-09-04, new decorative element added: a circular --pos-color-highlight-background badge with the upload-bottom icon sits above the \"Drop files here\" text. Implemented as a ::before pseudo-element with a new --pos-icon-upload-bottom background-image token (4 theme variants: light #405568, dark/dark-media-query #f3f5f8, HC #ffffff, matching --pos-color-content-icon's own resolved values per theme) since Uppy generates that title element's text content itself at runtime — a real inline icon.liquid <svg> can't be injected there, so this follows the same CSS-only background-image icon pattern already established by --pos-icon-select-arrow. 2026-09-04: the icon circle background changed from --pos-color-highlight-background to --pos-color-content-background (plain white surface). 2026-09-04: added an explicit min-height:400px directly on .uppy-Dashboard-AddFiles so its own centering (already present in Uppy's base CSS) has a guaranteed real height to center against, instead of relying on the inherited percentage-height chain, which was leaving content anchored near the top of a taller-than-expected box. 2026-09-04: real root cause of the width-collapsing-during-upload bug found — Uppy was configured with width: '100%' (the JS default), a percentage re-resolved on every internal state change (idle → uploading → error), and it was landing on a narrower value once a file was added even though the surrounding container never changed size. Rather than fight this with !important (forbidden, RULES.md §4.1) or the CSS cascade at all, added optional width/height params to forms/upload.liquid (purely additive, defaults unchanged for every existing caller) and passed width: '400px'/height: '400px' from this docs preview specifically — a fixed pixel value that Uppy computes once and does not re-resolve differently per state. 2026-09-04: title text switched from --pos-color-highlight-text (figma: null) to the real, Figma-bound --pos-color-content-text. Icon circle border added (--pos-color-frame-transparent, invisible in light/dark, visible in HC), matching the pattern already used by Card/Alert card/Toast/Dialog. Replaced the min-height + flex-centering approach for .uppy-Dashboard-AddFiles with position:absolute + transform:translate(-50%,-50%) — the flex/height-chain approach was confirmed live, twice, to not actually center the content despite matching Uppy's own CSS pattern; absolute+transform centers directly against the real rendered size of the nearest positioned ancestor with no dependency on any percentage-height chain. 2026-09-04: fixed a border-alignment bug caught live in HC mode — the earlier absolute+transform centering fix set width:100% on .uppy-Dashboard-AddFiles, but Uppy's own CSS also gives it margin:7px (all sides) and height:calc(100% - 14px) to account for that margin; width wasn't subtracting the same amount, making the box 14px wider than its container and visibly shifting the dashed border out of alignment with the outer solid one. Changed to width:calc(100% - 14px) to match Uppy's own height formula symmetrically. 2026-09-04: fixed a real asymmetric-offset bug, most visible in HC mode — .uppy-Dashboard-AddFiles used position:absolute + translate(-50%,-50%) to center itself, but Uppy's own bundled CSS also sets margin: 7px on the same element, which still applies under absolute positioning (position:absolute does not cancel margin) and shifted the inner dashed box ~7px off-center in one direction. The 7px inset look was already fully replicated via width/height: calc(100% - 14px), so margin: 0 was added to remove the actual offsetting effect while keeping the visual inset.",
+  "component": "file-upload",
+  "name": "File upload",
+  "description": "A drag-and-drop file upload dashboard (built on the Uppy library) with an optional image editor, showing progress and previews for each file.",
+  "whenToUse": [
+    "Letting a user attach one or more files (images, documents) to a form, with drag-and-drop and a file browser fallback.",
+    "Needing upload progress, thumbnails, or basic image cropping/editing before the file is submitted."
+  ],
+  "whenNotToUse": [
+    "A single, simple file input with no preview or progress needed — a plain <code>&lt;input type=\"file\"&gt;</code> is enough."
+  ],
+  "do": [
+    "Trigger via <code>new window.pos.modules.upload({ container })</code> — never build or style Uppy's internal Dashboard markup by hand, it is entirely generated at runtime.",
+    "Provide a real <code>presigned_upload</code> object (from a <code>property_upload_presigned_url</code> query) in production — the upload endpoint is required for files to actually save.",
+    "Pass <code>files</code> to pre-populate already-uploaded files when editing an existing record."
+  ],
+  "dont": [
+    "Restyle Uppy's Dashboard beyond the color/radius tokens already applied in <code>pos-upload.css</code> — its internal layout is controlled by the library, not this design system.",
+    "Rely on this component in a docs/demo context expecting real uploads to succeed — without a real <code>presigned_upload</code> endpoint, file selection works but the upload itself fails."
+  ],
+  "accessibility": [
+    "Uppy's Dashboard provides its own keyboard-operable file browser button and accessible progress announcements.",
+    "The remove-file action icon has no visible text label of its own — relies on Uppy's built-in accessible name; verify with a screen reader if customizing further."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": "n/a (required)",
+      "description": "Name for the hidden <input> fields carrying the URLs of uploaded files."
+    },
+    {
+      "name": "presigned_upload",
+      "type": "object",
+      "default": "n/a (required)",
+      "description": "Presigned upload data (upload_url + upload_url_payload) from a property_upload_presigned_url query."
+    },
+    {
+      "name": "files",
+      "type": "array of objects",
+      "default": "none",
+      "description": "Previously-uploaded files (from a property_upload query) to show as already present."
+    },
+    {
+      "name": "image_editor_enabled",
+      "type": "boolean",
+      "default": "false",
+      "description": "Whether to enable Uppy's image cropping/editing tool for uploaded images."
+    },
+    {
+      "name": "allowed_file_types",
+      "type": "array of strings",
+      "default": "none (any file type)",
+      "description": "Restricts selectable files, e.g. ['image/*', '.jpg', '.png']."
+    },
+    {
+      "name": "aspect_ratio",
+      "type": "float",
+      "default": "none",
+      "description": "Aspect ratio for the image editor's cropping tool, e.g. 1 for square."
+    },
+    {
+      "name": "width",
+      "type": "string (CSS width)",
+      "default": "'100%' (responsive)",
+      "description": "Fixed width for the Dashboard, e.g. '400px' — new 2026-09-04, purely additive/optional."
+    },
+    {
+      "name": "height",
+      "type": "string (CSS height)",
+      "default": "'400px'",
+      "description": "Fixed height for the Dashboard — new 2026-09-04, purely additive/optional."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "file-upload"
+    ],
+    "state": [
+      "normal"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "file-upload": {
+      "label": "File upload",
+      "classes": [
+        "pos-upload"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Dashboard border, and the drag-and-drop zone's dashed border (border-style: dashed, the standard drop-target convention), and each uploaded file item's border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Dashboard background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "role": "\"Drop files here\" hint border, shown while dragging a file over the dashboard",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "\"Add more files\" panel background (blurred, 50% mixed with transparent), the file-list content bar background, and the decorative upload-icon circle background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "\"Drop files here\" panel title text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Browse/Back/Save/Add more action links, at rest",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Browse/Back/Save/Add more action links, on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "File-list content bar text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Each uploaded file item's status text (e.g. file size, upload progress)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Remove-file (×) icon color, at rest",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "Remove-file (×) icon color, on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Status bar error indicator/progress bar and the Retry button background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Status bar success/complete indicator and progress bar",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Retry button text, on the Important-colored background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-icon-upload-bottom",
+                  "figma": null,
+                  "role": "Decorative icon shown above the \"Drop files here\" text, on a circular --pos-color-content-background (white surface) backdrop — a new CSS-only background-image icon (baked per-theme, since a real inline <svg> can't be injected into Uppy's own generated text), no Figma variable exists for it",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Decorative upload-icon circle border — invisible in light/dark, becomes visible (white) in HC mode for legibility, same pattern as Card/Alert card/Toast/Dialog",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-panel",
+                  "figma": "Panel corner",
+                  "role": "Dashboard and drag-and-drop zone corner radius",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-upload\" id=\"my-upload\" data-upload-url=\"{{ presigned_upload.upload_url }}\">\n  <div class=\"pos-upload-dashboard\"></div>\n  <template class=\"pos-upload-added-file-input\">\n    <input type=\"hidden\" name=\"my_field[added][]\" data-id=\"\">\n  </template>\n  <template class=\"pos-upload-removed-file-input\">\n    <input type=\"hidden\" name=\"my_field[removed][]\" data-id=\"\">\n  </template>\n</div>\n\n<script>\n  new window.pos.modules.upload({\n    container: document.getElementById('my-upload'),\n  });\n<\\/script>"
+}
+{% endraw %}
+</script>

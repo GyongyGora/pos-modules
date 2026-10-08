@@ -1,13 +1,12 @@
-{% doc %}
-  @param {string} [type] - one of success, error, warning, info
-  @param {string} content - alert content
-{% enddoc %}
 {% comment %}
 
   alert box
 
   type - (string) one of 'success', 'error', 'warning', 'info' (default: 'info')
-  content - (string) card description
+  content - (string) card description / body text
+  title - (string, optional) bold title line above the body text
+  icon - (boolean, optional) show the severity icon (default: true)
+  buttons - (string, optional) raw HTML for an actions row, e.g. .pos-button instances
 
 {% endcomment %}
 
@@ -19,19 +18,31 @@
 %}
 
 
-<div class="pos-card-alert pos-card-alert-{{ type }} pos-card">
-  {% case type %}
-    {% when 'info' %}
-      {% render 'modules/common-styling/icon', icon: 'info', class: null %}
-    {% when 'warning' %}
-      {% render 'modules/common-styling/icon', icon: 'warning', class: null %}
-    {% when 'error' %}
-      {% render 'modules/common-styling/icon', icon: 'delete', class: null %}
-    {% when 'success' %}
-      {% render 'modules/common-styling/icon', icon: 'checkBadge', class: null %}
-  {% endcase %}
-  
-  <span>
-    {{ content | html_safe }}
-  </span>
+<div class="pos-card-alert pos-card-alert-{{ type }} pos-card{% if title %} pos-card-alert-has-title{% endif %}">
+  {% unless icon == false %}
+    {% case type %}
+      {% when 'info' %}
+        {% render 'modules/common-styling/icon', icon: 'info' %}
+      {% when 'warning' %}
+        {% render 'modules/common-styling/icon', icon: 'warning' %}
+      {% when 'error' %}
+        {% render 'modules/common-styling/icon', icon: 'errorBadge' %}
+      {% when 'success' %}
+        {% render 'modules/common-styling/icon', icon: 'checkBadge' %}
+    {% endcase %}
+  {% endunless %}
+
+  <div class="pos-card-alert-body">
+    {% if title %}
+      <strong class="pos-card-alert-title">{{ title }}</strong>
+    {% endif %}
+    <span class="pos-card-alert-content">
+      {{ content | html_safe }}
+    </span>
+    {% if buttons %}
+      <div class="pos-card-alert-actions">
+        {{ buttons | html_safe }}
+      </div>
+    {% endif %}
+  </div>
 </div>

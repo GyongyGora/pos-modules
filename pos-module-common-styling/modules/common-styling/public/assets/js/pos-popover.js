@@ -22,9 +22,11 @@ window.pos.modules.popover = function(container, userSettings = {}){
   // popover trigger (dom node)
   module.settings.trigger = module.settings.container.querySelector('[popovertarget]');
   // id used to mark the module (string)
-  module.settings.id = module.settings.trigger?.getAttribute('popovertarget') || 'pos-popover-' + Math.floor(Math.random() * 1000000);
+  module.settings.id = module.settings.trigger.getAttribute('popovertarget');
   // popover content (dom node)
   module.settings.popover = module.settings.container.querySelector('[popover]');
+  // if the container is a dropdown button — its menu is joined to the trigger (bool)
+  module.settings.dropdown = module.settings.container.classList.contains('pos-dropdown-button');
   // if the popover is opened (bool)
   module.settings.opened = false;
   // menu element inside the popover (dom node)
@@ -45,7 +47,7 @@ window.pos.modules.popover = function(container, userSettings = {}){
       if(event.newState == 'open'){
         // set all the focusable menu items
         if(module.settings.menu){
-          module.buildFocusableMenuItems();
+          module.settings.focusable = Array.from(module.settings.menu.querySelectorAll('li a, li button')).filter(element => element.checkVisibility())
         }
 
         // set state
@@ -77,7 +79,7 @@ window.pos.modules.popover = function(container, userSettings = {}){
     });
 
     // if the popover is triggered by keyboard navigation, focus the first element
-    if(module.settings.menu && module.settings.trigger){
+    if(module.settings.menu){
       module.settings.trigger.addEventListener('keyup', event => {
         if(event.keyCode === 32 || event.key === 'Enter'){
           if(!module.settings.opened){
@@ -110,11 +112,32 @@ window.pos.modules.popover = function(container, userSettings = {}){
       });
     }
 
+    // dropdown button: tell the CSS which side the menu opened on (it flips upwards when there is
+    // no room below) and whether it is exactly as wide as the trigger, so the joined corners match
+    if(module.settings.dropdown){
+      let dropdownShapeFrame;
+
+      function dropdownShapeLater(){
+        cancelAnimationFrame(dropdownShapeFrame);
+        dropdownShapeFrame = requestAnimationFrame(module.updateDropdownShape);
+      }
+
+      module.settings.popover.addEventListener('toggle', event => {
+        if(event.newState == 'open'){
+          dropdownShapeLater();
+          window.addEventListener('scroll', dropdownShapeLater, { passive: true, capture: true });
+          window.addEventListener('resize', dropdownShapeLater);
+        } else {
+          window.removeEventListener('scroll', dropdownShapeLater, { capture: true });
+          window.removeEventListener('resize', dropdownShapeLater);
+          module.settings.container.classList.remove('pos-dropdown-button--up', 'pos-dropdown-button--flush');
+        }
+      });
+    }
+
     // polyfill for Firefox and Safari lacking support for anchor positioning
     // can be deleted from code as is when all browsers support it
-    // only applies to popovers opened via a [popovertarget] trigger - popovers positioned
-    // programmatically (e.g. the @mention popup) have no trigger and manage their own position
-    if(!('anchorName' in document.documentElement.style) && module.settings.trigger){
+    if(!('anchorName' in document.documentElement.style)){
       module.settings.popover.addEventListener('toggle', event => {
         if(event.newState == 'open'){
           module.positionPopoverFallback();
@@ -185,33 +208,6 @@ window.pos.modules.popover = function(container, userSettings = {}){
   };
 
 
-  // purpose:		opens the popover menu
-  // ------------------------------------------------------------------------
-  module.open = () => {
-    module.settings.popover.showPopover();
-
-    pos.modules.debug(module.settings.debug, module.settings.id, 'Programatically opening popover', module.settings.container);
-  };
-
-
-  // purpose:		closes the popover menu
-  // ------------------------------------------------------------------------
-  module.close = () => {
-    module.settings.popover.hidePopover();
-
-    pos.modules.debug(module.settings.debug, module.settings.id, 'Programatically closing popover', module.settings.container);
-  };
-
-
-  // purpose:		builds an array of all the focusable menu items
-  // ------------------------------------------------------------------------
-  module.buildFocusableMenuItems = () => {
-    return module.settings.focusable = Array.from(module.settings.menu.querySelectorAll('li a, li button')).filter(element => element.checkVisibility())
-
-    pos.modules.debug(module.settings.debug, module.settings.id, 'Built focusable menu items list', module.settings.focusable);
-  }
-
-
   // purpose:		focuses first visible menu item
   // ------------------------------------------------------------------------
   module.focusFirstMenuItem = () => {
@@ -255,6 +251,20 @@ window.pos.modules.popover = function(container, userSettings = {}){
 
     module.settings.popover.style.position = 'absolute';
 
+    // dropdown button: always aligned to the trigger's start edge, at least as wide as it,
+    // above the trigger when there is no room below
+    if(module.settings.dropdown){
+      module.settings.popover.style.minWidth = triggerSize.width + 'px';
+      const height = module.settings.popover.getBoundingClientRect().height;
+      const roomBelow = window.innerHeight - triggerSize.bottom;
+      const up = roomBelow < height && triggerSize.top > roomBelow;
+
+      module.settings.popover.style.right = 'auto';
+      module.settings.popover.style.left = triggerSize.left + window.scrollX + 'px';
+      module.settings.popover.style.top = (up ? triggerSize.top + window.scrollY - height : triggerSize.offsetBottom) + 'px';
+      return;
+    }
+
     // position to top
     module.settings.popover.style.top = triggerSize.offsetBottom + 'px';
 
@@ -273,6 +283,21 @@ window.pos.modules.popover = function(container, userSettings = {}){
       module.settings.popover.style.right = 'auto';
       module.settings.popover.style.left = triggerSize.left + (triggerSize.width - popoverSize.width) / 2 + 'px';
     }
+  };
+
+
+
+  // purpose:		dropdown button — marks whether the menu opened above the trigger and whether it
+  //            is exactly as wide as the trigger (the CSS squares the joined corners from these)
+  // ------------------------------------------------------------------------
+  module.updateDropdownShape = () => {
+    if(!module.settings.opened) return;
+
+    const trigger = module.settings.trigger.getBoundingClientRect();
+    const menu = module.settings.popover.getBoundingClientRect();
+
+    module.settings.container.classList.toggle('pos-dropdown-button--up', menu.bottom <= trigger.top + 1);
+    module.settings.container.classList.toggle('pos-dropdown-button--flush', Math.abs(menu.width - trigger.width) < 1);
   };
 
 

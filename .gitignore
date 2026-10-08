@@ -4,9 +4,19 @@
 .marketplace-kit
 **/.marketplace-kit
 
-# Claude Code
-.claude
-**/.claude
+# Claude Code — local state and project memory (memory/, settings.local.json, …) stay
+# ignored; commands/, skills/, agents/ and the shared settings.json (project hooks)
+# are project tooling and are tracked.
+.claude/*
+!.claude/commands/
+!.claude/skills/
+!.claude/agents/
+!.claude/settings.json
+**/.claude/*
+!**/.claude/commands/
+!**/.claude/skills/
+!**/.claude/agents/
+!**/.claude/settings.json
 
 # Temporary files
 tmp

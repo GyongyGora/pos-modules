@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" class="pos-app">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Wizard</title>
+<!--
+  Component Wizard — fast, deploy-free preview of a new DS component before it goes into the
+  real /style-guide doc site. Open this file directly in a browser (double-click, or
+  `start tools/component-wizard.html` / `open tools/component-wizard.html`) — no server,
+  no build, no pos-cli deploy needed.
+
+  Built FROM the real DS, not a copy of it (2026-09-23, corrected after an earlier version
+  hand-copied token hex values into its own CSS): the <link> tags below load the actual
+  style/*.css files this repo ships, via a relative path — same files init.liquid loads
+  for a real product, just referenced directly since this file has no Liquid engine to render
+  them through. Every --pos-* custom property this page uses is therefore the real, live value,
+  not a hand-copied snapshot that can silently drift out of sync with the real files. The theme
+  switcher in the sidebar is the exact real mechanism nav-left.liquid uses on the live docs site
+  (pos-theme-dark / pos-theme-a11y classes on <html>, see initialization.liquid for the
+  documented contract) — copied, not reinvented. Only this file's own layout (the two-column
+  wizard shell, the token-value table) is custom CSS, since neither has a real DS component
+  equivalent; even those use var(--pos-color-*)/var(--pos-radius-*) etc. throughout, never a
+  literal color or px value.
+
+  How to add a new draft:
+  1. Copy an existing entry in the `drafts` array below (in the <script> at the bottom).
+  2. Give it a unique `key`, a `name`, and (if it came from Figma) a `sourceUrl`.
+  3. For each variant: real markup in `html` (use real .pos-* class names — this is meant to be
+     close to what ships, not throwaway markup) and its `tokens` list — one row per token the
+     markup's CSS actually reads: `[role, '--pos-token-name', isColor]`. The displayed value is
+     read LIVE via getComputedStyle at render time (see getTokenValue()), so it always matches
+     what the current theme is actually showing — never hand-type a hex value here.
+  4. Add whatever CSS the draft's markup needs into the <style> block, referencing real
+     var(--pos-*) custom properties only (they're genuinely loaded now, not placeholders).
+  5. Reload the file — the sidebar picks up the new draft automatically, no other wiring needed.
+
+  Once a draft is approved: follow /create-component's normal workflow to build it for real —
+  this file is a design-review step before that pipeline starts, not a replacement for it.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-reset.css">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-primitives.css">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-config.css">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-utility.css">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-typography.css">
+<link rel="stylesheet" href="../modules/common-styling/public/assets/style/pos-segmented-control.css">
+<style>
+  /* Layout only — every color/radius/spacing value below is a real var(--pos-*) custom
+     property loaded from the DS's own CSS above, nothing hand-copied or invented. */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--pos-color-page-background);
+    color: var(--pos-color-content-text);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .wizard { display: flex; min-height: 100vh; }
+
+  /* ── left: preview area ──────────────────────────────────────────── */
+  .preview-area { flex: 1; min-width: 0; padding: 28px clamp(16px, 4vw, 48px) 48px; }
+
+  .preview-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 4px;
+  }
+  .preview-header h1 { font-size: 1.375rem; font-weight: 700; margin: 0; text-wrap: balance; }
+
+  .draft-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.8125rem; color: var(--pos-color-content-text-supplementary); font-weight: 500;
+  }
+  .draft-status::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--pos-color-warning); flex-shrink: 0;
+  }
+
+  .source-link { font-size: 0.8125rem; color: var(--pos-color-content-text-supplementary); margin: 2px 0 22px; }
+  .source-link a { color: var(--pos-color-interactive-text); text-decoration: underline; text-underline-offset: 2px; }
+
+  .variant-list { display: flex; flex-direction: column; border-top: 1px solid var(--pos-color-frame); }
+
+  .variant-row {
+    display: flex; align-items: center; gap: clamp(16px, 3vw, 32px);
+    padding: 18px 4px; border-bottom: 1px solid var(--pos-color-frame); flex-wrap: wrap;
+  }
+  /* Preview stage and token table split the row 50/50
+     (the `gap` above still applies between them; `calc` accounts for it so together they still
+     sum to the row's full width instead of overflowing it). */
+  .variant-stage,
+  .variant-row .token-table { flex: 1 1 calc(50% - 16px); }
+
+  /* The wizard's own chrome (this stage box included) always stays LIGHT — only the actual
+     drafted component + its token swatches react to the Light/Dark/HC switch below. The DS's
+     own theme mechanism is :root-scoped only (pos-config.css has no non-root-scoped variant),
+     so a literal theme toggle can't be limited to a subtree via CSS alone; the JS instead
+     briefly flips the real theme on <html>, reads the real resolved values via
+     getComputedStyle, reverts <html> immediately, then applies those captured values as
+     inline custom properties on just .preview-area (see applyPreviewTheme in the script) —
+     still the real DS cascade doing the computing, just scoped by hand afterward. */
+  .variant-stage {
+    min-width: 110px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    background: var(--preview-page-background, var(--pos-color-page-background));
+    border: 1px solid var(--preview-frame, var(--pos-color-frame));
+    border-radius: var(--pos-radius-panel);
+    padding: 18px 16px;
+  }
+  .variant-stage-label {
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--pos-color-content-text-supplementary);
+  }
+
+  .token-name-mode-row { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+
+  /* .t-name-select — copied verbatim from the real docs site's own token-format switcher
+     (style-guide/styleguide.css's .t-name-select, backing the exact same "Figma (variables) /
+     CSS" control on the real /style-guide Tokens panel) rather than invented, per the same
+     "build it from the DS" principle as everything else in this file — every value it uses is
+     still a real --pos-* token, just organized into a docs-site convenience class instead of a
+     shared style/ file, so it's copied here rather than pulling in that whole stylesheet. */
+  .t-name-select {
+    -webkit-appearance: none; appearance: none;
+    font-size: var(--pos-font-size-xs); font-weight: 600; font-family: inherit;
+    color: var(--pos-color-content-text-supplementary);
+    background-color: var(--pos-color-content-background);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--pos-primitive-size-1) center;
+    background-size: 10px;
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-primitive-radius-slightly-rounded);
+    padding: var(--pos-primitive-size-05) var(--pos-primitive-size-3) var(--pos-primitive-size-05) var(--pos-primitive-size-1);
+    cursor: pointer;
+  }
+  .t-name-select:hover { border-color: var(--pos-color-interactive); }
+  .t-name-select:focus-visible { outline: 2px solid var(--pos-color-focused); outline-offset: 1px; }
+
+  /* Figma names, not CSS identifiers, are the primary label — regular Inter throughout, not monospace (the real CSS var name is still one
+     hover away via the cell's title tooltip, for whoever implements the real CSS afterward). */
+  /* Fixed column widths, identical on every variant's own <table> — each row is a separate
+     table element, so without a shared fixed layout their columns drift out of alignment with
+     each other depending on that row's own content length (flagged live 2026-09-23). */
+  .token-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-family: 'Inter', system-ui, sans-serif; font-size: 0.8125rem; }
+  .token-table tr + tr td { border-top: 1px solid var(--pos-color-frame); }
+  .token-table td { padding: 5px 10px 5px 0; vertical-align: baseline; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .token-table td.role { width: 82px; color: var(--pos-color-content-text-supplementary); padding-right: 14px; }
+  /* Plain content-text, not interactive-text — these names are labels, not links; nothing
+     happens if you click one, so they must not read as clickable (flagged live 2026-09-23). */
+  .token-table td.name { color: var(--pos-color-content-text); cursor: help; }
+  .token-table td.swatch-cell { width: 16px; padding-right: 6px; }
+
+  .swatch {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+    border: 1px solid var(--pos-color-frame);
+    vertical-align: middle;
+    /* background set inline per-row by JS — each row shows a different token's color */
+  }
+
+  /* ── the slider draft — no real pos-slider.css yet. A real <input type="range"> under the
+     hood (keyboard + screen-reader accessible out of the box), fill drawn via a linear-gradient
+     background positioned by a JS-updated --fill custom property (standard technique for a
+     "filled track" range input), thumb re-skinned via ::-webkit/-moz-range-thumb with a drag
+     icon as a background-image data URI — same established pattern this DS already uses for
+     --pos-icon-select-arrow, not a new technique. Corrected 2026-09-23: several tokens had been chosen by
+     "closest Figma name match" instead of what each one semantically means, and HC-sensitive
+     tokens without checking the high contrast rules (RULES.md 4.6) — documented per property below. */
+  /* Redesigned 2026-10-06 (user brief): a bigger handle that overhangs the track by a quarter of the
+     track height above and below; handle in the interaction color with the docs panel's 2×3 grip
+     dots; the filled part (left edge → handle center) in the interaction color, darkened towards the
+     bottom with a black-transparent gradient; while dragging, a tooltip above the handle shows the
+     value (0–100) and moves with it. */
+  .pos-slider-field {
+    --slider-track: var(--pos-primitive-size-2);                 /* 16px */
+    --slider-thumb: calc(var(--pos-primitive-size-2) * 1.5);     /* 24px: overhangs 4px = 1/4 track above and below */
+    --slider-inset: 2px;                                         /* the fill sits inside the grey track */
+    /* grip dots: a graphic, so the inverted ICON token (not the inverted text token) */
+    --slider-grip: var(--preview-inverted-icon, var(--pos-color-content-inverted-icon));
+    /* filled length: from the left edge to the handle center (the handle travels inside the track) */
+    --slider-fill: calc(var(--slider-thumb) / 2 + (100% - var(--slider-thumb)) * var(--ratio, .5));
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    padding-block: calc((var(--slider-thumb) - var(--slider-track)) / 2);
+  }
+  /* the grey track (with a frame, so it shows in HC) and, inside it, the filled part — two rounded
+     layers behind a transparent range input, so the fill can be inset and keep round ends */
+  .pos-slider-field::before,
+  .pos-slider-field::after {
+    content: "";
+    position: absolute;
+    border-radius: var(--pos-primitive-radius-rounded);
+    pointer-events: none;
+  }
+  .pos-slider-field::before {
+    inset-inline: 0;
+    inset-block-start: calc((var(--slider-thumb) - var(--slider-track)) / 2);
+    height: var(--slider-track);
+    box-sizing: border-box;
+    background-color: var(--preview-content-icon-disabled, var(--pos-color-content-icon-disabled));
+    border: 1px solid var(--preview-frame, var(--pos-color-frame));
+  }
+  .pos-slider-field::after {
+    inset-inline-start: var(--slider-inset);
+    inset-block-start: calc((var(--slider-thumb) - var(--slider-track)) / 2 + var(--slider-inset));
+    width: calc(var(--slider-fill) - var(--slider-inset));
+    height: calc(var(--slider-track) - 2 * var(--slider-inset));
+    /* interaction color, darker towards the bottom */
+    background:
+      linear-gradient(to bottom, transparent 35%, color-mix(in srgb, var(--pos-primitive-color-black) 25%, transparent)),
+      var(--preview-icon-interactive, var(--pos-color-interactive));
+  }
+  .pos-slider {
+    position: relative;
+    z-index: 1;
+    display: block; width: 100%;
+    -webkit-appearance: none; appearance: none;
+    height: var(--slider-track);
+    border-radius: var(--pos-primitive-radius-rounded);
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+  }
+  .pos-slider::-webkit-slider-runnable-track { -webkit-appearance: none; height: 100%; background: transparent; }
+  .pos-slider::-moz-range-track { height: 100%; background: transparent; border: none; }
+  .pos-slider:focus-visible { outline: 2px solid var(--pos-color-focused); outline-offset: 3px; }
+
+  .pos-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: calc((var(--slider-track) - var(--slider-thumb)) / 2);
+    width: var(--slider-thumb); height: var(--slider-thumb);
+    border-radius: 50%; border: none; cursor: grab;
+    box-shadow: var(--pos-primitive-shadow-small);
+    background-color: var(--preview-icon-interactive, var(--pos-color-interactive));
+    background-image:
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px);
+    background-size: 4px 4px;
+    background-position: calc(50% - 2.5px) calc(50% - 4.5px), calc(50% + 2.5px) calc(50% - 4.5px), calc(50% - 2.5px) 50%, calc(50% + 2.5px) 50%, calc(50% - 2.5px) calc(50% + 4.5px), calc(50% + 2.5px) calc(50% + 4.5px);
+    background-repeat: no-repeat;
+  }
+  .pos-slider::-moz-range-thumb {
+    width: var(--slider-thumb); height: var(--slider-thumb);
+    border-radius: 50%; border: none; cursor: grab;
+    box-shadow: var(--pos-primitive-shadow-small);
+    background-color: var(--preview-icon-interactive, var(--pos-color-interactive));
+    background-image:
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--slider-grip) 1.1px, transparent 1.6px);
+    background-size: 4px 4px;
+    background-position: calc(50% - 2.5px) calc(50% - 4.5px), calc(50% + 2.5px) calc(50% - 4.5px), calc(50% - 2.5px) 50%, calc(50% + 2.5px) 50%, calc(50% - 2.5px) calc(50% + 4.5px), calc(50% + 2.5px) calc(50% + 4.5px);
+    background-repeat: no-repeat;
+  }
+  .pos-slider:active::-webkit-slider-thumb { cursor: grabbing; }
+  .pos-slider:active::-moz-range-thumb { cursor: grabbing; }
+
+  /* value tooltip — the DS tooltip's look (style/pos-tooltip.css: same tokens), above the handle,
+     shown while dragging and moving with it */
+  .pos-slider-value {
+    position: absolute;
+    inset-block-end: calc(100% + var(--pos-primitive-size-05));
+    inset-inline-start: var(--slider-fill);
+    transform: translateX(-50%) scale(.95);
+    transform-origin: bottom center;
+    background-color: var(--preview-content-icon, var(--pos-color-content-icon));
+    color: var(--preview-inverted-text, var(--pos-color-content-inverted-text));
+    font-family: var(--pos-font-badge);
+    font-size: var(--pos-font-size-xs);
+    font-weight: var(--pos-font-weight-medium);
+    white-space: nowrap;
+    padding: calc(var(--pos-primitive-size-1) / 2) var(--pos-primitive-size-1);
+    border-radius: var(--pos-radius-tag);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s linear, transform .15s linear, visibility .15s linear;
+  }
+  .pos-slider-field.is-dragging .pos-slider-value {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+  /* ── right: drafts sidebar ───────────────────────────────────────── */
+  .drafts-sidebar {
+    width: 240px; flex-shrink: 0;
+    border-left: 1px solid var(--pos-color-frame);
+    background: var(--pos-color-content-background);
+    padding: 28px 18px;
+  }
+  #wizard-theme-toggle { margin-bottom: 26px; }
+  /* No shared style file sizes bare icon SVGs by default (confirmed by checking — the live
+     docs site's own theme toggle only renders because style-guide/styleguide.css, which this
+     tool intentionally does NOT load, happens to size it) — every real usage has to size its
+     own icons, so this is that, using a real token instead of copying the docs site's bespoke
+     14px. Without this the icons rendered at 0×0 (confirmed live 2026-09-23). */
+  #wizard-theme-toggle svg {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+    fill: currentColor;
+    display: block;
+  }
+  .drafts-sidebar h2 {
+    font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--pos-color-content-text-supplementary); margin: 0 0 14px;
+  }
+  .drafts-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .draft-btn {
+    all: unset; box-sizing: border-box; display: block; width: 100%;
+    padding: 9px 10px; border-radius: var(--pos-radius-button);
+    font-size: 0.875rem; font-weight: 500; color: var(--pos-color-content-text); cursor: pointer;
+  }
+  .draft-btn:hover { background: var(--pos-color-page-background); }
+  .draft-btn[aria-current="true"] { background: var(--pos-color-interactive); color: var(--pos-color-content-inverted-text); }
+  .draft-btn .draft-sub { display: block; font-size: 0.6875rem; font-weight: 400; opacity: 0.75; margin-top: 1px; }
+
+  @media (max-width: 680px) {
+    .wizard { flex-direction: column; }
+    .drafts-sidebar { width: auto; border-left: none; border-top: 1px solid var(--pos-color-frame); }
+    .variant-row { flex-direction: column; align-items: stretch; }
+    .token-table { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wizard">
+  <main class="preview-area">
+    <div class="preview-header">
+      <h1 id="draft-title">Slider</h1>
+      <span class="draft-status">Draft — awaiting review</span>
+    </div>
+    <p class="source-link" id="draft-source"></p>
+    <div class="token-name-mode-row">
+      <select class="t-name-select" id="wizard-token-format" aria-label="Token name format">
+        <option value="figma">Figma (variables)</option>
+        <option value="css">CSS</option>
+      </select>
+    </div>
+    <div class="variant-list" id="variant-list"></div>
+  </main>
+
+  <aside class="drafts-sidebar">
+    <!-- Real theme switcher — exact markup/class pattern as nav-left.liquid's
+         #styleguide-theme-toggle (the live docs site's own control), icons copied from
+         icon.liquid's brightness/moon/contrast defs. -->
+    <div class="pos-segmented-control pos-segmented-control--subtle pos-segmented-control--small" role="group" aria-label="Color scheme" id="wizard-theme-toggle">
+      <button type="button" class="pos-segmented-control-btn pos-segmented-control-btn--active" aria-pressed="true" data-theme="light" aria-label="Light mode">
+        <svg class="pos-icon" focusable="false" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+      </button>
+      <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-theme="dark" aria-label="Dark mode">
+        <svg class="pos-icon" focusable="false" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008" /></svg>
+      </button>
+      <button type="button" class="pos-segmented-control-btn" aria-pressed="false" data-theme="a11y" aria-label="Accessibility mode">
+        <svg class="pos-icon" focusable="false" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 17a5 5 0 0 0 0 -10v10" /></svg>
+      </button>
+    </div>
+
+    <h2>Component drafts</h2>
+    <ul class="drafts-list" id="drafts-list"></ul>
+  </aside>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── draft data ──────────────────────────────────────────────────────
+  // Each variant's markup uses the real .pos-badge class shape (ready to lift
+  // into style/pos-badge.css almost verbatim). Token rows list which real
+  // --pos-* custom property applies where — the displayed value is read LIVE
+  // from the loaded DS CSS (see getTokenValue), never hand-typed, so it can't
+  // drift from what's actually on screen in the current theme.
+  // Figma source: node 8293:129201 (pOS Core — components).
+  var drafts = [
+    {
+      key: 'slider',
+      name: 'Slider',
+      // No Figma source — built from a reference image + explicit direction ("like the primary
+      // buttons," no gradient). Corrected 2026-09-23 after real token-semantics mistakes
+      // caught live in the first version (wrong-purpose tokens, wrong icon meaning) — see
+      // the CSS block's own comment for the full account. A real <input type="range"> under
+      // custom skinning (keyboard/screen-reader accessible out of the box), not a fully custom
+      // div. One variant now, not two — there's no playback state, just a position.
+      sourceUrl: null,
+      variants: [
+        {
+          label: 'Default',
+          html: '<div class="pos-slider-field" style="--ratio:.42"><span class="pos-slider-value" aria-hidden="true">42</span><input type="range" class="pos-slider" min="0" max="100" value="42" aria-label="Slider value" data-slider></div>',
+          tokens: [
+            ['Color', '--pos-color-interactive', true],
+            ['Color', '--pos-color-content-icon-disabled', true],
+            ['Color', '--pos-color-frame', true],
+            ['Color', '--pos-color-content-inverted-icon (grip dots)', true],
+            ['Color', '--pos-color-content-icon (value tooltip background)', true],
+            ['Color', '--pos-color-content-inverted-text (value tooltip text)', true],
+            ['Color', '--pos-primitive-color-black (25%, fill shading)', true],
+            ['Layout', '--pos-primitive-radius-rounded', false],
+            ['Layout', '--pos-primitive-size-2 (track height; handle = 1.5×; fill inset 2px)', false],
+            ['Layout', '--pos-radius-tag (value tooltip)', false],
+            ['Typography', '--pos-font-badge (value tooltip)', false],
+            ['Typography', '--pos-font-size-xs (value tooltip)', false],
+            ['Typography', '--pos-font-weight-medium (value tooltip)', false],
+            ['Elevation', '--pos-primitive-shadow-small', false],
+            ['Focus indicator', '--pos-color-focused', false],
+          ],
+        },
+      ],
+    },
+  ];
+
+  // Figma variable names for every --pos-* token this file's drafts reference — looked up from
+  // tokens/css-to-figma.json's `map` (never guessed), since the wizard displays the Figma
+  // name as the primary label (the CSS name stays
+  // available as a hover tooltip for whoever implements the real CSS afterward).
+  var FIGMA_NAMES = {
+    '--pos-color-important': 'Utility/Important Normal',
+    '--pos-color-content-background': 'Backgrounds/Content Background',
+    '--pos-color-content-inverted-text': 'General elements-theme/Inverted - text',
+    '--pos-primitive-radius-rounded': 'Radius/Rounded',
+    '--pos-size-icon-s': 'Icon/icon-s',
+    '--pos-size-icon-m': 'Icon/icon-m',
+    '--pos-primitive-size-05': 'Size/0.5 unit',
+    '--pos-primitive-size-1': 'Size/1 unit',
+    '--pos-font-badge': 'Family/badge',
+    '--pos-font-sidenotes': 'Family/sidenotes',
+    '--pos-font-weight-bold': 'Weight/bold',
+    '--pos-font-weight-normal': 'Weight/normal',
+    '--pos-font-size-xxxs': 'Size/font XXXS',
+    '--pos-font-size-xs': 'Size/font XS',
+    '--pos-line-height-xs': 'Line-height/lineH XS',
+    // --pos-color-interactive is the interactive GRAPHIC color (it points at the *-icon-interactive mode tokens);
+    // css-to-figma.json's --pos-color-light-interactive is a different, text token — don't look it up by name
+    '--pos-color-interactive': 'General elements-theme/Graphic Interactive',
+    '--pos-color-frame': 'Backgrounds/Frame subtle',
+    '--pos-primitive-size-3': 'Size/3 unit',
+    '--pos-primitive-size-2': 'Size/2 unit',
+    '--pos-color-focused': 'General elements-theme/Focused',
+    '--pos-color-content-icon-interactive': 'General elements-theme/Graphic Normal - interactive',
+    '--pos-color-content-icon-disabled': 'General elements-theme/Graphic Disabled',
+    // no Figma mapping exists for this one either (checked css-to-figma.json) — this is the
+    // real token style/pos-button.css's own .pos-button-primary background-color reads
+    // (grepped directly, not assumed), matching "like the primary buttons" as asked.
+    '--pos-color-icon-interactive': '--pos-color-icon-interactive',
+    // no Figma mapping exists for this one (checked css-to-figma.json) — per RULES §6.4,
+    // included with its real CSS name anyway rather than omitted or invented.
+    '--pos-primitive-shadow-small': '--pos-primitive-shadow-small',
+    '--pos-line-height-s': 'Line-height/lineH S',
+  };
+
+  var activeKey = drafts[0].key;
+  var tokenNameMode = 'figma'; // 'figma' | 'css' — matches the real docs site's own default
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Reads a token's ACTUAL current value from the real, loaded DS CSS — never hand-typed.
+  // Reads from .preview-area specifically (not <html>): color tokens get a scoped override
+  // there by applyPreviewTheme() below, so this picks up the selected preview theme's real
+  // value; non-color tokens (radius/size/typography — theme-invariant in this DS) fall through
+  // to the normal inherited :root value, which is all they ever need.
+  function getTokenValue(rawName) {
+    var cssVarName = rawName.replace(/\s*\(.*\)\s*$/, ''); // strip a "(height)"-style annotation
+    var scope = document.querySelector('.preview-area') || document.documentElement;
+    return getComputedStyle(scope).getPropertyValue(cssVarName).trim();
+  }
+
+  function renderTokenRow(row) {
+    var role = row[0], cssName = row[1], isColor = row[2];
+    var cleanCssName = cssName.replace(/\s*\(.*\)\s*$/, '');
+    var suffix = cssName.slice(cleanCssName.length); // preserves a "(height)"-style annotation
+    var figmaName = FIGMA_NAMES[cleanCssName] || cleanCssName;
+    var displayName = tokenNameMode === 'css' ? cssName : (figmaName + suffix);
+    var tooltip = tokenNameMode === 'css' ? figmaName + suffix : cssName;
+    var swatch = isColor
+      ? '<span class="swatch" style="background:' + escapeHtml(getTokenValue(cssName)) + '"></span>'
+      : '';
+    return '<tr>' +
+      '<td class="role">' + escapeHtml(role) + '</td>' +
+      '<td class="swatch-cell">' + swatch + '</td>' +
+      '<td class="name" title="' + escapeHtml(tooltip) + '">' + escapeHtml(displayName) + '</td>' +
+      '</tr>';
+  }
+
+  function renderVariant(v) {
+    return '<div class="variant-row">' +
+      '<div class="variant-stage">' +
+        '<div class="variant-stage-label">' + escapeHtml(v.label) + '</div>' +
+        v.html +
+      '</div>' +
+      '<table class="token-table"><tbody>' +
+        v.tokens.map(renderTokenRow).join('') +
+      '</tbody></table>' +
+      '</div>';
+  }
+
+  function renderDraft(key) {
+    var draft = drafts.filter(function (d) { return d.key === key; })[0];
+    if (!draft) return;
+    activeKey = key;
+    document.getElementById('draft-title').textContent = draft.name;
+    document.getElementById('draft-source').innerHTML = draft.sourceUrl
+      ? 'Figma source: <a href="' + escapeHtml(draft.sourceUrl) + '" target="_blank" rel="noopener">' + escapeHtml(draft.sourceUrl) + '</a>'
+      : '';
+    document.getElementById('variant-list').innerHTML = draft.variants.map(renderVariant).join('');
+    renderSidebarList();
+  }
+
+  function renderSidebarList() {
+    var list = document.getElementById('drafts-list');
+    list.innerHTML = drafts.map(function (d) {
+      var current = d.key === activeKey;
+      return '<li><button type="button" class="draft-btn" data-key="' + d.key + '"' +
+        (current ? ' aria-current="true"' : '') + '>' +
+        escapeHtml(d.name) +
+        '<span class="draft-sub">' + d.variants.length + ' variant' + (d.variants.length === 1 ? '' : 's') + '</span>' +
+        '</button></li>';
+    }).join('');
+    list.querySelectorAll('.draft-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { renderDraft(btn.dataset.key); });
+    });
+  }
+
+  // ── preview-only theme switcher ──────────────────────────────────────
+  // The wizard's own chrome (sidebar, page background, headings) stays permanently light —
+  // only the drafted component's preview boxes + swatches
+  // react to Light/Dark/HC. pos-config.css's theme rules are :root-scoped only (no non-root
+  // variant exists to target a subtree directly), so real values are captured by briefly
+  // flipping the DS's real pos-theme-* classes onto <html>, reading getComputedStyle (the real
+  // cascade, not a hand-typed table), then reverting <html> to light immediately and applying
+  // just those captured values as inline custom properties on .preview-area — its descendants
+  // (.pos-badge, .variant-stage) read var(--preview-*, var(--pos-color-*)) with the real
+  // :root value as fallback, so nothing outside .preview-area is ever touched.
+  var PREVIEW_COLOR_TOKENS = {
+    '--preview-important': '--pos-color-important',
+    '--preview-content-background': '--pos-color-content-background',
+    '--preview-inverted-text': '--pos-color-content-inverted-text',
+    '--preview-page-background': '--pos-color-page-background',
+    '--preview-frame': '--pos-color-frame',
+    // Slider's tokens — added 2026-09-23. Missing from this list is exactly why the corrected
+    // Slider colors still didn't react to the theme switch on the first fix attempt (they read
+    // --pos-color-* directly, which — since <html> always reverts to light right after this
+    // capture runs — silently resolved to the permanent light value no matter which button was
+    // selected). Every color a preview component uses has to be captured here, not just the
+    // ones the first draft happened to need.
+    '--preview-icon-interactive': '--pos-color-interactive',
+    '--preview-content-icon-disabled': '--pos-color-content-icon-disabled',
+    '--preview-content-icon-interactive': '--pos-color-content-icon-interactive',
+    '--preview-content-icon': '--pos-color-content-icon',
+    '--preview-inverted-icon': '--pos-color-content-inverted-icon',
+  };
+
+  var themeToggle = document.getElementById('wizard-theme-toggle');
+  var htmlEl = document.documentElement;
+  var activeTheme = 'light';
+
+  function applyPreviewTheme(theme) {
+    activeTheme = theme;
+
+    htmlEl.classList.remove('pos-theme-darkEnabled', 'pos-theme-dark', 'pos-theme-a11yEnabled', 'pos-theme-a11y');
+    if (theme === 'dark') {
+      htmlEl.classList.add('pos-theme-darkEnabled', 'pos-theme-dark');
+    } else if (theme === 'a11y') {
+      htmlEl.classList.add('pos-theme-a11yEnabled', 'pos-theme-a11y');
+    }
+    var rootStyle = getComputedStyle(htmlEl);
+    var captured = {};
+    Object.keys(PREVIEW_COLOR_TOKENS).forEach(function (previewVar) {
+      captured[previewVar] = rootStyle.getPropertyValue(PREVIEW_COLOR_TOKENS[previewVar]).trim();
+    });
+    // Revert <html> to light immediately — the chrome must never visibly show another theme.
+    htmlEl.classList.remove('pos-theme-darkEnabled', 'pos-theme-dark', 'pos-theme-a11yEnabled', 'pos-theme-a11y');
+
+    var previewArea = document.querySelector('.preview-area');
+    Object.keys(captured).forEach(function (previewVar) {
+      previewArea.style.setProperty(previewVar, captured[previewVar]);
+    });
+
+    themeToggle.querySelectorAll('.pos-segmented-control-btn').forEach(function (b) {
+      var active = b.dataset.theme === theme;
+      b.classList.toggle('pos-segmented-control-btn--active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    renderDraft(activeKey);
+  }
+
+  themeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-theme]');
+    if (!btn) return;
+    applyPreviewTheme(btn.dataset.theme);
+  });
+
+  applyPreviewTheme('light');
+
+  // ── Figma / CSS token-name display switcher — same select markup and default ('figma'
+  // first option) as the real docs site's own #comp-tokens-format control. ──
+  document.getElementById('wizard-token-format').addEventListener('change', function (e) {
+    tokenNameMode = e.target.value;
+    renderDraft(activeKey);
+  });
+
+  // ── slider draft: real drag/keyboard interaction, not a static picture — updates the
+  // --fill custom property the linear-gradient track reads, on the real native `input` event
+  // (fires continuously while dragging or pressing an arrow key). Delegated on #variant-list
+  // since renderDraft() replaces that container's contents on every draft/theme switch. ──
+  var variantList = document.getElementById('variant-list');
+  variantList.addEventListener('input', function (e) {
+    var el = e.target.closest('[data-slider]');
+    if (!el) return;
+    var field = el.closest('.pos-slider-field');
+    field.style.setProperty('--ratio', String((el.value - el.min) / (el.max - el.min)));
+    field.querySelector('.pos-slider-value').textContent = el.value;
+  });
+  variantList.addEventListener('pointerdown', function (e) {
+    var el = e.target.closest('[data-slider]');
+    if (!el) return;
+    var field = el.closest('.pos-slider-field');
+    field.classList.add('is-dragging');
+    var stop = function () { field.classList.remove('is-dragging'); window.removeEventListener('pointerup', stop); window.removeEventListener('pointercancel', stop); };
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+  });
+}());
+</script>
+
+</body>
+</html>

@@ -1,86 +1,258 @@
 /*
-  tag / chip component
+  Tag / chip component — new DS
+  Figma: https://www.figma.com/design/7LdPQ5BEpKgFvxqnjvwH5b/pOS-Core---components?node-id=4463-53774 (internal use only; access required)
 
-  tag list
-  basic
-  confirmation
-  warning
-  important
-  interactive
+  Variants:
+    .pos-tag                      — default / static (highlight bg, body text, no visible border — HC only, no interaction)
+    .pos-tag.pos-tag-neutral      — neutral (page bg, body text, subtle border — for use on highlighted surfaces)
+    .pos-tag.pos-tag-confirmation — success / positive state (green)
+    .pos-tag.pos-tag-warning      — warning / caution state (orange)
+    .pos-tag.pos-tag-important    — error / critical state (red)
+    .pos-tag.pos-tag-interactive  — interactive / clickable (highlight bg, interactive text, no visible border (HC only), animated underline on hover)
+    .pos-tag.pos-tag-selected     — selected / active state (interaction color bg, inverted text, hover darkens bg)
+
+  Interactive elements (button / a):
+    hover   — subtle brightness change
+    focus   — focus ring via :focus-visible
+    disabled — muted text, not-allowed cursor, no hover (RULES.md 4.12)
+
+  Container:
+    .pos-tags-list — flex-wrap list of tags
 */
-
 
 @layer common-styling {
 
-    /* tag list
-    ============================================================================ */
-    .pos-tags-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--pos-gap-tag-tag);
-    }
-
-    /* basic
-    ============================================================================ */
-    .pos-tag {
-      min-height: 1.5rem;
-      padding: .33em 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: .5em;
-  
-      border-radius: var(--pos-radius-tag);
-      background-color: var(--pos-color-page-background);
-
-      text-transform: uppercase;
-      line-height: 0;
-      font-size: .75rem;
-    }
-
-    .pos-tag svg {
-      width: 1rem;
-      height: 1rem;
-    }
-
-
-    /* confirmation
-    ============================================================================ */
-    .pos-tag.pos-tag-confirmation {
-      background-color: var(--pos-color-confirmation-disabled);
-    }
-
-
-    /* warning
-    ============================================================================ */
-    .pos-tag.pos-tag-warning {
-      background-color: var(--pos-color-warning-disabled);
-    }
-
-
-    /* error
-    ============================================================================ */
-    .pos-tag.pos-tag-important {
-      background-color: var(--pos-color-important-disabled);
-    }
-
-    /* interactive
-    ============================================================================ */
-    .pos-tag.pos-tag-interactive {
-      background-color: var(--pos-color-interactive);
-      cursor: pointer;
-
-      color: var(--pos-color-content-inverted-text);
-    }
-
-    a.pos-tag-interactive:hover,
-    button.pos-tag-interactive:hover {
-      background-color: var(--pos-color-interactive-hover);
-    }
-
-    a.pos-tag-interactive:focus-visible,
-    button.pos-tag-interactive:focus-visible {
-      outline: 2px solid var(--pos-color-focused);
-      outline-offset: 2px;
-    }
-  
+  /* tag list
+  ============================================================================ */
+  .pos-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pos-gap-tag-tag);
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
+
+
+  /* base tag — default / static (matches old DS base .pos-tag)
+  ============================================================================ */
+  .pos-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    padding-block:  var(--pos-padding-tag-block);
+    padding-inline: var(--pos-padding-tag);
+    min-height: 28px;
+
+    border-radius: var(--pos-radius-tag);
+    /* invisible frame (white in HC) — only the neutral tag gets a visible stroke, since its page-bg
+       fill would otherwise disappear against the page (user, 2026-10-01). Width stays 1px in every
+       variant, so no layout change (legacy component: appearance only). */
+    border: 1px solid var(--pos-color-frame-transparent);
+
+    background-color: var(--pos-color-highlight-background);
+    color: var(--pos-color-content-text);
+
+    font-size: var(--pos-font-size-body-small);
+    line-height: 20px;
+    white-space: nowrap;
+    text-decoration: none;
+
+    cursor: default;
+  }
+
+  .pos-tag svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+
+  /* ── Small size modifier ── */
+  .pos-tag--small {
+    font-size: var(--pos-font-size-xs);
+    line-height: 1;
+    padding-block:  0.125rem; /* 2px */
+    padding-inline: 0.5rem;   /* 8px */
+    min-height: 20px;
+  }
+
+
+  /* neutral — page background, body text, subtle border (use on highlighted surfaces)
+  ============================================================================ */
+  .pos-tag.pos-tag-neutral {
+    background-color: var(--pos-color-page-background);
+    border-color: var(--pos-color-frame);
+  }
+
+
+  /* confirmation / success
+  ============================================================================ */
+  .pos-tag.pos-tag-confirmation {
+    background-color: var(--pos-color-confirmation-muted);
+    color: var(--pos-color-confirmation);
+  }
+
+
+  /* warning / caution
+  ============================================================================ */
+  .pos-tag.pos-tag-warning {
+    background-color: var(--pos-color-warning-muted);
+    color: var(--pos-color-warning); /* text step, like the other status tags (was warning-active, 2026-10-02) */
+  }
+
+
+  /* important / error
+  ============================================================================ */
+  .pos-tag.pos-tag-important {
+    background-color: var(--pos-color-important-muted);
+    color: var(--pos-color-important);
+  }
+
+
+  /* interactive — interactive text, animated underline on hover
+  ============================================================================ */
+  .pos-tag.pos-tag-interactive {
+    color: var(--pos-color-interactive-text);
+    transition: background-color 0.15s linear, color 0.15s linear, border-color 0.15s linear;
+  }
+
+  /* hover (not selected) — matches the selected state's appearance exactly. :not(.pos-tag-selected) keeps a selected+interactive tag's own hover
+     (which darkens to --pos-color-interactive-hover, see below) untouched by this rule.
+     background-size: 0 0 suppresses the animated underline reveal below — the selected
+     state has no underline, so this hover shouldn't show one either. */
+  button.pos-tag-interactive:hover:not(.pos-tag-selected):where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  a.pos-tag-interactive:hover:not(.pos-tag-selected):where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-interactive);
+    background-size: 0 0;
+    color: var(--pos-color-content-inverted-text);
+    border-color: var(--pos-color-interactive);
+  }
+
+
+  /* selected — interaction color bg, inverted text, hover darkens bg
+  ============================================================================ */
+  .pos-tag.pos-tag-selected {
+    background-color: var(--pos-color-interactive);
+    color: var(--pos-color-content-inverted-text);
+    border-color: var(--pos-color-interactive);
+    cursor: pointer;
+  }
+
+  .pos-tag.pos-tag-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-interactive-hover);
+    border-color: var(--pos-color-interactive-hover);
+    background-size: 0 0; /* no animated underline (pos-behaviors.css) — the selected state has none */
+  }
+
+  /* remove button — optional, works inside any .pos-tag variant
+     Markup: <button type="button" class="pos-tag-remove" aria-label="Remove [label]">
+     When present, the outer tag element must NOT be a button (use span or li).
+  ============================================================================ */
+  /* pos-tag-remove — interactive graphic → --pos-color-interactive (not text token).
+     Real clickable button, so it gets its own hover feedback (below) — unlike
+     purely decorative field icons (select chevron, date/calendar icon). */
+  .pos-tag .pos-tag-remove {
+    flex-shrink: 0;
+    width: var(--pos-primitive-size-125);
+    height: var(--pos-primitive-size-125);
+    font-size: var(--pos-primitive-size-125); /* controls .pos-close svg size (1em) */
+    color: var(--pos-color-interactive);
+  }
+
+  .pos-tag .pos-tag-remove:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    color: var(--pos-color-interactive-hover);
+  }
+
+  /* selected — X icon must be inverted (white) to stay visible on interactive-color bg */
+  .pos-tag.pos-tag-selected .pos-tag-remove {
+    color: var(--pos-color-content-inverted-icon);
+  }
+
+  .pos-tag.pos-tag-selected .pos-tag-remove:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    color: var(--pos-color-content-inverted-icon);
+    opacity: 0.8;
+  }
+
+  /* disabled — X icon uses interactive-disabled color */
+  .pos-tag[aria-disabled="true"] .pos-tag-remove,
+  span.pos-tag[aria-disabled="true"] .pos-tag-remove {
+    color: var(--pos-color-interactive-disabled);
+  }
+
+  .pos-tag .pos-tag-remove svg {
+    width: var(--pos-primitive-size-125);
+    height: var(--pos-primitive-size-125);
+  }
+
+
+  /* semantic selected states — full utility color bg, inverted text
+  ============================================================================ */
+  .pos-tag.pos-tag-confirmation.pos-tag-selected {
+    background-color: var(--pos-color-confirmation);
+    color: var(--pos-color-content-inverted-text);
+    border-color: var(--pos-color-confirmation);
+  }
+
+  .pos-tag.pos-tag-confirmation.pos-tag-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-confirmation-hover);
+    border-color: var(--pos-color-confirmation-hover);
+  }
+
+  .pos-tag.pos-tag-warning.pos-tag-selected {
+    background-color: var(--pos-color-warning);
+    color: var(--pos-color-content-inverted-text);
+    border-color: var(--pos-color-warning);
+  }
+
+  .pos-tag.pos-tag-warning.pos-tag-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-warning-hover);
+    border-color: var(--pos-color-warning-hover);
+  }
+
+  .pos-tag.pos-tag-important.pos-tag-selected {
+    background-color: var(--pos-color-important);
+    color: var(--pos-color-content-inverted-text);
+    border-color: var(--pos-color-important);
+  }
+
+  .pos-tag.pos-tag-important.pos-tag-selected:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-color: var(--pos-color-important-hover);
+    border-color: var(--pos-color-important-hover);
+  }
+
+
+  /* interactive elements (button / a)
+  ============================================================================ */
+  button.pos-tag-interactive,
+  a.pos-tag-interactive {
+    cursor: pointer;
+    transition: background-size 0.2s ease;
+  }
+
+  button.pos-tag:focus-visible,
+  a.pos-tag:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  button.pos-tag:disabled,
+  button.pos-tag[aria-disabled="true"],
+  span.pos-tag[aria-disabled="true"] {
+    color: var(--pos-color-interactive-disabled);
+    cursor: not-allowed;
+  }
+
+  /* disabled — not-allowed cursor over the whole tag: its text, icon and remove button (which
+     would otherwise keep the pointer of .pos-close). Pointer events stay on so the cursor shows
+     (RULES.md 4.12); hover rules skip disabled tags, the click is blocked by [disabled] or the
+     aria-disabled click guard in init.liquid. Cursor only — a.pos-tag keeps the link's disabled
+     color from pos-typography.css. */
+  .pos-tag:disabled *,
+  .pos-tag[aria-disabled="true"],
+  .pos-tag[aria-disabled="true"] * {
+    cursor: not-allowed;
+  }
+
+}

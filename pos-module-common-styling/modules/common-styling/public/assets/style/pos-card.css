@@ -1,8 +1,11 @@
 /*
-  card component
+  card component — the first @layer block holds the base rules that used to live in the old DS's
+  style/pos-card.css (moved here 2026-10-02 when the old design system was removed; deprecated
+  *-disabled tokens swapped for their identical -muted values). The second block is the new DS's own.
 
   basic
   highlighted
+  brand primary / brand supplementary (new DS)
   content
   alert
 */
@@ -138,37 +141,211 @@
   .pos-card-alert svg {
     width: 1.5rem;
 
-    fill: var(--pos-color-content-text-supplementary);
+    color: var(--pos-color-content-text-supplementary);
   }
 
   /* warning */
   .pos-card-alert-warning {
-    background-color: var(--pos-color-warning-disabled);
+    background-color: var(--pos-color-warning-muted);
     border-color: var(--pos-color-warning);
   }
 
     .pos-card-alert-warning svg {
-      fill: var(--pos-color-warning);
+      color: var(--pos-color-warning);
     }
 
   /* error */
   .pos-card-alert-error {
-    background-color: var(--pos-color-important-disabled);
+    background-color: var(--pos-color-important-muted);
     border-color: var(--pos-color-important);
   }
 
     .pos-card-alert-error svg {
-      fill: var(--pos-color-important);
+      color: var(--pos-color-important);
     }
 
   /* success */
   .pos-card-alert-success {
-    background-color: var(--pos-color-confirmation-disabled);
+    background-color: var(--pos-color-confirmation-muted);
     border-color: var(--pos-color-confirmation);
   }
 
     .pos-card-alert-success svg {
-      fill: var(--pos-color-confirmation);
+      color: var(--pos-color-confirmation);
     }
+
+}
+
+@layer common-styling {
+
+  /* Base card — a subtle frame like the feature card (2026-10-03; was invisible outside HC)
+  ============================================================================ */
+  .pos-card {
+    border: 1px solid var(--pos-color-frame);
+  }
+
+  /* Content card — elevation (same rule as pos-feature-card)
+     Medium shadow on default, blurred on hover — unified across all card types.
+  ============================================================================ */
+  .pos-card-content {
+    box-shadow: var(--pos-primitive-shadow-medium);
+    border: 1px solid var(--pos-color-frame);
+    transition: box-shadow 0.15s linear;
+  }
+
+  /* hover only when the card holds a link / button — a static card stays still (COMPONENT-RULES.md › Cards) */
+  /* an interactive card shows the pointer over all of it */
+  .pos-card-content:has(a, button) {
+    cursor: pointer;
+  }
+
+  .pos-card-content:has(a, button):hover {
+    box-shadow: var(--pos-primitive-shadow-blurred);
+  }
+
+  /* Brand-tinted backgrounds — siblings of pos-card-highlighted (2026-10-02). Quiet tints of the
+     brand scales: content text, links and icons keep their contrast in every theme. HC: the
+     highlight background, the transparent frame above keeps the card visible.
+  ============================================================================ */
+  .pos-card.pos-card-brand-primary {
+    background-color: var(--pos-color-brand-primary-background);
+    border-color: var(--pos-color-brand-primary-frame);
+  }
+
+  .pos-card.pos-card-brand-supplementary {
+    background-color: var(--pos-color-brand-supplementary-background);
+    border-color: var(--pos-color-brand-supplementary-frame);
+  }
+
+
+  /* Card title — prominent by default, interactive color + animated underline on hover
+  ============================================================================ */
+  .pos-card-content-title {
+    color: var(--pos-color-content-text-prominent);
+    transition: color 0.15s linear;
+  }
+
+  .pos-card-content-title > span {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: 50% 100%;
+    transition: background-size 0.2s ease;
+  }
+
+  .pos-card-content-permalink {
+    text-decoration: none;
+  }
+
+  .pos-card-content-permalink:hover .pos-card-content-title {
+    color: var(--pos-color-interactive-text);
+  }
+
+  .pos-card-content-permalink:hover .pos-card-content-title > span {
+    background-size: 100% 2px;
+  }
+
+
+
+
+  /* Alert — inline info/warning/error/success message (modules/common-styling/content/alert.liquid).
+     Self-contained: does not rely on the shared .pos-card base rule's padding/radius (the base
+     rules at the top of this file, moved here from the old DS on 2026-10-02) — new-DS tokens only.
+  ============================================================================ */
+  .pos-card-alert {
+    display: flex;
+    align-items: center;
+    gap: var(--pos-primitive-size-15);
+
+    /* smaller than --pos-padding-card (24px) — an inline alert is denser content than a full
+       card, no dedicated --pos-padding-card-small token exists yet (2026-09-03, explicit
+       decision: direct primitive here only, not a new shared semantic token). */
+    padding: var(--pos-primitive-size-2);
+    border-radius: var(--pos-radius-card);
+
+    background-color: var(--pos-color-highlight-background);
+    border: 1px solid var(--pos-color-frame-transparent);
+    color: var(--pos-color-content-text);
+    /* Figma's "Flat" elevation (Small shadow was too much); no hover lift
+       since an alert isn't interactive. Resolves to none in HC via the shadow token. */
+    box-shadow: var(--pos-primitive-shadow-flat);
+  }
+
+  .pos-card-alert + .pos-card,
+  .pos-card + .pos-card-alert {
+    margin-block-start: var(--pos-gap-card-card);
+  }
+
+  .pos-card-alert svg {
+    width: var(--pos-size-icon-m);
+    color: var(--pos-color-content-icon);
+    flex-shrink: 0;
+  }
+
+  /* title + buttons — optional, added 2026-09-04 to match the real Figma alert component. Without
+     a title, .pos-card-alert-body behaves exactly like the old bare <span> it replaces (still a
+     single flex child, still center-aligned by the base rule above) — fully backward compatible
+     for any existing caller that only passes `content`. */
+  .pos-card-alert-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pos-card-alert-has-title {
+    align-items: flex-start;
+  }
+
+  .pos-card-alert-title {
+    display: block;
+    /* 12px, not the 16px text gap: the heading font's taller line box adds ~4px of empty space under the
+       glyphs, so 12px makes the VISIBLE title→text gap equal to the text→buttons gap (both ≈16.5px,
+       measured 2026-10-02). Same primitive the alert already uses for its icon gap. */
+    margin-block-end: var(--pos-primitive-size-15);
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-m);
+    font-weight: var(--pos-font-weight-bold);
+    color: var(--pos-color-content-text-prominent);
+  }
+
+  .pos-card-alert-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pos-gap-button-button-small);
+    margin-block-start: var(--pos-gap-card-elements);
+  }
+
+  /* docs-preview-only toggles (Options panel) — real callers control this via the icon/buttons
+     props on content/alert.liquid instead, these classes only exist for the live docs demo. */
+  .pos-card-alert--icon-hidden > svg {
+    display: none;
+  }
+
+  .pos-card-alert--actions-hidden .pos-card-alert-actions {
+    display: none;
+  }
+
+  .pos-card-alert-warning {
+    background-color: var(--pos-color-warning-muted);
+  }
+
+  .pos-card-alert-warning svg {
+    color: var(--pos-color-warning);
+  }
+
+  .pos-card-alert-error {
+    background-color: var(--pos-color-important-muted);
+  }
+
+  .pos-card-alert-error svg {
+    color: var(--pos-color-important);
+  }
+
+  .pos-card-alert-success {
+    background-color: var(--pos-color-confirmation-muted);
+  }
+
+  .pos-card-alert-success svg {
+    color: var(--pos-color-confirmation);
+  }
 
 }

@@ -1,0 +1,106 @@
+/*
+  toggle button — standalone on/off switch (no label card, see pos-switch-card for that)
+
+  Markup:
+    <label class="pos-toggle-btn">
+      <input type="checkbox" role="switch" class="pos-toggle-btn-input">
+      <span class="pos-toggle-btn-track" aria-hidden="true"></span>
+    </label>
+
+  States: off (default) / on (:checked) / off+disabled / on+disabled
+*/
+
+
+
+@layer common-styling {
+
+  .pos-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    width: 2.75rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .pos-toggle-btn-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .pos-toggle-btn-track {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--pos-primitive-radius-full);
+
+    background-color: var(--pos-color-content-icon);
+    transition: background-color .15s linear;
+  }
+
+  .pos-toggle-btn-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(1.5rem - 6px);
+    height: calc(1.5rem - 6px);
+    border-radius: var(--pos-primitive-radius-full);
+
+    background-color: var(--pos-color-page-background);
+    transition: transform .15s linear;
+  }
+
+  .pos-toggle-btn-input:checked + .pos-toggle-btn-track::after {
+    transform: translateX(calc(2.75rem - 1.5rem));
+  }
+
+  .pos-toggle-btn-input:checked + .pos-toggle-btn-track {
+    background-color: var(--pos-color-interactive);
+  }
+
+  /* hover — hover on a selected / checked element darkens it one hover step (light 600 -> 800, dark 400 -> 200, HC -> white) — 2026-10-02. Off: the track darkens to the strongest text color (light / dark); HC already
+     uses its foreground for the track, so there a frame marks the hover (--pos-color-frame-transparent
+     is transparent in light / dark, white in HC). On: the interactive hover step. */
+  .pos-toggle-btn:hover .pos-toggle-btn-input:not(:disabled) + .pos-toggle-btn-track {
+    background-color: var(--pos-color-content-text-prominent);
+  }
+
+  /* the HC frame sits 2px off the track like the focus ring, and never replaces the focus ring */
+  .pos-toggle-btn:hover .pos-toggle-btn-input:not(:disabled):not(:focus-visible) + .pos-toggle-btn-track {
+    outline: 2px solid var(--pos-color-frame-transparent);
+    outline-offset: 2px;
+  }
+
+  .pos-toggle-btn:hover .pos-toggle-btn-input:not(:disabled):checked + .pos-toggle-btn-track {
+    background-color: var(--pos-color-interactive-hover);
+  }
+
+  .pos-toggle-btn-input:focus-visible + .pos-toggle-btn-track,
+  .pos-debug-toggle-btn-focus + .pos-toggle-btn-track {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  .pos-toggle-btn-input:disabled + .pos-toggle-btn-track {
+    background-color: var(--pos-color-content-icon-disabled);
+  }
+
+  .pos-toggle-btn-input:disabled {
+    cursor: not-allowed;
+  }
+
+  .pos-toggle-btn:has(.pos-toggle-btn-input:disabled) {
+    cursor: not-allowed;
+  }
+
+  .pos-toggle-btn-input:checked:disabled + .pos-toggle-btn-track {
+    background-color: var(--pos-color-button-primary-disabled-background);
+  }
+
+}

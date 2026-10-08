@@ -41,6 +41,8 @@ window.pos.modules.multiselect = function(container, settings){
   module.settings.selectedTemplate = container.querySelector('.pos-form-multiselect-selected-template');
   // filter input (dom node)
   module.settings.filterInput = container.querySelector('.pos-form-multiselect-filter');
+  // button that clears the filter input's text (dom node)
+  module.settings.filterClear = container.querySelector('.pos-form-multiselect-filter-clear');
   // class list to add to items that are filtered out
   module.settings.filteredClass = 'pos-form-multiselect-list-item-filtered';
   // class name to add to the container if filtering outputs no results
@@ -63,6 +65,8 @@ window.pos.modules.multiselect = function(container, settings){
 
     // toggle opened class on the container when clicking the input (but not the selected items)
     module.settings.toggleButton.addEventListener('keydown', event => {
+      // disabled multiselect: the keyboard can't open or clear it (clicks are blocked by the init guard)
+      if(module.settings.toggleButton.getAttribute('aria-disabled') === 'true') return;
       if(event.key === 'Enter' || event.key === ' '){
         if(event.target.matches('.pos-form-multiselect-clear')){
           event.preventDefault();
@@ -115,6 +119,15 @@ window.pos.modules.multiselect = function(container, settings){
     if(module.settings.filterInput){
       module.settings.filterInput?.addEventListener('input', event => {
         module.filter(event.target.value);
+      });
+    }
+
+    // clearing the filter text
+    if(module.settings.filterClear){
+      module.settings.filterClear.addEventListener('click', () => {
+        module.settings.filterInput.value = '';
+        module.settings.filterInput.dispatchEvent(new Event('input', { bubbles: true }));
+        module.settings.filterInput.focus();
       });
     }
 

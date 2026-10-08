@@ -1,0 +1,497 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/interactions' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Interactions</h1>
+          <p>Composable hover and interaction behaviors defined in <code class="pos-code pos-code--small">pos-behaviors.css</code>. Each behavior is a standalone CSS pattern — apply it with a class, or wire it directly into a component's CSS rules.</p>
+        </header>
+
+
+        <section class="sg-behavior-section">
+          <h2 class="pos-heading-2">How to apply</h2>
+
+          <h3 class="pos-heading-4 styleguide-heading-4">1 — Add the class in HTML</h3>
+          <p>Any element can opt in by adding the behavior class alongside its component class.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;a class="pos-link pos-anim-underline"&gt;Animated link&lt;/a&gt;
+
+&lt;span class="pos-chip pos-chip-success pos-anim-grow"&gt;New&lt;/span&gt;
+
+&lt;button type="button" class="pos-tile-btn pos-anim-stroke"&gt;Option&lt;/button&gt;</code></pre>
+
+          <h3 class="pos-heading-4 styleguide-heading-4">2 — Wire into component CSS</h3>
+          <p>Components that always use a behavior apply it directly in their CSS selector — no extra class needed in HTML.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-css">/* pos-behaviors.css — component application */
+.pos-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 2px;
+  /* ... */
+}
+
+.pos-tile-btn {
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}</code></pre>
+
+          <h3 class="pos-heading-4 styleguide-heading-4">Configure with custom properties</h3>
+          <p>Each behavior exposes private custom properties (<code class="pos-code pos-code--small">--_anim-*</code>) for overrides. Set them on the component's own selector — they don't leak outside.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-css">.pos-my-component {
+  --_anim-stroke-color: var(--pos-color-confirmation);
+  --_anim-stroke-offset: -4px;
+  --_anim-grow-scale: 1.08;
+}</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-underline">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-underline</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">text</span>
+          </div>
+
+          <div class="styleguide-example">
+            <a href="#" class="pos-link sg-demo-link" onclick="return false">Hover to see the animated underline</a>
+          </div>
+
+          <p>A thin underline that slides in from the center outward on hover. Built into <code class="pos-code pos-code--small">.pos-link</code> via component application — no extra class needed on links. Apply the class manually to any other text element that needs the same effect: tag titles, card headings, or navigation items.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- pos-link has the animation built in --&gt;
+&lt;a href="#" class="pos-link"&gt;Animated link&lt;/a&gt;
+
+&lt;!-- Opt in on any other element --&gt;
+&lt;h3 class="pos-feature-card-title"&gt;&lt;span class="pos-anim-underline"&gt;Card title&lt;/span&gt;&lt;/h3&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-colorize">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-colorize</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">text</span>
+          </div>
+
+          <div class="styleguide-example">
+            <nav class="sg-colorize-demo">
+              <button type="button" class="pos-anim-colorize sg-colorize-item">Settings</button>
+              <button type="button" class="pos-anim-colorize sg-colorize-item">Profile</button>
+              <button type="button" class="pos-anim-colorize sg-colorize-item">Log out</button>
+            </nav>
+          </div>
+
+          <p>Transitions the element's text color to the interactive color on hover. Useful for navigation items, breadcrumbs, or secondary controls that should stay neutral at rest but clearly signal interactivity when hovered — without dominating the page with interactive color all the time.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;nav&gt;
+  &lt;a class="pos-anim-colorize" href="#settings"&gt;Settings&lt;/a&gt;
+  &lt;a class="pos-anim-colorize" href="#profile"&gt;Profile&lt;/a&gt;
+  &lt;a class="pos-anim-colorize" href="#logout"&gt;Log out&lt;/a&gt;
+&lt;/nav&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-elevate">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-elevate</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">surface</span>
+          </div>
+
+          <div class="styleguide-example">
+            <a href="#" class="pos-feature-card sg-elevate-card" onclick="return false">
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Hover to lift</span></h3>
+                <p class="pos-feature-card-text">The card moves up and casts a deeper shadow on hover.</p>
+              </div>
+            </a>
+          </div>
+
+          <p>Lifts the element slightly upward and deepens its shadow on hover — a clear visual signal that the surface is interactive. Built into <code class="pos-code pos-code--small">.pos-feature-card</code> via component application. Add the class to any card-like surface that should respond to hover with the same lift effect.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- pos-feature-card uses pos-anim-elevate by default --&gt;
+&lt;a href="#" class="pos-feature-card"&gt;...&lt;/a&gt;
+
+&lt;!-- Apply to any card-like surface --&gt;
+&lt;div class="pos-anim-elevate my-panel"&gt;...&lt;/div&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-grow">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-grow</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">any</span>
+          </div>
+
+          <div class="styleguide-example">
+            <span class="pos-chip pos-chip-success pos-anim-grow sg-demo-chip">New feature</span>
+          </div>
+
+          <p>Slightly scales the element up on hover. Best for compact, self-contained elements — chips, icon badges, thumbnails — where a subtle scale creates a "pick me up" affordance. Avoid on text lines or elements in tight rows where scaling causes overlap with neighboring content.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;span class="pos-chip pos-chip-success pos-anim-grow"&gt;New feature&lt;/span&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-shrink">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-shrink</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">any</span>
+          </div>
+
+          <div class="styleguide-example">
+            <span class="pos-chip pos-chip-neutral pos-anim-shrink sg-demo-chip">Dismiss</span>
+          </div>
+
+          <p>Counterpart to <code class="pos-code pos-code--small">pos-anim-grow</code> — slightly scales the element down on hover, suggesting a "recede" or "press in" feel. Often paired with a sibling that grows, creating a visual priority contrast. Avoid on primary actions or text-heavy elements where shrinking reduces perceived affordance.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;span class="pos-chip pos-chip-neutral pos-anim-shrink"&gt;Dismiss&lt;/span&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-stroke">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-stroke</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">control</span>
+          </div>
+
+          <div class="styleguide-example">
+            <div class="sg-stroke-demo">
+              <button type="button" class="pos-tile-btn">Option A</button>
+              <button type="button" class="pos-tile-btn">Option B</button>
+              <button type="button" class="pos-tile-btn">Option C</button>
+            </div>
+          </div>
+
+          <p>Reveals a 2px inset outline in the interactive color on hover. Because the stroke is drawn inside the element's border box (<code class="pos-code pos-code--small">outline-offset: -2px</code>), it creates no layout shift. Built into <code class="pos-code pos-code--small">.pos-tile-btn</code> via component application. Avoid on elements that already have a <code class="pos-code pos-code--small">:focus-visible</code> outline at the same offset — they may visually clash.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- pos-tile-btn uses pos-anim-stroke by default --&gt;
+&lt;button type="button" class="pos-tile-btn"&gt;Option&lt;/button&gt;
+
+&lt;!-- Opt in on any control surface --&gt;
+&lt;button type="button" class="pos-anim-stroke my-option"&gt;Option&lt;/button&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="anim-dismiss">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">.pos-anim-dismiss</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">container</span>
+          </div>
+
+          <div class="styleguide-example">
+            <div class="sg-demo-dismiss-v2">
+              <span id="sg-dismiss-demo2" class="pos-tag pos-tag-interactive pos-anim-dismiss" data-anim-no-remove>
+                Update available
+                <button type="button" class="pos-tag-remove pos-close" id="sg-dismiss-close2" aria-label="Dismiss">{% render 'modules/common-styling/icon', icon: 'x' %}</button>
+              </span>
+              <button type="button" class="pos-button pos-button-small" id="sg-dismiss-reset2" style="display:none">Reset demo</button>
+            </div>
+          </div>
+
+          <p>Animates a container out (fade + scale down) when its internal <code class="pos-code pos-code--small">.pos-close</code> button is clicked. Powered by <code class="pos-code pos-code--small">pos-behavior-dismiss.js</code> via event delegation — no per-instance initialization needed. The element is removed from the DOM after the animation, unless <code class="pos-code pos-code--small">data-anim-no-remove</code> is present. A <code class="pos-code pos-code--small">pos:dismissed</code> CustomEvent fires before removal so consuming code can react — show an undo button, update a count, or trigger any follow-up action.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;div class="pos-anim-dismiss"&gt;
+  Dismissible content
+  &lt;button type="button" class="pos-close" aria-label="Dismiss"&gt;
+    &lt;!-- × icon --&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Keep in DOM after animation (for undo patterns) --&gt;
+&lt;div class="pos-anim-dismiss" data-anim-no-remove&gt;
+  ...
+&lt;/div&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section">
+          <h2 class="pos-heading-2">JS behaviors</h2>
+          <p>Defined in <code class="pos-code pos-code--small">assets/js/pos-behavior-*.js</code>, namespaced under <code class="pos-code pos-code--small">window.pos.behaviors</code>. Each behavior exposes a function that takes a container element and an options object, and also supports HTML <code class="pos-code pos-code--small">data-*</code> auto-initialization — no JS required in consuming pages.</p>
+        </section>
+
+
+        <section class="sg-behavior-section" id="behavior-sliding-indicator">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">slidingIndicator</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">JS · container</span>
+          </div>
+
+          <div class="styleguide-example">
+            <div class="pos-segmented-control pos-segmented-control--small" role="group" aria-label="Demo">
+              <button type="button" class="pos-segmented-control-btn pos-segmented-control-btn--active" aria-pressed="true">Day</button>
+              <button type="button" class="pos-segmented-control-btn" aria-pressed="false">Week</button>
+              <button type="button" class="pos-segmented-control-btn" aria-pressed="false">Month</button>
+            </div>
+          </div>
+
+          <p>Tracks the active item inside a container and writes its position/width as <code class="pos-code pos-code--small">--indicator-x</code> / <code class="pos-code pos-code--small">--indicator-w</code> CSS custom properties — the CSS renders the sliding pill using these vars. Recalculates on window resize. Used by Segmented button and Toggle group, which previously each duplicated this logic independently.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">const indicator = window.pos.behaviors.slidingIndicator(container, {
+  activeSelector:    '[aria-pressed="true"]',
+  noTransitionClass: 'my-component--no-transition',
+});
+
+// call again after the active item changes:
+indicator.update(true); // animate: true</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="behavior-resize">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">resize</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">JS · handle</span>
+          </div>
+
+          <div class="styleguide-example">
+            <div class="sg-resize-demo">
+              <div class="sg-resize-demo-panel" id="sg-resize-target">Drag the handle →</div>
+              <div class="sg-resize-demo-handle" data-resize-handle data-resize-target="#sg-resize-target" data-resize-axis="x" data-resize-css-var="--sg-resize-width" data-resize-min="120" data-resize-max="280" data-resize-direction="1" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <p>Attaches pointer-drag handling to a handle element. On drag, writes the new size as a CSS custom property on a target element — CSS uses that var for <code class="pos-code pos-code--small">width</code>, <code class="pos-code pos-code--small">height</code>, or <code class="pos-code pos-code--small">min-height</code>. Works for both horizontal (column resize) and vertical (row/textarea resize) axes via the <code class="pos-code pos-code--small">axis</code> option.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;div data-resize-handle
+     data-resize-target="#my-panel"
+     data-resize-axis="x"
+     data-resize-css-var="--panel-width"
+     data-resize-min="240"
+     data-resize-direction="-1"&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  #my-panel { width: var(--panel-width, 320px); }
+&lt;/style&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="behavior-smooth-scroll">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">smoothScroll</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">JS · container</span>
+          </div>
+
+          <div class="styleguide-example">
+            <div class="sg-smoothscroll-demo">
+              <nav class="sg-smoothscroll-demo-nav" id="sg-smoothscroll-nav">
+                <a href="#sg-scroll-a" class="pos-link pos-link--small">Section A</a>
+                <a href="#sg-scroll-b" class="pos-link pos-link--small">Section B</a>
+                <a href="#sg-scroll-c" class="pos-link pos-link--small">Section C</a>
+              </nav>
+              <div class="sg-smoothscroll-demo-container" data-smooth-scroll data-scroll-link-scope="#sg-smoothscroll-nav">
+                <div id="sg-scroll-a" class="sg-smoothscroll-demo-section">Section A</div>
+                <div id="sg-scroll-b" class="sg-smoothscroll-demo-section">Section B</div>
+                <div id="sg-scroll-c" class="sg-smoothscroll-demo-section">Section C</div>
+              </div>
+            </div>
+          </div>
+
+          <p>Scrolls a custom scroll container (not <code class="pos-code pos-code--small">window</code>) to a target element with <code class="pos-code pos-code--small">behavior: 'smooth'</code>, and intercepts same-page anchor clicks inside a configurable scope so navigation stays inside the container. Designed for single-page layouts where only one column scrolls — not the sidebar, not the window.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;div data-smooth-scroll
+     data-scroll-link-scope=".my-sidebar"
+     data-scroll-init-delay="80"&gt;
+  ...
+&lt;/div&gt;</code></pre>
+        </section>
+
+
+        <section class="sg-behavior-section" id="behavior-expand-collapse">
+          <div class="sg-behavior-heading">
+            <h2 class="pos-heading-2">expandCollapse</h2>
+            <span class="pos-chip pos-chip-neutral pos-chip--tiny">JS · details</span>
+          </div>
+
+          <div class="styleguide-example">
+            <details class="sg-expand-demo" data-anim-details>
+              <summary class="pos-heading-4">Click to expand</summary>
+              <p>Animated content revealed with the Web Animations API — height animates smoothly instead of snapping open on a native <code class="pos-code pos-code--small">&lt;details&gt;</code>.</p>
+            </details>
+          </div>
+
+          <p>Adds a smooth height animation to a native <code class="pos-code pos-code--small">&lt;details&gt;</code> element using the Web Animations API — the content itself is never reflowed during the animation, so flex/grid layouts inside work correctly. Native open/close semantics are preserved (the <code class="pos-code pos-code--small">open</code> attribute is added/removed after the animation completes), so it remains accessible and works without JS.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;details data-anim-details data-anim-duration="220"&gt;
+  &lt;summary&gt;Title&lt;/summary&gt;
+  &lt;p&gt;Animated content.&lt;/p&gt;
+&lt;/details&gt;</code></pre>
+        </section>
+
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  /* Example containers: highlighted background, content centered */
+  .sg-behavior-section .styleguide-example {
+    background-color: var(--pos-color-highlight-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 5rem;
+  }
+
+  /* pos-anim-dismiss and pos-anim-shrink demos: use content bg so the element is visible */
+  #anim-dismiss .styleguide-example,
+  #anim-shrink .styleguide-example {
+    background-color: var(--pos-color-content-background);
+  }
+
+  /* More breathing room between example, body text, and code block */
+  .sg-behavior-section .styleguide-example + p,
+  .sg-behavior-section p + pre,
+  .sg-behavior-section .styleguide-example + pre {
+    margin-block-start: var(--pos-primitive-size-2);
+  }
+
+  /* Divider + section-section gap between behavior sections */
+  .sg-behavior-section + .sg-behavior-section {
+    border-block-start: 1px solid var(--pos-color-frame);
+    margin-block-start: var(--pos-gap-section-section);
+    padding-block-start: var(--pos-gap-section-section);
+  }
+
+  /* resize demo — panel + drag handle */
+  .sg-resize-demo {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sg-resize-demo-panel {
+    width: var(--sg-resize-width, 180px);
+    max-width: 100%;
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pos-primitive-size-2);
+    background-color: var(--pos-color-content-background);
+    border: 1px solid var(--pos-color-frame);
+    border-inline-end: none;
+    border-radius: var(--pos-radius-card) 0 0 var(--pos-radius-card);
+    font-size: var(--pos-font-size-ss);
+    color: var(--pos-color-content-text-supplementary);
+    text-align: center;
+  }
+
+  .sg-resize-demo-handle {
+    position: relative;
+    flex-shrink: 0;
+    width: var(--pos-primitive-size-15);
+    cursor: col-resize;
+    background-color: var(--pos-color-highlight-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: 0 var(--pos-radius-card) var(--pos-radius-card) 0;
+  }
+
+  .sg-resize-demo-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 1rem;
+    background-color: var(--pos-color-content-icon-disabled);
+    transform: translate(-50%, -50%);
+    border-radius: 1px;
+  }
+
+  /* smoothScroll demo — mini nav + scrollable container */
+  .sg-smoothscroll-demo {
+    display: flex;
+    gap: var(--pos-primitive-size-2);
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .sg-smoothscroll-demo-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-primitive-size-05);
+    flex-shrink: 0;
+  }
+
+  .sg-smoothscroll-demo-container {
+    flex: 1;
+    height: 8rem;
+    overflow-y: auto;
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-card);
+    background-color: var(--pos-color-content-background);
+  }
+
+  .sg-smoothscroll-demo-section {
+    min-height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pos-primitive-size-2);
+    font-size: var(--pos-font-size-ss);
+    color: var(--pos-color-content-text-supplementary);
+    border-block-end: 1px solid var(--pos-color-frame);
+  }
+
+  .sg-smoothscroll-demo-section:last-child {
+    border-block-end: none;
+  }
+
+  /* expandCollapse demo — self-contained details card */
+  .sg-expand-demo {
+    width: 100%;
+    max-width: 320px;
+    padding: var(--pos-primitive-size-2);
+    background-color: var(--pos-color-content-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-card);
+  }
+
+  .sg-expand-demo summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .sg-expand-demo summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .sg-expand-demo p {
+    margin-block-start: var(--pos-primitive-size-2);
+    font-size: var(--pos-font-size-ss);
+    color: var(--pos-color-content-text-supplementary);
+  }
+</style>
+
+<script>
+(function () {
+  var demo  = document.getElementById('sg-dismiss-demo2');
+  var close = document.getElementById('sg-dismiss-close2');
+  var reset = document.getElementById('sg-dismiss-reset2');
+  if (!demo || !close || !reset) return;
+
+  close.addEventListener('click', function () {
+    demo.style.animation     = '_pos-dismiss-out 0.2s ease forwards';
+    demo.style.pointerEvents = 'none';
+    setTimeout(function () {
+      demo.style.display  = 'none';
+      reset.style.display = '';
+    }, 220);
+  });
+
+  reset.addEventListener('click', function () {
+    demo.style.display       = '';
+    demo.style.animation     = '';
+    demo.style.pointerEvents = '';
+    reset.style.display      = 'none';
+  });
+})();
+</script>

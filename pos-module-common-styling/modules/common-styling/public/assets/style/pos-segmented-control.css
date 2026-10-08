@@ -1,0 +1,306 @@
+/*
+  segmented button component
+
+  wrapper
+    btn (inactive — visible border)
+      active (border matches bg, drop shadow)
+  variants
+    default      — blue active button, page-background container
+    highlighted  — same active, slightly darker container, stronger inactive text
+    subtle       — raised white active button, interactive-blue text
+  sizes
+    normal: container 52px, buttons 44px
+    small:  container 38px, buttons 30px
+*/
+
+
+
+@layer common-styling {
+
+  /* wrapper
+  ============================================================================ */
+  .pos-segmented-control,
+  .pos-segmented-control * {
+    box-sizing: border-box;
+  }
+
+  .pos-segmented-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    padding: var(--pos-primitive-size-05);   /* 4px */
+    padding-inline-end: 5px;               /* +1px right — compensates visual weight of button shadow */
+    position: relative;
+
+    background-color: var(--pos-color-page-background);
+    border-radius: var(--pos-radius-button);
+    border: 1px solid var(--pos-color-frame-transparent);
+    box-shadow: var(--pos-primitive-shadow-inner);
+  }
+
+
+  /* sliding indicator — injected by JS via --indicator-x / --indicator-w
+  ============================================================================ */
+  .pos-segmented-control--js::before {
+    content: '';
+    position: absolute;
+    top: var(--pos-primitive-size-05);
+    left: var(--indicator-x, var(--pos-primitive-size-05));
+    width: var(--indicator-w, 0px);
+    height: calc(100% - calc(var(--pos-primitive-size-05) * 2));
+    border-radius: var(--pos-radius-button);
+    background-color: var(--pos-color-button-primary-background);
+    /* HC-visible ring (transparent in light/dark, real in HC) — this indicator pill, not
+       the button itself, is what actually renders the active segment whenever JS is
+       enabled (which it always is live), so the ring has to live here — adding it only
+       to .pos-segmented-control-btn--active (below) has no visible effect once this
+       pill is on top of it (confirmed 2026-09-02, first fix attempt missed this). */
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered),
+      inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+    transition: left 0.2s ease, width 0.2s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pos-segmented-control--js.pos-segmented-control--no-transition::before {
+    transition: none;
+  }
+
+  /* subtle variant indicator */
+  .pos-segmented-control--subtle.pos-segmented-control--js::before {
+    background-color: var(--pos-color-button-inverted-background);
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered),
+      inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+  }
+
+
+  /* button
+  ============================================================================ */
+  .pos-segmented-control-btn {
+    all: unset;
+    display: revert;
+
+    padding-inline: 1rem;                            /* 16px at default, scales with font size */
+    height: var(--pos-height-button);                /* 44px */
+    gap: var(--pos-primitive-size-1);                /* 8px */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+
+    border-radius: var(--pos-radius-button);
+    border: none;
+    z-index: 1;
+
+    font-family: var(--pos-font-buttons);
+    font-size: var(--pos-font-size-big-button-text);
+    font-weight: var(--pos-font-weight-medium);
+    color: var(--pos-color-content-text-supplementary-interactive);
+    white-space: nowrap;
+
+    transition: color 0.1s linear, border-color 0.1s linear;
+  }
+
+  /* hover rules skip disabled buttons and every button of a disabled control (RULES.md 4.12) —
+     :where() keeps the original specificity */
+  .pos-segmented-control-btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    color: var(--pos-color-content-text-interactive);
+  }
+
+  .pos-segmented-control-btn:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  /* active state */
+  .pos-segmented-control-btn--active,
+  .pos-segmented-control-btn[aria-pressed="true"] {
+    background-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+    /* inset ring (not a real border, so no layout shift vs. the inactive
+       0-border state — see the standing rule against changing border-width
+       between states) — transparent in light/dark (invisible, no change
+       there) but a real visible line in HC mode — without this, the active
+       segment had no way at all to be told apart from its own container in
+       HC beyond background contrast, which HC's uniformly bright interactive
+       colors can wash out (confirmed 2026-09-02, Highlighted variant). */
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered),
+      inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+    cursor: default;
+  }
+
+  .pos-segmented-control-btn--active:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+  .pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    color: var(--pos-color-button-primary-text);
+  }
+
+  /* a single disabled button (outside a disabled control) — cursor only; the whole-control
+     disabled state is below */
+  .pos-segmented-control-btn:disabled,
+  .pos-segmented-control-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+
+  /* highlighted variant
+  ============================================================================ */
+  .pos-segmented-control--highlighted {
+    background-color: var(--pos-color-highlight-background);
+  }
+
+  .pos-segmented-control--highlighted .pos-segmented-control-btn {
+    color: var(--pos-color-content-text-interactive);
+  }
+
+  .pos-segmented-control--highlighted .pos-segmented-control-btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    color: var(--pos-color-content-text-prominent);
+  }
+
+  .pos-segmented-control--highlighted .pos-segmented-control-btn--active,
+  .pos-segmented-control--highlighted .pos-segmented-control-btn[aria-pressed="true"],
+  .pos-segmented-control--highlighted .pos-segmented-control-btn--active:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+  .pos-segmented-control--highlighted .pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    /* explicit background repeated here (not just relying on the base .pos-segmented-control-btn--active
+       rule above) — same blue as every other variant's active button, per this file's own "highlighted —
+       same active" header comment. Kept explicit so a future edit to .pos-segmented-control--highlighted
+       .pos-segmented-control-btn's color rule can't accidentally start also touching background without
+       this line making the intended value obvious. */
+    background-color: var(--pos-color-button-primary-background);
+    color: var(--pos-color-button-primary-text);
+  }
+
+  /* specificity boost for <a> elements: :where(.pos-app) a:hover:not():not():not() = 0,4,1
+     needs two classes on same element + `a` tag + :hover to reach 0,4,1 and win by source order */
+  .pos-segmented-control.pos-segmented-control--highlighted a.pos-segmented-control-btn--active:hover:where(:not([aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+  .pos-segmented-control.pos-segmented-control--highlighted a.pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not([aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    color: var(--pos-color-button-primary-text);
+  }
+
+
+  /* subtle variant
+  ============================================================================ */
+  .pos-segmented-control--subtle .pos-segmented-control-btn--active,
+  .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"] {
+    background-color: var(--pos-color-button-inverted-background);
+    color: var(--pos-color-button-inverted-text);
+    /* HC-visible ring, same reasoning as the base active rule above */
+    box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered),
+      inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+  }
+
+  .pos-segmented-control--subtle .pos-segmented-control-btn--active:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+  .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    color: var(--pos-color-button-inverted-text);
+  }
+
+
+  /* disabled — whole control
+     Apply .pos-segmented-control--disabled to the wrapper and disabled to all buttons.
+     Active state remains visible (shows current selection) but muted. The buttons keep pointer
+     events so the not-allowed cursor shows over the whole control (RULES.md 4.12); the hover
+     rules above skip them.
+  ============================================================================ */
+  .pos-segmented-control--disabled {
+    background-color: var(--pos-color-highlight-background);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .pos-segmented-control--disabled .pos-segmented-control-btn {
+    color: var(--pos-color-content-text-disabled);
+    cursor: not-allowed;
+  }
+
+  .pos-segmented-control--disabled .pos-segmented-control-btn * {
+    cursor: not-allowed;
+  }
+
+  .pos-segmented-control--disabled .pos-segmented-control-btn:hover {
+    color: var(--pos-color-content-text-disabled);
+  }
+
+  .pos-segmented-control--disabled .pos-segmented-control-btn--active,
+  .pos-segmented-control--disabled .pos-segmented-control-btn[aria-pressed="true"] {
+    background-color: var(--pos-color-content-background);
+    color: var(--pos-color-content-text-disabled);
+    box-shadow: none;
+  }
+
+  /* JS indicator pill — muted when disabled, but still needs the HC-visible ring: the
+     header comment above says disabled "shows current selection but muted", so the
+     selection must stay identifiable in HC even while disabled. */
+  .pos-segmented-control--js.pos-segmented-control--disabled::before {
+    background-color: var(--pos-color-content-background);
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+  }
+
+
+  /* small size
+  ============================================================================ */
+  .pos-segmented-control--small .pos-segmented-control-btn {
+    height: var(--pos-height-button-small);          /* 30px */
+    font-size: var(--pos-font-size-small-button-text);
+  }
+
+
+  /* when JS is active, indicator provides the background — remove it from button
+     must come after all variant overrides so it wins at equal specificity
+  ============================================================================ */
+  .pos-segmented-control--js .pos-segmented-control-btn--active,
+  .pos-segmented-control--js .pos-segmented-control-btn[aria-pressed="true"] {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+
+  /* dark theme — subtle variant diverges from light
+     light: content-background (white) + bevel + medium-layered shadow
+     dark:  button-inverted-background (grey-dark-4) + no shadow
+  ============================================================================ */
+  :is(:root.pos-theme-dark:where(.pos-theme-darkEnabled), .pos-scheme-dark) .pos-segmented-control--subtle .pos-segmented-control-btn--active,
+  :is(:root.pos-theme-dark:where(.pos-theme-darkEnabled), .pos-scheme-dark) .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"],
+  :is(:root.pos-theme-dark:where(.pos-theme-darkEnabled), .pos-scheme-dark) .pos-segmented-control--subtle .pos-segmented-control-btn--active:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+  :is(:root.pos-theme-dark:where(.pos-theme-darkEnabled), .pos-scheme-dark) .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+    background-color: var(--pos-color-button-inverted-background);
+    /* HC-visible ring must survive dark mode's flat look — see the matching note on
+       the @media (prefers-color-scheme: dark) block below. */
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+  }
+
+  :is(:root.pos-theme-dark:where(.pos-theme-darkEnabled), .pos-scheme-dark) .pos-segmented-control--subtle.pos-segmented-control--js::before {
+    background-color: var(--pos-color-button-inverted-background);
+    /* this is the rule that actually renders live (--js is always present) — see the
+       matching note on the base --js::before ring above. */
+    box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+  }
+
+}
+
+
+@layer common-styling {
+  /* OS-following dark mode: only when the app enabled it (pos-theme-darkEnabled), like the dark
+     token block in pos-config.css — before, an OS in dark mode turned this dark in light-mode apps. */
+  @media (prefers-color-scheme: dark) {
+    :where(:root.pos-theme-darkEnabled:not(.pos-theme-light)) .pos-segmented-control--subtle .pos-segmented-control-btn--active,
+    :where(:root.pos-theme-darkEnabled:not(.pos-theme-light)) .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"],
+    :where(:root.pos-theme-darkEnabled:not(.pos-theme-light)) .pos-segmented-control--subtle .pos-segmented-control-btn--active:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)),
+    :where(:root.pos-theme-darkEnabled:not(.pos-theme-light)) .pos-segmented-control--subtle .pos-segmented-control-btn[aria-pressed="true"]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *, .pos-segmented-control--disabled *)) {
+      background-color: var(--pos-color-button-inverted-background);
+      /* dark mode's own flat look drops the bevel/layered shadow, but the HC-visible
+         ring must survive here too — this rule matches dark mode regardless of
+         whether HC is ALSO active at the same time, and previously wiped the ring
+         added on the base active rule with a blanket box-shadow: none (confirmed
+         2026-09-02, still missing after the first attempt at this fix). */
+      box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+    }
+
+    :where(:root.pos-theme-darkEnabled:not(.pos-theme-light)) .pos-segmented-control--subtle.pos-segmented-control--js::before {
+      background-color: var(--pos-color-button-inverted-background);
+      box-shadow: inset 0 0 0 var(--pos-border-button) var(--pos-color-frame-transparent);
+    }
+  }
+}

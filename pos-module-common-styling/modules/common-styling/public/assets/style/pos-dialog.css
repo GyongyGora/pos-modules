@@ -44,6 +44,7 @@
     padding: var(--pos-padding-card);
 
     opacity: 0;
+    border: 1px solid var(--pos-color-frame-transparent);
     border-radius: var(--pos-radius-card);
     background-color: var(--pos-color-content-background);
     box-shadow: var(--pos-shadow-popover);
@@ -69,18 +70,37 @@
   ============================================================================ */
   .pos-dialog-header {
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: space-between;
+    padding-block-end: var(--pos-gap-section-elements);
     margin-block-end: var(--pos-gap-section-elements);
+    border-block-end: 1px solid var(--pos-color-frame);
   }
 
+    /* Simple (no-title) header — float the close button top-right instead of a full-width row
+       stacked above the content, so the content's first line starts level with it and text wraps
+       around it naturally. This is the classic, well-supported "icon floated beside the first
+       line of text" pattern — used here after two other approaches each produced a real,
+       reproducible misalignment: CSS grid auto-placement created an extra empty row and an
+       oddly-tall header box; absolute positioning (inset-block-start: 0 on the header, relying on
+       the containing-block padding-edge math to line up with the content's own top) looked
+       correct by the CSS spec but did not actually align in the browser, by a large enough margin
+       (confirmed live, twice) that the reasoning behind it was treated as wrong, not just
+       imprecise. A float sidesteps needing that reasoning to be right at all — the browser's own
+       line-wrapping engine positions the text relative to the float automatically. */
     .pos-dialog-header-simple {
-      margin-block-end: -1rem;
-      justify-content: flex-end;
+      float: inline-end;
+      padding-block-end: 0;
+      margin-block-end: 0;
+      margin-inline-start: var(--pos-gap-section-elements);
+      border-block-end: none;
     }
 
     .pos-dialog-header .pos-heading-2 {
-      margin-block-start: -.3em;
+      margin-block-start: 0;
+      font-size: var(--pos-font-size-l);
+      font-weight: 700;
+      line-height: 1.17;
     }
 
     .pos-dialog-header .pos-dialog-close {
@@ -97,9 +117,7 @@
         transition: scale .2s var(--pos-transition-ui-detail);
     }
 
-    .pos-dialog-header .pos-dialog-close:hover {
-        color: var(--pos-color-interactive-hover);
-    }
+    /* color + scale on hover via .pos-close (pos-close.css) */
 
     .pos-dialog-header .pos-dialog-close:active {
         scale: .9;
@@ -120,7 +138,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--pos-gap-button-button);
-    justify-content: center;
+    justify-content: flex-start;
   }
 
 

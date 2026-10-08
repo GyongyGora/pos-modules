@@ -1,0 +1,1862 @@
+{% comment %}
+  Generated from tokens/components/badge.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-badge">
+{% raw %}
+{
+  "_about": "Component spec for pos-badge — created 2026-10-06 from the approved component-wizard draft (Figma node 8293:129201) via scripts/generate-component.js. Single source of truth for the Variants/Usage/Tokens tabs on /style-guide. Six variants: type (dot / number / max-count) × size (small / big); not interactive, so only the normal state. Figma names looked up in tokens/css-to-figma.json (RULES.md §6.4). Regenerate spec-badge.liquid after any change here — never hand-edit the .liquid partial.",
+  "component": "badge",
+  "name": "Badge",
+  "description": "A small, round indicator on another element — a dot for \"something new\", or a count (up to 9, then \"99+\"), in an intent color (important by default) with a ring in the background color that separates it from what it sits on.",
+  "whenToUse": [
+    "Signaling that something new is waiting on an icon or avatar — a dot, no number (e.g. new messages on a bell).",
+    "Showing a small unread / pending count on an icon or tab — a number, or the max-count \"99+\" form when it gets large."
+  ],
+  "whenNotToUse": [
+    "The information is a status or category with words — use a Tag or a Chip.",
+    "The message is important enough that the user must not miss it — use an Alert card or a Toast; a badge is a quiet, glanceable supplement.",
+    "The label would need more than a few characters — badges hold a dot, a number or \"99+\" only."
+  ],
+  "do": [
+    "Place the badge at the top-right corner of the element it belongs to, overlapping its edge.",
+    "Switch to the max-count form above 99 (\"99+\") so the badge never grows wide.",
+    "Use the small size on small icons (16px) and the big size on larger icons, avatars or tabs."
+  ],
+  "dont": [
+    "Make the badge itself clickable — it describes its anchor element, which is the interactive part.",
+    "Put more than one badge on the same element.",
+    "Use a badge for status words or long text."
+  ],
+  "accessibility": [
+    "The badge is visual only: put the meaning into the anchor's accessible name (e.g. aria-label=\"Notifications, 3 unread\") — screen readers don't announce a bare number in context.",
+    "A dot badge has no text: mark it aria-hidden=\"true\" and say \"new\" in the anchor's label.",
+    "The white (background-colored) ring keeps the badge visible on any background — don't remove it."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "type",
+      "type": "'pos-badge--dot' | 'pos-badge--number' | 'pos-badge--max-count'",
+      "default": "required",
+      "description": "Dot: no content, aria-hidden. Number: one digit (1–9). Max count: a short count like \"99+\", the badge widens with padding."
+    },
+    {
+      "name": "size",
+      "type": "'pos-badge--small' | 'pos-badge--big'",
+      "default": "required",
+      "description": "Small: 16px (icon-s). Big: 20px (icon-m)."
+    },
+    {
+      "name": "intent",
+      "type": "'pos-badge--important' | 'pos-badge--confirmation' | 'pos-badge--brand' | 'pos-badge--neutral'",
+      "default": "'pos-badge--important' (can be omitted)",
+      "description": "Fill color by meaning: important (alerts, unread), confirmation (done, online), brand (highlight in the brand color), neutral (low-emphasis, grey)."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal"
+    ],
+    "type": [
+      "dot",
+      "number",
+      "max-count"
+    ],
+    "size": [
+      "small",
+      "big"
+    ],
+    "intent": [
+      "important",
+      "confirmation",
+      "brand",
+      "neutral"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "dot-small": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--small",
+      "label": "Dot / Small / Important",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-small-confirmation": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--small.pos-badge--confirmation",
+      "label": "Dot / Small / Confirmation",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--small",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-small-brand": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--small.pos-badge--brand",
+      "label": "Dot / Small / Brand",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--small",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-small-neutral": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--small.pos-badge--neutral",
+      "label": "Dot / Small / Neutral",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--small",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-big": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--big",
+      "label": "Dot / Big / Important",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--big"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-big-confirmation": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--big.pos-badge--confirmation",
+      "label": "Dot / Big / Confirmation",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--big",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-big-brand": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--big.pos-badge--brand",
+      "label": "Dot / Big / Brand",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--big",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "dot-big-neutral": {
+      "selector": ".pos-badge.pos-badge--dot.pos-badge--big.pos-badge--neutral",
+      "label": "Dot / Big / Neutral",
+      "classes": [
+        "pos-badge--dot",
+        "pos-badge--big",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-small": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--small",
+      "label": "Number / Small / Important",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-small-confirmation": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--small.pos-badge--confirmation",
+      "label": "Number / Small / Confirmation",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--small",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-small-brand": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--small.pos-badge--brand",
+      "label": "Number / Small / Brand",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--small",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-small-neutral": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--small.pos-badge--neutral",
+      "label": "Number / Small / Neutral",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--small",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-big": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--big",
+      "label": "Number / Big / Important",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--big"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-big-confirmation": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--big.pos-badge--confirmation",
+      "label": "Number / Big / Confirmation",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--big",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-big-brand": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--big.pos-badge--brand",
+      "label": "Number / Big / Brand",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--big",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "number-big-neutral": {
+      "selector": ".pos-badge.pos-badge--number.pos-badge--big.pos-badge--neutral",
+      "label": "Number / Big / Neutral",
+      "classes": [
+        "pos-badge--number",
+        "pos-badge--big",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Width and height",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-small": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--small",
+      "label": "Max count / Small / Important",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--small"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-small-confirmation": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--small.pos-badge--confirmation",
+      "label": "Max count / Small / Confirmation",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--small",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-small-brand": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--small.pos-badge--brand",
+      "label": "Max count / Small / Brand",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--small",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-small-neutral": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--small.pos-badge--neutral",
+      "label": "Max count / Small / Neutral",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--small",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-badge",
+                  "figma": "Family/badge",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xxxs",
+                  "figma": "Size/font XXXS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-xs",
+                  "figma": "Line-height/lineH XS",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-big": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--big",
+      "label": "Max count / Big / Important",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--big"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-big-confirmation": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--big.pos-badge--confirmation",
+      "label": "Max count / Big / Confirmation",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--big",
+        "pos-badge--confirmation"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-big-brand": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--big.pos-badge--brand",
+      "label": "Max count / Big / Brand",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--big",
+        "pos-badge--brand"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-standout-background",
+                  "figma": "Standout elements/Standout Background",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "max-count-big-neutral": {
+      "selector": ".pos-badge.pos-badge--max-count.pos-badge--big.pos-badge--neutral",
+      "label": "Max count / Big / Neutral",
+      "classes": [
+        "pos-badge--max-count",
+        "pos-badge--big",
+        "pos-badge--neutral"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Ring (2px border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Number / count text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Height",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-05",
+                  "figma": "Size/0.5 unit",
+                  "role": "Padding left / right",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-sidenotes",
+                  "figma": "Family/sidenotes",
+                  "role": "Font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-xs",
+                  "figma": "Size/font XS",
+                  "role": "Font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-line-height-s",
+                  "figma": "Line-height/lineH S",
+                  "role": "Line height",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<!-- dot: something new, no number -->\n<span class=\"pos-badge pos-badge--dot pos-badge--small\" aria-hidden=\"true\"></span>\n\n<!-- number -->\n<span class=\"pos-badge pos-badge--number pos-badge--big\">9</span>\n\n<!-- max count -->\n<span class=\"pos-badge pos-badge--max-count pos-badge--big\">99+</span>\n\n<!-- intent: important (default), confirmation, brand, neutral -->\n<span class=\"pos-badge pos-badge--number pos-badge--small pos-badge--confirmation\">3</span>\n<span class=\"pos-badge pos-badge--max-count pos-badge--big pos-badge--neutral\">99+</span>"
+}
+{% endraw %}
+</script>

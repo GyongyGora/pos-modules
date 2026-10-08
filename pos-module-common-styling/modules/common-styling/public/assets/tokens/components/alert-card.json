@@ -1,0 +1,383 @@
+{
+  "_about": "Component spec for pos-card-alert (modules/common-styling/content/alert.liquid + style/pos-card.css). Restored 2026-09-01 after being found as an orphaned, never-wired-up COMP_CONFIGS entry: the usage content below was already drafted but never got a spec JSON, preview markup, or nav entry. Documents the alert-card family (info/warning/error/success), matching content/alert.liquid's real type values and icon choices exactly. Built as a fully self-contained new-DS component: style/pos-card.css defines .pos-card-alert and its 3 modifiers directly (padding/radius/background/border/icon color), using semantic tokens only (--pos-color-{warning,important,confirmation}-muted). The Liquid partial (content/alert.liquid) is markup-only and CSS-agnostic. Regenerate spec-alert-card.liquid via scripts/generate-component.js's regen helper (RULES.md §6.5) if this file changes. 2026-09-03: two bugs fixed — (1) the Info icon used --pos-color-content-text-supplementary (a text-role token) instead of the correct decorative-icon token --pos-color-content-icon; (2) the message text used --pos-color-highlight-text, a figma:null same-value alias with no independent Figma binding, causing confusion in the Tokens panel — switched to the real, Figma-bound --pos-color-content-text, which resolves to the exact same value in every theme (light/dark/hc), so this is a pure naming correctness fix with zero visual change. 2026-09-03: border switched from --pos-color-frame (a real visible grey border) to --pos-color-frame-transparent across all four intents — invisible in light/dark (background color alone signals the intent), visible in HC mode, matching the same token already used by Avatar/Chip/Code/Popover/Segmented control. 2026-09-03: icon size reduced from a hardcoded 1.5rem to --pos-size-icon-m (20px), and the icon-to-text gap increased from .5em to --pos-primitive-size-15 (12px) — both now documented in shared.layout (previously undocumented). 2026-09-04: matched the real Figma alert component — added an optional bold title (title prop, stacked above the body text), an optional icon toggle (icon prop, default true — existing callers unaffected), and an optional left-aligned actions row (buttons prop, raw HTML, real .pos-button instances — composedOf now lists \"button\"). The Error intent icon changed from 'delete' (an X-in-circle, mismatched with the real design) to the new 'errorBadge' icon (same scalloped seal outline as checkBadge, with an exclamation glyph — derived from checkBadge's outer path + warning's exclamation glyph, both already-licensed assets, not new artwork) to match Figma. Without a title, .pos-card-alert-body behaves exactly like the bare <span> it replaces — fully backward compatible for any existing caller passing only `content`. 2026-09-04: title styling corrected — moved out of shared.layout (was miscategorized) into a new shared.title group referenced under each variant's Text heading: font-family/size match .pos-heading-4 exactly, weight is bold (overriding heading-4's own normal default), color matches .pos-heading-4's prominent-text color. 2026-09-04: fixed 3 stale/wrong token entries left over from earlier same-day edits — the actions gap was documented as --pos-gap-button-button (regular) but the real CSS uses --pos-gap-button-button-small (buttons were switched to pos-button-small per the general small-button-gap rule); the body-to-actions margin was documented as --pos-gap-section-elements but the real CSS uses --pos-gap-card-elements. Also added requiresSelector to every icon- and actions-specific token so the Tokens panel correctly adds/removes them when the Options-panel Icon/Buttons switches are toggled in the docs preview (previously the full static token list showed regardless of toggle state). 2026-10-01: alert card gets Figma's Flat elevation (--pos-primitive-shadow-flat, no hover change; was Small shadow briefly). 2026-10-02: title→text gap 16px (--pos-gap-text-text) → 12px (--pos-primitive-size-15) so the visible gaps above and below the text are equal.",
+  "component": "alert-card",
+  "name": "Alert card (legacy)",
+  "description": "An inline informational, warning, error, or success message shown adjacent to page content.",
+  "whenToUse": [
+    "Showing an inline informational, warning, error, or success message within page content — adjacent to a card or content block.",
+    "Communicating the result of a user action (e.g. form submit, deletion) in context, without interrupting the user with a floating notification."
+  ],
+  "whenNotToUse": [
+    "Showing a transient notification that disappears after a few seconds — use <code>pos-toast</code> instead.",
+    "Building new features — consider a proper DS alert or notification component."
+  ],
+  "do": [
+    "Apply <code>pos-card</code> alongside <code>pos-card-alert</code> to get the correct padding and border-radius.",
+    "Include an icon as the first child — the CSS sizes it to <code>1.5rem</code> automatically.",
+    "Use the correct semantic modifier: <code>pos-card-alert-warning</code>, <code>pos-card-alert-error</code>, or <code>pos-card-alert-success</code>."
+  ],
+  "dont": [
+    "Use <code>pos-card-alert</code> as a floating or fixed-position notification — it is an inline element.",
+    "Omit the icon — the layout expects it and the text alignment depends on it."
+  ],
+  "accessibility": [
+    "Add <code>role=\"alert\"</code> when the alert appears dynamically so screen readers announce it immediately.",
+    "For non-urgent messages that do not require immediate attention, use <code>role=\"status\"</code> or <code>aria-live=\"polite\"</code> instead."
+  ],
+  "composedOf": [
+    "button"
+  ],
+  "props": [
+    {
+      "name": "type",
+      "type": "'info' | 'warning' | 'error' | 'success'",
+      "default": "info",
+      "description": "Selects the icon (info/warning/errorBadge/checkBadge) and the semantic modifier class (pos-card-alert-warning/-error/-success; info adds no modifier, matching the base style)."
+    },
+    {
+      "name": "content",
+      "type": "string (HTML-safe)",
+      "default": "n/a",
+      "description": "The alert message text — rendered via the html_safe filter, so it may contain inline markup."
+    },
+    {
+      "name": "title",
+      "type": "string, optional",
+      "default": "none",
+      "description": "Bold title line above the body text. Omit for the original single-line icon+text layout (fully backward compatible with existing callers)."
+    },
+    {
+      "name": "icon",
+      "type": "boolean, optional",
+      "default": "true",
+      "description": "Set to false to hide the severity icon entirely."
+    },
+    {
+      "name": "buttons",
+      "type": "string (HTML-safe), optional",
+      "default": "none",
+      "description": "Raw HTML for an actions row below the body text, e.g. .pos-button instances. Left-aligned, no forced button order — pass primary first if it should appear leftmost, matching the real Figma alert component. Use pos-button-small — an inline alert is denser content than a full dialog/page."
+    }
+  ],
+  "dimensions": {
+    "intent": [
+      "info",
+      "warning",
+      "error",
+      "success"
+    ],
+    "state": [
+      "normal"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-primitive-size-2",
+        "figma": "Size/2 unit",
+        "role": "padding (smaller than the standard --pos-padding-card — inline alert content is denser than a full card)",
+        "swatch": false
+      },
+      {
+        "css": "--pos-radius-card",
+        "figma": "Card corner",
+        "swatch": false
+      },
+      {
+        "css": "--pos-gap-card-card",
+        "figma": "Gaps/card-card",
+        "role": "spacing to adjacent card",
+        "swatch": false
+      },
+      {
+        "css": "--pos-size-icon-m",
+        "figma": "Icon/icon-m",
+        "role": "Icon size",
+        "swatch": false,
+        "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+      },
+      {
+        "css": "--pos-primitive-size-15",
+        "figma": "Size/1.5 unit",
+        "role": "Gap between the icon and the message text",
+        "swatch": false,
+        "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+      },
+      {
+        "css": "--pos-primitive-size-15",
+        "figma": "Size/1.5 unit",
+        "role": "Gap between title and body text (vertical stack) — 12px so the visible gap matches the text → buttons gap",
+        "swatch": false
+      },
+      {
+        "css": "--pos-gap-button-button-small",
+        "figma": "Gaps/button S-button S",
+        "role": "Gap between action buttons (small size, per general small-button rule)",
+        "swatch": false,
+        "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--actions-hidden) .pos-card-alert-actions"
+      },
+      {
+        "css": "--pos-gap-card-elements",
+        "figma": "Gaps/card content",
+        "role": "Gap between the body text and the action buttons row",
+        "swatch": false,
+        "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--actions-hidden) .pos-card-alert-actions"
+      }
+    ],
+    "title": [
+      {
+        "css": "--pos-font-heading",
+        "figma": "Family/headlines",
+        "role": "Title font family",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-m",
+        "figma": "Size/font M",
+        "role": "Title font size — matches .pos-heading-4's own size exactly",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-weight-bold",
+        "figma": "Weight/bold",
+        "role": "Title font weight — bold, overriding .pos-heading-4's own default (normal) (heading4 bold)",
+        "swatch": false
+      },
+      {
+        "css": "--pos-color-content-text-prominent",
+        "figma": "General elements-theme/Prominent - text",
+        "role": "Title text color — matches .pos-heading-4's own color",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "info": {
+      "label": "Info",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Card background for the Info intent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Card border for the Info intent — invisible in light/dark, becomes visible (white) in HC mode for legibility",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Message text — shared across all four intents (the base .pos-card-alert rule is never overridden per-variant)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Icon color for the Info intent only — the decorative/non-interactive icon token, not a text token; Warning/Error/Success each override this with their own intent color instead",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-flat",
+                  "figma": "Elevation/Flat",
+                  "role": "Alert card shadow (Figma: Flat) — no hover lift; none in HC",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "warning": {
+      "label": "Warning",
+      "classes": [
+        "pos-card-alert-warning"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "Card background for the Warning intent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Card border for the Warning intent — invisible in light/dark, becomes visible (white) in HC mode for legibility",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Message text — shared across all four intents (the base .pos-card-alert rule is never overridden per-variant)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "Icon color for the Warning intent — overrides the shared Info-only supplementary-text icon color",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-flat",
+                  "figma": "Elevation/Flat",
+                  "role": "Alert card shadow (Figma: Flat) — no hover lift; none in HC",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "error": {
+      "label": "Error",
+      "classes": [
+        "pos-card-alert-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "Card background for the Error intent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Card border for the Error intent — invisible in light/dark, becomes visible (white) in HC mode for legibility",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Message text — shared across all four intents (the base .pos-card-alert rule is never overridden per-variant)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Icon color for the Error intent — overrides the shared Info-only supplementary-text icon color",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-flat",
+                  "figma": "Elevation/Flat",
+                  "role": "Alert card shadow (Figma: Flat) — no hover lift; none in HC",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "success": {
+      "label": "Success",
+      "classes": [
+        "pos-card-alert-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "Card background for the Success intent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Card border for the Success intent — invisible in light/dark, becomes visible (white) in HC mode for legibility",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Message text — shared across all four intents (the base .pos-card-alert rule is never overridden per-variant)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Icon color for the Success intent — overrides the shared Info-only supplementary-text icon color",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-card-alert:not(.pos-card-alert--icon-hidden) > svg"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-flat",
+                  "figma": "Elevation/Flat",
+                  "role": "Alert card shadow (Figma: Flat) — no hover lift; none in HC",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "{% render 'modules/common-styling/content/alert', type: 'info', content: 'This is an informational message.' %}\n\n{% render 'modules/common-styling/content/alert', type: 'warning', content: 'This action cannot be undone.' %}\n\n{% render 'modules/common-styling/content/alert', type: 'error', content: 'Something went wrong.' %}\n\n{% render 'modules/common-styling/content/alert', type: 'success', content: 'Changes saved successfully.' %}"
+}

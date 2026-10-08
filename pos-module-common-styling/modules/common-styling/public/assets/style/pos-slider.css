@@ -1,0 +1,191 @@
+/*
+  slider component
+
+  Picks a value from a range by dragging a handle along a track — a real <input type="range">
+  (keyboard and screen readers work out of the box) inside a .pos-slider-field wrapper. Built from
+  the approved component-wizard draft, 2026-10-06.
+
+  .pos-slider-field     wrapper: draws the grey track and the inset fill behind the input, and
+                        positions the value tooltip; --ratio (0–1) is the handle position, kept in
+                        sync by assets/js/pos-slider.js
+  .pos-slider           the range input (transparent; only its handle is drawn)
+  .pos-slider-value     value tooltip above the handle, shown while dragging (aria-hidden) — the
+                        Tooltip component's look, same tokens (spec: composedOf tooltip, RULES.md 7.12)
+  .is-dragging          on the wrapper while the handle is dragged (set by the JS module)
+
+  Sizes: 16px track, 24px handle — it overhangs the track by a quarter above and below. The fill
+  sits 2px inside the track, in the interaction color, darker towards the bottom.
+*/
+
+@layer common-styling {
+
+  .pos-slider-field {
+    --slider-track: var(--pos-primitive-size-2);
+    --slider-thumb: calc(var(--pos-primitive-size-2) * 1.5);
+    --slider-inset: 2px;
+    /* filled length: from the left edge to the handle center (the handle travels inside the track) */
+    --slider-fill: calc(var(--slider-thumb) / 2 + (100% - var(--slider-thumb)) * var(--ratio, .5));
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding-block: calc((var(--slider-thumb) - var(--slider-track)) / 2);
+  }
+
+  /* the grey track (framed, so it shows in high contrast) and, inside it, the filled part — two
+     rounded layers behind the transparent input, so the fill can be inset and keep round ends */
+  .pos-slider-field::before,
+  .pos-slider-field::after {
+    content: "";
+    position: absolute;
+    border-radius: var(--pos-primitive-radius-rounded);
+    pointer-events: none;
+  }
+
+  .pos-slider-field::before {
+    inset-inline: 0;
+    inset-block-start: calc((var(--slider-thumb) - var(--slider-track)) / 2);
+    height: var(--slider-track);
+    box-sizing: border-box;
+    background-color: var(--pos-color-content-icon-disabled);
+    border: 1px solid var(--pos-color-frame);
+  }
+
+  .pos-slider-field::after {
+    inset-inline-start: var(--slider-inset);
+    inset-block-start: calc((var(--slider-thumb) - var(--slider-track)) / 2 + var(--slider-inset));
+    width: calc(var(--slider-fill) - var(--slider-inset));
+    height: calc(var(--slider-track) - 2 * var(--slider-inset));
+    /* the interaction color, darker towards the bottom */
+    background:
+      linear-gradient(to bottom, transparent 35%, color-mix(in srgb, var(--pos-color-shadow) 25%, transparent)),
+      var(--pos-color-interactive);
+  }
+
+  .pos-slider {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: var(--slider-track);
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border-radius: var(--pos-primitive-radius-rounded);
+    cursor: pointer;
+  }
+
+  .pos-slider::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 100%;
+    background: transparent;
+  }
+
+  .pos-slider::-moz-range-track {
+    height: 100%;
+    background: transparent;
+    border: none;
+  }
+
+  .pos-slider:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 3px;
+  }
+
+  /* the handle: interaction color, 2x3 grip dots in the inverted icon color (radial gradients,
+     so the color follows the theme — an SVG data URI can't read a custom property) */
+  .pos-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: calc((var(--slider-track) - var(--slider-thumb)) / 2);
+    width: var(--slider-thumb);
+    height: var(--slider-thumb);
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: var(--pos-primitive-shadow-small);
+    background-color: var(--pos-color-interactive);
+    background-image:
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px);
+    background-size: 4px 4px;
+    background-position: calc(50% - 2.5px) calc(50% - 4.5px), calc(50% + 2.5px) calc(50% - 4.5px), calc(50% - 2.5px) 50%, calc(50% + 2.5px) 50%, calc(50% - 2.5px) calc(50% + 4.5px), calc(50% + 2.5px) calc(50% + 4.5px);
+    background-repeat: no-repeat;
+  }
+
+  .pos-slider::-moz-range-thumb {
+    width: var(--slider-thumb);
+    height: var(--slider-thumb);
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: var(--pos-primitive-shadow-small);
+    background-color: var(--pos-color-interactive);
+    background-image:
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px),
+      radial-gradient(circle, var(--pos-color-content-inverted-icon) 1.1px, transparent 1.6px);
+    background-size: 4px 4px;
+    background-position: calc(50% - 2.5px) calc(50% - 4.5px), calc(50% + 2.5px) calc(50% - 4.5px), calc(50% - 2.5px) 50%, calc(50% + 2.5px) 50%, calc(50% - 2.5px) calc(50% + 4.5px), calc(50% + 2.5px) calc(50% + 4.5px);
+    background-repeat: no-repeat;
+  }
+
+  .pos-slider:active::-webkit-slider-thumb {
+    cursor: grabbing;
+  }
+
+  .pos-slider:active::-moz-range-thumb {
+    cursor: grabbing;
+  }
+
+  /* disabled — the not-allowed cursor over the track, the handle and the field around them,
+     never grab / pointer (RULES.md 4.12); cursor only, no visual disabled state is defined */
+  .pos-slider-field:has(.pos-slider:disabled),
+  .pos-slider:disabled {
+    cursor: not-allowed;
+  }
+
+  .pos-slider:disabled::-webkit-slider-thumb {
+    cursor: not-allowed;
+  }
+
+  .pos-slider:disabled::-moz-range-thumb {
+    cursor: not-allowed;
+  }
+
+  /* value tooltip — the DS tooltip's look (pos-tooltip.css, same tokens), above the handle, shown
+     while dragging and moving with it */
+  .pos-slider-value {
+    position: absolute;
+    inset-block-end: calc(100% + var(--pos-primitive-size-05));
+    inset-inline-start: var(--slider-fill);
+    transform: translateX(-50%) scale(.95);
+    transform-origin: bottom center;
+    z-index: 2;
+    background-color: var(--pos-color-content-icon);
+    color: var(--pos-color-content-inverted-text);
+    font-family: var(--pos-font-badge);
+    font-size: var(--pos-font-size-xs);
+    font-weight: var(--pos-font-weight-medium);
+    white-space: nowrap;
+    padding: calc(var(--pos-primitive-size-1) / 2) var(--pos-primitive-size-1);
+    border-radius: var(--pos-radius-tag);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s linear, transform .15s linear, visibility .15s linear;
+  }
+
+  .pos-slider-field.is-dragging .pos-slider-value {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+}

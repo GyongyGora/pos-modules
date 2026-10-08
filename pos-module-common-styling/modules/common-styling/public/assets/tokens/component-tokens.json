@@ -1,0 +1,847 @@
+{
+  "_about": "Component token index: maps component/category names to their theme-neutral CSS custom properties and current values. Extracted from pos-config.css. Groups prefixed with _ are shared/global token sets (not component-specific). Use this to quickly find all tokens for a given component without grepping pos-config.css. Regenerate whenever component tokens change in pos-config.css.",
+  "_generated": "2026-04-09",
+  "_groups": [
+    "banner",
+    "button",
+    "confirmation",
+    "content",
+    "focused",
+    "frame",
+    "gradient1",
+    "gradient2",
+    "highlight",
+    "important",
+    "input",
+    "interactive",
+    "inverted",
+    "page",
+    "selection",
+    "shadow",
+    "standout",
+    "toggle",
+    "warning"
+  ],
+  "_shared_groups": [
+    "_font-family",
+    "_font-size",
+    "_font-weight",
+    "_gap",
+    "_icon-size",
+    "_line-height",
+    "_padding",
+    "_radius"
+  ],
+  "components": {
+    "_font-family": [
+      {
+        "css": "--pos-font-badge",
+        "value": "var(--pos-primitive-font-roboto-mono)"
+      },
+      {
+        "css": "--pos-font-buttons",
+        "value": "var(--pos-primitive-font-inter)"
+      },
+      {
+        "css": "--pos-font-code",
+        "value": "var(--pos-primitive-font-roboto-mono)"
+      },
+      {
+        "css": "--pos-font-default",
+        "value": "var(--pos-primitive-font-inter)"
+      },
+      {
+        "css": "--pos-font-heading",
+        "value": "var(--pos-primitive-font-google-sans)"
+      },
+      {
+        "css": "--pos-font-sidenotes",
+        "value": "var(--pos-primitive-font-inter)"
+      }
+    ],
+    "_font-size": [
+      {
+        "css": "--pos-font-size-big-button-text",
+        "value": "var(--pos-font-size-s)"
+      },
+      {
+        "css": "--pos-font-size-l",
+        "value": "1.5rem"
+      },
+      {
+        "css": "--pos-font-size-m",
+        "value": "1.25rem"
+      },
+      {
+        "css": "--pos-font-size-s",
+        "value": "1rem"
+      },
+      {
+        "css": "--pos-font-size-small-button-text",
+        "value": "var(--pos-font-size-xs)"
+      },
+      {
+        "css": "--pos-font-size-ss",
+        "value": "0.875rem"
+      },
+      {
+        "css": "--pos-font-size-xl",
+        "value": "2rem"
+      },
+      {
+        "css": "--pos-font-size-xs",
+        "value": "0.75rem"
+      },
+      {
+        "css": "--pos-font-size-xxl",
+        "value": "3rem"
+      },
+      {
+        "css": "--pos-font-size-xxs",
+        "value": "0.625rem"
+      },
+      {
+        "css": "--pos-font-size-xxxs",
+        "value": "0.5rem"
+      }
+    ],
+    "_font-weight": [
+      {
+        "css": "--pos-font-weight-bold",
+        "value": "700"
+      },
+      {
+        "css": "--pos-font-weight-extrabold",
+        "value": "800"
+      },
+      {
+        "css": "--pos-font-weight-extralight",
+        "value": "200"
+      },
+      {
+        "css": "--pos-font-weight-light",
+        "value": "300"
+      },
+      {
+        "css": "--pos-font-weight-medium",
+        "value": "500"
+      },
+      {
+        "css": "--pos-font-weight-normal",
+        "value": "400"
+      }
+    ],
+    "_gap": [
+      {
+        "css": "--pos-gap-button-button",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-gap-button-button-small",
+        "value": "var(--pos-primitive-size-1)"
+      },
+      {
+        "css": "--pos-gap-card-card",
+        "value": "var(--pos-primitive-size-3)"
+      },
+      {
+        "css": "--pos-gap-card-elements",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-gap-content-footer",
+        "value": "var(--pos-primitive-size-5)"
+      },
+      {
+        "css": "--pos-gap-input-button",
+        "value": "var(--pos-primitive-size-n05)"
+      },
+      {
+        "css": "--pos-gap-input-input",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-gap-section-elements",
+        "value": "1rem"
+      },
+      {
+        "css": "--pos-gap-section-section",
+        "value": "var(--pos-primitive-size-4)"
+      },
+      {
+        "css": "--pos-gap-section-title-content",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-gap-step-button",
+        "value": "var(--pos-primitive-size-3)"
+      },
+      {
+        "css": "--pos-gap-step-step",
+        "value": "var(--pos-primitive-size-3)"
+      },
+      {
+        "css": "--pos-gap-tag-tag",
+        "value": "var(--pos-primitive-size-15)"
+      },
+      {
+        "css": "--pos-gap-text-text",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-gap-title-content",
+        "value": "var(--pos-primitive-size-5)"
+      }
+    ],
+    "_icon-size": [
+      {
+        "css": "--pos-size-icon-l",
+        "value": "var(--pos-primitive-size-3)"
+      },
+      {
+        "css": "--pos-size-icon-m",
+        "value": "var(--pos-primitive-size-25)"
+      },
+      {
+        "css": "--pos-size-icon-s",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-size-icon-xl",
+        "value": "var(--pos-primitive-size-4)"
+      },
+      {
+        "css": "--pos-size-icon-xs",
+        "value": "var(--pos-primitive-size-15)"
+      },
+      {
+        "css": "--pos-size-icon-xxl",
+        "value": "var(--pos-primitive-size-8)"
+      }
+    ],
+    "_line-height": [
+      {
+        "css": "--pos-line-height-l",
+        "value": "1.75rem"
+      },
+      {
+        "css": "--pos-line-height-m",
+        "value": "1.25rem"
+      },
+      {
+        "css": "--pos-line-height-s",
+        "value": "1rem"
+      },
+      {
+        "css": "--pos-line-height-xl",
+        "value": "2rem"
+      },
+      {
+        "css": "--pos-line-height-xs",
+        "value": "0.625rem"
+      },
+      {
+        "css": "--pos-line-height-xxl",
+        "value": "3rem"
+      }
+    ],
+    "_padding": [
+      {
+        "css": "--pos-padding-button",
+        "value": "0.5rem"
+      },
+      {
+        "css": "--pos-padding-card",
+        "value": "var(--pos-primitive-size-3)"
+      },
+      {
+        "css": "--pos-padding-cell",
+        "value": "var(--pos-primitive-size-2)"
+      },
+      {
+        "css": "--pos-padding-input",
+        "value": "0.5rem"
+      },
+      {
+        "css": "--pos-padding-page",
+        "value": "var(--pos-primitive-size-2)"
+      }
+    ],
+    "_radius": [
+      {
+        "css": "--pos-radius-button",
+        "value": "var(--pos-primitive-radius-slightly-rounded)"
+      },
+      {
+        "css": "--pos-radius-button-focus",
+        "value": "var(--pos-primitive-radius-slightly-rounded-2)"
+      },
+      {
+        "css": "--pos-radius-card",
+        "value": "var(--pos-primitive-radius-mid-rounded)"
+      },
+      {
+        "css": "--pos-radius-input",
+        "value": "var(--pos-primitive-radius-sharp)"
+      },
+      {
+        "css": "--pos-radius-panel",
+        "value": "var(--pos-primitive-radius-mid-rounded)"
+      },
+      {
+        "css": "--pos-radius-popup",
+        "value": "var(--pos-primitive-radius-mid-rounded)"
+      },
+      {
+        "css": "--pos-radius-tag",
+        "value": "var(--pos-primitive-radius-slightly-rounded)"
+      }
+    ],
+    "banner": [
+      {
+        "css": "--pos-color-banner-stats",
+        "value": "var(--pos-color-light-banner-stats)"
+      }
+    ],
+    "button": [
+      {
+        "css": "--pos-color-button-inverted-active-background",
+        "value": "var(--pos-color-light-button-inverted-active-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-active-frame",
+        "value": "var(--pos-color-light-button-inverted-active-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-active-text",
+        "value": "var(--pos-color-light-button-inverted-active-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-background",
+        "value": "var(--pos-color-light-button-inverted-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-disabled-background",
+        "value": "var(--pos-color-light-button-inverted-disabled-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-disabled-frame",
+        "value": "var(--pos-color-light-button-inverted-disabled-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-disabled-text",
+        "value": "var(--pos-color-light-button-inverted-disabled-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-frame",
+        "value": "var(--pos-color-light-button-inverted-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-hover-background",
+        "value": "var(--pos-color-light-button-inverted-hover-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-hover-frame",
+        "value": "var(--pos-color-light-button-inverted-hover-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-hover-text",
+        "value": "var(--pos-color-light-button-inverted-hover-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-active-background",
+        "value": "var(--pos-color-light-button-inverted-secondary-active-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-active-frame",
+        "value": "var(--pos-color-light-button-inverted-secondary-active-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-active-text",
+        "value": "var(--pos-color-light-button-inverted-secondary-active-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-background",
+        "value": "var(--pos-color-light-button-inverted-secondary-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-disabled-background",
+        "value": "var(--pos-color-light-button-inverted-secondary-disabled-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-disabled-frame",
+        "value": "var(--pos-color-light-button-inverted-secondary-disabled-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-disabled-text",
+        "value": "var(--pos-color-light-button-inverted-secondary-disabled-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-frame",
+        "value": "var(--pos-color-light-button-inverted-secondary-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-hover-background",
+        "value": "var(--pos-color-light-button-inverted-secondary-hover-background)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-hover-frame",
+        "value": "var(--pos-color-light-button-inverted-secondary-hover-frame)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-hover-text",
+        "value": "var(--pos-color-light-button-inverted-secondary-hover-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-secondary-text",
+        "value": "var(--pos-color-light-button-inverted-secondary-text)"
+      },
+      {
+        "css": "--pos-color-button-inverted-text",
+        "value": "var(--pos-color-light-button-inverted-text)"
+      },
+      {
+        "css": "--pos-color-button-primary-active-background",
+        "value": "var(--pos-color-light-button-primary-active-background)"
+      },
+      {
+        "css": "--pos-color-button-primary-active-frame",
+        "value": "var(--pos-color-light-button-primary-active-frame)"
+      },
+      {
+        "css": "--pos-color-button-primary-active-text",
+        "value": "var(--pos-color-light-button-primary-active-text)"
+      },
+      {
+        "css": "--pos-color-button-primary-background",
+        "value": "var(--pos-color-light-button-primary-background)"
+      },
+      {
+        "css": "--pos-color-button-primary-disabled-background",
+        "value": "var(--pos-color-light-button-primary-disabled-background)"
+      },
+      {
+        "css": "--pos-color-button-primary-disabled-frame",
+        "value": "var(--pos-color-light-button-primary-disabled-frame)"
+      },
+      {
+        "css": "--pos-color-button-primary-disabled-text",
+        "value": "var(--pos-color-light-button-primary-disabled-text)"
+      },
+      {
+        "css": "--pos-color-button-primary-frame",
+        "value": "var(--pos-color-light-button-primary-frame)"
+      },
+      {
+        "css": "--pos-color-button-primary-hover-background",
+        "value": "var(--pos-color-light-button-primary-hover-background)"
+      },
+      {
+        "css": "--pos-color-button-primary-hover-frame",
+        "value": "var(--pos-color-light-button-primary-hover-frame)"
+      },
+      {
+        "css": "--pos-color-button-primary-hover-text",
+        "value": "var(--pos-color-light-button-primary-hover-text)"
+      },
+      {
+        "css": "--pos-color-button-primary-text",
+        "value": "var(--pos-color-light-button-primary-text)"
+      },
+      {
+        "css": "--pos-color-button-secondary-active-background",
+        "value": "var(--pos-color-light-button-secondary-active-background)"
+      },
+      {
+        "css": "--pos-color-button-secondary-active-frame",
+        "value": "var(--pos-color-light-button-secondary-active-frame)"
+      },
+      {
+        "css": "--pos-color-button-secondary-active-text",
+        "value": "var(--pos-color-light-button-secondary-active-text)"
+      },
+      {
+        "css": "--pos-color-button-secondary-background",
+        "value": "var(--pos-color-light-button-secondary-background)"
+      },
+      {
+        "css": "--pos-color-button-secondary-background-transparent",
+        "value": "var(--pos-color-light-button-secondary-background-transparent)"
+      },
+      {
+        "css": "--pos-color-button-secondary-disabled-background",
+        "value": "var(--pos-color-light-button-secondary-disabled-background)"
+      },
+      {
+        "css": "--pos-color-button-secondary-disabled-frame",
+        "value": "var(--pos-color-light-button-secondary-disabled-frame)"
+      },
+      {
+        "css": "--pos-color-button-secondary-disabled-text",
+        "value": "var(--pos-color-light-button-secondary-disabled-text)"
+      },
+      {
+        "css": "--pos-color-button-secondary-frame",
+        "value": "var(--pos-color-light-button-secondary-frame)"
+      },
+      {
+        "css": "--pos-color-button-secondary-hover-background",
+        "value": "var(--pos-color-light-button-secondary-hover-background)"
+      },
+      {
+        "css": "--pos-color-button-secondary-hover-background-transparent",
+        "value": "var(--pos-color-light-button-secondary-hover-background-transparent)"
+      },
+      {
+        "css": "--pos-color-button-secondary-hover-frame",
+        "value": "var(--pos-color-light-button-secondary-hover-frame)"
+      },
+      {
+        "css": "--pos-color-button-secondary-hover-text",
+        "value": "var(--pos-color-light-button-secondary-hover-text)"
+      },
+      {
+        "css": "--pos-color-button-secondary-text",
+        "value": "var(--pos-color-light-button-secondary-text)"
+      }
+    ],
+    "confirmation": [
+      {
+        "css": "--pos-color-confirmation",
+        "value": "var(--pos-color-light-confirmation)"
+      },
+      {
+        "css": "--pos-color-confirmation-active",
+        "value": "var(--pos-color-light-confirmation-active)"
+      },
+      {
+        "css": "--pos-color-confirmation-hover",
+        "value": "var(--pos-color-light-confirmation-hover)"
+      },
+      {
+        "css": "--pos-color-confirmation-muted",
+        "value": "var(--pos-color-light-confirmation-muted)"
+      }
+    ],
+    "content": [
+      {
+        "css": "--pos-color-content-background",
+        "value": "var(--pos-color-light-content-background)"
+      },
+      {
+        "css": "--pos-color-content-background-50",
+        "value": "var(--pos-color-light-content-background-50)"
+      },
+      {
+        "css": "--pos-color-content-icon",
+        "value": "var(--pos-color-light-content-icon)"
+      },
+      {
+        "css": "--pos-color-content-icon-disabled",
+        "value": "var(--pos-color-light-content-icon-disabled)"
+      },
+      {
+        "css": "--pos-color-content-inverted-icon",
+        "value": "var(--pos-color-light-content-inverted-icon)"
+      },
+      {
+        "css": "--pos-color-content-inverted-text",
+        "value": "var(--pos-color-light-content-inverted-text)"
+      },
+      {
+        "css": "--pos-color-content-text",
+        "value": "var(--pos-color-light-content-text)"
+      },
+      {
+        "css": "--pos-color-content-text-disabled",
+        "value": "var(--pos-color-light-content-text-disabled)"
+      },
+      {
+        "css": "--pos-color-content-text-prominent",
+        "value": "var(--pos-color-light-content-text-prominent)"
+      },
+      {
+        "css": "--pos-color-content-text-supplementary",
+        "value": "var(--pos-color-light-content-text-supplementary)"
+      }
+    ],
+    "focused": [
+      {
+        "css": "--pos-color-focused",
+        "value": "var(--pos-color-light-focused)"
+      },
+      {
+        "css": "--pos-color-focused-inverse",
+        "value": "var(--pos-color-light-focused-inverse)"
+      }
+    ],
+    "frame": [
+      {
+        "css": "--pos-color-frame",
+        "value": "var(--pos-color-light-frame)"
+      },
+      {
+        "css": "--pos-color-frame-default",
+        "value": "var(--pos-color-light-frame-subtle)"
+      }
+    ],
+    "gradient1": [
+      {
+        "css": "--pos-color-gradient1-from",
+        "value": "var(--pos-color-dark-gradient1-from)"
+      },
+      {
+        "css": "--pos-color-gradient1-to",
+        "value": "var(--pos-color-dark-gradient1-to)"
+      }
+    ],
+    "gradient2": [
+      {
+        "css": "--pos-color-gradient2-from",
+        "value": "var(--pos-color-dark-gradient2-from)"
+      },
+      {
+        "css": "--pos-color-gradient2-to",
+        "value": "var(--pos-color-dark-gradient2-to)"
+      }
+    ],
+    "highlight": [
+      {
+        "css": "--pos-color-highlight-background",
+        "value": "var(--pos-color-light-highlight-background)"
+      },
+      {
+        "css": "--pos-color-highlight-text",
+        "value": "var(--pos-color-light-content-text)"
+      }
+    ],
+    "important": [
+      {
+        "css": "--pos-color-important",
+        "value": "var(--pos-color-light-important)"
+      },
+      {
+        "css": "--pos-color-important-active",
+        "value": "var(--pos-color-light-important-active)"
+      },
+      {
+        "css": "--pos-color-important-hover",
+        "value": "var(--pos-color-light-important-hover)"
+      },
+      {
+        "css": "--pos-color-important-muted",
+        "value": "var(--pos-color-light-important-muted)"
+      }
+    ],
+    "input": [
+      {
+        "css": "--pos-color-input-active-background",
+        "value": "var(--pos-color-light-input-active-background)"
+      },
+      {
+        "css": "--pos-color-input-active-frame",
+        "value": "var(--pos-color-light-input-active-frame)"
+      },
+      {
+        "css": "--pos-color-input-active-text",
+        "value": "var(--pos-color-light-input-active-text)"
+      },
+      {
+        "css": "--pos-color-input-background",
+        "value": "var(--pos-color-light-input-background)"
+      },
+      {
+        "css": "--pos-color-input-disabled-background",
+        "value": "var(--pos-color-light-input-disabled-background)"
+      },
+      {
+        "css": "--pos-color-input-disabled-frame",
+        "value": "var(--pos-color-light-input-disabled-frame)"
+      },
+      {
+        "css": "--pos-color-input-disabled-text",
+        "value": "var(--pos-color-light-input-disabled-text)"
+      },
+      {
+        "css": "--pos-color-input-frame",
+        "value": "var(--pos-color-light-input-frame)"
+      },
+      {
+        "css": "--pos-color-input-hover-background",
+        "value": "var(--pos-color-light-input-hover-background)"
+      },
+      {
+        "css": "--pos-color-input-hover-frame",
+        "value": "var(--pos-color-light-input-hover-frame)"
+      },
+      {
+        "css": "--pos-color-input-hover-text",
+        "value": "var(--pos-color-light-input-hover-text)"
+      },
+      {
+        "css": "--pos-color-input-placeholder",
+        "value": "var(--pos-color-light-input-placeholder)"
+      },
+      {
+        "css": "--pos-color-input-text",
+        "value": "var(--pos-color-light-input-text)"
+      }
+    ],
+    "interactive": [
+      {
+        "css": "--pos-color-interactive",
+        "value": "var(--pos-color-light-icon-interactive)"
+      },
+      {
+        "css": "--pos-color-interactive-active",
+        "value": "var(--pos-color-light-icon-interactive-active)"
+      },
+      {
+        "css": "--pos-color-interactive-disabled",
+        "value": "var(--pos-color-light-icon-interactive-disabled)"
+      },
+      {
+        "css": "--pos-color-interactive-hover",
+        "value": "var(--pos-color-light-icon-interactive-hover)"
+      },
+      {
+        "css": "--pos-color-interactive-inverted",
+        "value": "var(--pos-color-light-icon-interactive-inverted)"
+      },
+      {
+        "css": "--pos-color-interactive-text",
+        "value": "var(--pos-color-light-interactive)"
+      },
+      {
+        "css": "--pos-color-interactive-text-active",
+        "value": "var(--pos-color-light-interactive-active)"
+      },
+      {
+        "css": "--pos-color-interactive-text-disabled",
+        "value": "var(--pos-color-light-interactive-disabled)"
+      },
+      {
+        "css": "--pos-color-interactive-text-hover",
+        "value": "var(--pos-color-light-interactive-hover)"
+      },
+      {
+        "css": "--pos-color-interactive-text-inverted",
+        "value": "var(--pos-color-light-interactive-text-inverted)"
+      }
+    ],
+    "inverted": [
+      {
+        "css": "--pos-color-inverted-background",
+        "value": "var(--pos-color-light-inverted-background)"
+      }
+    ],
+    "page": [
+      {
+        "css": "--pos-color-page-background",
+        "value": "var(--pos-color-light-page-background)"
+      }
+    ],
+    "selection": [
+      {
+        "css": "--pos-color-selection-background",
+        "value": "var(--pos-color-light-selection-background)"
+      },
+      {
+        "css": "--pos-color-selection-text",
+        "value": "var(--pos-color-light-selection-text)"
+      }
+    ],
+    "shadow": [
+      {
+        "css": "--pos-color-shadow",
+        "value": "var(--pos-color-light-shadow)"
+      }
+    ],
+    "standout": [
+      {
+        "css": "--pos-color-standout-background",
+        "value": "var(--pos-color-light-standout-background)"
+      },
+      {
+        "css": "--pos-color-standout-background-hover",
+        "value": "var(--pos-color-light-standout-background-hover)"
+      },
+      {
+        "css": "--pos-color-standout-text",
+        "value": "var(--pos-color-light-standout-text)"
+      },
+      {
+        "css": "--pos-color-standout-text-supplementary",
+        "value": "var(--pos-color-light-standout-text-supplementary)"
+      }
+    ],
+    "segmented": [
+      {
+        "css": "--pos-color-segmented-control-active-background",
+        "value": "var(--pos-color-light-segmented-control-active-background)"
+      },
+      {
+        "css": "--pos-color-segmented-control-active-text",
+        "value": "var(--pos-color-light-segmented-control-active-text)"
+      },
+      {
+        "css": "--pos-color-segmented-control-background",
+        "value": "var(--pos-color-light-segmented-control-background)"
+      },
+      {
+        "css": "--pos-color-segmented-control-btn-border",
+        "value": "var(--pos-color-light-segmented-control-btn-border)"
+      },
+      {
+        "css": "--pos-color-segmented-control-highlighted-background",
+        "value": "var(--pos-color-light-segmented-control-highlighted-background)"
+      },
+      {
+        "css": "--pos-color-segmented-control-highlighted-hover-text",
+        "value": "var(--pos-color-light-segmented-control-highlighted-hover-text)"
+      },
+      {
+        "css": "--pos-color-segmented-control-highlighted-text",
+        "value": "var(--pos-color-light-segmented-control-highlighted-text)"
+      },
+      {
+        "css": "--pos-color-segmented-control-hover-text",
+        "value": "var(--pos-color-light-segmented-control-hover-text)"
+      },
+      {
+        "css": "--pos-color-segmented-control-subtle-active-background",
+        "value": "var(--pos-color-light-segmented-control-subtle-active-background)"
+      },
+      {
+        "css": "--pos-color-segmented-control-subtle-active-shadow",
+        "value": "var(--pos-color-light-segmented-control-subtle-active-shadow)"
+      },
+      {
+        "css": "--pos-color-segmented-control-subtle-active-text",
+        "value": "var(--pos-color-light-segmented-control-subtle-active-text)"
+      },
+      {
+        "css": "--pos-color-segmented-control-text",
+        "value": "var(--pos-color-light-segmented-control-text)"
+      }
+    ],
+    "warning": [
+      {
+        "css": "--pos-color-warning",
+        "value": "var(--pos-color-light-warning)"
+      },
+      {
+        "css": "--pos-color-warning-active",
+        "value": "var(--pos-color-light-warning-active)"
+      },
+      {
+        "css": "--pos-color-warning-hover",
+        "value": "var(--pos-color-light-warning-hover)"
+      },
+      {
+        "css": "--pos-color-warning-muted",
+        "value": "var(--pos-color-light-warning-muted)"
+      }
+    ]
+  }
+}

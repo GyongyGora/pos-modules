@@ -1,0 +1,121 @@
+/*
+  tooltip — two types, same as the Figma Tooltip component's Type property
+
+  text        attribute-driven, no wrapper markup: data-tooltip="Label text" directly on the
+              interactive element (reusing its own aria-label text, per RULES.md 4.2 — every
+              icon-only control needs one).
+  icon-text   an icon and one or two short lines (the second bold), for a hint that needs a little
+              more than a label. Real markup, so it can hold an icon:
+                .pos-tooltip-anchor   wrapper around the control
+                .pos-tooltip          the bubble (role="tooltip"; the control's aria-describedby
+                                      points at its id)
+                .pos-tooltip-text     the text lines; a <strong> line is bold
+              Non-interactive like the text type: no links or buttons inside (use a popover).
+
+  Both show on hover and keyboard focus.
+*/
+
+
+
+@layer common-styling {
+
+  [data-tooltip] {
+    position: relative;
+  }
+
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    inset-block-end: calc(100% + var(--pos-primitive-size-1));
+    inset-inline-start: 50%;
+    transform: translateX(-50%) scale(.95);
+    transform-origin: bottom center;
+
+    background-color: var(--pos-color-content-icon);
+    color: var(--pos-color-content-inverted-text);
+    font-family: var(--pos-font-badge);
+    font-size: var(--pos-font-size-xs);
+    font-weight: var(--pos-font-weight-medium);
+    white-space: nowrap;
+    padding: calc(var(--pos-primitive-size-1) / 2) var(--pos-primitive-size-1);
+    border-radius: var(--pos-radius-tag);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s linear, transform .15s linear, visibility .15s linear;
+    z-index: 10;
+  }
+
+  [data-tooltip]:hover::after,
+  [data-tooltip]:focus-visible::after,
+  [data-tooltip].pos-debug-tooltip-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+
+  /* icon-text type */
+  .pos-tooltip-anchor {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .pos-tooltip {
+    position: absolute;
+    inset-block-end: calc(100% + var(--pos-primitive-size-1));
+    inset-inline-start: 50%;
+    transform: translateX(-50%) scale(.95);
+    transform-origin: bottom center;
+    display: flex;
+    align-items: center;
+    gap: var(--pos-primitive-size-1);
+    padding: var(--pos-primitive-size-05) var(--pos-primitive-size-125);
+
+    background-color: var(--pos-color-content-icon);
+    color: var(--pos-color-content-inverted-text);
+    border-radius: var(--pos-radius-card);
+    font-family: var(--pos-font-sidenotes);
+    font-size: var(--pos-font-size-xs);
+    font-weight: var(--pos-font-weight-normal);
+    line-height: var(--pos-line-height-s);
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s linear, transform .15s linear, visibility .15s linear;
+    z-index: 10;
+  }
+
+  .pos-tooltip > .pos-icon {
+    flex: none;
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
+    color: var(--pos-color-content-inverted-icon);
+  }
+
+  .pos-tooltip-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* lines sit a little tighter than their line height, as in Figma */
+  .pos-tooltip-text > * + * {
+    margin-block-start: var(--pos-primitive-size-n05);
+  }
+
+  .pos-tooltip-text strong {
+    font-weight: var(--pos-font-weight-bold);
+  }
+
+  .pos-tooltip-anchor:hover .pos-tooltip,
+  .pos-tooltip-anchor:has(:focus-visible) .pos-tooltip,
+  .pos-tooltip-anchor.pos-debug-tooltip-visible .pos-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+}

@@ -1,0 +1,454 @@
+{
+  "Family": {
+    "headlines": {
+      "$type": "string",
+      "$value": "Google Sans",
+      "$description": "Font family for headings and display text. Emphasize key messages and communicate hierarchy across content.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:19799",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "body": {
+      "$type": "string",
+      "$value": "Inter",
+      "$description": "Font family for body text, UI elements, and all general-purpose text.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:19800",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "buttons": {
+      "$type": "string",
+      "$value": "Inter",
+      "$description": "Font family for button labels.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:19801",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "sidenotes": {
+      "$type": "string",
+      "$value": "Inter",
+      "$description": "Font family for table headers, sidenotes, captions, metadata, and moderate text labels.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:19802",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "code": {
+      "$type": "string",
+      "$value": "Roboto Mono",
+      "$description": "Font family for inline code, code blocks, token names, and monospaced data.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20416",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "badge": {
+      "$type": "string",
+      "$value": "Roboto Mono",
+      "$description": "Font family for badges, counters, and small numerical labels.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16218:53965",
+        "com.figma.scopes": [
+          "FONT_FAMILY"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Weight": {
+    "extralight": {
+      "$type": "string",
+      "$value": "extralight",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20409",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "light": {
+      "$type": "string",
+      "$value": "light",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20410",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "normal": {
+      "$type": "string",
+      "$value": "regular",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20412",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "medium": {
+      "$type": "string",
+      "$value": "medium",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20413",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "bold": {
+      "$type": "string",
+      "$value": "bold",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20414",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    },
+    "extrabold": {
+      "$type": "string",
+      "$value": "extrabold",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20415",
+        "com.figma.scopes": [
+          "FONT_STYLE"
+        ],
+        "com.figma.type": "string",
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Size": {
+    "font XXXS": {
+      "$type": "number",
+      "$value": 8,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16218:53964",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:ac3e54d6a81cefb73b80d52c81e8575763c3e3c7/-1:-1",
+          "targetVariableName": "Size/1 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font XXS": {
+      "$type": "number",
+      "$value": 10,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20417",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:180b18d4393a23b326b3e184c758193ae5c1e986/-1:-1",
+          "targetVariableName": "Size/1,25 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font XS": {
+      "$type": "number",
+      "$value": 12,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20418",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2698664b2a5b1c8de692347a17e8a0612988d49b/-1:-1",
+          "targetVariableName": "Size/1,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font SS": {
+      "$type": "number",
+      "$value": 14,
+      "$description": "The other recommended smaller body font size (14px). For better accessibility, Size/font S (16px) is the preferred minimum for body text.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18209:150326",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7e8e5e4f4087e0af35289bf46cd34e84d411ef64/-1:-1",
+          "targetVariableName": "Size/1,75 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font S": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Recommended default body font size for readability and accessibility (16px). For better accessibility, this is the minimum recommended size for body text.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20419",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font M": {
+      "$type": "number",
+      "$value": 20,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20420",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:a79c3bf66d5fb12f0ed4422c7cab21ae43364ebd/-1:-1",
+          "targetVariableName": "Size/2,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font L": {
+      "$type": "number",
+      "$value": 24,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20421",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font XL": {
+      "$type": "number",
+      "$value": 32,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20422",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b3bf638cbdd0e3398792e05dbd66d7961b7bce8e/-1:-1",
+          "targetVariableName": "Size/4 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "font XXL": {
+      "$type": "number",
+      "$value": 48,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20423",
+        "com.figma.scopes": [
+          "FONT_SIZE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:fbf86a3faf12aeda2e406e7f33fb2fb17caf8430/-1:-1",
+          "targetVariableName": "Size/6 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Big button text": {
+      "$type": "number",
+      "$value": 16,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18262:150372",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Small button text": {
+      "$type": "number",
+      "$value": 12,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18262:150373",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2698664b2a5b1c8de692347a17e8a0612988d49b/-1:-1",
+          "targetVariableName": "Size/1,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Line-height": {
+    "lineH XS": {
+      "$type": "number",
+      "$value": 10,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20425",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:180b18d4393a23b326b3e184c758193ae5c1e986/-1:-1",
+          "targetVariableName": "Size/1,25 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "lineH S": {
+      "$type": "number",
+      "$value": 16,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20432",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "lineH M": {
+      "$type": "number",
+      "$value": 20,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20435",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:a79c3bf66d5fb12f0ed4422c7cab21ae43364ebd/-1:-1",
+          "targetVariableName": "Size/2,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "lineH L": {
+      "$type": "number",
+      "$value": 28,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20429",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:6ad1684a3209387435fd775ed3b189bc555ef2b0/-1:-1",
+          "targetVariableName": "Size/3,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "lineH XL": {
+      "$type": "number",
+      "$value": 32,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20437",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b3bf638cbdd0e3398792e05dbd66d7961b7bce8e/-1:-1",
+          "targetVariableName": "Size/4 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "lineH XXL": {
+      "$type": "number",
+      "$value": 48,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:14244:20438",
+        "com.figma.scopes": [
+          "LINE_HEIGHT"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:fbf86a3faf12aeda2e406e7f33fb2fb17caf8430/-1:-1",
+          "targetVariableName": "Size/6 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Desktop"
+  }
+}

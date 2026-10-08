@@ -1,0 +1,334 @@
+{% comment %}
+  Generated from tokens/components/switch-card.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md section 6.4) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields (usageExample especially) can legitimately contain literal Liquid-looking example code, which would otherwise be executed as real template code instead of staying inert JSON text.
+{% endcomment %}
+<script type="application/json" id="comp-spec-switch-card">
+{% raw %}
+{
+  "_about": "Component spec for pos-switch-card (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Switch button\" section. Reuses the already-curated usage prose from COMP_CONFIGS['switch-card'].usage and token data from the existing inspect-switch-card.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Rebuilt 2026-08-26 after finding the migration only carried the 'switch-default' (off) variant's normal+focus states, silently dropping Disabled/Selected/Selected-disabled — now includes all 6 states the component's real State control offers, mapped from switch-card's 4 named variants (default/checked/disabled/selected-disabled) in inspect-switch-card.liquid, which was itself fixed at the same time (focus states were missing Color/Typography, hover state did not exist at all). Confirmed via pos-switch-card.css: Disabled and Selected-disabled use real dedicated color tokens, never CSS opacity. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). Renamed to \"Switch button\" and rebuilt 2026-09-16: the card's background/border (and label/icon) must never change in any state — only .pos-switch-card-toggle reacts, now reusing the exact same on/off/disabled token scheme as the standalone Toggle button (pos-toggle-btn.css) instead of switch-card's old color-mix-based primary color scheme. Hover no longer has any distinct CSS, so its token table is now identical to normal's — documented as such, not invented. 2026-09-16: hover regained one distinct effect — a 2px interactive-color inset stroke on the card via the pos-anim-stroke behavior pattern (pos-behaviors.css), matching Choice button (.pos-tile-btn). Background/border/label/icon still never change; only the toggle track/thumb and now this stroke react to state. 2026-10-02: the toggle inside the card gets the Toggle button's hover (off -> prominent text color, on -> interactive hover, HC frame); disabled cards none. Disabled checked fill/frame borrows the primary button disabled tokens (--pos-color-button-primary-disabled-background / -frame) — documented exception to RULES.md 2.2, see COMPONENT-RULES.md.",
+  "component": "switch-card",
+  "name": "Switch button",
+  "description": "Letting users toggle a feature or setting on or off — especially when the option has a name and an icon that benefits from a larger, more prominent touch target.",
+  "whenToUse": [
+    "Letting users toggle a feature or setting on or off — especially when the option has a name and an icon that benefits from a larger, more prominent touch target.",
+    "Presenting a small set of independent boolean options that each deserve visual weight (e.g. accessibility preferences, feature flags)."
+  ],
+  "whenNotToUse": [
+    "The toggle is a simple inline switch with no icon or label prominence — use a standard form checkbox or toggle switch instead.",
+    "Multiple tightly-grouped options — switch buttons take up significant vertical space."
+  ],
+  "do": [
+    "Always use <code>&lt;label&gt;</code> as the root element wrapping <code>&lt;input type=\"checkbox\" role=\"switch\"&gt;</code> — this gives the entire row a correct accessible click target.",
+    "Use a meaningful <code>aria-label</code> or visible label text that describes exactly what the switch controls.",
+    "Use an icon that visually represents the feature being toggled."
+  ],
+  "dont": [
+    "Use the switch button as a navigation element — it is a toggle, not a link.",
+    "Omit the <code>role=\"switch\"</code> attribute — without it, screen readers announce it as a checkbox, not a toggle switch."
+  ],
+  "accessibility": [
+    "The hidden <code>&lt;input type=\"checkbox\" role=\"switch\"&gt;</code> carries all semantics. Screen readers announce the label and checked state automatically.",
+    "The card receives focus (not the hidden input) — the <code>:focus-visible</code> ring appears on the <code>&lt;label&gt;</code> via the <code>:has(:focus-visible)</code> selector."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "pos-switch-card--small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Compact size — 44px min-height instead of 3.5rem."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute on the input",
+      "default": "false",
+      "description": "Native disabled attribute on .pos-switch-card-input — the whole row shows cursor: not-allowed (pointer events stay on, the disabled input ignores the click, no hover; RULES.md 4.12); only the toggle track/thumb dim, the row itself keeps its normal appearance."
+    },
+    {
+      "name": "checked",
+      "type": "boolean attribute on the input",
+      "default": "false",
+      "description": "On/off state — switches only .pos-switch-card-toggle to the Toggle button's \"on\" color; the row's background, border, label, and icon never change."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "disabled",
+      "selected",
+      "selected-disabled"
+    ]
+  },
+  "shared": {
+    "constants": [
+      {
+        "css": "--pos-color-page-background",
+        "figma": "Backgrounds/Page Background",
+        "role": "Card background — constant across all states",
+        "swatch": true
+      },
+      {
+        "css": "--pos-color-frame",
+        "figma": "Backgrounds/Frame",
+        "role": "Border — constant across all states",
+        "swatch": true
+      },
+      {
+        "css": "--pos-color-content-text-interactive",
+        "figma": "General elements-theme/Normal - text - interactive",
+        "role": "Label — constant across all states",
+        "swatch": true
+      },
+      {
+        "css": "--pos-color-highlight-background",
+        "figma": "Backgrounds/Highlighted Background",
+        "role": "Icon circle background — constant across all states",
+        "swatch": true
+      },
+      {
+        "css": "--pos-color-interactive",
+        "figma": "General elements-theme/Graphic Interactive",
+        "role": "Icon color — constant across all states",
+        "swatch": true
+      },
+      {
+        "css": "--pos-color-page-background",
+        "figma": "Backgrounds/Page Background",
+        "role": "Toggle thumb — constant across all states, same pattern as the Toggle button's own thumb",
+        "swatch": true
+      }
+    ],
+    "layout": [
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "role": "Card border radius",
+        "swatch": false
+      }
+    ],
+    "typography": [
+      {
+        "css": "--pos-font-buttons",
+        "figma": "Family/buttons",
+        "role": "Font family",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-big-button-text",
+        "figma": "Size/big button text",
+        "role": "Font size",
+        "swatch": false
+      }
+    ]
+  },
+  "variants": {
+    "switch-card": {
+      "label": "Switch button",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Toggle track — off/unchecked",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Toggle track — off/unchecked",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Card hover stroke (2px inset outline, pos-anim-stroke behavior — matches Choice button)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Toggle track on hover (off) — one step stronger than the resting track",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Toggle track on hover (on) — the interactive hover step",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Toggle hover frame, 2px off the track — only visible in high contrast",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Toggle track — off/unchecked",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Focus ring",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Toggle track — off, disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Toggle track — on/checked",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "role": "Toggle track — on, disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.constants"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<label class=\"pos-switch-card\" for=\"my-switch\">\n  <input type=\"checkbox\" role=\"switch\" class=\"pos-switch-card-input\" id=\"my-switch\">\n  <span class=\"pos-switch-card-icon\" aria-hidden=\"true\">\n    <!-- icon -->\n  </span>\n  <span class=\"pos-switch-card-label\">Enhanced text size</span>\n  <span class=\"pos-switch-card-toggle\" aria-hidden=\"true\"></span>\n</label>"
+}
+{% endraw %}
+</script>

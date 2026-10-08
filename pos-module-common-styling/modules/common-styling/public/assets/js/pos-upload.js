@@ -34,7 +34,7 @@ window.pos.modules.upload = function(settings){
   // if you want the photo editor (bool)
   module.settings.imageEditorEnabled = settings.imageEditorEnabled || false;
   // aspect ration for cropping the image (float)
-  module.settings.aspectRatio = settings.aspectRatio || null;
+  module.settings.aspectRatio = settings.aspectRatio;
   // width of the dashboard (string)
   module.settings.width = settings.width || '100%';
   // height of the dashboard (string)
@@ -76,14 +76,8 @@ window.pos.modules.upload = function(settings){
 
     // set the option to auto proceed after the preloaded files were loaded
     module.settings.uppy.setOptions({
-      autoProceed: !module.settings.imageEditorEnabled
+      autoProceed: !module.settings.editorEnabled && true
     });
-
-    if(module.settings.imageEditorEnabled){
-      module.settings.uppy.on('file-editor:complete', () => {
-        module.settings.uppy.upload();
-      });
-    }
 
     module.settings.uppy.on('upload-success', (file, response) => {
       module.settings.container.dispatchEvent(new CustomEvent('pos-upload-file-uploaded', { bubbles: true, detail: { target: module.settings.container, id: module.settings.id, file: file, response: response, url: response.uploadURL } }));
@@ -173,6 +167,7 @@ window.pos.modules.upload = function(settings){
           }
         }
         fields['Content-Type'] = file.type;
+        // this is disabled because it seems to work on some instances, and fails on others, idk yet
 
         return Promise.resolve({
           method: 'POST',
@@ -199,11 +194,7 @@ window.pos.modules.upload = function(settings){
 
     if(module.settings.imageEditorEnabled){
       pos.modules.debug(module.settings.debug, module.settings.id, 'Starting image editor', module.settings.container);
-      module.settings.uppy.use(pos.modules.uppy.ImageEditor, {
-        cropperOptions: {
-          aspectRatio: module.settings.aspectRatio
-        }
-      });
+      module.settings.uppy.use(pos.modules.uppy.ImageEditor);
     }
 
   };

@@ -1,0 +1,5037 @@
+{
+  "_about": "Component spec for pos-button (new DS docs/inspect refactor pilot). Single source of truth for the Variants/Usage/Code/Tokens tabs on /style-guide/button — replaces the old inspect-button.liquid + BUTTON_TOKENS (styleguide-component-page.js) dual-source setup. Generated 2026-08-25 by resolving the actual CSS cascade in pos-button.css (script-assisted, not hand-typed) plus a css-to-figma.json lookup for Figma names. Audience: the doc-site renderer (human layer) and any AI reading this file directly (AI-readable layer). Regenerate by re-running the resolver against pos-button.css if the CSS changes; do not hand-edit token values here without re-verifying against the CSS. 2026-09-04: found pos-button--icon-only (already used in real preview markup, e.g. Popover's menu trigger and the style-guide page's own header buttons) was only ever defined in style-guide/styleguide.css — the docs site's own CSS, not the shippable pos-button.css — so it did nothing for any real product built on this DS outside the docs site itself. Moved the rule into pos-button.css as a proper modifier and removed the docs-only duplicate.",
+  "component": "button",
+  "name": "Button",
+  "description": "A clickable control that triggers an action — submitting a form, opening a dialog, confirming a choice, or starting a process that does not navigate away from the page.",
+  "whenToUse": "Triggering an action — submitting a form, opening a dialog, confirming a choice, or initiating any process that does not navigate away from the page. Use <code>pos-button</code> whenever the outcome is an action, not a navigation.",
+  "whenNotToUse": "Navigation to another page or URL — use a link (<code>&lt;a&gt;</code>) instead. Do not use a button purely to make text look interactive.",
+  "do": "Use <code>type=\"submit\"</code> on form submission buttons and <code>type=\"button\"</code> on all others. Choose the intent variant (<code>primary</code>, <code>secondary</code>, <code>secondary-filled</code>) that matches the action's visual weight and importance on the page.",
+  "dont": "Do not place more than one primary button per screen — it creates competing calls to action. Do not rely on the button label alone to communicate a destructive action; pair it with a confirmation step.",
+  "composedOf": [],
+  "props": [
+    {
+      "name": "base class",
+      "type": "'pos-button-primary' | 'pos-button-secondary' | 'pos-button-ghost' | (none = secondary-filled)",
+      "default": "none (secondary-filled)",
+      "description": "Visual weight. secondary-filled (no class) is the default white/filled look; add pos-button-primary for the main call-to-action; add pos-button-secondary for the transparent-background outline look; add pos-button-ghost for icon+text only — same as secondary but with no visible frame at rest, revealing an interactive-grey frame (HC-visible) only on hover."
+    },
+    {
+      "name": "intent class",
+      "type": "'pos-button-error' | 'pos-button-success' | 'pos-button-inverted' | (none)",
+      "default": "none",
+      "description": "Mutually exclusive with each other — only one at a time. error/success overlay a destructive/confirming color scheme on top of the base class; inverted switches to the inverted color set for a dark/brand-colored surface. There is no combined error+inverted or success+inverted variant — pos-button.css has no rule for that combination and the doc-site UI's Intent control only ever applies one of these four at a time."
+    },
+    {
+      "name": "pos-button-small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Compact size — smaller height, padding, font-size and icon size."
+    },
+    {
+      "name": "pos-button--icon-only",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Square button — no inline padding, centered icon, no text label. Requires an aria-label since there is no visible text. Combine with pos-button-small for the compact square size."
+    },
+    {
+      "name": "pos-button--loading",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Blocks pointer interaction (pointer-events: none) while an async action is pending — no not-allowed cursor, loading is not a disabled state (RULES.md 4.12 exception). Combine with a .pos-spinner instance in .pos-button-loading-icon, or animated trailing dots via .pos-button-loading-text."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native disabled attribute — switches to the disabled color set for the current base/intent combination."
+    }
+  ],
+  "usageExample": "<button type=\"button\" class=\"pos-button pos-button-primary\">Save</button>",
+  "dimensions": {
+    "base": [
+      "primary",
+      "secondary-filled",
+      "secondary",
+      "ghost"
+    ],
+    "intent": [
+      "none",
+      "error",
+      "success",
+      "inverted"
+    ],
+    "size": [
+      "default",
+      "small"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "role": "radius"
+      }
+    ],
+    "typography": [
+      {
+        "css": "--pos-font-buttons",
+        "figma": "Family/buttons",
+        "role": "font-family"
+      },
+      {
+        "css": "--pos-font-size-big-button-text",
+        "figma": "Size/big button text",
+        "role": "font-size"
+      }
+    ],
+    "focusIndicator": [
+      {
+        "css": "--pos-color-focused",
+        "figma": "General elements-theme/Focused",
+        "role": "focus-color"
+      }
+    ]
+  },
+  "knownDiscrepancies": [
+    "The old inspect-button.liquid and the JS-side BUTTON_TOKENS map (styleguide-component-page.js) are two separate, differently-shaped, hand-maintained token listings for the same component (confirmed 2026-08-25) — this spec file replaces both as the single source.",
+    "FIXED 2026-08-25: --pos-font-buttons (font-family) was listed as a button token in the old inspect-button.liquid but was not actually applied in pos-button.css. Added font-family: var(--pos-font-buttons) to .pos-button (matches sibling button-family components pos-segmented-control/pos-tile-btn/pos-switch-card, which already had it). Now correctly reflected in shared.typography below.",
+    "Primary button's :active state has no dedicated color token (only transform: scale(98%)) — it visually inherits whatever background/border/text the element already had (normal, or hover if the pointer is also hovering). secondary-filled's :active DOES have a dedicated --pos-color-button-secondary-active-background. Possibly intentional, possibly a gap — not changed, just documented.",
+    "Primary disabled keeps its box-shadow: var(--pos-primitive-shadow-bevel) (inherited, not reset) while error/success disabled explicitly set box-shadow: none. Possibly intentional, possibly an inconsistency — not changed, just documented.",
+    "CORRECTED 2026-08-25: an earlier draft of this spec modeled statusModifier (error/success) and inverted as independently combinable dimensions (3x2 cartesian product per base). Verified against the live doc-site JS (BUTTON_INTENT_CLASSES handler) and pos-button.css that this is wrong — error/success/inverted are mutually exclusive alternatives within a single 'intent' dimension (4 values including none), matching exactly the old inspect-button.liquid's 12 flat variant keys (3 base x 4 intent). No CSS rule exists for an error+inverted or success+inverted combination."
+  ],
+  "variants": {
+    "primary": {
+      "label": "Primary",
+      "dimensions": {
+        "base": "primary",
+        "statusModifier": "none",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-primary"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-primary-frame",
+                  "figma": "Primary/Button Prim Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-hover-background",
+                  "figma": "Primary/Button Prim Bg Hover",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-primary-hover-frame",
+                  "figma": "Primary/Button Prim Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-primary-hover-text",
+                  "figma": "Primary/Button Prim Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-primary-frame",
+                  "figma": "Primary/Button Prim Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-frame",
+                  "figma": "Primary/Button Prim Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-text",
+                  "figma": "Primary/Button Prim Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "primary+error": {
+      "label": "Primary / error",
+      "dimensions": {
+        "base": "primary",
+        "statusModifier": "error",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-primary",
+        "pos-button-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-error-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-error-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-error-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-error-hover-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-error-hover-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-error-hover-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-error-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-error-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-error-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-error-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-error-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-error-disabled-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-error-disabled-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-error-disabled-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "primary+success": {
+      "label": "Primary / success",
+      "dimensions": {
+        "base": "primary",
+        "statusModifier": "success",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-primary",
+        "pos-button-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-success-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-success-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-success-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-success-hover-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-success-hover-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-success-hover-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-success-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-success-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-success-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-success-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-success-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-success-disabled-background",
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-success-disabled-frame",
+                  "figma": null,
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-success-disabled-text",
+                  "figma": null,
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "primary+inverted": {
+      "label": "Primary / inverted",
+      "dimensions": {
+        "base": "primary",
+        "statusModifier": "none",
+        "inverted": true
+      },
+      "classes": [
+        "pos-button-primary",
+        "pos-button-inverted"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-frame",
+                  "figma": "Inverted/Button Inv Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-hover-background",
+                  "figma": "Inverted/Button Inv Bg Hover",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-hover-frame",
+                  "figma": "Inverted/Button Inv Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-hover-text",
+                  "figma": "Inverted/Button Inv Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-background",
+                  "figma": "Inverted/Button Inv Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-frame",
+                  "figma": "Inverted/Button Inv Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-text",
+                  "figma": "Inverted/Button Inv Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-hover-background",
+                  "figma": "Inverted/Button Inv Bg Hover",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-hover-frame",
+                  "figma": "Inverted/Button Inv Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-hover-text",
+                  "figma": "Inverted/Button Inv Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-bevel",
+                  "figma": "Elevation/Bevel",
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-disabled-background",
+                  "figma": "Inverted/Button Inv Bg Disabled",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-disabled-frame",
+                  "figma": "Inverted/Button Inv Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-disabled-text",
+                  "figma": "Inverted/Button Inv Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary-filled": {
+      "label": "Secondary filled",
+      "dimensions": {
+        "base": "secondary-filled",
+        "statusModifier": "none",
+        "inverted": false
+      },
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background",
+                  "figma": "Secondary/Button Sec Bg Hover 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-frame",
+                  "figma": "Secondary/Button Sec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-text",
+                  "figma": "Secondary/Button Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-frame",
+                  "figma": "Secondary/Button Sec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-disabled-background",
+                  "figma": "Secondary/Button Sec Bg Disabled",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-text",
+                  "figma": "Secondary/Button Sec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary-filled+error": {
+      "label": "Secondary filled / error",
+      "dimensions": {
+        "base": "secondary-filled",
+        "statusModifier": "error",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "frame"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary-filled+success": {
+      "label": "Secondary filled / success",
+      "dimensions": {
+        "base": "secondary-filled",
+        "statusModifier": "success",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "frame"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background",
+                  "figma": "Secondary/Button Sec Bg Normal 100%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary-filled+inverted": {
+      "label": "Secondary filled / inverted",
+      "dimensions": {
+        "base": "secondary-filled",
+        "statusModifier": "none",
+        "inverted": true
+      },
+      "classes": [
+        "pos-button-inverted"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-inverted-background",
+                  "figma": "Backgrounds/Inverted Background",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-frame",
+                  "figma": "InvSec/Button InvSec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "InvSec/Button InvSec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-inverted-background",
+                  "figma": "Backgrounds/Inverted Background",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "InvSec/Button InvSec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-inverted-background",
+                  "figma": "Backgrounds/Inverted Background",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-frame",
+                  "figma": "InvSec/Button InvSec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "InvSec/Button InvSec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-inverted-background",
+                  "figma": "Backgrounds/Inverted Background",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "InvSec/Button InvSec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-inverted-background",
+                  "figma": "Backgrounds/Inverted Background",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-frame",
+                  "figma": "InvSec/Button InvSec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-text",
+                  "figma": "InvSec/Button InvSec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary": {
+      "label": "Secondary",
+      "dimensions": {
+        "base": "secondary",
+        "statusModifier": "none",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-secondary"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-frame",
+                  "figma": "Secondary/Button Sec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-text",
+                  "figma": "Secondary/Button Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-frame",
+                  "figma": "Secondary/Button Sec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-text",
+                  "figma": "Secondary/Button Sec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary+error": {
+      "label": "Secondary / error",
+      "dimensions": {
+        "base": "secondary",
+        "statusModifier": "error",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-secondary",
+        "pos-button-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "frame"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary+success": {
+      "label": "Secondary / success",
+      "dimensions": {
+        "base": "secondary",
+        "statusModifier": "success",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-secondary",
+        "pos-button-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "frame"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-frame",
+                  "figma": "Secondary/Button Sec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-frame",
+                  "figma": "Secondary/Button Sec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "secondary+inverted": {
+      "label": "Secondary / inverted",
+      "dimensions": {
+        "base": "secondary",
+        "statusModifier": "none",
+        "inverted": true
+      },
+      "classes": [
+        "pos-button-secondary",
+        "pos-button-inverted"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-secondary-background",
+                  "figma": "InvSec/Button InvSec Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-frame",
+                  "figma": "InvSec/Button InvSec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "InvSec/Button InvSec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-background",
+                  "figma": "InvSec/Button InvSec Bg Hover",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "InvSec/Button InvSec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-secondary-background",
+                  "figma": "InvSec/Button InvSec Bg Normal",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-frame",
+                  "figma": "InvSec/Button InvSec Frame Normal",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "InvSec/Button InvSec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-background",
+                  "figma": "InvSec/Button InvSec Bg Hover",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "InvSec/Button InvSec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-frame",
+                  "figma": "InvSec/Button InvSec Frame Hover",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-background",
+                  "figma": "InvSec/Button InvSec Bg Disabled",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-frame",
+                  "figma": "InvSec/Button InvSec Frame Disabled",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-text",
+                  "figma": "InvSec/Button InvSec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "ghost": {
+      "label": "Ghost",
+      "dimensions": {
+        "base": "ghost",
+        "statusModifier": "none",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-ghost"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-text",
+                  "figma": "Secondary/Button Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-button-secondary-hover-text",
+                  "figma": "Secondary/Button Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "frame"
+                },
+                {
+                  "css": "--pos-color-button-secondary-text",
+                  "figma": "Secondary/Button Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-secondary-disabled-text",
+                  "figma": "Secondary/Button Sec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "ghost+error": {
+      "label": "Ghost / error",
+      "dimensions": {
+        "base": "ghost",
+        "statusModifier": "error",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-ghost",
+        "pos-button-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "ghost+success": {
+      "label": "Ghost / success",
+      "dimensions": {
+        "base": "ghost",
+        "statusModifier": "success",
+        "inverted": false
+      },
+      "classes": [
+        "pos-button-ghost",
+        "pos-button-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-hover-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Hover 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-secondary-background-transparent",
+                  "figma": "Secondary/Button Sec Bg Normal 0%",
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "ghost+inverted": {
+      "label": "Ghost / inverted",
+      "dimensions": {
+        "base": "ghost",
+        "statusModifier": "inverted",
+        "inverted": true
+      },
+      "classes": [
+        "pos-button-ghost",
+        "pos-button-inverted"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": null,
+                  "figma": null,
+                  "role": "background — none (literal transparent in CSS, no token; ghost has no filled surface on an inverted background)"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "Inverted/Button Inv Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": null,
+                  "figma": null,
+                  "role": "background — none (literal transparent in CSS, no token; ghost has no filled surface on an inverted background)"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "Inverted/Button Inv Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": null,
+                  "figma": null,
+                  "role": "background — none (literal transparent in CSS, no token; ghost has no filled surface on an inverted background)"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "frame (appears only on hover — no frame at rest)"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-hover-text",
+                  "figma": "Inverted/Button Inv Sec Text, icon Hover",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "elevation"
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "elevation"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": null,
+                  "figma": null,
+                  "role": "background"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-text",
+                  "figma": "Inverted/Button Inv Sec Text, icon",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focusIndicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": null,
+                  "figma": null,
+                  "role": "background — none (literal transparent in CSS, no token; ghost has no filled surface on an inverted background)"
+                },
+                {
+                  "css": "--pos-color-button-inverted-secondary-disabled-text",
+                  "figma": "Inverted/Button Inv Sec Text, icon Disabled",
+                  "role": "text"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-padding-button",
+                  "figma": null,
+                  "role": "padding"
+                },
+                {
+                  "css": "--pos-height-button",
+                  "figma": null,
+                  "role": "height"
+                },
+                {
+                  "css": "--pos-border-button",
+                  "figma": null,
+                  "role": "border-width"
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "radius"
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "sizeOverrides": {
+    "small": [
+      {
+        "css": "--pos-padding-button-small",
+        "figma": null,
+        "role": "padding",
+        "appliesTo": "padding-inline"
+      },
+      {
+        "css": "--pos-font-size-small-button-text",
+        "figma": "Size/small button text",
+        "role": "font-size",
+        "appliesTo": "font-size"
+      },
+      {
+        "css": "--pos-size-icon-s",
+        "figma": "Icon/icon-s",
+        "role": "icon-size",
+        "appliesTo": "svg width/height"
+      }
+    ],
+    "note": "height is calc(var(--pos-height-button) * 0.682) — derived, not a separate token. All color tokens are identical between default and small size; only padding, font-size, icon-size (and derived height) change."
+  }
+}

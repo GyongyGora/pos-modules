@@ -5,7 +5,6 @@
   links
   headings
   sidenotes
-  kbds
   utility classes
   increasing text legibility
   long text
@@ -24,29 +23,47 @@
 
   /* links
   ============================================================================ */
-  :where(.pos-app) a {
-    color: var(--pos-color-interactive);
-
-    transition: color .1s linear;
+  :where(.pos-app) a,
+  .pos-link {
+    color: var(--pos-color-interactive-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: inherit;
+    font-weight: bold;
   }
 
-  :where(.pos-app) a:hover,
-  .pos-debug-link-hover {
-    color: var(--pos-color-interactive-hover);
+  :where(.pos-app) a:hover:not([aria-disabled="true"]):not(.pos-link--disabled):not(.pos-debug-link-disabled),
+  .pos-link.pos-debug-link-hover {
+    color: var(--pos-color-interactive-text-hover);
   }
 
-  :where(.pos-app) a:active,
-  .pos-debug-link-active {
-    color: var(--pos-color-interactive-active)
+  :where(.pos-app) a:active:where(:not([aria-disabled="true"], .pos-link--disabled)),
+  .pos-link.pos-debug-link-active {
+    color: var(--pos-color-interactive-text-active);
   }
 
   :where(.pos-app) a:not(.pos-button):focus-visible,
-  .pos-debug-link-focus {
+  .pos-link.pos-debug-link-focus {
     border-radius: var(--pos-radius-button);
     outline: 2px solid var(--pos-color-focused);
     outline-offset: 2px;
+    color: var(--pos-color-interactive-text-hover);
+  }
 
-    color: var(--pos-color-interactive-hover);
+  :where(.pos-app) a[aria-disabled="true"],
+  .pos-link--disabled,
+  .pos-link.pos-debug-link-disabled {
+    color: var(--pos-color-interactive-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* disabled links keep pointer events so the not-allowed cursor shows (RULES.md 4.12) —
+     navigation is blocked by the aria-disabled click guard in init.liquid
+     (a[aria-disabled="true"] and .pos-link--disabled), not by pointer-events: none */
+
+  /* visited — must come after base rule; compound selector ensures debug states override it */
+  .pos-link:visited {
+    color: var(--pos-color-content-text);
   }
 
   :where(.pos-app) a svg {
@@ -63,6 +80,36 @@
     inset-inline-start: -100vw;
   }
 
+  /* .pos-link — standalone component with explicit size variants */
+  .pos-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pos-primitive-size-1);    /* 8px */
+    font-size: var(--pos-font-size-body);
+  }
+
+  .pos-link.pos-debug-link-visited {
+    color: var(--pos-color-content-text);
+  }
+
+  .pos-link svg {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+    flex-shrink: 0;
+    display: block;
+    color: var(--pos-color-content-icon);
+  }
+
+  .pos-link--disabled svg,
+  .pos-link[aria-disabled="true"] svg,
+  .pos-link.pos-debug-link-disabled svg {
+    color: var(--pos-color-content-icon-disabled);
+  }
+
+  .pos-link--small {
+    font-size: var(--pos-font-size-body-small);
+  }
+
 
   /* headings
   ============================================================================ */
@@ -74,6 +121,7 @@
     font-family: var(--pos-font-heading);
     font-size: 3rem;
     font-weight: 500;
+    color: var(--pos-color-content-text-prominent);
   }
 
   .pos-heading-2,
@@ -85,6 +133,7 @@
     font-family: var(--pos-font-heading);
     font-size: 2rem;
     font-weight: 500;
+    color: var(--pos-color-content-text-prominent);
   }
 
   .pos-heading-3,
@@ -95,6 +144,7 @@
     font-family: var(--pos-font-heading);
     font-size: 1.5rem;
     font-weight: 400;
+    color: var(--pos-color-content-text-prominent);
   }
 
   .pos-heading-4,
@@ -104,6 +154,7 @@
     font-family: var(--pos-font-heading);
     font-size: 1.25rem;
     font-weight: 400;
+    color: var(--pos-color-content-text-prominent);
   }
 
   .pos-heading-3 + .pos-card {
@@ -122,39 +173,16 @@
   }
 
 
-  /* kbds
-  ============================================================================ */
-  .pos-app kbd {
-    padding-block: 1px;
-    padding-inline: 2px;
-
-    background-color: var(--pos-color-highlight-background);
-    border-radius: 2px;
-
-    font-family: var(--pos-font-code);
-    font-size: .9rem;
-    color: var(--pos-color-highlight-text);
-  }
-
-
   /* tips
   ============================================================================ */
   .pos-tip {
-    margin-block-start: .3rem;
+    margin-block-start: .2rem;
     position: relative;
     display: flex;
     gap: .5em;
 
     color: var(--pos-color-content-text-supplementary);
   }
-
-    .pos-tip a {
-      text-decoration: underline;
-    }
-
-    .pos-tip a:not(:hover) {
-      color: inherit;
-    }
 
     .pos-tip svg {
       width: 1.2rem;
@@ -205,14 +233,6 @@
   }
 
   /* headings */
-  .pos-prose h1 + h2 {
-    margin-block-start: .4rem;
-  }
-
-  .pos-prose h2 + h3 {
-    margin-block-start: .3rem;
-  }
-
   .pos-prose .pos-heading-1,
   .pos-prose h1 {
     line-height: 1em;

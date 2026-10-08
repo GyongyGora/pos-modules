@@ -1,0 +1,12 @@
+# Licensed Streamline icon sources (used for the Figma file only) — must not be distributed
+/icons/
+
+# Windows Explorer folder metadata
+desktop.ini
+
+# Playwright test run artifacts (regenerated on every run)
+test-results/
+playwright-report/
+
+# Maintainer notes (project memory / backlog) — local only, never published
+BACKLOG.md

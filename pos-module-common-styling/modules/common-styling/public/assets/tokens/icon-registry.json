@@ -1,0 +1,992 @@
+{
+  "_about": "Icon usage registry for pos-module-common-styling. Purpose: prevent icon-choice drift across the DS and any UI generated from it — e.g. a 'delete' action must always use the same glyph everywhere (never trash-can in one place and X in another), a 'mail' concept must always use the same glyph (never envelope in one place and paper-plane in another). This file maps FUNCTION/PURPOSE to the one canonical icon name for that purpose, plus every current known usage site. Audience: both AI (check this file before picking an icon for a new feature) and humans (the /style-guide/foundations/icons page renders this data). How to update: whenever a new icon is added to icon.liquid, or an existing icon is applied to a new purpose, add/update its entry here in the same change — do not let this file drift out of sync with icon.liquid (see RULES.md's 'Component change sync' principle, applied to icons). It is also the source icon.liquid is generated from (`npm run build:icons`).",
+  "source": {
+    "library": "Tabler Icons",
+    "url": "https://tabler.io/icons",
+    "license": "MIT",
+    "package": "@tabler/icons",
+    "note": "icon.liquid is generated from this registry by `npm run build:icons`: each entry's `tabler` names the Tabler icon (outline by default, `tablerStyle: \"filled\"` for the filled set), `extraPaths` adds paths to it, `aliases` are extra names for the same glyph and `inAll` puts it in the `icon: 'all'` group. To add an icon: add an entry here (logical name, purpose, Tabler name), then run `npm run build:icons`. Callers only ever use the logical name.",
+    "figma": "The Figma file uses the licensed Streamline set (not publishable); code uses Tabler — an intentional Figma ≠ code difference: same logical names and purposes, different glyph shapes."
+  },
+  "categories": [
+    {
+      "category": "Actions",
+      "icons": [
+        {
+          "name": "plus",
+          "purpose": "add / create a new item",
+          "usedFor": [
+            "add button",
+            "create new record"
+          ],
+          "tabler": "plus",
+          "inAll": true
+        },
+        {
+          "name": "x",
+          "purpose": "close / dismiss / clear / remove a single item (never destructive delete — see 'delete')",
+          "usedFor": [
+            "close dialog/toast/tag",
+            "clear filter input",
+            "remove a selected tag or filter chip",
+            "pos-close control icon"
+          ],
+          "tabler": "x",
+          "inAll": true
+        },
+        {
+          "name": "delete",
+          "purpose": "permanently remove / destroy a record (destructive action — distinct from 'x' dismiss)",
+          "usedFor": [
+            "delete confirmation actions"
+          ],
+          "tabler": "trash",
+          "inAll": true
+        },
+        {
+          "name": "pencil",
+          "purpose": "edit an existing item",
+          "usedFor": [
+            "edit button/action"
+          ],
+          "tabler": "pencil",
+          "inAll": true
+        },
+        {
+          "name": "check",
+          "purpose": "confirm / mark complete / success indicator (path-only glyph, no container)",
+          "usedFor": [
+            "confirmation ticks",
+            "usage-doc do/don't lists"
+          ],
+          "tabler": "check",
+          "inAll": true
+        },
+        {
+          "name": "check-circle",
+          "purpose": "confirm inside a circular badge/container",
+          "usedFor": [
+            "circular success badges"
+          ],
+          "tabler": "circle-check"
+        },
+        {
+          "name": "check-square",
+          "purpose": "confirm inside a square/checkbox-shaped container",
+          "usedFor": [
+            "checkbox-adjacent confirmation"
+          ],
+          "tabler": "square-check"
+        },
+        {
+          "name": "check-button",
+          "purpose": "confirm as a standalone button-shaped glyph",
+          "usedFor": [
+            "button-style confirm affordance"
+          ],
+          "tabler": "checkbox"
+        },
+        {
+          "name": "search",
+          "purpose": "search / filter / find",
+          "usedFor": [
+            "search inputs",
+            "nav search"
+          ],
+          "tabler": "search",
+          "inAll": true
+        },
+        {
+          "name": "dots",
+          "purpose": "overflow menu / more options (vertical or horizontal ellipsis meaning)",
+          "usedFor": [
+            "overflow/kebab menus"
+          ],
+          "tabler": "dots",
+          "inAll": true
+        },
+        {
+          "name": "navigation-menu-vertical",
+          "purpose": "vertical 3-dot overflow menu trigger (aliased as 'more-vertical')",
+          "usedFor": [
+            "row/card overflow actions"
+          ],
+          "aliases": [
+            "more-vertical"
+          ],
+          "tabler": "dots-vertical"
+        },
+        {
+          "name": "menu",
+          "purpose": "open a hamburger/navigation menu",
+          "usedFor": [
+            "mobile nav toggle"
+          ],
+          "tabler": "menu-2",
+          "inAll": true
+        },
+        {
+          "name": "expand",
+          "purpose": "expand to fullscreen / maximize",
+          "usedFor": [
+            "fullscreen toggle"
+          ],
+          "tabler": "maximize",
+          "inAll": true
+        },
+        {
+          "name": "eye",
+          "purpose": "show / reveal hidden content (e.g. reveal a password)",
+          "usedFor": [
+            "password show toggle"
+          ],
+          "tabler": "eye",
+          "inAll": true
+        },
+        {
+          "name": "eyeStriked",
+          "purpose": "hide / conceal revealed content (paired opposite of 'eye')",
+          "usedFor": [
+            "password hide toggle"
+          ],
+          "tabler": "eye-off",
+          "inAll": true
+        },
+        {
+          "name": "arrow-down-1",
+          "purpose": "directional arrow, down",
+          "usedFor": [],
+          "tabler": "arrow-down"
+        },
+        {
+          "name": "flip-vertical-down",
+          "purpose": "collapsible / tree list",
+          "usedFor": [],
+          "tabler": "list-tree"
+        },
+        {
+          "name": "subtract-bold",
+          "purpose": "remove / decrement (bold minus glyph)",
+          "usedFor": [],
+          "tabler": "minus"
+        },
+        {
+          "name": "subtract-tab",
+          "purpose": "tab / tabbed view",
+          "usedFor": [
+            "Tab component overview tile"
+          ],
+          "tabler": "tabs"
+        },
+        {
+          "name": "tags-minus",
+          "purpose": "remove a tag from a set",
+          "usedFor": [],
+          "tabler": "tag-minus"
+        },
+        {
+          "name": "upload-bottom",
+          "purpose": "upload a file — the canonical glyph for upload actions/empty states",
+          "usedFor": [
+            "File upload dashboard empty-state icon"
+          ],
+          "tabler": "upload"
+        }
+      ]
+    },
+    {
+      "category": "Directional / disclosure chevrons",
+      "icons": [
+        {
+          "name": "dashUp",
+          "purpose": "chevron pointing up — collapse / scroll up",
+          "usedFor": [
+            "pos-chevron control icon (collapsed direction)"
+          ],
+          "tabler": "chevron-up",
+          "inAll": true
+        },
+        {
+          "name": "dashDown",
+          "purpose": "chevron pointing down — expand / dropdown indicator",
+          "usedFor": [
+            "select arrow",
+            "multiselect dropdown arrow",
+            "pos-chevron control icon (expanded direction)"
+          ],
+          "tabler": "chevron-down",
+          "inAll": true
+        },
+        {
+          "name": "dashRight",
+          "purpose": "chevron pointing right — next / forward / nested-item indicator",
+          "usedFor": [
+            "pagination next",
+            "breadcrumb separators",
+            "nested nav indicator"
+          ],
+          "tabler": "chevron-right",
+          "inAll": true
+        },
+        {
+          "name": "dashLeft",
+          "purpose": "chevron pointing left — previous / back",
+          "usedFor": [
+            "pagination previous"
+          ],
+          "tabler": "chevron-left",
+          "inAll": true
+        }
+      ]
+    },
+    {
+      "category": "Status & feedback",
+      "icons": [
+        {
+          "name": "info",
+          "purpose": "informational message / neutral notice",
+          "usedFor": [
+            "info alerts/toasts"
+          ],
+          "tabler": "info-circle",
+          "inAll": true
+        },
+        {
+          "name": "warning",
+          "purpose": "warning / caution message",
+          "usedFor": [
+            "warning alerts/toasts"
+          ],
+          "tabler": "alert-triangle",
+          "inAll": true
+        },
+        {
+          "name": "checkBadge",
+          "purpose": "verified / approved / success badge",
+          "usedFor": [
+            "verification badges",
+            "Toast/Alert card success icon"
+          ],
+          "tabler": "rosette-discount-check",
+          "inAll": true
+        },
+        {
+          "name": "errorBadge",
+          "purpose": "error / critical badge — same scalloped seal outline as checkBadge, with an exclamation glyph instead of a checkmark (derived from checkBadge's outer path + warning's exclamation glyph, both already-licensed assets already in this set, not new artwork)",
+          "usedFor": [
+            "Toast/Alert card error icon"
+          ],
+          "tabler": "rosette",
+          "extraPaths": [
+            "M12 8v4",
+            "M12 16h.01"
+          ],
+          "inAll": true
+        },
+        {
+          "name": "touch-password-approved",
+          "purpose": "password/credential approved confirmation",
+          "usedFor": [
+            "password success state"
+          ],
+          "tabler": "shield-check"
+        }
+      ]
+    },
+    {
+      "category": "Communication",
+      "icons": [
+        {
+          "name": "mail",
+          "purpose": "email / message envelope — the ONLY glyph for email concepts, never a paper-plane or chat-bubble substitute",
+          "usedFor": [
+            "email fields/actions"
+          ],
+          "tabler": "mail",
+          "inAll": true
+        },
+        {
+          "name": "bell",
+          "purpose": "notifications",
+          "usedFor": [
+            "notification bell/indicator"
+          ],
+          "tabler": "bell",
+          "inAll": true
+        },
+        {
+          "name": "messagesTyping",
+          "purpose": "live chat / conversation with a typing indicator",
+          "usedFor": [
+            "chat module"
+          ],
+          "tabler": "message-dots",
+          "inAll": true
+        },
+        {
+          "name": "messages-bubble-square-menu",
+          "purpose": "chat/message thread with a menu — distinct from plain 'messagesTyping', includes a menu affordance",
+          "usedFor": [],
+          "tabler": "message-2"
+        }
+      ]
+    },
+    {
+      "category": "People & access",
+      "icons": [
+        {
+          "name": "user",
+          "purpose": "a single user/person",
+          "usedFor": [
+            "profile references"
+          ],
+          "tabler": "user",
+          "inAll": true
+        },
+        {
+          "name": "users",
+          "purpose": "multiple users / a group",
+          "usedFor": [
+            "team/group references"
+          ],
+          "tabler": "users",
+          "inAll": true
+        },
+        {
+          "name": "userAdd",
+          "purpose": "add / invite a user",
+          "usedFor": [
+            "invite-user actions"
+          ],
+          "tabler": "user-plus",
+          "inAll": true
+        },
+        {
+          "name": "userRemove",
+          "purpose": "remove a user",
+          "usedFor": [
+            "remove-user actions"
+          ],
+          "tabler": "user-minus",
+          "inAll": true
+        },
+        {
+          "name": "groups",
+          "purpose": "a distinct group/organization of people (broader than 'users')",
+          "usedFor": [],
+          "tabler": "users-group",
+          "inAll": true
+        },
+        {
+          "name": "single-neutral-actions-process",
+          "purpose": "a single user with an in-progress action/process",
+          "usedFor": [],
+          "tabler": "user-cog"
+        },
+        {
+          "name": "crown",
+          "purpose": "admin / owner / premium status",
+          "usedFor": [
+            "role badges"
+          ],
+          "tabler": "crown",
+          "inAll": true,
+          "aliases": [
+            "crownRotated"
+          ]
+        },
+        {
+          "name": "lock-1",
+          "purpose": "locked / restricted / password-protected",
+          "usedFor": [
+            "security messaging"
+          ],
+          "tabler": "lock"
+        },
+        {
+          "name": "password-lock",
+          "purpose": "password field specifically (distinct from generic 'lock-1')",
+          "usedFor": [
+            "password input labeling"
+          ],
+          "tabler": "password"
+        },
+        {
+          "name": "leave",
+          "purpose": "log out / exit / leave a group",
+          "usedFor": [
+            "sign-out actions"
+          ],
+          "tabler": "logout",
+          "inAll": true
+        }
+      ]
+    },
+    {
+      "category": "Structure & navigation",
+      "icons": [
+        {
+          "name": "dashboard",
+          "purpose": "dashboard / home overview screen",
+          "usedFor": [],
+          "tabler": "layout-dashboard",
+          "inAll": true
+        },
+        {
+          "name": "navigation-menu",
+          "purpose": "primary navigation menu structure",
+          "usedFor": [],
+          "tabler": "layout-navbar"
+        },
+        {
+          "name": "navigation-menu-1",
+          "purpose": "alternate navigation menu glyph — verify against 'navigation-menu' before choosing either for a new use, to avoid two names doing the same job",
+          "usedFor": [],
+          "tabler": "layout-sidebar"
+        },
+        {
+          "name": "3d-box-corner",
+          "purpose": "components / building-blocks section marker",
+          "usedFor": [
+            "nav icon: Components section"
+          ],
+          "tabler": "box"
+        },
+        {
+          "name": "module-three-1",
+          "purpose": "complex/composite components section marker",
+          "usedFor": [
+            "nav icon: Complex components section"
+          ],
+          "tabler": "components"
+        },
+        {
+          "name": "module-puzzle",
+          "purpose": "modular/plugin composition",
+          "usedFor": [],
+          "tabler": "puzzle"
+        },
+        {
+          "name": "module-tree-2",
+          "purpose": "hierarchical module structure",
+          "usedFor": ["Breadcrumb component overview tile"],
+          "tabler": "sitemap"
+        },
+        {
+          "name": "hierarchy-3",
+          "purpose": "hierarchy / org chart / nested structure",
+          "usedFor": [],
+          "tabler": "hierarchy-3"
+        },
+        {
+          "name": "layers-1",
+          "purpose": "layered/stacked content (small glyph variant)",
+          "usedFor": [],
+          "tabler": "stack"
+        },
+        {
+          "name": "layers-stacked",
+          "purpose": "layered/stacked content (larger, foundations-style variant) — see 'layers-1' before adding a third stacking glyph",
+          "usedFor": [
+            "nav icon: Foundations section"
+          ],
+          "tabler": "stack-2"
+        },
+        {
+          "name": "expand-horizontal-4",
+          "purpose": "horizontal expand/divider affordance",
+          "usedFor": [
+            "nav icon: Segmented button overview card"
+          ],
+          "tabler": "arrows-horizontal"
+        },
+        {
+          "name": "app-window-four",
+          "purpose": "application window / page frame",
+          "usedFor": [],
+          "tabler": "app-window"
+        },
+        {
+          "name": "ui-webpage-template",
+          "purpose": "page/webpage template",
+          "usedFor": [],
+          "tabler": "template"
+        },
+        {
+          "name": "paginate-filter-1",
+          "purpose": "pagination (numbered pages)",
+          "usedFor": [
+            "nav icon: Pagination overview card"
+          ],
+          "tabler": "list-numbers"
+        }
+      ]
+    },
+    {
+      "category": "Content & documents",
+      "icons": [
+        {
+          "name": "bookmarksDocument",
+          "purpose": "saved/bookmarked document, or a documentation section marker",
+          "usedFor": [
+            "nav icon: Design System section"
+          ],
+          "tabler": "bookmarks",
+          "inAll": true
+        },
+        {
+          "name": "common-file-double-2",
+          "purpose": "generic file/document pair",
+          "usedFor": [],
+          "tabler": "files"
+        },
+        {
+          "name": "file-code-2",
+          "purpose": "a code file specifically (distinct from generic documents)",
+          "usedFor": [],
+          "tabler": "file-code"
+        },
+        {
+          "name": "notes-list",
+          "purpose": "a list of notes/labels — used for Tag-like concepts",
+          "usedFor": [
+            "nav icon: Tag overview card"
+          ],
+          "tabler": "notes"
+        },
+        {
+          "name": "sign-badge-circle",
+          "purpose": "a badge/label sign",
+          "usedFor": [],
+          "tabler": "badge"
+        },
+        {
+          "name": "paragraph-normal",
+          "purpose": "body text / paragraph content indicator",
+          "usedFor": [
+            "Filled state icon for multiselect/select demos"
+          ],
+          "tabler": "pilcrow"
+        },
+        {
+          "name": "text-input-area",
+          "purpose": "a text-input-shaped field",
+          "usedFor": [],
+          "tabler": "forms"
+        },
+        {
+          "name": "programming-keyboard-type",
+          "purpose": "typing / keyboard input",
+          "usedFor": [],
+          "tabler": "keyboard"
+        },
+        {
+          "name": "color-palette-sample",
+          "purpose": "color/design palette sample",
+          "usedFor": [],
+          "tabler": "color-swatch"
+        },
+        {
+          "name": "tag",
+          "purpose": "tag / label / category",
+          "usedFor": [
+            "Tag component overview tile",
+            "Tag and Category options on the card docs"
+          ],
+          "tabler": "tag"
+        }
+      ]
+    },
+    {
+      "category": "Theme & appearance",
+      "icons": [
+        {
+          "name": "sun",
+          "purpose": "light theme",
+          "usedFor": [
+            "theme toggle: light"
+          ],
+          "tabler": "sun",
+          "inAll": true
+        },
+        {
+          "name": "moon",
+          "purpose": "dark theme",
+          "usedFor": [
+            "theme toggle: dark"
+          ],
+          "tabler": "moon",
+          "inAll": true
+        },
+        {
+          "name": "contrast",
+          "purpose": "accessibility (high-contrast) theme",
+          "usedFor": [
+            "theme toggle: HC — verify against the live 3-icon toggle before reusing"
+          ],
+          "tabler": "contrast"
+        },
+        {
+          "name": "brightness",
+          "purpose": "brightness/appearance adjustment — distinct from theme-selection icons above",
+          "usedFor": [],
+          "tabler": "brightness"
+        }
+      ]
+    },
+    {
+      "category": "Links & external",
+      "icons": [
+        {
+          "name": "hyperlink-2",
+          "purpose": "a hyperlink / inline link concept",
+          "usedFor": [
+            "nav icon: Link overview card"
+          ],
+          "tabler": "link"
+        },
+        {
+          "name": "external-link",
+          "purpose": "a link that navigates outside the current app/site",
+          "usedFor": [],
+          "tabler": "external-link"
+        },
+        {
+          "name": "linkedin",
+          "purpose": "LinkedIn brand mark — third-party brand icon, not a generic-purpose glyph",
+          "usedFor": [],
+          "tabler": "brand-linkedin",
+          "inAll": true
+        }
+      ]
+    },
+    {
+      "category": "Misc / utility",
+      "icons": [
+        {
+          "name": "cog",
+          "purpose": "settings / configuration",
+          "usedFor": [],
+          "tabler": "settings",
+          "inAll": true
+        },
+        {
+          "name": "settings-off",
+          "purpose": "settings disabled/unavailable state — pair with 'cog' for the enabled state, never invent a second settings glyph",
+          "usedFor": [],
+          "tabler": "settings-off"
+        },
+        {
+          "name": "calendar",
+          "purpose": "date / calendar",
+          "usedFor": [
+            "date input trailing icon"
+          ],
+          "tabler": "calendar",
+          "inAll": true
+        },
+        {
+          "name": "clock",
+          "purpose": "time / duration",
+          "usedFor": [],
+          "tabler": "clock",
+          "inAll": true
+        },
+        {
+          "name": "location",
+          "purpose": "geographic location / address",
+          "usedFor": [],
+          "tabler": "map-pin",
+          "inAll": true
+        },
+        {
+          "name": "globe",
+          "purpose": "language / global / worldwide",
+          "usedFor": [],
+          "tabler": "world",
+          "inAll": true
+        },
+        {
+          "name": "binocular",
+          "purpose": "search/discover in a broader, exploratory sense than 'search'",
+          "usedFor": [],
+          "tabler": "binoculars",
+          "inAll": true
+        },
+        {
+          "name": "heart",
+          "purpose": "favorite / like (unselected)",
+          "usedFor": [],
+          "tabler": "heart",
+          "inAll": true
+        },
+        {
+          "name": "heartFull",
+          "purpose": "favorite / like (selected) — paired opposite of 'heart'",
+          "usedFor": [],
+          "tabler": "heart",
+          "tablerStyle": "filled",
+          "inAll": true
+        },
+        {
+          "name": "cursor-select-4",
+          "purpose": "pointer/click/select action",
+          "usedFor": [
+            "nav icon: Button overview card"
+          ],
+          "tabler": "pointer"
+        },
+        {
+          "name": "touchpad-finger",
+          "purpose": "touch/gesture input",
+          "usedFor": [],
+          "tabler": "hand-finger"
+        },
+        {
+          "name": "army-symbol-armor",
+          "purpose": "choice / tile buttons (grid of selectable tiles)",
+          "usedFor": [],
+          "tabler": "layout-grid"
+        },
+        {
+          "name": "army-symbol-artillery-1",
+          "purpose": "decorative/demo-only glyph — not a real product concept, verify before reusing",
+          "usedFor": [],
+          "tabler": "target"
+        },
+        {
+          "name": "drag-handle",
+          "purpose": "drag/grip affordance on a draggable or resizable control (2×3 dot grid)",
+          "usedFor": [
+            "docs-site right-panel resize handle (component-template.liquid, control-icons.liquid — .comp-doc-resize-grip, pre-existing, not yet migrated to icon.liquid at the time this entry was added)",
+            "Slider component draft's range-input thumb (tools/component-wizard.html)"
+          ],
+          "tabler": "grip-vertical"
+        }
+      ]
+    },
+    {
+      "category": "Components (docs overview)",
+      "icons": [
+        {
+          "name": "adjustments-horizontal",
+          "purpose": "slider / range adjustment",
+          "usedFor": [
+            "Slider component overview tile"
+          ],
+          "tabler": "adjustments-horizontal"
+        },
+        {
+          "name": "sticker",
+          "purpose": "badge / sticker indicator",
+          "usedFor": [
+            "Badge component overview tile"
+          ],
+          "tabler": "sticker"
+        },
+        {
+          "name": "label",
+          "purpose": "chip / compact label",
+          "usedFor": [
+            "Chip component overview tile"
+          ],
+          "tabler": "label"
+        },
+        {
+          "name": "toggle-right",
+          "purpose": "on / off toggle",
+          "usedFor": [
+            "Toggle button component overview tile"
+          ],
+          "tabler": "toggle-right"
+        },
+        {
+          "name": "layout-grid-add",
+          "purpose": "choice / tile buttons",
+          "usedFor": [
+            "Choice button component overview tile"
+          ],
+          "tabler": "layout-grid-add"
+        },
+        {
+          "name": "circuit-switch-closed",
+          "purpose": "segmented control / mutually exclusive options",
+          "usedFor": [
+            "Segmented button component overview tile"
+          ],
+          "tabler": "circuit-switch-closed"
+        },
+        {
+          "name": "device-nintendo-rotated",
+          "purpose": "switch button (switch card) — rotated 90°",
+          "usedFor": [
+            "Switch button component overview tile"
+          ],
+          "tabler": "device-nintendo",
+          "rotate": 90
+        },
+        {
+          "name": "circle-dot",
+          "purpose": "radio / single choice",
+          "usedFor": [
+            "Radio component overview tile"
+          ],
+          "tabler": "circle-dot"
+        },
+        {
+          "name": "select",
+          "purpose": "select / dropdown field",
+          "usedFor": [
+            "Select component overview tile"
+          ],
+          "tabler": "select"
+        },
+        {
+          "name": "edit-bulk",
+          "purpose": "multiselect / pick several",
+          "usedFor": [
+            "Multiselect component overview tile"
+          ],
+          "tabler": "edit-bulk"
+        },
+        {
+          "name": "rectangle-vertical",
+          "purpose": "card",
+          "usedFor": [
+            "Card component overview tile"
+          ],
+          "tabler": "rectangle-vertical"
+        },
+        {
+          "name": "align-box-left-middle",
+          "purpose": "feature card",
+          "usedFor": [
+            "Feature card component overview tile"
+          ],
+          "tabler": "align-box-left-middle"
+        },
+        {
+          "name": "alert-square",
+          "purpose": "inline alert / alert card",
+          "usedFor": [
+            "Alert card component overview tile"
+          ],
+          "tabler": "alert-square"
+        },
+        {
+          "name": "table",
+          "purpose": "table / tabular data",
+          "usedFor": [
+            "Table component overview tile"
+          ],
+          "tabler": "table"
+        }
+      ]
+    }
+  ],
+  "order": [
+    "navigation-menu-vertical",
+    "lock-1",
+    "color-palette-sample",
+    "layers-1",
+    "expand-horizontal-4",
+    "plus",
+    "x",
+    "dashUp",
+    "dashDown",
+    "dashRight",
+    "dashLeft",
+    "pencil",
+    "check",
+    "check-circle",
+    "check-square",
+    "dots",
+    "menu",
+    "expand",
+    "eye",
+    "eyeStriked",
+    "search",
+    "bell",
+    "mail",
+    "messagesTyping",
+    "dashboard",
+    "groups",
+    "binocular",
+    "calendar",
+    "user",
+    "users",
+    "userAdd",
+    "userRemove",
+    "cog",
+    "bookmarksDocument",
+    "info",
+    "warning",
+    "delete",
+    "checkBadge",
+    "errorBadge",
+    "leave",
+    "location",
+    "globe",
+    "clock",
+    "crown",
+    "cursor-select-4",
+    "linkedin",
+    "heart",
+    "heartFull",
+    "sun",
+    "moon",
+    "notes-list",
+    "hierarchy-3",
+    "module-puzzle",
+    "module-tree-2",
+    "external-link",
+    "hyperlink-2",
+    "contrast",
+    "brightness",
+    "navigation-menu-1",
+    "navigation-menu",
+    "layers-stacked",
+    "3d-box-corner",
+    "sign-badge-circle",
+    "module-three-1",
+    "common-file-double-2",
+    "paragraph-normal",
+    "subtract-bold",
+    "touchpad-finger",
+    "army-symbol-armor",
+    "settings-off",
+    "app-window-four",
+    "subtract-tab",
+    "file-code-2",
+    "arrow-down-1",
+    "tags-minus",
+    "flip-vertical-down",
+    "army-symbol-artillery-1",
+    "paginate-filter-1",
+    "text-input-area",
+    "programming-keyboard-type",
+    "ui-webpage-template",
+    "single-neutral-actions-process",
+    "touch-password-approved",
+    "messages-bubble-square-menu",
+    "check-button",
+    "password-lock",
+    "upload-bottom",
+    "drag-handle",
+    "tag",
+    "adjustments-horizontal",
+    "sticker",
+    "label",
+    "toggle-right",
+    "layout-grid-add",
+    "circuit-switch-closed",
+    "device-nintendo-rotated",
+    "circle-dot",
+    "select",
+    "edit-bulk",
+    "rectangle-vertical",
+    "align-box-left-middle",
+    "alert-square",
+    "table"
+  ]
+}

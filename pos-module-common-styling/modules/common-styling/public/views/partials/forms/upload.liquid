@@ -1,13 +1,3 @@
-{% doc %}
-  @param {boolean} [image_editor_enabled] - whether to enable image editor
-  @param {string} [allowed_file_types] - allowed file types
-  @param {number} [max_number_of_files] - maximum number of files to upload
-  @param {string} [aspect_ratio] - aspect ratio for image editor cropping
-  @param {string} name - name for the input with uploaded file URLs
-  @param {object} files - previously uploaded files to display
-  @param {string} id - unique id for the upload module
-  @param {object} presigned_upload - presigned upload data
-{% enddoc %}
 {% comment %}
 
   File uploading
@@ -21,6 +11,8 @@
     - image_editor_enabled  (boolean) whether to enable image editor for uploaded images
     - allowed_file_types    (array of strings) allowed file types, e.g. ['image/*', '.jpg', '.jpeg', '.png', '.gif']
     - aspect_ratio          (float) aspect ratio for the image editor cropping tool, e.g. 1 for square, 1.78 for widescreen
+    - width                 (string) fixed CSS width for the Dashboard, e.g. '400px' — default '100%' (responsive) if omitted
+    - height                (string) fixed CSS height for the Dashboard, e.g. '400px' — default '400px' if omitted
 
 {% endcomment %}
 
@@ -31,6 +23,8 @@
   assign allowed_file_types = allowed_file_types | default: null
   assign max_number_of_files = max_number_of_files | default: null
   assign aspect_ratio = aspect_ratio | default: null
+  assign width = width | default: null
+  assign height = height | default: null
 
 %}
 
@@ -38,11 +32,13 @@
 <div
   class="pos-upload"
   id="{{ id }}"
-  
+
   {% if image_editor_enabled %} data-image-editor-enabled="{{ image_editor_enabled }}" {% endif %}
   {% if allowed_file_types %} data-allowed-file-types="{{ allowed_file_types }}" {% endif %}
   {% if max_number_of_files %} data-max-number-of-files="{{ max_number_of_files }}" {% endif %}
   {% if aspect_ratio %} data-aspect-ratio="{{ aspect_ratio }}" {% endif %}
+  {% if width %} data-width="{{ width }}" {% endif %}
+  {% if height %} data-height="{{ height }}" {% endif %}
 
   data-upload-url="{{ presigned_upload.upload_url }}"
   {% for field in presigned_upload.upload_url_payload %}

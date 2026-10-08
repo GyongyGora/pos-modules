@@ -1,0 +1,253 @@
+@layer common-styling {
+
+  .pos-feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-padding-card);
+    padding: var(--pos-padding-card);
+    background: var(--pos-color-content-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-card);
+    box-shadow: var(--pos-primitive-shadow-medium);
+    box-sizing: border-box;
+    transition: box-shadow 0.15s linear;
+  }
+
+  .pos-feature-card-badge {
+    position: absolute;
+    top: var(--pos-gap-card-elements);
+    right: var(--pos-gap-card-elements);
+  }
+
+  /* hover only on an interactive card: the card is a link, or it holds a link / button (2026-10-03 —
+     a static card got the hover too, suggesting it was clickable). COMPONENT-RULES.md › Cards */
+  a.pos-feature-card:hover,
+  .pos-feature-card:has(a, button):hover {
+    box-shadow: var(--pos-primitive-shadow-blurred);
+  }
+
+  /* an interactive card shows the pointer over all of it */
+  .pos-feature-card:has(a, button) {
+    cursor: pointer;
+  }
+
+  .pos-feature-card-title > span {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: 50% 100%;
+    transition: background-size 0.2s ease;
+  }
+
+  /* the title becomes a link only when the whole card is the link (a card with just a button inside
+     isn't clickable as a whole) */
+  a.pos-feature-card:hover .pos-feature-card-title {
+    color: var(--pos-color-interactive-text);
+  }
+
+  a.pos-feature-card:hover .pos-feature-card-title > span {
+    background-size: 100% 2px;
+  }
+
+  a.pos-feature-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* keyboard focus on a linked card (2026-10-03 — there was none: the reset removes the browser ring) */
+  a.pos-feature-card:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  .pos-feature-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pos-padding-card);
+    background: var(--pos-color-highlight-background);
+    border-radius: 50%;
+    width: fit-content;
+    flex-shrink: 0;
+  }
+
+  .pos-feature-card-icon .pos-icon {
+    width: var(--pos-size-icon-xl);
+    height: var(--pos-size-icon-xl);
+    color: var(--pos-color-interactive);
+  }
+
+  .pos-feature-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pos-gap-card-elements);
+    flex: 1;
+  }
+
+  .pos-feature-card-title {
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-l);
+    font-weight: 700;
+    line-height: 1.17;
+    color: var(--pos-color-content-text-prominent);
+    margin: 0;
+    transition: color 0.15s linear;
+  }
+
+  .pos-feature-card-subtitle {
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-m);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--pos-color-content-text);
+    margin: 0;
+  }
+
+  .pos-feature-card-lead {
+    font-family: var(--pos-font-default);
+    font-size: var(--pos-font-size-s);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--pos-color-content-text);
+    margin: 0;
+  }
+
+  .pos-feature-card-text {
+    font-family: var(--pos-font-default);
+    font-size: var(--pos-font-size-ss);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--pos-color-content-text);
+    margin: 0;
+  }
+
+  .pos-feature-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--pos-gap-card-elements);
+    font-family: var(--pos-font-default);
+    font-size: var(--pos-font-size-s);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--pos-color-interactive-text);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .pos-feature-card-link:hover {
+    color: var(--pos-color-interactive-text-hover);
+  }
+
+  .pos-feature-card-link .pos-icon {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+    flex-shrink: 0;
+  }
+
+  .pos-feature-card-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--pos-gap-button-button);
+    flex-wrap: wrap;
+  }
+
+  /* small size uses pos-button-small action buttons — gap must match (RULES.md/COMPONENT-RULES.md
+     "small buttons use --pos-gap-button-button-small, never the regular gap token"). */
+  .pos-feature-card--small .pos-feature-card-actions {
+    gap: var(--pos-gap-button-button-small);
+  }
+
+  /* Small size modifier — same padding as every card (pos-card, default feature card: --pos-padding-card,
+     unified 2026-10-03; was 16px); smaller icon, title and inner gap make it the small one */
+  .pos-feature-card--small {
+    gap: var(--pos-gap-card-elements);
+  }
+
+  .pos-feature-card--small .pos-feature-card-icon {
+    padding: var(--pos-gap-card-elements);
+  }
+
+  .pos-feature-card--small .pos-feature-card-icon .pos-icon {
+    width: var(--pos-size-icon-l);
+    height: var(--pos-size-icon-l);
+  }
+
+  .pos-feature-card--small .pos-feature-card-title {
+    font-size: var(--pos-font-size-m);
+    line-height: 1.4;
+  }
+
+  .pos-feature-card--small .pos-feature-card-subtitle {
+    font-weight: 400;
+  }
+
+  .pos-feature-card--small .pos-feature-card-actions {
+    gap: var(--pos-gap-button-button-small);
+  }
+
+  /* Large size modifier */
+  .pos-feature-card--large .pos-feature-card-title {
+    font-size: var(--pos-font-size-xl);
+    line-height: 1.0;
+  }
+
+  .pos-feature-card--large .pos-feature-card-subtitle {
+    font-size: var(--pos-font-size-l);
+    line-height: 1.17;
+  }
+
+  .pos-feature-card--large .pos-feature-card-lead {
+    font-family: var(--pos-font-heading);
+    font-size: var(--pos-font-size-m);
+    line-height: 1.4;
+  }
+
+  .pos-feature-card--large .pos-feature-card-text {
+    font-size: var(--pos-font-size-s);
+  }
+
+  /* Background variants (2026-10-02) — same four as pos-card: default (content background),
+     highlighted, brand primary, brand supplementary. On a tinted card the icon circle turns to the
+     content background, so it stays visible instead of melting into the card. */
+  .pos-feature-card--highlighted {
+    background: var(--pos-color-highlight-background);
+  }
+
+  .pos-feature-card--brand-primary {
+    background: var(--pos-color-brand-primary-background);
+    border-color: var(--pos-color-brand-primary-frame);
+  }
+
+  .pos-feature-card--brand-supplementary {
+    background: var(--pos-color-brand-supplementary-background);
+    border-color: var(--pos-color-brand-supplementary-frame);
+  }
+
+  .pos-feature-card--highlighted .pos-feature-card-icon,
+  .pos-feature-card--brand-primary .pos-feature-card-icon,
+  .pos-feature-card--brand-supplementary .pos-feature-card-icon {
+    background: var(--pos-color-content-background);
+  }
+
+  /* Centered variant */
+  .pos-feature-card--centered {
+    align-items: center;
+    text-align: center;
+  }
+
+  .pos-feature-card--centered .pos-feature-card-body {
+    align-items: center;
+    width: 100%;
+  }
+
+  .pos-feature-card--centered .pos-feature-card-actions {
+    justify-content: center;
+  }
+
+  .pos-feature-card--centered .pos-feature-card-link {
+    align-self: center;
+  }
+
+}

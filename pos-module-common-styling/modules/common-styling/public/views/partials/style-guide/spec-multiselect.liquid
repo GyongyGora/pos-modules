@@ -1,0 +1,442 @@
+{% comment %}
+  Generated from tokens/components/multiselect.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-multiselect">
+{% raw %}
+{
+  "_about": "Component spec for pos-multiselect (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Multiselect\" section. Reuses the already-curated usage prose from COMP_CONFIGS['multiselect'].usage and token data from COMP_CONFIGS['multiselect'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: the opened-state Color list had --pos-color-page-background left over from before the .pos-form-multiselect-selected-item CSS fix (was page-background, is now highlight-background) — corrected to --pos-color-highlight-background to match. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "multiselect",
+  "name": "Multiselect",
+  "description": "Letting users select multiple values from a defined list — tags, categories, filters, permissions.",
+  "whenToUse": [
+    "Letting users select multiple values from a defined list — tags, categories, filters, permissions.",
+    "The set of choices is too long for a group of checkboxes (more than 5–7 options).",
+    "Selected items should be visible inline without opening a panel."
+  ],
+  "whenNotToUse": [
+    "Only one item can ever be selected — use a <code>select</code> element instead.",
+    "The list has fewer than 5 options — inline checkboxes are more accessible."
+  ],
+  "do": [
+    "Always associate a visible <code>&lt;label&gt;</code> with the multiselect via <code>id</code>.",
+    "Pre-select the most common choices when a sensible default exists.",
+    "Use <code>multiline</code> when several items are likely to be selected at once and the layout has vertical room to spare — instead of growing wider, the field keeps its default width and wraps the selected tags onto extra lines.",
+    "Use <code>combined</code> when the list is long and the field must stay a predictable, compact width regardless of how many items get selected — it replaces the individual tags with a single \"N selected\" summary once 2 or more are chosen.",
+    "Use <code>showFilter</code> when the option list is long enough that scanning it is slower than typing a few letters to narrow it down (roughly 10+ options)."
+  ],
+  "dont": [
+    "Use multiselect for binary or single-choice selection — use checkboxes or a select instead.",
+    "Leave the placeholder blank — always describe what kind of options are inside.",
+    "Combine <code>multiline</code> and <code>combined</code> on the same instance — they solve the same \"too many tags\" problem in opposite ways (wrap vs. summarize), so only one should be enabled at a time.",
+    "Enable <code>showFilter</code> on a short list (under ~10 options) — it adds a step for no benefit."
+  ],
+  "accessibility": [
+    "Every multiselect must have a programmatically associated <code>&lt;label&gt;</code>.",
+    "The input container has <code>tabindex=\"0\"</code> and <code>aria-expanded</code> to announce open/closed state to screen readers.",
+    "Each option uses a <code>&lt;checkbox&gt;</code> so screen readers can navigate and toggle individual items.",
+    "Disabled: set <code>aria-disabled=\"true\"</code> and <code>tabindex=\"-1\"</code> on <code>.pos-form-multiselect-input</code> — the init click guard and the module's keydown handler both read it, so the field can't be opened or cleared by mouse or keyboard."
+  ],
+  "composedOf": [
+    "tag",
+    "checkbox",
+    "control-icons"
+  ],
+  "props": [
+    {
+      "name": "pos-form-multiselect-multiline",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Field keeps its default width and wraps selected tags onto extra lines instead of growing wider."
+    },
+    {
+      "name": "pos-form-multiselect-combine",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Replaces individual tags with a single \"N selected\" summary once 2+ are chosen — keeps the field a predictable compact width."
+    },
+    {
+      "name": "showFilter",
+      "type": "JS module option",
+      "default": "false",
+      "description": "Adds a text filter above the option list — for long lists (~10+ options)."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "closed",
+      "hover",
+      "focus",
+      "opened",
+      "filled",
+      "disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "multiselect": {
+      "label": "Multiselect",
+      "classes": [],
+      "states": {
+        "closed": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true,
+                  "role": "Dropdown arrow color (constant across states, muted only when disabled)"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "swatch": true,
+                  "role": "Optional filter clear ('X') button color on hover — shown once filter text is typed (showFilter option)",
+                  "requiresSelector": "#comp-multiselect-filter-wrapper:not([hidden])"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Dropdown arrow color (constant across states, muted only when disabled)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true,
+                  "role": "Dropdown arrow color (constant across states, muted only when disabled)"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "opened": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true,
+                  "requiresSelector": "#comp-multiselect-filter-wrapper:not([hidden])"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true,
+                  "role": "Dropdown arrow color (constant across states, muted only when disabled)"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Optional filter clear ('X') button color — shown once filter text is typed (showFilter option)",
+                  "swatch": true,
+                  "requiresSelector": "#comp-multiselect-filter-wrapper:not([hidden])"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-tag",
+                  "figma": "Tag corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-tag-tag",
+                  "figma": "Gaps/tag-tag",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true,
+                  "role": "Dropdown arrow color (constant across states, muted only when disabled)"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-tag",
+                  "figma": "Tag corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-tag-tag",
+                  "figma": "Gaps/tag-tag",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-form-multiselect\" id=\"my-multiselect\">\n  <div class=\"pos-form-multiselect-input pos-form-input\"\n       aria-expanded=\"false\"\n       aria-controls=\"my-multiselect-list\"\n       tabindex=\"0\">\n    <span class=\"pos-form-multiselect-placeholder\">Select options</span>\n    <ul class=\"pos-form-multiselect-selected-list\"><!-- populated by JS --></ul>\n    <!-- dashDown icon -->\n  </div>\n  <div class=\"pos-form-multiselect-list-container\" id=\"my-multiselect-list\">\n    <ul class=\"pos-form-multiselect-list\">\n      <li>\n        <input type=\"checkbox\" name=\"options[]\" value=\"a\" id=\"opt-a\" class=\"pos-form-checkbox\">\n        <label for=\"opt-a\">Option A</label>\n      </li>\n    </ul>\n  </div>\n</div>"
+}
+{% endraw %}
+</script>

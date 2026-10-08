@@ -1,0 +1,158 @@
+@layer common-styling {
+
+  /* ── Inline code — small tag shape, default text, highlighted bg, code font ── */
+  .pos-code {
+    display: inline-block;
+    font-family: var(--pos-font-code);
+    font-size: var(--pos-font-size-s);  /* 16px — matches Figma default */
+    line-height: 1.75;                  /* gives ~28px height matching Figma */
+    vertical-align: middle;
+
+    padding-block:  0;
+    padding-inline: 0.5rem;             /* 8px — matches Figma */
+
+    border: 1px solid var(--pos-color-frame-transparent);
+    border-radius: var(--pos-radius-tag);
+
+    background-color: var(--pos-color-highlight-background);
+    color: var(--pos-color-content-text);
+
+    white-space: nowrap;
+  }
+
+  /* Small variant — code font, 12px, ~18px height */
+  .pos-code.pos-code--small {
+    font-size: var(--pos-font-size-xs);  /* 12px */
+    line-height: 1.5;                    /* ~18px height */
+  }
+
+  /* Dark variant for inline code */
+  .pos-code.pos-code--dark {
+    background-color: var(--pos-color-inverted-background);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  /* ── Block code — dark by default (matches Figma Color scheme=Dark) ── */
+  .pos-code--block {
+    display: block;
+    position: relative;
+    font-family: var(--pos-font-code);
+    font-size: var(--pos-font-size-s);  /* 16px — matches Figma */
+    line-height: 1.65;
+    background: var(--pos-color-inverted-background);
+    color: var(--pos-color-content-inverted-text);
+    padding: var(--pos-primitive-size-1);
+    padding-inline-end: calc(var(--pos-primitive-size-1) + 1.5rem); /* room for copy btn — matches its 1.5rem width */
+    border: 1px solid var(--pos-color-frame-transparent);
+    border-radius: var(--pos-radius-card);
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+
+  /* Light variant — matches Figma Color scheme=Light */
+  .pos-code--block.pos-code--light {
+    background: var(--pos-color-highlight-background);
+    color: var(--pos-color-content-text);
+  }
+
+  /* ── Line numbers ── */
+  .pos-code--numbered {
+    padding-inline-start: 2.75rem;
+    counter-reset: code-ln;
+  }
+
+  .pos-code--numbered .pos-code-ln {
+    display: block;
+    position: relative;
+  }
+
+  .pos-code--numbered .pos-code-ln::before {
+    counter-increment: code-ln;
+    content: counter(code-ln);
+    position: absolute;
+    top: 0;
+    height: 100%;
+    inset-inline-start: -2.625rem;
+    width: 2.125rem;
+    padding-inline-end: 0.5rem;
+    text-align: right;
+    color: var(--pos-color-content-inverted-text);
+    user-select: none;
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+    border-inline-end: 1px solid var(--pos-color-content-inverted-icon);
+  }
+
+  /* Light variant — line numbers use normal text/graphic tokens (not inverted) */
+  .pos-code--numbered.pos-code--light .pos-code-ln::before {
+    color: var(--pos-color-content-text);
+    border-inline-end-color: var(--pos-color-content-icon);
+  }
+
+  /* ── Copy button ── */
+  .pos-code-copy-btn {
+    position: absolute;
+    /* sized/positioned to match the smaller block padding (2026-08-26, was --pos-primitive-size-2 /
+       2rem button — proportionate to the padding reduction earlier the same day) */
+    top: var(--pos-primitive-size-05);
+    inset-inline-end: var(--pos-primitive-size-05);
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--pos-color-interactive-inverted);
+    border-radius: var(--pos-radius-button);
+    transition: opacity 0.15s linear;
+  }
+
+  /* On light blocks, use the standard interactive color */
+  .pos-code--light .pos-code-copy-btn {
+    color: var(--pos-color-interactive);
+  }
+
+  .pos-code-copy-btn:hover {
+    opacity: 0.75;
+  }
+
+  .pos-code-copy-btn:focus-visible {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+  .pos-code-copy-btn svg {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+    pointer-events: none;
+  }
+
+  /* Copied state — swap icon visibility via class */
+  .pos-code-copy-btn .pos-code-copy-icon-check { display: none; }
+  .pos-code-copy-btn--copied .pos-code-copy-icon-copy  { display: none; }
+  .pos-code-copy-btn--copied .pos-code-copy-icon-check { display: block; }
+
+  /* reset inner <code> when nested inside a block <pre>. "pre." prefix (not just ".pos-code--block")
+     deliberately raises specificity — styleguide.css has a generic
+     `code:not(.pos-code) { font-size: 1rem; ... }` fallback for bare inline <code> in prose, meant
+     to exclude real pos-code usage, but the exclusion only checks the <code> element itself — the
+     pos-code--block class lives on the parent <pre>, so the <code> child was never actually
+     excluded and that 1rem always won on a same-specificity tie (2026-08-26 bug: block code always
+     rendered at 16px regardless of pos-code--small on the <pre>). "pre.pos-code--block code"
+     (0,1,2) reliably outranks that rule's (0,1,1) regardless of file load order or whether the
+     base .pos-code class also happens to be present — do not simplify back to ".pos-code--block code". */
+  pre.pos-code--block code {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    white-space: inherit;
+  }
+
+}

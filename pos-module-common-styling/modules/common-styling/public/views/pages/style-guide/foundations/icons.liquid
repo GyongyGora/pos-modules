@@ -1,0 +1,102 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/icons' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Icons</h1>
+          <p>All icons are inline SVGs rendered via <code class="pos-code pos-code--small">&#123;% render 'modules/common-styling/icon', icon: 'name' %&#125;</code>, defined once in <code class="pos-code pos-code--small">partials/icon.liquid</code> and sized with the <code class="pos-code pos-code--small">--pos-size-icon-*</code> tokens (never hardcoded px/rem).</p>
+        </header>
+
+        <!-- ── Icon colors ─────────────────────────────────────────── -->
+        <section id="icons-colors">
+          <h2 class="pos-heading-2">Icon colors</h2>
+          <p>Icons never get a hardcoded color — pick the token by what the icon does. The icon itself uses <code class="pos-code pos-code--small">fill: currentColor</code>, so set the token as <code class="pos-code pos-code--small">color</code> on the icon or its wrapper. Hover over the two interactive examples to see their hover color.</p>
+
+          <div class="styleguide-icon-colors">
+
+            <div class="styleguide-icon-color-card">
+              <div class="styleguide-icon-color-stage">
+                <span class="styleguide-icon-color--decorative" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'calendar' %}</span>
+              </div>
+              <h3 class="pos-heading-4">Normal (decorative)</h3>
+              <p>Illustrates content, not clickable. Hidden from screen readers (<code class="pos-code pos-code--small">aria-hidden="true"</code>).</p>
+              <ul class="styleguide-icon-color-tokens">
+                <li><code class="pos-code pos-code--small">--pos-color-content-icon</code></li>
+              </ul>
+            </div>
+
+            <div class="styleguide-icon-color-card">
+              <div class="styleguide-icon-color-stage">
+                <button type="button" class="styleguide-icon-color-btn styleguide-icon-color--subdued" aria-label="Edit (example)"><span aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'pencil' %}</span></button>
+              </div>
+              <h3 class="pos-heading-4">Subdued interactive</h3>
+              <p>Clickable, but secondary — grey at rest so it doesn't compete with the content (toolbar, close, show password). Turns to the interactive color on hover.</p>
+              <ul class="styleguide-icon-color-tokens">
+                <li><code class="pos-code pos-code--small">--pos-color-content-icon-interactive</code></li>
+                <li><code class="pos-code pos-code--small">--pos-color-interactive-hover</code> hover</li>
+              </ul>
+            </div>
+
+            <div class="styleguide-icon-color-card">
+              <div class="styleguide-icon-color-stage">
+                <button type="button" class="styleguide-icon-color-btn styleguide-icon-color--interactive" aria-label="Add (example)"><span aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'plus' %}</span></button>
+              </div>
+              <h3 class="pos-heading-4">Interactive</h3>
+              <p>A clickable icon that should be noticed — the brand interactive color, like links and buttons.</p>
+              <ul class="styleguide-icon-color-tokens">
+                <li><code class="pos-code pos-code--small">--pos-color-interactive</code></li>
+                <li><code class="pos-code pos-code--small">--pos-color-interactive-hover</code> hover</li>
+                <li><code class="pos-code pos-code--small">--pos-color-interactive-active</code> active</li>
+              </ul>
+            </div>
+
+            <div class="styleguide-icon-color-card">
+              <div class="styleguide-icon-color-stage">
+                <span class="styleguide-icon-color--important" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'errorBadge' %}</span>
+                <span class="styleguide-icon-color--warning" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'warning' %}</span>
+                <span class="styleguide-icon-color--confirmation" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'checkBadge' %}</span>
+                <span class="styleguide-icon-color--supplementary" aria-hidden="true">{% render 'modules/common-styling/icon', icon: 'info' %}</span>
+              </div>
+              <h3 class="pos-heading-4">Utility (status)</h3>
+              <p>Signals a status — error, warning, success, info. Always pair it with text that says the same, never rely on the color alone.</p>
+              <ul class="styleguide-icon-color-tokens">
+                <li><code class="pos-code pos-code--small">--pos-color-important</code> error</li>
+                <li><code class="pos-code pos-code--small">--pos-color-warning</code> warning</li>
+                <li><code class="pos-code pos-code--small">--pos-color-confirmation</code> success</li>
+                <li><code class="pos-code pos-code--small">--pos-color-supplementary</code> info</li>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ── Icon source ─────────────────────────────────────────── -->
+        <section class="intro-section" id="icons-source">
+          <h2 class="pos-heading-2">Source</h2>
+          <p>Icons come from <strong>Tabler Icons</strong> (<a href="https://tabler.io/icons" class="pos-link" target="_blank" rel="noopener noreferrer">tabler.io/icons<span class="pos-label">(opens in new tab)</span></a>) — an open-source set of about 5,200 outline and 1,000 filled icons, MIT licensed. Every icon is used by its logical name (<code class="pos-code pos-code--small">delete</code>, <code class="pos-code pos-code--small">mail</code>, …); nothing in component CSS or Liquid depends on Tabler itself.</p>
+          <p><code class="pos-code pos-code--small">icon.liquid</code> is generated: <code class="pos-code pos-code--small">tokens/icon-registry.json</code> maps each logical name to its Tabler icon, and <code class="pos-code pos-code--small">npm run build:icons</code> writes the inline SVGs. Outline icons use a 1.5px stroke and Tabler's 2px safe zone is cropped, so size and line weight match the Figma icon set.</p>
+          <p><strong>Figma and code differ here on purpose:</strong> the Figma file uses the licensed Streamline set, which may not be published, so the code uses Tabler. The logical names and purposes are the same; the glyph shapes differ slightly.</p>
+        </section>
+
+        <!-- ── Adding an icon ──────────────────────────────────────── -->
+        <section class="intro-section" id="icons-adding">
+          <h2 class="pos-heading-2">Adding an icon</h2>
+          <p>Pick the icon on tabler.io/icons, add an entry to <code class="pos-code pos-code--small">tokens/icon-registry.json</code> — the logical name, its purpose and the Tabler name (plus <code class="pos-code pos-code--small">"tablerStyle": "filled"</code> for a filled one) — then run <code class="pos-code pos-code--small">npm run build:icons</code>. Check the registry first: one glyph per purpose, so a "delete" is always the same trash can.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered language-json"><code>&#123; "name": "archive", "purpose": "move an item to the archive", "tabler": "archive" &#125;</code></pre>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+</div>

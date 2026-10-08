@@ -1,0 +1,1233 @@
+{
+  "_about": "Component spec for pos-card (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Card (legacy)\" section. Reuses the already-curated usage prose from COMP_CONFIGS['card'].usage and token data from the existing inspect-card.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Rebuilt 2026-08-26: the earlier migration only kept the 'content' variant, so the Default/Highlighted toggle (card-legacy-variant) never updated the Tokens panel — now keeps both variants from inspect-card.liquid; getCardVariantSections() in styleguide-component-page.js picks between them by reading #comp-card-el's live pos-card-highlighted class, same DOM-derived pattern as Chip/Tag/Segmented. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "card",
+  "name": "Card (legacy)",
+  "description": "Grouping related content in a visually distinct, elevated surface.",
+  "whenToUse": [
+    "Grouping related content in a visually distinct, elevated surface.",
+    "Displaying a content item with an optional image, title, and footer (content card).",
+    "Showing informational, warning, error, or success messages inline with content (alert card)."
+  ],
+  "whenNotToUse": [
+    "Building new features — prefer <code>pos-feature-card</code> for feature showcases.",
+    "Interactive card-based navigation — use a link or button instead."
+  ],
+  "do": [
+    "Apply both <code>pos-card</code> and <code>pos-card-content</code> on the same element for content cards with images.",
+    "Use <code>pos-card-content-permalink</code> on the <code>&lt;a&gt;</code> element to enable the hover image zoom and card-level focus ring.",
+    "Place alert cards adjacent to the content they describe — use <code>pos-card-alert</code> as a sibling of <code>pos-card</code>.",
+    "Use the brand backgrounds (<code>pos-card-brand-primary</code> / <code>pos-card-brand-supplementary</code>) to set a card or a group of cards apart in the brand color — they follow the brand theme and keep text, link and icon contrast. Use one background per card group, not a different color on every card."
+  ],
+  "dont": [
+    "Mix card variants — do not apply <code>pos-card-highlighted</code> and <code>pos-card-content</code> on the same element.",
+    "Nest interactive elements inside a content card that has a permalink — it creates ambiguous interaction targets."
+  ],
+  "accessibility": [
+    "Content cards with a permalink must have meaningful link text or an <code>aria-label</code> on the anchor.",
+    "Alert cards that update dynamically should use <code>role=\"alert\"</code> or <code>aria-live=\"polite\"</code> so screen readers announce them."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "pos-card-highlighted",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Elevated/highlighted variant — do not combine with pos-card-content."
+    },
+    {
+      "name": "pos-card-brand-primary | pos-card-brand-supplementary",
+      "type": "boolean class (one background class at most)",
+      "default": "false",
+      "description": "Quiet brand-tinted background (--pos-color-brand-primary-background / -supplementary-background) — siblings of pos-card-highlighted; follow the brand theme."
+    },
+    {
+      "name": "pos-card-content-permalink",
+      "type": "class on the <a>",
+      "default": "required for content cards",
+      "description": "Enables the hover image-zoom effect and card-level focus ring."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "content-highlighted": {
+      "selector": ".pos-card-content.pos-card-highlighted",
+      "label": "Content card / Highlighted",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Title on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-blurred",
+                  "figma": "Elevation/Blurred shadow",
+                  "role": "Card shadow on hover",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Outline (on card when permalink is focused)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "Title underline slides in center-out on permalink hover"
+        }
+      ]
+    },
+    "content-brand-primary": {
+      "selector": ".pos-card-content.pos-card-brand-primary",
+      "label": "Content card / Brand primary",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-primary-background",
+                  "figma": "Backgrounds/Brand Primary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-primary-frame",
+                  "figma": "Backgrounds/Brand Primary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-primary-background",
+                  "figma": "Backgrounds/Brand Primary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-primary-frame",
+                  "figma": "Backgrounds/Brand Primary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Title on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-blurred",
+                  "figma": "Elevation/Blurred shadow",
+                  "role": "Card shadow on hover",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-primary-background",
+                  "figma": "Backgrounds/Brand Primary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-primary-frame",
+                  "figma": "Backgrounds/Brand Primary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Outline (on card when permalink is focused)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "Title underline slides in center-out on permalink hover"
+        }
+      ]
+    },
+    "content-brand-supplementary": {
+      "selector": ".pos-card-content.pos-card-brand-supplementary",
+      "label": "Content card / Brand supplementary",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-supplementary-background",
+                  "figma": "Backgrounds/Brand Supplementary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-supplementary-frame",
+                  "figma": "Backgrounds/Brand Supplementary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-supplementary-background",
+                  "figma": "Backgrounds/Brand Supplementary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-supplementary-frame",
+                  "figma": "Backgrounds/Brand Supplementary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Title on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-blurred",
+                  "figma": "Elevation/Blurred shadow",
+                  "role": "Card shadow on hover",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-brand-supplementary-background",
+                  "figma": "Backgrounds/Brand Supplementary Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-brand-supplementary-frame",
+                  "figma": "Backgrounds/Brand Supplementary Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Outline (on card when permalink is focused)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "Title underline slides in center-out on permalink hover"
+        }
+      ]
+    },
+    "content": {
+      "selector": ".pos-card-content:not(.pos-card-highlighted):not(.pos-card-brand-primary):not(.pos-card-brand-supplementary)",
+      "label": "Content card",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Title on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-blurred",
+                  "figma": "Elevation/Blurred shadow",
+                  "role": "Card shadow on hover",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Body text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Footer meta text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Body text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Body text font size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Outline (on card when permalink is focused)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "Title underline slides in center-out on permalink hover"
+        }
+      ]
+    }
+  },
+  "usageExample": "<article class=\"pos-card pos-card-content\">\n  <a href=\"/page\" class=\"pos-card-content-permalink\">\n    <picture class=\"pos-card-content-image-container\">\n      <img src=\"image.jpg\" alt=\"\" width=\"280\" height=\"192\"\n        loading=\"lazy\" class=\"pos-card-content-image\">\n    </picture>\n    <h3 class=\"pos-heading-4 pos-card-content-title\"><span>Card title</span></h3>\n  </a>\n  <p>Card body text.</p>\n  <footer class=\"pos-card-content-footer\">\n    <ul>\n      <li>Category</li>\n      <li>5 min read</li>\n    </ul>\n    <span>Jan 2025</span>\n  </footer>\n</article>"
+}

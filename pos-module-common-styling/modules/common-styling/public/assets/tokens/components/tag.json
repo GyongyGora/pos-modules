@@ -1,0 +1,3112 @@
+{
+  "_about": "Component spec for pos-tag (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Tag\" section. Reuses the existing inspect-tag.liquid's full variant set wholesale (verified-accurate, currently-live data — richer than COMP_CONFIGS['tag'].tokens, which only keys by state, not by intent) plus usage prose from COMP_CONFIGS['tag'].usage. This component's preview shows multiple visually distinct sub-variants side by side, so per the 2026-08-25/26 rule it got a NEW \"Kind\" toggle (default/interactive) added to the Variants tab, position 1 — filters the preview to one at a time (option B2). The Tokens tab derives the exact variant key live from the visible preview element's own classList (getXVariantSections in styleguide-component-page.js), not a static pick, since this component already has its own pre-existing Intent/Size toggles this new one composes with. Regenerate the spec partial with the script in RULES.md 6.4 if pos-tag.css changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). 2026-09-16: Interactive variant's hover now exactly matches the Selected variant's normal appearance (background/text/border swap to interactive/inverted-text/interactive instead of just an underline reveal) for non-removable button/a interactive tags — the animated underline is suppressed on hover (background-size: 0 0) since Selected has no underline. Removable (span-rooted) interactive tags are unaffected, matching the pre-existing scope of the underline behavior itself (button/a only). 2026-10-01: only the neutral tag keeps a visible stroke (--pos-color-frame); every other variant's border is --pos-color-frame-transparent (visible only in HC). 2026-10-02: warning text uses --pos-color-warning (the text step) like the other status variants, not warning-active.",
+  "component": "tag",
+  "name": "Tag",
+  "description": "<strong>Static tag:</strong> displaying short, non-interactive metadata labels on content items — category, status, type.",
+  "whenToUse": [
+    "<strong>Static tag:</strong> displaying short, non-interactive metadata labels on content items — category, status, type. Use a <code>&lt;span&gt;</code> element.",
+    "<strong>Interactive tag — navigating:</strong> tags that link to another page on click, e.g. a category tag on a blog post that navigates to a filtered listing. Use an <code>&lt;a&gt;</code> element.",
+    "<strong>Interactive tag — selectable:</strong> tags the user can toggle to express preference or apply a filter, e.g. \"Choose topics you're interested in.\" Clicking switches the tag to the selected (highlighted) state. Use a <code>&lt;button&gt;</code> element and toggle <code>pos-tag-selected</code> on click.",
+    "Communicating status with semantic intent — use confirmation, warning, or important variants with their correct meaning."
+  ],
+  "whenNotToUse": [
+    "The label text is long or needs to wrap — tags are single-line only.",
+    "The tag is the primary action on the page — use a button instead.",
+    "Displaying numeric values like counts — use a badge instead."
+  ],
+  "do": [
+    "Keep labels short — 1—3 words maximum.",
+    "Use <code>button</code> or <code>a</code> as the element for interactive tags so they are keyboard-focusable.",
+    "Use <code>pos-tag-selected</code> to show the selected / active state.",
+    "Use <code>pos-tag-neutral</code> for non-interactive informational tags on highlighted surfaces.",
+    "Apply semantic variants with their correct intent: confirmation = positive, warning = caution, important = error/urgent.",
+    "Wrap a group of tags in <code>.pos-tags-list</code> for correct spacing."
+  ],
+  "dont": [
+    "Use tags as navigation — use links or buttons instead.",
+    "Apply semantic color variants arbitrarily — color signals meaning.",
+    "Use <code>div</code> or <code>span</code> for interactive tags."
+  ],
+  "accessibility": [
+    "Interactive tags must use <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code> — never a <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code>.",
+    "Interactive tags get a visible focus ring via <code>:focus-visible</code>.",
+    "If a tag is removable, the remove trigger must have an <code>aria-label</code> describing what is being removed."
+  ],
+  "composedOf": [
+    "control-icons"
+  ],
+  "props": [
+    {
+      "name": "element",
+      "type": "<span> | <a> | <button>",
+      "default": "<span> (static)",
+      "description": "Static/informational: <span>. Navigating on click: <a>. Selectable/toggleable: <button> with pos-tag-interactive."
+    },
+    {
+      "name": "intent class",
+      "type": "'pos-tag-neutral' | '-confirmation' | '-warning' | '-important'",
+      "default": "neutral",
+      "description": "Semantic color — confirmation = positive, warning = caution, important = error/urgent."
+    },
+    {
+      "name": "pos-tag-selected",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Shows the selected/active state for a toggleable tag."
+    },
+    {
+      "name": "pos-tag--small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Compact size."
+    }
+  ],
+  "dimensions": {
+    "kind": [
+      "default",
+      "interactive"
+    ],
+    "intent": [
+      "neutral",
+      "confirmation",
+      "warning",
+      "important"
+    ],
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "disabled",
+      "selected"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-radius-tag",
+        "figma": "Tag corner",
+        "swatch": false
+      }
+    ],
+    "layout-small": [
+      {
+        "css": "--pos-radius-tag",
+        "figma": "Tag corner",
+        "swatch": false
+      }
+    ],
+    "typography-small": [
+      {
+        "css": "--pos-font-default",
+        "figma": "Family/body",
+        "swatch": false
+      },
+      {
+        "css": "--pos-font-size-xs",
+        "figma": "Size/font XS",
+        "swatch": false
+      }
+    ],
+    "typography": [
+      {
+        "css": "--pos-font-default",
+        "figma": "Family/body",
+        "swatch": false
+      }
+    ],
+    "focus_indicator": [
+      {
+        "css": "--pos-color-focused",
+        "figma": "General elements-theme/Focused",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "selector": ".pos-tag:not(.pos-tag-neutral):not(.pos-tag-interactive):not(.pos-tag-selected):not(.pos-tag-confirmation):not(.pos-tag-warning):not(.pos-tag-important)",
+      "label": "Default",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "neutral": {
+      "selector": ".pos-tag.pos-tag-neutral:not(.pos-tag-interactive)",
+      "label": "Neutral",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "neutral-interactive": {
+      "selector": ".pos-tag.pos-tag-neutral.pos-tag-interactive:not([data-tag-variant=\"removable\"])",
+      "label": "Neutral — Interactive",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-page-background",
+                  "figma": "Backgrounds/Page Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame default",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "confirmation": {
+      "selector": ".pos-tag.pos-tag-confirmation:not(.pos-tag-selected):not(.pos-tag-interactive)",
+      "label": "Confirmation",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "warning": {
+      "selector": ".pos-tag.pos-tag-warning:not(.pos-tag-selected):not(.pos-tag-interactive)",
+      "label": "Warning",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "important": {
+      "selector": ".pos-tag.pos-tag-important:not(.pos-tag-selected):not(.pos-tag-interactive)",
+      "label": "Important",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      }
+    },
+    "interactive": {
+      "selector": ".pos-tag.pos-tag-interactive:not(.pos-tag-confirmation):not(.pos-tag-warning):not(.pos-tag-important):not([data-tag-variant=\"removable\"])",
+      "label": "Interactive",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background — matches the Selected variant's normal appearance exactly",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "swatch": true,
+                  "role": "border — transparent in light/dark, visible (white) in HC mode"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": []
+    },
+    "selected": {
+      "selector": ".pos-tag.pos-tag-selected:not(.pos-tag-confirmation):not(.pos-tag-warning):not(.pos-tag-important)",
+      "label": "Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "confirmation-selected": {
+      "selector": ".pos-tag.pos-tag-confirmation.pos-tag-selected",
+      "label": "Confirmation — Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "warning-selected": {
+      "selector": ".pos-tag.pos-tag-warning.pos-tag-selected",
+      "label": "Warning — Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-hover",
+                  "figma": "Utility/Warning Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning-hover",
+                  "figma": "Utility/Warning Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "important-selected": {
+      "selector": ".pos-tag.pos-tag-important.pos-tag-selected",
+      "label": "Important — Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "removable-selected": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-selected:not(.pos-tag-confirmation):not(.pos-tag-warning):not(.pos-tag-important)",
+      "label": "Removable — Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-confirmation-selected": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-confirmation.pos-tag-selected",
+      "label": "Removable — Confirmation Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation-hover",
+                  "figma": "Utility/Confirmation Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-warning-selected": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-warning.pos-tag-selected",
+      "label": "Removable — Warning Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-hover",
+                  "figma": "Utility/Warning Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning-hover",
+                  "figma": "Utility/Warning Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-important-selected": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-important.pos-tag-selected",
+      "label": "Removable — Important Selected",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important-hover",
+                  "figma": "Utility/Important Hover",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Inverted - graphic",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "border",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-confirmation": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-confirmation:not(.pos-tag-selected)",
+      "label": "Removable — Confirmation",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon (unchanged while hovering the tag body generally)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Remove ('X') button icon color when hovering the button itself (real clickable sub-element, gets its own hover feedback)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-warning": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-warning:not(.pos-tag-selected)",
+      "label": "Removable — Warning",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon (unchanged while hovering the tag body generally)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Remove ('X') button icon color when hovering the button itself (real clickable sub-element, gets its own hover feedback)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable-important": {
+      "selector": "[data-tag-variant=\"removable\"].pos-tag-important:not(.pos-tag-selected)",
+      "label": "Removable — Important",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon (unchanged while hovering the tag body generally)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Remove ('X') button icon color when hovering the button itself (real clickable sub-element, gets its own hover feedback)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "removable": {
+      "selector": "[data-tag-variant=\"removable\"]:not(.pos-tag-confirmation):not(.pos-tag-warning):not(.pos-tag-important):not(.pos-tag-selected)",
+      "label": "Removable",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon (unchanged while hovering the tag body generally)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Remove ('X') button icon color when hovering the button itself (real clickable sub-element, gets its own hover feedback)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "remove",
+          "description": "X button removes the tag on click (dismiss animation)"
+        }
+      ]
+    },
+    "interactive-confirmation": {
+      "selector": ".pos-tag.pos-tag-interactive.pos-tag-confirmation:not(.pos-tag-selected):not([data-tag-variant=\"removable\"])",
+      "label": "Interactive — Confirmation",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "interactive-warning": {
+      "selector": ".pos-tag.pos-tag-interactive.pos-tag-warning:not(.pos-tag-selected):not([data-tag-variant=\"removable\"])",
+      "label": "Interactive — Warning",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    },
+    "interactive-important": {
+      "selector": ".pos-tag.pos-tag-interactive.pos-tag-important:not(.pos-tag-selected):not([data-tag-variant=\"removable\"])",
+      "label": "Interactive — Important",
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            },
+            {
+              "heading": "Focus indicator",
+              "ref": "shared.focus_indicator"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "border — transparent in light/dark, visible (white) in HC mode",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Typography",
+              "ref": "shared.typography"
+            }
+          ]
+        }
+      },
+      "behaviors": [
+        {
+          "name": "pos-anim-underline",
+          "description": "1px underline slides in from center on hover"
+        }
+      ]
+    }
+  },
+  "usageExample": "<!-- Static tag -->\n<ul class=\"pos-tags-list\">\n  <li class=\"pos-tag\">Electronics</li>\n</ul>\n\n<!-- Interactive tag -->\n<ul class=\"pos-tags-list\">\n  <li>\n    <button type=\"button\" class=\"pos-tag pos-tag-interactive\">Electronics</button>\n  </li>\n</ul>\n\n<!-- Removable tag -->\n<ul class=\"pos-tags-list\">\n  <li>\n    <span class=\"pos-tag pos-tag-interactive\" data-tag-variant=\"removable\">\n      Electronics\n      <button type=\"button\" class=\"pos-tag-remove pos-close\" aria-label=\"Remove Electronics\">\n        <!-- x icon -->\n      </button>\n    </span>\n  </li>\n</ul>"
+}

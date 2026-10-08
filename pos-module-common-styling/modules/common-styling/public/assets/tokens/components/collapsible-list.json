@@ -1,0 +1,235 @@
+{
+  "_about": "Component spec for pos-collapsible-list (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Collapsible list\" section. Reuses the already-curated usage prose from COMP_CONFIGS['collapsible-list'].usage and token data from the existing inspect-collapsible-list.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "collapsible-list",
+  "name": "Collapsible list",
+  "description": "Hierarchical sidebar navigation with two or more levels.",
+  "whenToUse": [
+    "Hierarchical sidebar navigation with two or more levels.",
+    "Documentation outlines where sections need to expand and collapse.",
+    "Multi-level navigation trees where not all items should be visible at once."
+  ],
+  "whenNotToUse": [
+    "Flat navigation with a single level — use a plain list instead.",
+    "Fewer than 3 expandable sections where all items fit on screen — prefer a flat list."
+  ],
+  "do": [
+    "Add <code>inert</code> to <code>.pos-collapsible-children</code> to collapse a section by default.",
+    "Set <code>aria-expanded</code> on each toggle button and pair it with <code>aria-controls</code> pointing to the children div's <code>id</code>.",
+    "Add <code>pos-collapsible-active</code> to the <code>&lt;li&gt;</code> of the currently active page.",
+    "Initialize with <code>new window.pos.modules.collapsible({ container })</code> to wire up keyboard navigation."
+  ],
+  "dont": [
+    "Nest more than 3 levels — the visual hierarchy becomes too deep to navigate.",
+    "Use without initializing the collapsible JS module — toggle buttons will be inert."
+  ],
+  "accessibility": [
+    "Each toggle button requires <code>aria-expanded</code> (false = collapsed, true = expanded) and <code>aria-controls</code> pointing to the children container's <code>id</code>.",
+    "Collapsed children receive the <code>inert</code> attribute — removing them from tab order and screen reader announcement automatically.",
+    "<kbd>Arrow left / right</kbd> keyboard navigation is handled by the <code>pos.modules.collapsible</code> JS module."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "inert",
+      "type": "boolean attribute on .pos-collapsible-children",
+      "default": "present (collapsed)",
+      "description": "Removes the collapsed section from tab order and screen-reader announcement. Remove it to start expanded."
+    },
+    {
+      "name": "pos-collapsible-active",
+      "type": "boolean class on <li>",
+      "default": "false",
+      "description": "Marks the currently active page in the tree."
+    },
+    {
+      "name": "JS init",
+      "type": "new window.pos.modules.collapsible({ container })",
+      "default": "required",
+      "description": "Wires up click handling and keyboard (arrow left/right) navigation — toggle buttons are inert without it."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "collapsible-list": {
+      "label": "Collapsible list",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Toggle button border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Chevron icon color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Category label text color (items without URL)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Link text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "role": "Active link text color + left border indicator",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Tree line (vertical indicator)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Toggle button border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Toggle button background on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Chevron icon color on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Category label text color (items without URL)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Link text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "role": "Active link text color + left border indicator",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Tree line (vertical indicator)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Toggle button border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Chevron icon color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Category label text color (items without URL)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Link text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "role": "Active link text color + left border indicator",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Tree line (vertical indicator)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Focus outline (toggle button + links)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<ul class=\"pos-collapsible\">\n  <li>\n    <a href=\"/page\">PlatformOS</a>\n  </li>\n  <li>\n    <a href=\"/page\">Solutions</a>\n    <button type=\"button\" class=\"pos-collapsible-toggle\"\n      aria-expanded=\"false\" aria-controls=\"nav-solutions\">\n      <!-- dashRight icon -->\n      <span class=\"pos-label\">Expand \"Solutions\"</span>\n    </button>\n    <div id=\"nav-solutions\" class=\"pos-collapsible-children\" inert>\n      <ul>\n        <li><a href=\"/page\">Enterprise</a></li>\n        <li><a href=\"/page\">Startups</a></li>\n      </ul>\n    </div>\n  </li>\n</ul>"
+}

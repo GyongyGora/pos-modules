@@ -48,7 +48,7 @@ export default defineConfig({
   projects: [
     {
       name: 'style-guide-tests',
-      testMatch: /style-guide-tests\.spec\.ts/,
+      testMatch: /style-guide\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
     {

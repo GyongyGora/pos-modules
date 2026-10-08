@@ -1,0 +1,1266 @@
+{
+  "_about": "Component spec for pos-text-input (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Input\" section. Reuses the already-curated usage prose from COMP_CONFIGS['text-input'].usage and token data from COMP_CONFIGS['text-input'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "text-input",
+  "name": "Input",
+  "description": "Collecting a single line of free-form text — names, emails, search queries, URLs, dates.",
+  "whenToUse": [
+    "Collecting a single line of free-form text — names, emails, search queries, URLs, dates.",
+    "Any form field where the expected input is short enough to fit on one line.",
+    "Use with a trailing icon (<code>.pos-form-input-wrapper</code>) for fields with a picker — date, time, or similar.",
+    "Add <code>readonly</code> to create a <strong>display-only</strong> field that loads or presents data without being editable. Background is transparent to distinguish it from editable fields."
+  ],
+  "whenNotToUse": [
+    "Multi-line text is expected — use <code>textarea</code> instead.",
+    "The user must choose from a fixed set of options — use <code>select</code>, radio buttons, or checkboxes instead."
+  ],
+  "do": [
+    "Always associate a visible <code>&lt;label&gt;</code> with the input via matching <code>for</code> and <code>id</code>.",
+    "Use <code>type=\"email\"</code>, <code>type=\"url\"</code>, <code>type=\"datetime-local\"</code> etc. for semantic correctness.",
+    "Show helper text or a character counter inside the <code>&lt;label&gt;</code> as a <code>&lt;small&gt;</code> element — it right-aligns automatically.",
+    "Use <code>aria-invalid=\"true\"</code> + <code>.pos-form-error</code> for errors; <code>aria-invalid=\"false\"</code> + <code>.pos-form-success</code> for success."
+  ],
+  "dont": [
+    "Use <code>placeholder</code> as a substitute for a label.",
+    "Style the input outside the <code>.pos-form</code> wrapper."
+  ],
+  "accessibility": [
+    "Every input must have a programmatically associated <code>&lt;label&gt;</code>.",
+    "Error and success messages should be linked via <code>aria-describedby</code>.",
+    "Required fields must use the <code>required</code> attribute."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "type",
+      "type": "'text' | 'email' | 'url' | 'datetime-local' | ...",
+      "default": "text",
+      "description": "Use the semantically correct input type."
+    },
+    {
+      "name": "readonly",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Display-only field — transparent background distinguishes it from editable fields."
+    },
+    {
+      "name": "aria-invalid",
+      "type": "'true' | 'false' | (absent)",
+      "default": "absent",
+      "description": "Pairs with .pos-form-error (\"true\") or .pos-form-success (\"false\") to show validation state."
+    },
+    {
+      "name": "trailing icon",
+      "type": ".pos-form-input-wrapper + .pos-form-input-icon",
+      "default": "none",
+      "description": "For fields with a picker (date, time, etc.) — wrap the input and add a trailing icon span."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "filled",
+      "disabled",
+      "display-only"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "text-input": {
+      "label": "Input",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true,
+                  "role": "Trailing icon color (e.g. calendar icon) — muted, matches :disabled since a display-only field is equally non-interactive"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "error-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "success-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true,
+                  "role": "Trailing icon color (e.g. calendar icon) — muted, matches :disabled since a display-only field is equally non-interactive"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "swatch": true,
+                  "requiresSelector": "#comp-text-input-field[required]"
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true,
+                  "role": "Trailing icon color (e.g. calendar icon) — muted, matches :disabled since a display-only field is equally non-interactive"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<form class=\"pos-form pos-form-simple\" action=\"#\" novalidate>\n  <fieldset>\n    <label for=\"my-input\">\n      <strong>E-mail</strong>\n      <small>0 of 320 char</small>\n    </label>\n    <input type=\"email\" id=\"my-input\" class=\"pos-form-input\" placeholder=\"Type\" required maxlength=\"320\">\n    <p class=\"pos-form-error\" hidden>Wrong email address</p>\n    <p class=\"pos-form-success\" hidden>Valid email address</p>\n  </fieldset>\n</form>"
+}

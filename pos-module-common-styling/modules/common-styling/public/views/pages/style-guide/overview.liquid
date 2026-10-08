@@ -1,0 +1,783 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/overview' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <div class="ov-page">
+        <div class="ov-stage">
+
+          <!-- ============================================================ -->
+          <!-- CARD 1 — TOKENS                                               -->
+          <!-- ============================================================ -->
+          <a class="ov-card" href="/style-guide/foundations/tokens" tabindex="0" aria-label="Design Tokens">
+            <svg class="ov-card__bg" viewBox="-50 110 380 460" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="k1-teal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%"  stop-color="#000000" stop-opacity="0.1"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+                </linearGradient>
+                <linearGradient id="k1-blue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%"  stop-color="#000000" stop-opacity="0.15"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.28"/>
+                </linearGradient>
+                <linearGradient id="k1-violet" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%"  stop-color="#000000" stop-opacity="0.07"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.03"/>
+                </linearGradient>
+                <linearGradient id="k1-white-a" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.42"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.22"/>
+                </linearGradient>
+                <linearGradient id="k1-white-b" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.14"/>
+                </linearGradient>
+                <radialGradient id="k1-glow-a" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="k1-glow-b" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <rect width="380" height="460" fill="none"/>
+              <circle class="ov-glow" cx="290" cy="100" r="170" fill="url(#k1-glow-a)"/>
+              <circle class="ov-glow" cx="90" cy="370" r="170" fill="url(#k1-glow-b)"/>
+              <polygon class="ov-tok" style="--dx:102px;--dy:111px;--dr:-4deg" points="50,70 110,100 50,130" fill="url(#k1-teal)"/>
+              <polygon class="ov-tok" style="--dx:-87px;--dy:126px;--dr:0deg" points="270,50 336,82 270,114" fill="url(#k1-teal)"/>
+              <polygon class="ov-tok" style="--dx:111px;--dy:-41px;--dr:4deg" points="40,250 100,278 40,306" fill="url(#k1-blue)"/>
+              <polygon class="ov-tok" style="--dx:-93px;--dy:-49px;--dr:-4deg" points="280,260 340,288 280,316" fill="url(#k1-teal)"/>
+              <polygon class="ov-tok" style="--dx:9px;--dy:145px;--dr:0deg" points="160,30 220,60 160,90" fill="url(#k1-white-b)"/>
+              <polygon class="ov-tok" style="--dx:0px;--dy:-134px;--dr:4deg" points="170,360 230,388 170,416" fill="url(#k1-violet)"/>
+              <polygon class="ov-tok" style="--dx:0px;--dy:34px;--dr:-4deg" points="190,150 250,210 130,210" fill="url(#k1-white-a)" opacity="0.72"/>
+              <polygon class="ov-tok" style="--dx:0px;--dy:-51px;--dr:0deg" points="190,250 250,310 130,310" fill="url(#k1-teal)" opacity="0.55"/>
+              <polygon class="ov-tok ov-tok-accent" style="--dx:68px;--dy:10px;--dr:4deg" points="100,200 130,218 100,236"/>
+              <polygon class="ov-tok ov-tok-accent" style="--dx:-68px;--dy:2px;--dr:-4deg" points="260,210 290,228 260,246"/>
+            </svg>
+            <div class="ov-card__veil"></div>
+            <div class="ov-card__body">
+              <h3 class="ov-card__title">Design Tokens</h3>
+              <p class="ov-card__desc">Colors, spacing, typography — the atomic building blocks behind every component.</p>
+              <span class="pos-button pos-button-primary ov-card__btn">
+                Tokens
+<span class="ov-card__btn-icon">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+              </span>
+            </div>
+          </a>
+
+          <!-- ============================================================ -->
+          <!-- CARD 2 — COMPONENTS                                           -->
+          <!-- ============================================================ -->
+          <a class="ov-card" href="/style-guide/component-template" tabindex="0" aria-label="Components">
+            <svg class="ov-card__bg" viewBox="-50 120 380 460" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="k2-top" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.28"/>
+                </linearGradient>
+                <linearGradient id="k2-left" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.12"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+                </linearGradient>
+                <linearGradient id="k2-right" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+                </linearGradient>
+                <linearGradient id="k2-violet" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.14"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                </linearGradient>
+                <radialGradient id="k2-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <rect width="380" height="460" fill="none"/>
+              <circle class="ov-glow" cx="190" cy="230" r="180" fill="url(#k2-glow)"/>
+              <g class="ov-face ov-face-top">
+                <polygon points="190,150 120.7,190 190,230" fill="url(#k2-top)" opacity="0.92"/>
+                <polygon points="190,150 259.3,190 190,230" fill="url(#k2-top)"/>
+              </g>
+              <g class="ov-face ov-face-left">
+                <polygon points="120.7,190 190,230 120.7,270" fill="url(#k2-left)"/>
+                <polygon points="120.7,270 190,230 190,310" fill="url(#k2-left)" opacity="0.85"/>
+              </g>
+              <g class="ov-face ov-face-right">
+                <polygon points="259.3,190 190,230 259.3,270" fill="url(#k2-right)"/>
+                <polygon points="259.3,270 190,230 190,310" fill="url(#k2-right)" opacity="0.85"/>
+              </g>
+              <g class="ov-axis" stroke="rgba(255,255,255,0.28)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5 5" fill="none">
+                <line x1="190" y1="150" x2="190" y2="80"/>
+                <line x1="120.7" y1="270" x2="60" y2="305"/>
+                <line x1="259.3" y1="270" x2="320" y2="305"/>
+              </g>
+              <ellipse cx="190" cy="330" rx="120" ry="14" fill="url(#k2-violet)" opacity="0.55"/>
+            </svg>
+            <div class="ov-card__veil"></div>
+            <div class="ov-card__body">
+              <h3 class="ov-card__title">Components</h3>
+              <p class="ov-card__desc">Self-contained elements built from tokens: buttons, inputs, cards.</p>
+              <span class="pos-button pos-button-primary ov-card__btn">
+                Components
+<span class="ov-card__btn-icon">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+              </span>
+            </div>
+          </a>
+
+          <!-- ============================================================ -->
+          <!-- CARD 3 — COMPOSITES                                           -->
+          <!-- ============================================================ -->
+          <a class="ov-card" href="#" tabindex="0" aria-label="Complex Components">
+            <svg class="ov-card__bg" viewBox="-50 100 380 460" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="k3-top-a" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.28"/>
+                </linearGradient>
+                <linearGradient id="k3-left-a" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.12"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+                </linearGradient>
+                <linearGradient id="k3-right-a" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.42"/>
+                </linearGradient>
+                <linearGradient id="k3-top-b" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.38"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.22"/>
+                </linearGradient>
+                <linearGradient id="k3-left-b" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.1"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.18"/>
+                </linearGradient>
+                <linearGradient id="k3-right-b" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.34"/>
+                </linearGradient>
+                <linearGradient id="k3-top-c" x1="0" y1="0" x2="0.5" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.18"/>
+                </linearGradient>
+                <linearGradient id="k3-left-c" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.08"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.15"/>
+                </linearGradient>
+                <linearGradient id="k3-right-c" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#000000" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0.28"/>
+                </linearGradient>
+                <radialGradient id="k3-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="currentColor" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="currentColor" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <rect width="380" height="460" fill="none"/>
+              <circle class="ov-glow" cx="190" cy="230" r="200" fill="url(#k3-glow)"/>
+              <g class="ov-cube ov-cube-a">
+                <polygon points="190,140 250.6,175 190,210" fill="url(#k3-top-a)"/>
+                <polygon points="190,140 129.4,175 190,210" fill="url(#k3-top-a)" opacity="0.88"/>
+                <polygon points="129.4,175 190,210 190,280 129.4,245" fill="url(#k3-left-a)"/>
+                <polygon points="250.6,175 190,210 190,280 250.6,245" fill="url(#k3-right-a)"/>
+                <line x1="190" y1="210" x2="190" y2="280" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+                <line x1="129.4" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+                <line x1="250.6" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+              </g>
+              <g class="ov-cube ov-cube-b">
+                <polygon points="190,140 250.6,175 190,210" fill="url(#k3-top-b)"/>
+                <polygon points="190,140 129.4,175 190,210" fill="url(#k3-top-b)" opacity="0.88"/>
+                <polygon points="129.4,175 190,210 190,280 129.4,245" fill="url(#k3-left-b)"/>
+                <polygon points="250.6,175 190,210 190,280 250.6,245" fill="url(#k3-right-b)"/>
+                <line x1="190" y1="210" x2="190" y2="280" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+                <line x1="129.4" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+                <line x1="250.6" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+              </g>
+              <g class="ov-cube ov-cube-c">
+                <polygon points="190,140 250.6,175 190,210" fill="url(#k3-top-c)"/>
+                <polygon points="190,140 129.4,175 190,210" fill="url(#k3-top-c)" opacity="0.88"/>
+                <polygon points="129.4,175 190,210 190,280 129.4,245" fill="url(#k3-left-c)"/>
+                <polygon points="250.6,175 190,210 190,280 250.6,245" fill="url(#k3-right-c)"/>
+                <line x1="190" y1="210" x2="190" y2="280" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+                <line x1="129.4" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+                <line x1="250.6" y1="175" x2="190" y2="280" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+              </g>
+            </svg>
+            <div class="ov-card__veil"></div>
+            <div class="ov-card__body">
+              <h3 class="ov-card__title">Complex Components</h3>
+              <p class="ov-card__desc">Multiple components connected at their edges into a system-level pattern.</p>
+              <span class="pos-button pos-button-primary ov-card__btn">
+                Complex Components
+<span class="ov-card__btn-icon">{% render 'modules/common-styling/icon', icon: 'dashRight' %}</span>
+              </span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- ── COMPONENT CARDS ──────────────────────────────────── -->
+
+        <!-- Uncategorized -->
+        <div class="ov-comp-grid">
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-avatar" style="position:relative">
+            <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'user' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Avatar</span></h3>
+              <p class="pos-feature-card-text">User identity display with initials fallback and image support, in seven sizes.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-badge">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'sticker' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Badge</span></h3>
+              <p class="pos-feature-card-text">A dot or a small count on an icon, avatar or tab — new items, unread messages.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-slider">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'adjustments-horizontal' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Slider</span></h3>
+              <p class="pos-feature-card-text">Pick a value from a range by dragging a handle; the value shows above it while dragging.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-tag" style="position:relative">
+            <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'tag' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Tag</span></h3>
+              <p class="pos-feature-card-text">Non-interactive label used to categorize or describe content.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-chip">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'label' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Chip</span></h3>
+              <p class="pos-feature-card-text">Compact status label, often used in tables and lists.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-code">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'file-code-2' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Code</span></h3>
+              <p class="pos-feature-card-text">Inline or block display of code snippets in monospace style.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-dropdown-button">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'plus' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Dropdown button</span></h3>
+              <p class="pos-feature-card-text">A primary button that opens a short list of related actions right below it.</p>
+            </div>
+          </a>
+
+          <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-link" style="position:relative">
+            <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'hyperlink-2' %}</div>
+            <div class="pos-feature-card-body">
+              <h3 class="pos-feature-card-title"><span>Link</span></h3>
+              <p class="pos-feature-card-text">Inline text element that navigates to another page or section.</p>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="ov-comp-section">
+          <h3 class="ov-comp-section-label">Buttons</h3>
+          <div class="ov-comp-grid">
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-button" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'touchpad-finger' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Button</span></h3>
+                <p class="pos-feature-card-text">A clickable element that lets users take action.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-control-icons">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'arrow-down-1' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Control icons</span></h3>
+                <p class="pos-feature-card-text">Close and expand/collapse icons for dismissing or toggling UI elements.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-tile-btn">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'layout-grid-add' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Choice button</span></h3>
+                <p class="pos-feature-card-text">Icon-and-label toggle button, used in grouped selections.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-toggle-btn">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'toggle-right' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Toggle button</span></h3>
+                <p class="pos-feature-card-text">A standalone on/off switch, with no label or card wrapper.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-segmented">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'circuit-switch-closed' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Segmented button</span></h3>
+                <p class="pos-feature-card-text">Horizontal group of mutually exclusive options with a sliding indicator.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-switch-card">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'device-nintendo-rotated' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Switch button</span></h3>
+                <p class="pos-feature-card-text">A toggle card that combines a switch with a label, used for enabling or disabling a setting.</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Form elements -->
+        <div class="ov-comp-section">
+          <h3 class="ov-comp-section-label">Form elements</h3>
+          <div class="ov-comp-grid">
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-checkbox" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'check-square' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Checkbox</span></h3>
+                <p class="pos-feature-card-text">Multi-selection input that lets users toggle one or more independent options.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-radio" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'circle-dot' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Radio</span></h3>
+                <p class="pos-feature-card-text">Single-selection input from a group of mutually exclusive options.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-multiselect" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'edit-bulk' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Multiselect</span></h3>
+                <p class="pos-feature-card-text">Tag-style multi-value selector with search and keyboard navigation.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-text-input" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'text-input-area' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Input</span></h3>
+                <p class="pos-feature-card-text">Single-line text field for collecting free-form input such as names, emails, or search queries.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-textarea" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'programming-keyboard-type' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Textarea</span></h3>
+                <p class="pos-feature-card-text">Multi-line text field for collecting longer free-form content such as descriptions or notes.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-select" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'select' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Select</span></h3>
+                <p class="pos-feature-card-text">Dropdown menu for choosing one option from a predefined list.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-password" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'password-lock' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Password input</span></h3>
+                <p class="pos-feature-card-text">Secure text field for entering passwords, with optional visibility toggle and strength meter.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-file-upload" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'common-file-double-2' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>File upload</span></h3>
+                <p class="pos-feature-card-text">A drag-and-drop file upload dashboard with progress, previews, and optional image editing.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-markdown" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'pencil' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Markdown editor</span></h3>
+                <p class="pos-feature-card-text">A rich Markdown editor with formatting toolbar, live preview, and optional image upload.</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="ov-comp-section">
+          <h3 class="ov-comp-section-label">Navigation</h3>
+          <div class="ov-comp-grid">
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-collapsible-list" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'flip-vertical-down' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Collapsible list</span></h3>
+                <p class="pos-feature-card-text">Hierarchical navigation with expandable/collapsible sections and a tree line indicator.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-pagination">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'paginate-filter-1' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Pagination</span></h3>
+                <p class="pos-feature-card-text">Numbered page navigation with previous/next arrows for long lists and search results.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-tab">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'subtract-tab' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Tab</span></h3>
+                <p class="pos-feature-card-text">Simple underlined tabs, an overflow kebab menu, or detailed card-style tabs with stats.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-breadcrumb">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'module-tree-2' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Breadcrumb</span></h3>
+                <p class="pos-feature-card-text">A trail of ancestor links showing the current page's location, collapsing to a back button when it doesn't fit.</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="ov-comp-section">
+          <h3 class="ov-comp-section-label">Cards</h3>
+          <div class="ov-comp-grid">
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-card" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'rectangle-vertical' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Card</span></h3>
+                <p class="pos-feature-card-text">Original DS card: basic, highlighted, and content card with image and footer.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-feature-card">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'align-box-left-middle' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Feature card</span></h3>
+                <p class="pos-feature-card-text">A content card with icon, title, description, and optional action buttons.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-alert-card" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'alert-square' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Alert card</span></h3>
+                <p class="pos-feature-card-text">Inline info, warning, error, or success message, adjacent to a card or content block.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-table" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'table' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Table</span></h3>
+                <p class="pos-feature-card-text">Responsive tabular data display, collapsing to stacked cards on narrow viewports.</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Overlays -->
+        <div class="ov-comp-section">
+          <h3 class="ov-comp-section-label">Overlays</h3>
+          <div class="ov-comp-grid">
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-popover" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'notes-list' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Popover menu</span></h3>
+                <p class="pos-feature-card-text">A floating contextual menu anchored to a trigger button.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-popover-content">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'messages-bubble-square-menu' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Popover</span></h3>
+                <p class="pos-feature-card-text">A floating content container anchored to a trigger, for rich contextual content.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-toast" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'bell' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Toast</span></h3>
+                <p class="pos-feature-card-text">A floating, auto-dismissing notification confirming the result of an action.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-dialog" style="position:relative">
+              <span class="pos-tag pos-tag--small" style="position:absolute;top:.5rem;right:.5rem">Legacy</span>
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'app-window-four' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Dialog</span></h3>
+                <p class="pos-feature-card-text">A native modal window that dims the page until confirmed, canceled, or closed.</p>
+              </div>
+            </a>
+
+            <a class="pos-feature-card pos-feature-card--small" href="/style-guide/component-template#comp-section-tooltip">
+              <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'info' %}</div>
+              <div class="pos-feature-card-body">
+                <h3 class="pos-feature-card-title"><span>Tooltip</span></h3>
+                <p class="pos-feature-card-text">A small contextual label shown above an element on hover or keyboard focus.</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  .ov-page {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--pos-primitive-size-3) var(--pos-primitive-size-3) var(--pos-primitive-size-5);
+    max-width: 1100px;
+    margin-inline: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ov-stage {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--pos-primitive-size-2);
+    width: 100%;
+  }
+
+  .ov-comp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--pos-primitive-size-2);
+    width: 100%;
+    margin-top: var(--pos-gap-section-section);
+  }
+
+  .ov-comp-section {
+    margin-top: var(--pos-gap-section-section);
+  }
+
+  .ov-comp-section-label {
+    font-size: var(--pos-font-size-body-small);
+    font-weight: 600;
+    color: var(--pos-color-content-text-supplementary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 var(--pos-primitive-size-15);
+  }
+
+  .ov-comp-section .ov-comp-grid {
+    margin-top: 0;
+  }
+
+  @media (max-width: 1280px) {
+    .ov-comp-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 1350px) {
+    .ov-stage {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .ov-comp-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ov-stage {
+      grid-template-columns: 1fr;
+    }
+    .ov-comp-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Hero card */
+  .ov-card {
+    /* Text tokens: standout variants so they theme correctly on interactive bg */
+    --pos-color-content-text: var(--pos-color-standout-text);
+    --pos-color-content-text-supplementary: var(--pos-color-standout-text-supplementary);
+
+    position: relative;
+    width: 100%;
+    min-height: 220px;
+    border-radius: var(--pos-radius-card);
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 85% 8%, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
+      var(--pos-color-interactive);
+    isolation: isolate;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(0);
+    transition:
+      transform 520ms cubic-bezier(.2,.8,.2,1),
+      box-shadow 520ms cubic-bezier(.2,.8,.2,1);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      var(--pos-primitive-shadow-medium);
+    will-change: transform;
+  }
+  .ov-card:hover,
+  .ov-card:focus-visible {
+    transform: translateY(-8px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.07) inset,
+      var(--pos-primitive-shadow-blurred);
+    outline: none;
+  }
+
+  .ov-card__bg  { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .ov-card__veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(6,9,18,0) 0%, rgba(6,9,18,0.10) 55%, rgba(6,9,18,0.20) 100%),
+      linear-gradient(95deg, rgba(6,9,18,0.17) 0%, rgba(6,9,18,0.07) 45%, rgba(6,9,18,0) 75%);
+  }
+  .ov-card__body {
+    position: relative; z-index: 2;
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: var(--pos-primitive-size-3);
+  }
+
+  .ov-card__title {
+    font-size: var(--pos-font-size-m);
+    font-family: var(--pos-font-buttons);
+    line-height: 1.08; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--pos-color-content-text);
+    margin: 0 0 var(--pos-primitive-size-15);
+  }
+  .ov-card__desc {
+    font-size: var(--pos-font-size-body-small);
+    font-family: var(--pos-font-buttons);
+    line-height: 1.5;
+    color: var(--pos-color-standout-text);
+    margin: 0 0 var(--pos-primitive-size-2);
+    max-width: 28ch;
+  }
+
+  /* DS primary button overrides for dark card context */
+  .ov-card__btn {
+    align-self: flex-start;
+  }
+  .ov-card__btn-icon { display: inline-flex; transition: transform 220ms cubic-bezier(.2,.8,.2,1); }
+  .ov-card:hover .ov-card__btn { transform: translateY(-1px); }
+  .ov-card:hover .ov-card__btn-icon { transform: translateX(3px); }
+
+  /* SVG layer: glow uses interactive-inverted via currentColor; accent shapes use it as fill */
+  .ov-card__bg { color: var(--pos-color-interactive-inverted); }
+  .ov-tok-accent { fill: var(--pos-color-interactive); fill-opacity: 0.65; }
+
+  /* Glow */
+  .ov-glow { transition: opacity 600ms ease, transform 900ms cubic-bezier(.2,.8,.2,1); opacity: 0.5; transform-origin: center; }
+  .ov-card:hover .ov-glow { opacity: 1; transform: scale(1.08); }
+
+  /* Card 1 — Tokens: scattered triangles */
+  .ov-tok {
+    transform-origin: center;
+    transform-box: fill-box;
+    opacity: 0.5;
+    transition: transform 900ms cubic-bezier(.2,.8,.2,1), opacity 600ms ease;
+  }
+  .ov-card:hover .ov-tok {
+    transform: translate(var(--dx, 0), var(--dy, 0)) rotate(var(--dr, 0));
+    opacity: 1;
+  }
+
+  /* Card 2 — Cube: faces assemble on hover */
+  .ov-face { transform-origin: 190px 230px; opacity: 0.5; transition: transform 1100ms cubic-bezier(.2,.8,.2,1), opacity 700ms ease; }
+  .ov-face-top   { transform: translate(0, -90px); }
+  .ov-face-left  { transform: translate(-80px, 70px); }
+  .ov-face-right { transform: translate(80px, 70px); }
+  .ov-card:hover .ov-face-top,
+  .ov-card:hover .ov-face-left,
+  .ov-card:hover .ov-face-right { transform: translate(0, 0); opacity: 1; }
+
+  .ov-axis { transition: opacity 600ms ease 350ms, transform 900ms cubic-bezier(.2,.8,.2,1) 350ms; opacity: 0; transform-origin: 190px 230px; transform: scale(0.6); }
+  .ov-card:hover .ov-axis { opacity: 1; transform: scale(1); }
+
+  /* Card 3 — Composites: 3 cubes connect on hover */
+  .ov-cube { opacity: 0.5; transition: transform 1100ms cubic-bezier(.2,.8,.2,1), opacity 700ms ease; }
+  .ov-cube-a { transform: translate(0, -110px); }
+  .ov-cube-b { transform: translate(-115px, 75px); }
+  .ov-cube-c { transform: translate(115px, 75px); }
+  .ov-card:hover .ov-cube-a { transform: translate(0, -35px); opacity: 1; }
+  .ov-card:hover .ov-cube-b { transform: translate(-60.6px, 0); opacity: 1; }
+  .ov-card:hover .ov-cube-c { transform: translate(60.6px, 0); opacity: 1; }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    .ov-card, .ov-tok, .ov-face, .ov-cube, .ov-glow, .ov-card__btn, .ov-card__btn svg {
+      transition: none !important; animation: none !important;
+    }
+    .ov-card:hover .ov-tok { transform: none; }
+    .ov-face-top, .ov-face-left, .ov-face-right,
+    .ov-cube-a, .ov-cube-b, .ov-cube-c { transform: none !important; }
+  }
+</style>

@@ -1,0 +1,366 @@
+{% comment %}
+  Generated from tokens/components/breadcrumb.json — never hand-edit, regenerate via script if the source JSON changes.
+{% endcomment %}
+<script type="application/json" id="comp-spec-breadcrumb">
+{% raw %}
+{
+  "_about": "Component spec for pos-breadcrumb (built 2026-09-19 from an inspiration screenshot and a responsive-behavior requirement). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide. Two variants: 'expanded' (all items visible, chevron-separated) and 'collapsed' (only the current item shown, plus a back-chevron button that opens a popover listing the hidden ancestor links) — the real component switches between them automatically via a ResizeObserver in assets/js/pos-breadcrumb.js when the list overflows its container; the docs preview's Variant toggle applies the same .pos-breadcrumb--collapsed class manually to demo the result. Reuses .pos-link (ancestor links) and .pos-popover + the native HTML popover API (collapsed-state flyout) rather than duplicating their styling or tokens — per the composedOf field and the real, confirmed repo convention (checked multiselect.json/dialog.json), a composed component's own nested-component tokens are not repeated here, they belong to that component's own spec page. Regenerate spec-breadcrumb.liquid via scripts/generate-component.js (or the inline regen snippet in RULES.md §6.4) after any change here — never hand-edit the .liquid partial. 2026-10-06: the collapsed flyout's parent-page links use --pos-color-interactive-text (Figma: Interactive text normal), not the generic popover menu's grey.",
+  "component": "breadcrumb",
+  "name": "Breadcrumb",
+  "description": "A horizontal trail of links showing the current page's location within a nested hierarchy, with a chevron separator between items and the current page shown as plain (non-link) text. Collapses to a back-chevron + current item when it doesn't fit its container.",
+  "whenToUse": [
+    "Showing the user's location within a nested page hierarchy (e.g. Category > Subcategory > Product).",
+    "Letting the user jump back up to any ancestor page in one click.",
+    "The hierarchy has at least two levels above the current page."
+  ],
+  "whenNotToUse": [
+    "Navigation is flat/single-level — a breadcrumb with only the current page adds no value.",
+    "The full path would be longer and more confusing to scan than the page's own title or a back button."
+  ],
+  "do": [
+    "Keep each label short and match the real title of the page it links to.",
+    "Always show the current page last, as plain non-link text.",
+    "Let the component collapse automatically when it doesn't fit its container — never truncate labels with CSS ellipsis instead."
+  ],
+  "dont": [
+    "Make the current page a clickable link — it isn't navigable to itself.",
+    "Use a breadcrumb as the only way to reach a page — it supplements primary navigation, it doesn't replace it.",
+    "Invent labels that differ from the actual page titles in the hierarchy."
+  ],
+  "accessibility": [
+    "The root element is a <nav aria-label=\"Breadcrumb\"> so assistive tech announces it as a distinct landmark.",
+    "The current page uses aria-current=\"page\", not a visual-only style.",
+    "Separator icons are aria-hidden — they're purely decorative, the list structure itself conveys order.",
+    "The collapsed-state back button has a real aria-label (e.g. \"Show parent pages\") since its icon alone conveys no accessible name."
+  ],
+  "composedOf": [
+    "link",
+    "popover"
+  ],
+  "props": [
+    {
+      "name": "items",
+      "type": "list of {label, href}",
+      "default": "none",
+      "description": "The ordered list of ancestor pages plus the current page, rendered as <li> entries inside the breadcrumb's <ol>. The same list also populates the collapsed-state popover menu."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "expanded",
+      "collapsed"
+    ],
+    "state": [
+      "normal",
+      "hover",
+      "focus"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "expanded": {
+      "label": "Expanded",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-xs",
+                  "figma": "Icon/icon-xs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-hover",
+                  "figma": "General elements-theme/Interactive text hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-xs",
+                  "figma": "Icon/icon-xs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-hover",
+                  "figma": "General elements-theme/Interactive text hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-xs",
+                  "figma": "Icon/icon-xs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "collapsed": {
+      "label": "Collapsed",
+      "classes": [
+        "pos-breadcrumb--collapsed"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Parent-page links in the flyout",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Parent-page links in the flyout",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Parent-page links in the flyout",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<nav class=\"pos-breadcrumb\" aria-label=\"Breadcrumb\">\n  <div class=\"pos-popover pos-breadcrumb-collapsed-trigger\">\n    <button type=\"button\" popovertarget=\"breadcrumb-hidden-1\" class=\"pos-breadcrumb-back\" aria-label=\"Show parent pages\">\n      <!-- dashLeft icon -->\n    </button>\n    <menu popover id=\"breadcrumb-hidden-1\">\n      <li><a href=\"/category\">Category</a></li>\n    </menu>\n  </div>\n  <ol class=\"pos-breadcrumb-list\">\n    <li class=\"pos-breadcrumb-item\">\n      <a href=\"/category\" class=\"pos-link\">Category</a>\n      <span class=\"pos-breadcrumb-separator\" aria-hidden=\"true\"><!-- dashRight icon --></span>\n    </li>\n    <li class=\"pos-breadcrumb-item\">\n      <span class=\"pos-breadcrumb-current\" aria-current=\"page\">Current page</span>\n    </li>\n  </ol>\n</nav>"
+}
+{% endraw %}
+</script>

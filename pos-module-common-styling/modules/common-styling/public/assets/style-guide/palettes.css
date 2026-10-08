@@ -1,0 +1,363 @@
+/*
+  palettes.css — styles for the color-scales / palettes view of /style-guide/foundations/palettes.
+  Every rule is scoped under .pos-palettes so it can't leak into the docs site. Colors come from the
+  DS's own --pos-color-* tokens (with fallbacks), so the view follows the theme.
+*/
+
+/* section / panel titles use the DS headline style (heading font, pos-heading-4 size), bold (user, 2026-10-01) */
+.pos-palettes h2 {
+  font-family: var(--pos-font-heading, 'Google Sans', 'Inter', system-ui, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--pos-color-content-text-prominent, #141414);
+}
+
+.pos-palettes .lead {
+  margin: 0 0 24px;
+  color: var(--pos-color-content-text-supplementary, #6b7280);
+  max-width: 960px;
+}
+
+.pos-palettes .panel {
+  background: var(--pos-color-content-background, #fff);
+  border: 1px solid var(--pos-color-frame, #e2e8f0);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.pos-palettes .scroll {
+  overflow-x: auto;
+}
+
+.pos-palettes .rules {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.pos-palettes .grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(112px, 1fr));
+  gap: 8px;
+  min-width: 1160px;
+}
+
+/* neutral / HC primitive lists: as many columns as fit, no fixed 10-step layout */
+.pos-palettes .grid.grid-auto {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  min-width: 0;
+}
+
+/* usage ranges: one row per role, a line from the first to the last step it may use */
+.pos-palettes .usage {
+  margin-bottom: 8px;
+  row-gap: 6px;
+}
+
+.pos-palettes .usage .range {
+  grid-column: var(--from) / var(--to);
+  grid-row: var(--row);
+  padding-bottom: 2px;
+  border-bottom: 3px solid currentColor;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.pos-palettes .usage b {
+  font-weight: 600;
+}
+
+/* light-mode roles in a paler violet, dark-mode roles in a deep violet (both readable as text: 600 is the
+   palest step with 4.5:1 on white); on the dark docs page the pair flips to 200 / 400; HC: plain text */
+.pos-palettes {
+  --pal-range-light: var(--pos-primitive-color-brand-supplementary-600);
+  --pal-range-dark: var(--pos-primitive-color-brand-supplementary-800);
+}
+
+:root.pos-theme-dark .pos-palettes {
+  --pal-range-light: var(--pos-primitive-color-brand-supplementary-200);
+  --pal-range-dark: var(--pos-primitive-color-brand-supplementary-400);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(.pos-theme-darkEnabled):not(.pos-theme-light) .pos-palettes {
+    --pal-range-light: var(--pos-primitive-color-brand-supplementary-200);
+    --pal-range-dark: var(--pos-primitive-color-brand-supplementary-400);
+  }
+}
+
+:root.pos-theme-a11y .pos-palettes {
+  --pal-range-light: var(--pos-color-content-text);
+  --pal-range-dark: var(--pos-color-content-text);
+}
+
+.pos-palettes .usage .range--light {
+  color: var(--pal-range-light);
+}
+
+.pos-palettes .usage .range--dark {
+  color: var(--pal-range-dark);
+}
+
+/* recommended step: a dot on the range line, centered in that step's column */
+.pos-palettes .usage .range-dot {
+  grid-column: var(--at);
+  grid-row: var(--row);
+  justify-self: center;
+  align-self: end;
+  width: 11px;
+  height: 11px;
+  margin-block-end: -4px;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 0 2px var(--pos-color-content-background);
+}
+
+.pos-palettes .usage .range-legend {
+  grid-column: 1 / -1;
+  grid-row: var(--row);
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.pos-palettes .target label {
+  display: block;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.pos-palettes .target .kind {
+  display: block;
+  font-size: 11px;
+  color: var(--pos-color-content-text-supplementary, #6b7280);
+  margin-bottom: 4px;
+  min-height: 32px;
+  line-height: 1.4;
+}
+
+/* read-only target: the contrast minimum as a tag */
+.pos-palettes .target .value {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.pos-palettes .target small {
+  display: block;
+  margin-top: 4px;
+  color: var(--pos-color-content-text-supplementary, #6b7280);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.pos-palettes .target small b {
+  color: var(--pos-color-content-text, #374151);
+  font-weight: 600;
+}
+
+.pos-palettes .refline {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+
+.pos-palettes .refline span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pos-palettes .refline i {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,.15);
+  display: inline-block;
+}
+
+.pos-palettes .refline code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+}
+
+.pos-palettes .scale-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.pos-palettes .base-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-inline-end: 6px;
+  vertical-align: -2px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--pos-color-frame-transparent);
+}
+
+.pos-palettes .src {
+  font-size: 12px;
+  color: var(--pos-color-content-text-supplementary, #6b7280);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.pos-palettes .sw {
+  border: 1px solid var(--pos-color-frame, #e2e8f0);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--pos-color-content-background, #fff);
+}
+
+.pos-palettes .sw.is-base {
+  outline: 2px solid var(--pos-color-content-text-prominent, #141414);
+  outline-offset: 2px;
+}
+
+.pos-palettes .chip {
+  height: 84px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.pos-palettes .chip span:first-child {
+  color: #fff;
+}
+
+.pos-palettes .chip span:last-child {
+  color: #000;
+}
+
+.pos-palettes .meta {
+  padding: 8px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.pos-palettes .meta b {
+  font-weight: 500;
+  font-size: 12.5px;
+}
+
+.pos-palettes .meta .name {
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent, #141414);
+}
+
+.pos-palettes .meta .step {
+  color: var(--pos-color-content-text-supplementary, #6b7280);
+}
+
+.pos-palettes .badge {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #141414;
+  color: #fff;
+  margin-left: 4px;
+}
+
+.pos-palettes .dev {
+  color: #9a3412;
+}
+
+.pos-palettes .ok {
+  color: #166534;
+}
+
+.pos-palettes .fail {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.pos-palettes .checks {
+  margin-top: 6px;
+}
+
+.pos-palettes .check {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.pos-palettes .warn {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 13px;
+}
+
+.pos-palettes .demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+  min-width: 1160px;
+}
+
+.pos-palettes .demo-box {
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pos-palettes .demo-line {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.pos-palettes .demo-tint {
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.pos-palettes .demo-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pos-palettes .demo-lbl {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  opacity: .75;
+}
+
+.pos-palettes .compare td,
+.pos-palettes .compare th {
+  padding: 4px 8px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+  text-align: right;
+}
+
+.pos-palettes .compare th:first-child,
+.pos-palettes .compare td:first-child {
+  text-align: left;
+}

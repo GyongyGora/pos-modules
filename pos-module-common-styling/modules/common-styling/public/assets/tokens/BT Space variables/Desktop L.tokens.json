@@ -1,0 +1,483 @@
+{
+  "Paddings": {
+    "cards, boxes": {
+      "$type": "number",
+      "$value": 24,
+      "$description": "Inner padding for cards, panels, and other content containers.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230371",
+        "com.figma.scopes": [
+          "WIDTH_HEIGHT",
+          "GAP"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "table cells": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Inner padding for table cells.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12831:67487",
+        "com.figma.scopes": [
+          "WIDTH_HEIGHT",
+          "GAP",
+          "FONT_VARIATIONS"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "page content": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Outer padding of the main page content area — the space between the viewport edge and the content.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:75251",
+        "com.figma.scopes": [
+          "WIDTH_HEIGHT",
+          "GAP",
+          "FONT_VARIATIONS"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Gaps": {
+    "header-content": {
+      "$type": "number",
+      "$value": 40,
+      "$description": "Gap between the page header and the content below it.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230372",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b30cb4b340a821a5500180ddbc8df27f89358fc2/-1:-1",
+          "targetVariableName": "Size/5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "section title-content": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Vertical gap between a section or dialog heading and the content below it.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230373",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "section-section": {
+      "$type": "number",
+      "$value": 32,
+      "$description": "Vertical gap between top-level sections on a page.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230376",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b3bf638cbdd0e3398792e05dbd66d7961b7bce8e/-1:-1",
+          "targetVariableName": "Size/4 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "card-card": {
+      "$type": "number",
+      "$value": 32,
+      "$description": "Gap between cards in a grid or list layout.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230374",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b3bf638cbdd0e3398792e05dbd66d7961b7bce8e/-1:-1",
+          "targetVariableName": "Size/4 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "text-text": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Vertical gap between paragraphs and text blocks.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:75252",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "card content": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Gap between content elements inside a card (e.g. title, body text, actions).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230375",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "content-footer": {
+      "$type": "number",
+      "$value": 40,
+      "$description": "Gap between the main content area and the footer or action row below it.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230377",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b30cb4b340a821a5500180ddbc8df27f89358fc2/-1:-1",
+          "targetVariableName": "Size/5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "input-button": {
+      "$type": "number",
+      "$value": -4,
+      "$description": "Gap between an input field and an adjacent button (e.g. search bar, inline action).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230380",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:321babbf7d4b2ac2be7cb23a6e6b82688aeafe22/-1:-1",
+          "targetVariableName": "Size/-0,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "button N-button N": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Gap between default-size buttons in a button group.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230378",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "button S-button S": {
+      "$type": "number",
+      "$value": 8,
+      "$description": "Gap between small-size buttons in a button group.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230379",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:ac3e54d6a81cefb73b80d52c81e8575763c3e3c7/-1:-1",
+          "targetVariableName": "Size/1 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "tag-tag": {
+      "$type": "number",
+      "$value": 12,
+      "$description": "Gap between tags in a tag list or chip group.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230382",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2698664b2a5b1c8de692347a17e8a0612988d49b/-1:-1",
+          "targetVariableName": "Size/1,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "step-step": {
+      "$type": "number",
+      "$value": 24,
+      "$description": "Gap between steps in a stepper or wizard component.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230383",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "step-button": {
+      "$type": "number",
+      "$value": 24,
+      "$description": "Gap between the step blocks and the navigation buttons in a stepper.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12805:230384",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "input-input": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Vertical gap between form fields.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12877:59551",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Icon": {
+    "icon-xs": {
+      "$type": "number",
+      "$value": 12,
+      "$description": "Extra-small icon size.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:15822",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2698664b2a5b1c8de692347a17e8a0612988d49b/-1:-1",
+          "targetVariableName": "Size/1,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "icon-s": {
+      "$type": "number",
+      "$value": 16,
+      "$description": "Small icon size.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:15824",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2675577983e18bcc31e27aa5458731d0a0fd0eaf/-1:-1",
+          "targetVariableName": "Size/2 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "icon-m": {
+      "$type": "number",
+      "$value": 20,
+      "$description": "Medium icon size.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:15825",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:a79c3bf66d5fb12f0ed4422c7cab21ae43364ebd/-1:-1",
+          "targetVariableName": "Size/2,5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "icon-l": {
+      "$type": "number",
+      "$value": 24,
+      "$description": "Large icon size.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:16546",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "icon-xl": {
+      "$type": "number",
+      "$value": 32,
+      "$description": "Extra-large icon size.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:19309",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b3bf638cbdd0e3398792e05dbd66d7961b7bce8e/-1:-1",
+          "targetVariableName": "Size/4 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "icon-xxl": {
+      "$type": "number",
+      "$value": 64,
+      "$description": "Largest icon size — used for prominent illustrative icons.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12880:32140",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:ff2f31ed48ed700d245248faba6af04017c23130/-1:-1",
+          "targetVariableName": "Size/8 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "DocsKit": {
+    "Content padding": {
+      "$type": "number",
+      "$value": 40,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13408:26040",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b30cb4b340a821a5500180ddbc8df27f89358fc2/-1:-1",
+          "targetVariableName": "Size/5 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Section gap": {
+      "$type": "number",
+      "$value": 24,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13408:26042",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:68b495609466d38737900fa52922ba76be634517/-1:-1",
+          "targetVariableName": "Size/3 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Section - section": {
+      "$type": "number",
+      "$value": 72,
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13408:26043",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:344d5adb79fbf1fb37f28218a9e502b3fda0b6b5/-1:-1",
+          "targetVariableName": "Size/9 unit",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Desktop L"
+  }
+}

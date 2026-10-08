@@ -1,0 +1,83 @@
+/*
+  Chip — status badge with intent color variants (Normal and Prominent modes)
+  Figma: https://www.figma.com/design/7LdPQ5BEpKgFvxqnjvwH5b/pOS-Core---components?node-id=18416-52017 (internal use only; access required)
+
+  Base:        .pos-chip
+  Intent:      .pos-chip-warning  .pos-chip-success  .pos-chip-error  .pos-chip-neutral
+  Color mode:  .pos-chip--prominent  (applied alongside intent)
+*/
+
+@layer common-styling {
+
+  .pos-chip {
+    display: inline-flex;
+    align-items: center;
+    padding-block:  var(--pos-padding-chip-block);
+    padding-inline: var(--pos-padding-chip);
+    border-radius:  var(--pos-radius-chip);
+    border:         1px solid var(--pos-color-frame-transparent);
+    font-family:    var(--pos-font-badge);
+    font-size:      var(--pos-font-size-xs);
+    font-weight:    var(--pos-font-weight-bold);
+    line-height:    var(--pos-line-height-s);
+    white-space:    nowrap;
+  }
+
+
+  /* Tiny size variant
+  ============================================================================ */
+  .pos-chip--tiny {
+    height:          var(--pos-primitive-size-2);   /* 16px */
+    padding-block:   0;
+    font-size:       var(--pos-font-size-xxxs);     /* 8px */
+    letter-spacing:  0.05em;
+    text-transform:  uppercase;
+  }
+
+
+  /* Normal mode — intent variants
+  ============================================================================ */
+  .pos-chip-warning {
+    background-color: var(--pos-color-warning-muted);
+    color:            var(--pos-color-warning); /* text step, like the other status chips (was warning-active, 2026-10-02) */
+  }
+
+  .pos-chip-success {
+    background-color: var(--pos-color-confirmation-muted);
+    color:            var(--pos-color-confirmation);
+  }
+
+  .pos-chip-error {
+    background-color: var(--pos-color-important-muted);
+    color:            var(--pos-color-important);
+  }
+
+  .pos-chip-neutral {
+    background-color: var(--pos-color-highlight-background);
+    color:            var(--pos-color-content-text);
+  }
+
+
+  /* Prominent mode — stronger background
+  ============================================================================ */
+  .pos-chip-warning.pos-chip--prominent {
+    background-color: var(--pos-color-warning-active);
+    color:            var(--pos-color-warning-muted);
+  }
+
+  .pos-chip-success.pos-chip--prominent {
+    background-color: var(--pos-color-confirmation);
+    color:            var(--pos-color-confirmation-muted);
+  }
+
+  .pos-chip-error.pos-chip--prominent {
+    background-color: var(--pos-color-important);
+    color:            var(--pos-color-important-muted);
+  }
+
+  .pos-chip-neutral.pos-chip--prominent {
+    background-color: var(--pos-color-content-icon);
+    color:            var(--pos-color-content-inverted-text);
+  }
+
+}

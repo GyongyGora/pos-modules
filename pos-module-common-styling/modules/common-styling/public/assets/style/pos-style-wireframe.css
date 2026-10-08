@@ -1,0 +1,125 @@
+/*
+  wireframe style — for creating interactive prototypes before the visual design phase (2026-10-02).
+  Apply together with the black-and-white Wireframe color theme:
+    <html class="pos-brand-wireframe pos-style-wireframe">
+
+  - hand-drawn "doodle" frames on cards, buttons, form fields and tags (not on the pill-shaped toggle): an SVG of a slightly
+    wobbly rectangle used as border-image (9-slice: the corners keep their shape, the sides stretch),
+    so the line is the same weight on every size
+  - Monda headlines and button labels (Google Fonts, OFL — loaded by init); body text stays Inter
+  - no shadows: elevation doesn't fit a sketch
+  - high contrast mode keeps the plain, sharp frames (legibility first); the keyboard focus ring is
+    the regular one in every mode
+
+  The token block is unlayered like the other token files (it must beat pos-config.css); the frame
+  rules are in @layer common-styling like every component.
+*/
+
+/* ---- tokens ---- */
+:root.pos-style-wireframe {
+  --pos-font-heading: 'Monda', var(--pos-primitive-font-google-sans);
+  --pos-font-buttons: 'Monda', var(--pos-primitive-font-inter);
+
+  /* Monda's x-height differs from Inter's (Inter 0.55 of the font size): scale every
+     font to Inter's x-height, so the Monda headlines and button labels read at their intended
+     size. Inter itself stays as it is (its ratio is already 0.55); code keeps its own size (below). */
+  font-size-adjust: 0.545;
+
+  /* the doodle line, light mode (dark grey); -bold = the same line, thicker (hover) */
+  --pos-wireframe-doodle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23333333' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --pos-wireframe-doodle-bold: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23333333' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+  --pos-primitive-shadow-flat: none;
+  --pos-primitive-shadow-small: none;
+  --pos-primitive-shadow-medium: none;
+  --pos-primitive-shadow-layered: none;
+  --pos-primitive-shadow-large: none;
+  --pos-primitive-shadow-blurred: none;
+}
+
+/* dark mode: a light grey line (whole page, or a pos-scheme-dark part of it) */
+:root.pos-style-wireframe.pos-theme-dark,
+:root.pos-style-wireframe .pos-scheme-dark {
+  --pos-wireframe-doodle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23d4d4d4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --pos-wireframe-doodle-bold: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23d4d4d4' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.pos-style-wireframe:where(.pos-theme-darkEnabled):not(.pos-theme-light) {
+    --pos-wireframe-doodle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23d4d4d4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --pos-wireframe-doodle-bold: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M11 6.5C40 2.4 76 8.4 109 4.6Q116.4 4 115.6 11.5C112.8 44 118 78 114.4 108.5Q113.6 116 106 115.4C74 112.2 42 118.4 12 114.6Q4.4 113.8 5.2 106C8.2 76 2.2 42 5.8 13Q6.4 6.8 11 6.5Z' fill='none' stroke='%23d4d4d4' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+
+/* keyboard focus: a dashed ring, so it stands apart from the (also grey / black) frames. Not layered
+   on purpose, to win over every component's own solid focus outline; HC keeps the solid ring. */
+:root.pos-style-wireframe:not(.pos-theme-a11y) :focus-visible:not(.pos-scheme-a11y, .pos-scheme-a11y *),
+/* components that draw the ring on another element than the focused one */
+:root.pos-style-wireframe:not(.pos-theme-a11y) :focus-visible + .pos-toggle-btn-track:not(.pos-scheme-a11y *),
+:root.pos-style-wireframe:not(.pos-theme-a11y) .pos-debug-toggle-btn-focus + .pos-toggle-btn-track:not(.pos-scheme-a11y *),
+:root.pos-style-wireframe:not(.pos-theme-a11y) .pos-switch-card:has(:focus-visible):not(.pos-scheme-a11y *),
+:root.pos-style-wireframe:not(.pos-theme-a11y) .pos-card-content:has(:focus-visible):not(.pos-scheme-a11y *) {
+  outline-style: dashed;
+}
+
+
+@layer common-styling {
+
+  :root.pos-style-wireframe :is(code, pre, kbd, samp) {
+    font-size-adjust: none;
+  }
+
+  /* headings bold: Monda has only 400 and 700, so the usual 500 headings would fall back to the thin 400 */
+  :root.pos-style-wireframe :is(h1, h2, h3, h4, h5, h6, [class*="pos-heading-"], .pos-feature-card-title, .pos-card-content-title) {
+    font-weight: var(--pos-font-weight-bold);
+  }
+
+  /* doodle frames — not in high contrast mode */
+  :root.pos-style-wireframe:not(.pos-theme-a11y) :is(
+    .pos-button,
+    .pos-card,
+    .pos-feature-card,
+    .pos-tag,
+    .pos-chip,
+    .pos-segmented-control,
+    .pos-tile-btn,
+    .pos-switch-card,
+    .pos-form input:not([type="checkbox"], [type="radio"], [type="hidden"]),
+    .pos-form input[type="checkbox"],
+    .pos-form textarea,
+    .pos-form select
+  ):not(.pos-scheme-a11y, .pos-scheme-a11y *) {
+    border: 1.5px solid transparent;
+    border-image: var(--pos-wireframe-doodle) 24 / 12px / 0 stretch;
+    /* border-radius stays the component default: it only clips a filled background */
+  }
+
+
+  /* hover: the same doodle, drawn thicker — instead of the components' straight inset hover ring */
+  :root.pos-style-wireframe:not(.pos-theme-a11y) :is(
+    .pos-button,
+    .pos-tag-interactive,
+    .pos-tile-btn,
+    .pos-switch-card,
+    .pos-form input:not([type="checkbox"], [type="radio"], [type="hidden"]),
+    .pos-form input[type="checkbox"],
+    .pos-form textarea,
+    .pos-form select
+  ):not(.pos-scheme-a11y, .pos-scheme-a11y *):hover {
+    border-image-source: var(--pos-wireframe-doodle-bold);
+    box-shadow: none;
+  }
+
+
+  /* the selected segment of a segmented control: both the sliding indicator (--js::before) and the
+     selected button itself get the doodle (they cover the same box), so it shows whichever layer paints */
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .pos-segmented-control--js:not(.pos-scheme-a11y *)::before,
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .pos-segmented-control .pos-segmented-control-btn--active:not(.pos-scheme-a11y *),
+  :root.pos-style-wireframe:not(.pos-theme-a11y) .pos-segmented-control .pos-segmented-control-btn[aria-pressed="true"]:not(.pos-scheme-a11y *) {
+    box-sizing: border-box;
+    border: 1.5px solid transparent;
+    border-image: var(--pos-wireframe-doodle) 24 / 12px / 0 stretch;
+  }
+
+}

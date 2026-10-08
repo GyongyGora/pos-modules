@@ -1,0 +1,443 @@
+{
+  "_about": "Component spec for pos-feature-card (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Feature card\" section. Reuses the already-curated usage prose from COMP_CONFIGS['feature-card'].usage and token data from the existing inspect-feature-card.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "feature-card",
+  "name": "Feature card",
+  "description": "Presenting a self-contained piece of content — a feature, section, or offer — with an icon, title, description, and optional action buttons.",
+  "whenToUse": [
+    "Presenting a self-contained piece of content — a feature, section, or offer — with an icon, title, description, and optional action buttons.",
+    "Grouping related information in a visually distinct, elevated surface."
+  ],
+  "whenNotToUse": [
+    "Navigating to another page — use a link or a button instead.",
+    "Showing tabular or list data — use a table or list component."
+  ],
+  "do": [
+    "Include an icon in <code>.pos-feature-card-icon</code> to give the card visual identity.",
+    "Add <code>.pos-feature-card--centered</code> to center all content when the card stands alone or is in a symmetrical grid.",
+    "<strong>Default first:</strong> always start with the built-in size variants (Small / Default / Large). Only deviate when the surrounding heading hierarchy would otherwise be broken.",
+    "<strong>Page hierarchy override (cards &amp; text sections):</strong> when building a full page or UI, you may override the card's text and icon sizes to serve the document's visual and heading hierarchy — e.g. a card that acts as the main feature on a page may use a larger title size than the default. Adjust <code>.pos-feature-card-title</code>, <code>.pos-feature-card-subtitle</code>, or icon size as needed to keep headings in correct H1→H2→H3 order relative to surrounding content.",
+    "Use the brand backgrounds (<code>pos-feature-card--brand-primary</code> / <code>--brand-supplementary</code>) to set a card or a group of cards apart in the brand color — they follow the brand theme and keep text, link and icon contrast. Use one background per card group, not a different color on every card."
+  ],
+  "dont": [
+    "Nest interactive elements inside a card that is itself clickable — it creates ambiguous interaction targets.",
+    "Use the card as a navigation element — it is a content container, not a link.",
+    "Override the size of buttons, chips, or tags inside a card for hierarchy purposes — these components always use their own standard size variants (default or small). Typography flexibility applies to card text elements and icons only."
+  ],
+  "accessibility": [
+    "Buttons inside <code>.pos-feature-card-actions</code> must have descriptive labels — avoid generic \"Click here\"."
+  ],
+  "composedOf": [
+    "button",
+    "link",
+    "tag"
+  ],
+  "props": [
+    {
+      "name": "size",
+      "type": "'pos-feature-card--small' | (none) | '--large'",
+      "default": "default",
+      "description": "Start with the built-in size variants; only override individual text/icon sizes to serve a specific page hierarchy — see CLAUDE.md."
+    },
+    {
+      "name": "background",
+      "type": "(none) | 'pos-feature-card--highlighted' | '--brand-primary' | '--brand-supplementary'",
+      "default": "none (content background)",
+      "description": "Card background. On a tinted background the icon circle turns to the content background. Brand backgrounds follow the brand theme."
+    },
+    {
+      "name": "pos-feature-card--centered",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Centers all content — use when the card stands alone or in a symmetrical grid."
+    },
+    {
+      "name": "badge",
+      "type": "optional .pos-tag.pos-feature-card-badge",
+      "default": "none",
+      "description": "Optional \"New\"-style badge in the top corner."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "feature-card": {
+      "label": "Feature card",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Icon circle background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Icon color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Subtitle, lead & body text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-xl",
+                  "figma": "Icon/icon-xl",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-card",
+                  "figma": "Paddings/cards, boxes",
+                  "role": "Card padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-card",
+                  "figma": "Paddings/cards, boxes",
+                  "role": "Gap between elements",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title / subtitle font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-l",
+                  "figma": "Size/font L",
+                  "role": "Title font size (H3)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Lead font size (H4)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Lead font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Lead font size (body)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-ss",
+                  "figma": "Size/font SS",
+                  "role": "Text font size (small body)",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Card shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Icon circle background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Icon color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Title on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Subtitle, lead & body text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Border radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-xl",
+                  "figma": "Icon/icon-xl",
+                  "role": "Icon size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-card",
+                  "figma": "Paddings/cards, boxes",
+                  "role": "Card padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-card",
+                  "figma": "Paddings/cards, boxes",
+                  "role": "Gap between elements",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Typography",
+              "tokens": [
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title / subtitle font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-l",
+                  "figma": "Size/font L",
+                  "role": "Title font size (H3)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Lead font size (H4)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Lead font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-default",
+                  "figma": "Family/body",
+                  "role": "Text font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-s",
+                  "figma": "Size/font S",
+                  "role": "Lead font size (body)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-ss",
+                  "figma": "Size/font SS",
+                  "role": "Text font size (small body)",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-blurred",
+                  "figma": "Elevation/Blurred shadow",
+                  "role": "Card shadow on hover",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-feature-card\">\n  <span class=\"pos-tag pos-feature-card-badge\">New</span>\n  <div class=\"pos-feature-card-icon\"><!-- icon --></div>\n  <div class=\"pos-feature-card-body\">\n    <h3 class=\"pos-feature-card-title\"><span>Card title</span></h3>\n    <p class=\"pos-feature-card-subtitle\">A short lead sentence.</p>\n    <p class=\"pos-feature-card-lead\">Additional body text.</p>\n    <p class=\"pos-feature-card-text\">Regular body text.</p>\n    <a class=\"pos-link pos-link--small\" href=\"#\"\n      target=\"_blank\" rel=\"noopener noreferrer\">\n      Read more\n      <!-- dashRight icon -->\n      <span class=\"pos-label\">(opens in new tab)</span>\n    </a>\n  </div>\n  <div class=\"pos-feature-card-actions\">\n    <button class=\"pos-button pos-button-primary\">Sign up</button>\n    <button class=\"pos-button pos-button-secondary\">Learn more</button>\n  </div>\n</div>",
+  "cardSizeOverrides": {
+    "small": [
+      {
+        "from": "--pos-font-size-l",
+        "to": "--pos-font-size-m",
+        "figma": "Size/font M",
+        "appliesToRole": "Title font size (H3)"
+      },
+      {
+        "from": "--pos-size-icon-xl",
+        "to": "--pos-size-icon-l",
+        "figma": null,
+        "appliesToRole": "Icon size"
+      },
+      {
+        "from": "--pos-padding-card",
+        "to": "--pos-gap-card-elements",
+        "figma": "Gaps/card content",
+        "appliesToRole": "Gap between elements"
+      }
+    ],
+    "large": [
+      {
+        "from": "--pos-font-size-l",
+        "to": "--pos-font-size-xl",
+        "figma": "Size/font XL",
+        "appliesToRole": "Title font size (H3)"
+      },
+      {
+        "from": "--pos-font-size-m",
+        "to": "--pos-font-size-l",
+        "figma": "Size/font L",
+        "appliesToRole": "Lead font size (H4)"
+      },
+      {
+        "from": "--pos-font-size-s",
+        "to": "--pos-font-size-m",
+        "figma": "Size/font M",
+        "appliesToRole": "Lead font size (body)"
+      },
+      {
+        "from": "--pos-font-size-ss",
+        "to": "--pos-font-size-s",
+        "figma": "Size/font S",
+        "appliesToRole": "Text font size (small body)"
+      },
+      {
+        "from": "--pos-font-default",
+        "to": "--pos-font-heading",
+        "figma": "Family/headlines",
+        "appliesToRole": "Lead font family"
+      }
+    ]
+  },
+  "backgroundOverrides": {
+    "_about": "Background variants (pos-feature-card--highlighted / --brand-primary / --brand-supplementary, 2026-10-02): swaps applied to the base variant tokens by role, like cardSizeOverrides. No class = content background.",
+    "highlighted": [
+      {
+        "to": "--pos-color-highlight-background",
+        "figma": "Backgrounds/Highlighted Background",
+        "appliesToRole": "Card background"
+      },
+      {
+        "to": "--pos-color-content-background",
+        "figma": "Backgrounds/Content Background",
+        "appliesToRole": "Icon circle background"
+      }
+    ],
+    "brand-primary": [
+      {
+        "to": "--pos-color-brand-primary-background",
+        "figma": "Backgrounds/Brand Primary Background",
+        "appliesToRole": "Card background"
+      },
+      {
+        "to": "--pos-color-content-background",
+        "figma": "Backgrounds/Content Background",
+        "appliesToRole": "Icon circle background"
+      },
+      {
+        "to": "--pos-color-brand-primary-frame",
+        "figma": "Backgrounds/Brand Primary Frame",
+        "appliesToRole": "Border"
+      }
+    ],
+    "brand-supplementary": [
+      {
+        "to": "--pos-color-brand-supplementary-background",
+        "figma": "Backgrounds/Brand Supplementary Background",
+        "appliesToRole": "Card background"
+      },
+      {
+        "to": "--pos-color-content-background",
+        "figma": "Backgrounds/Content Background",
+        "appliesToRole": "Icon circle background"
+      },
+      {
+        "to": "--pos-color-brand-supplementary-frame",
+        "figma": "Backgrounds/Brand Supplementary Frame",
+        "appliesToRole": "Border"
+      }
+    ]
+  }
+}

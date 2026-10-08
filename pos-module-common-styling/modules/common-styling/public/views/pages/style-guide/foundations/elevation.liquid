@@ -1,0 +1,228 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+{% capture icon_copy %}<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>{% endcapture %}
+{% capture icon_check %}<svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></svg>{% endcapture %}
+
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/elevation' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Elevation</h1>
+          <p>Shadow tokens defined as Figma effect styles. Primitive tokens map directly to the Figma <code>Elevation/…</code> effect styles and are referenced by semantic and component tokens.</p>
+        </header>
+
+        <section>
+          <h2 class="pos-heading-2">Primitive shadows</h2>
+
+          <div class="styleguide-elevation-table-wrapper" id="elevation-table-wrapper" data-name-mode="figma">
+
+            <div class="styleguide-token-header-bar styleguide-elevation-header-bar">
+              <div class="styleguide-token-header-cell"></div>
+              <div class="styleguide-token-header-cell">
+                Token
+                <select class="t-name-select" aria-label="Token name format">
+                  <option value="figma">Figma variables</option>
+                  <option value="css">CSS</option>
+                </select>
+              </div>
+              <div class="styleguide-token-header-cell">Value</div>
+              <div class="styleguide-token-header-cell">Description</div>
+            </div>
+
+            <table class="styleguide-token-table styleguide-elevation-table">
+              <colgroup>
+                <col class="col-preview">
+                <col class="col-token">
+                <col class="col-value">
+                <col class="col-desc">
+              </colgroup>
+              <tbody>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-flat);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Flat</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-flat</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 1px 1px rgba(0, 0, 0, .10), 0 0 2px rgba(0, 0, 0, .10)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 1px 1px rgba(0, 0, 0, .10), 0 0 2px rgba(0, 0, 0, .10)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Very subtle border-like shadow that defines the edge of a surface without adding visual elevation. Almost flush with the layout.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-small);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Small shadow</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-small</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 0 5px rgba(0, 0, 0, .10)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 0 5px rgba(0, 0, 0, .10)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Subtle elevation for lightweight elements such as cards, inputs, or buttons. Provides minimal depth without drawing attention.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-medium);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Medium shadow</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-medium</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 4px 6px rgba(0, 0, 0, .10)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 4px 6px rgba(0, 0, 0, .10)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Moderate elevation to separate elements from the background. Commonly used for cards, panels, and interactive components.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-layered);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Medium layered</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-layered</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 8px 8px 0 rgba(0,0,0,.05), 0 15px 20px 0 rgba(0,0,0,.05), 0 1px 1px 0 rgba(0,0,0,.15)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 8px 8px 0 rgba(0,0,0,.05), 0 15px 20px 0 rgba(0,0,0,.05), 0 1px 1px 0 rgba(0,0,0,.15)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Multi-layer shadow combining a wide soft layer, a larger diffused layer, and a sharp 1px edge. Creates a refined floating-panel effect.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-blurred);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Blurred</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-blurred</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 18px 40px rgba(0, 0, 0, .20)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 18px 40px rgba(0, 0, 0, .20)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Soft, diffused shadow used for ambient depth or layered backgrounds. Creates a subtle, less defined sense of elevation.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-large);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Large shadow</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-large</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 10px 30px rgba(0, 0, 0, .30)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 10px 30px rgba(0, 0, 0, .30)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Strong elevation for prominent surfaces like modals, dialogs, or floating panels. Clearly distinguishes elements from the layout.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-focused-field);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Focused field shadow</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-focused-field</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="0 0 10px rgba(131, 38, 255, 1)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">0 0 10px rgba(131, 38, 255, 1)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Used to highlight focused or active elements. Enhances visibility and provides clear visual feedback for user interaction.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-inner);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Inner</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-inner</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="inset 0 0 10px rgba(0, 0, 0, .06)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">inset 0 0 10px rgba(0, 0, 0, .06)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Creates a recessed, inset effect that makes elements appear pressed into the surface. Used for subtle containers to convey depth without raising the element above the layout.</td>
+                </tr>
+
+                <tr>
+                  <td><div class="styleguide-elevation-preview" style="box-shadow: var(--pos-primitive-shadow-bevel);"></div></td>
+                  <td>
+                    <span class="pos-tag t-name-figma">Bevel</span>
+                    <span class="pos-tag t-name-css">--pos-primitive-shadow-bevel</span>
+                  </td>
+                  <td>
+                    <button class="pos-tag pos-tag-confirmation t-copy-pill styleguide-elevation-value" data-value="inset 0 1px 0 rgba(255, 255, 255, .20), inset 0 -1px 0 rgba(0, 0, 0, .15)" aria-label="Copy value">
+                      <span class="t-copy-pill-text">inset 0 1px 0 rgba(255, 255, 255, .20), inset 0 -1px 0 rgba(0, 0, 0, .15)</span>
+                      <span class="t-copy-pill-overlay" aria-hidden="true">{{ icon_copy | html_safe }} <span>copy</span></span>
+                      <span class="t-copy-pill-done"    aria-hidden="true">{{ icon_check | html_safe }} <span>copied</span></span>
+                    </button>
+                  </td>
+                  <td class="t-desc-cell">Raised surface effect. Top white highlight and bottom dark shadow simulate a light source from above, making the element appear to protrude slightly. Used on interactive elements such as primary buttons.</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var wrapper = document.getElementById('elevation-table-wrapper');
+  if (!wrapper) return;
+
+  wrapper.addEventListener('change', function (e) {
+    if (!e.target.classList.contains('t-name-select')) return;
+    wrapper.dataset.nameMode = e.target.value;
+  });
+
+  wrapper.addEventListener('click', function (e) {
+    var btn = e.target.closest('.t-copy-pill');
+    if (!btn) return;
+    var text = btn.dataset.value;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(function () {
+      btn.classList.add('t-copy-pill--copied');
+      setTimeout(function () { btn.classList.remove('t-copy-pill--copied'); }, 2000);
+    });
+  });
+})();
+</script>

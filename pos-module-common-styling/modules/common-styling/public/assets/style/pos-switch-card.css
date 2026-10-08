@@ -1,0 +1,221 @@
+/*
+  Switch button — full-width toggle row with icon, label, and visual toggle switch.
+  Semantics: <label> wrapper + <input type="checkbox" role="switch">.
+
+  Markup:
+    <label class="pos-switch-card">
+      <input type="checkbox" role="switch" class="pos-switch-card-input">
+      <span class="pos-switch-card-icon" aria-hidden="true">
+        {% render 'modules/common-styling/icon', icon: 'some-icon' %}
+      </span>
+      <span class="pos-switch-card-label">Label</span>
+      <span class="pos-switch-card-toggle" aria-hidden="true"></span>
+    </label>
+
+  Elements:
+    .pos-switch-card          — card container (is the <label>)
+    .pos-switch-card-input    — visually hidden checkbox, role="switch"
+    .pos-switch-card-icon     — icon circle (aria-hidden)
+    .pos-switch-card-label    — label text
+    .pos-switch-card-toggle   — visual toggle track (::after = thumb, aria-hidden)
+
+  States (driven by the checkbox):
+    The card's background/border color never changes with state — only
+    .pos-switch-card-toggle reacts, using the exact same on/off token scheme as the
+    standalone Toggle button (pos-toggle-btn.css):
+      default (unchecked)  — track var(--pos-color-content-icon), thumb left
+      :checked              — track var(--pos-color-interactive), thumb right
+      :disabled             — track var(--pos-color-content-icon-disabled)
+      :disabled:checked     — track var(--pos-color-button-primary-disabled-background)
+    Hover (not disabled) renders a 2px interactive-color inset stroke on the card
+    itself via the pos-anim-stroke behavior pattern, matching Choice button
+    (.pos-tile-btn) — see the "Component applications" section of pos-behaviors.css.
+
+  CASCADE NOTE: disabled toggle rules are placed LAST so they always win over the
+  checked toggle rule at equal specificity (source order decides when equal).
+*/
+
+
+
+@layer common-styling {
+
+  /* card
+  ============================================================================ */
+  .pos-switch-card,
+  .pos-switch-card * {
+    box-sizing: border-box;
+  }
+
+  .pos-switch-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    min-height: 3.5rem;
+
+    font-family: var(--pos-font-buttons);
+    cursor: pointer;
+
+    background-color: var(--pos-color-page-background);
+    border: 1px solid var(--pos-color-frame);
+    border-radius: var(--pos-radius-button);
+    transition: outline-color 0.15s linear;
+  }
+
+
+  /* stacked group gap */
+  .pos-switch-card + .pos-switch-card {
+    margin-block-start: 4px;
+  }
+
+
+  /* focus — shown on the card when the hidden input is focused
+  ============================================================================ */
+  .pos-switch-card:has(.pos-switch-card-input:focus-visible) {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+
+  /* disabled — interaction only, no visual change on the card itself. Keeps pointer events so
+     the not-allowed cursor shows over the whole card (RULES.md 4.12); the hover rules skip it and
+     the disabled input ignores the label's click.
+  ============================================================================ */
+  .pos-switch-card:has(.pos-switch-card-input:disabled),
+  .pos-switch-card:has(.pos-switch-card-input:disabled) * {
+    cursor: not-allowed;
+  }
+
+
+  /* hidden input
+  ============================================================================ */
+  .pos-switch-card-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+
+  /* icon circle — never changes with state
+  ============================================================================ */
+  .pos-switch-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--pos-primitive-radius-full);
+    background-color: var(--pos-color-highlight-background);
+    color: var(--pos-color-interactive);
+  }
+
+  .pos-switch-card-icon svg {
+    width: var(--pos-size-icon-s);
+    height: var(--pos-size-icon-s);
+  }
+
+
+  /* label — never changes with state
+  ============================================================================ */
+  .pos-switch-card-label {
+    flex: 1;
+    font-size: var(--pos-font-size-big-button-text);
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--pos-color-content-text-interactive);
+  }
+
+
+  /* toggle visual — track + thumb, same token scheme as pos-toggle-btn.css
+  ============================================================================ */
+  .pos-switch-card-toggle {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 1.125rem;
+    border-radius: var(--pos-primitive-radius-full);
+    background-color: var(--pos-color-content-icon);
+    transition: background-color 0.15s linear;
+  }
+
+  /* thumb */
+  .pos-switch-card-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: var(--pos-primitive-radius-full);
+    background-color: var(--pos-color-page-background);
+    transition: transform 0.15s linear;
+  }
+
+  /* checked — track switches to the Toggle button's "on" color, thumb slides right */
+  .pos-switch-card:has(.pos-switch-card-input:checked) .pos-switch-card-toggle {
+    background-color: var(--pos-color-interactive);
+  }
+
+  .pos-switch-card:has(.pos-switch-card-input:checked) .pos-switch-card-toggle::after {
+    transform: translateX(0.875rem);
+  }
+
+
+  /* ── Small size modifier ───────────────────────────────────────────────── */
+
+  .pos-switch-card--small {
+    padding: 0.5rem 0.75rem;
+    min-height: 2.75rem; /* 44px touch target */
+    gap: var(--pos-gap-button-button-small);
+  }
+
+  .pos-switch-card--small .pos-switch-card-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .pos-switch-card--small .pos-switch-card-icon svg {
+    width: var(--pos-size-icon-xs);
+    height: var(--pos-size-icon-xs);
+  }
+
+  .pos-switch-card--small .pos-switch-card-label {
+    font-size: var(--pos-font-size-small-button-text);
+  }
+
+
+  /* hover — the same scheme as the standalone Toggle button (pos-toggle-btn.css, RULES.md 4.5b): off ->
+     the strongest text color, on -> the interactive hover step (two scale steps); HC already uses its
+     foreground for the track, so a frame 2px off the track (--pos-color-frame-transparent, visible only
+     in HC) marks it. Disabled cards get no hover (their rules follow below and the selectors skip them). */
+  .pos-switch-card:hover:has(.pos-switch-card-input:not(:disabled)) .pos-switch-card-toggle {
+    background-color: var(--pos-color-content-text-prominent);
+    outline: 2px solid var(--pos-color-frame-transparent);
+    outline-offset: 2px;
+  }
+
+  .pos-switch-card:hover:has(.pos-switch-card-input:checked:not(:disabled)) .pos-switch-card-toggle {
+    background-color: var(--pos-color-interactive-hover);
+  }
+
+
+  /* ─── DISABLED TOGGLE — must come last to override the checked toggle rule ─── */
+
+  /* disabled — toggle track */
+  .pos-switch-card:has(.pos-switch-card-input:disabled) .pos-switch-card-toggle {
+    background-color: var(--pos-color-content-icon-disabled);
+  }
+
+  /* disabled + checked (selected-disabled) — toggle track */
+  .pos-switch-card:has(.pos-switch-card-input:disabled:checked) .pos-switch-card-toggle {
+    background-color: var(--pos-color-button-primary-disabled-background);
+  }
+
+}

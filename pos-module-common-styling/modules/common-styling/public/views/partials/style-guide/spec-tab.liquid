@@ -1,0 +1,983 @@
+{% comment %}
+  Generated from tokens/components/tab.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-tab">
+{% raw %}
+{
+  "_about": "Component spec for pos-tab (style/pos-tab.css). Built 2026-09-04 as a brand-new component (from Figma) — no old-DS predecessor exists (no style/pos-tab.css ever existed). Three variants: Simple (underline tabs, Active/Normal states), Overflow (same as Simple plus a trailing kebab-menu trigger for tabs that no longer fit — the kebab button itself is styled, but deciding WHEN tabs stop fitting requires runtime width measurement/ResizeObserver, which is product-specific wiring out of scope for this CSS component, the same 'static representative view' limitation already accepted for Card/Feature card/File upload), and Detailed (card-style tabs with a title + stat line, active tab floats above the panel below it with an upward-cast shadow and no border). The active Detailed tab's upward shadow reuses the real --pos-primitive-shadow-medium/-layered tokens via a rotated ::before pseudo-element (rotate(180deg) flips only the Y offset since both tokens' X offsets are 0) rather than hardcoding shadow values, so it stays correctly theme-reactive (lighter in dark mode, none at all in HC, same as every other shadow in this DS). Regenerate spec-tab.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. 2026-09-04: rebuilt after live-review found the section was completely broken — COMP_CONFIGS was missing entirely (switchComponent() silently bailed on every click), the variant toggle buttons still referenced deleted simple/overflow keys after a rename, and the state model was undocumented. Consolidated Simple+Overflow into one \"Normal\" variant (both were the same underline-tab pattern, just demonstrating different tab counts), and added the real State model: Normal/Hover/Selected/Disabled (not the placeholder single \"normal\" state this spec shipped with initially) — hover/disabled now have real, dedicated CSS (pos-tab.css) and debug classes (pos-debug-tab-hover/-disabled for Normal, pos-debug-tab-detailed-hover/-disabled for Detailed) driving the docs preview's State toggle via the shared comp-status-grid. 2026-09-04: two more corrections — removed --pos-color-focused from every state's token list (it only ever applies during :focus-visible, never as part of Normal/Hover/Selected/Disabled themselves, so listing it everywhere was misleading), and split the Normal variant's combined \"active tab text and underline\" entry into two real, separate tokens: --pos-color-interactive-text for the text, --pos-color-interactive (Graphic Interactive, not the text-specific token) for the underline. 2026-09-04: removed the blue interactive-text/interactive (and their -disabled counterparts) tokens from the Normal/Hover/Disabled states' token lists — the isolated demo tab in those states is never the active/selected one, so those tokens never actually apply; they now only appear under Selected. 2026-09-04: added a dedicated Focus state (was missing) so --pos-color-focused only ever appears there that it should never be listed under Normal/Hover/Selected/Disabled. 2026-09-04: Detailed variant hover now behaves exactly like Selected (white surface + upward shadow + prominent title), not a subtle border-color change — token list mirrors Selected's. Also fixed stale token names left over from earlier same-day edits across all 5 states: --pos-padding-card should have been --pos-padding-cell, --pos-gap-text-text should have been --pos-primitive-size-1 (both changed when the Detailed tab was resized smaller), and added the missing --pos-font-size-body-small token (used for the stat line and base tab text). 2026-09-04: added a 6th state, Selected-disabled (the active/selected tab itself disabled, keeping its underline/surface but switching to the -disabled tokens) that plain Disabled must look like Normal (muted, no underline) and NOT combine with Selected; the two are now properly separate states, matching the shared status grid's own existing Selected-disabled vocabulary. 2026-09-04: Selected/Selected-disabled states now list ONLY the 2 tokens that actually describe the isolated demo tab while its OWN state is selected (the blue text+underline pair, or their disabled equivalents) — removed --pos-color-frame and --pos-color-content-text-supplementary, which describe a different, inactive sibling tab's look, not this tab's own selected condition. 2026-09-04: removed --pos-color-frame (the whole .pos-tabs row's divider border) from every Normal-variant state's Color section — it never was a property of the single isolated demo tab these states describe, only of the row it happens to sit inside, so it does not belong in any per-state token list. Confirmed: no visual change (no underline exists on Normal/Hover/Focus/Disabled) — this was purely a documentation cleanup. 2026-09-04: rebuilt the entire Detailed-variant Color sections from scratch to match the simplified CSS model — title (--pos-color-content-text) and stat/body text (--pos-color-content-text-supplementary) are now FIXED across every state, never varying; only the card's own border/background/shadow change with state. Background only appears on Hover/Selected/Selected-disabled (all three share the same lifted-card treatment); Normal/Focus/Disabled stay transparent with just a border. 2026-09-04: two more fixes — (1) restored --pos-color-frame (the whole tab row's own divider line, not any individual tab's property) as a single shared.layout entry referenced by every state, instead of being removed entirely as in the previous pass; (2) fixed a stale figma/role mismatch where Normal and Focus states still documented --pos-color-content-text-supplementary even though the real CSS (and every other state) already uses --pos-color-content-text-interactive — confirmed via live devtools inspection showing the actually-applied CSS variable. 2026-09-04: the CSS (not the spec) was corrected back to --pos-color-content-text-supplementary for Normal/Focus. Confirmed both the CSS (.pos-tab) and the spec now agree on supplementary. 2026-09-04: title color now varies by state again (reversing the earlier 'fixed across all states' simplification) — Normal/Focus use --pos-color-content-text-interactive (looks like normal text in light/dark, turns HC yellow to signal interactivity, matching the text-vs-icon HC convention), Hover/Selected use --pos-color-content-text-prominent, and Disabled/Selected-disabled use --pos-color-content-text-disabled. Only the stat/body text stays fixed at --pos-color-content-text-supplementary across every state. 2026-09-04: several more corrections, in order — (1) Normal/Focus title switched from --pos-color-content-text-supplementary back to --pos-color-content-text-supplementary-interactive (NOT the plain --pos-color-content-text-interactive — this is a distinct token whose light/dark value is identical to plain supplementary but whose HC value is yellow, so every title is yellow in HC); (2) Disabled/Selected-disabled now use --pos-color-content-text-disabled for BOTH the title and the stat/body text (previously only the title switched); CSS also gained an explicit color on .pos-tab-detailed:disabled itself so the loose inline text between the title/stat spans (e.g. the literal \" following\"/\" experts\" words in the usage example) also gets the disabled token; (3) Hover no longer makes the border transparent — only Selected's own border does now; Hover keeps the same --pos-color-frame border as Normal, so that token was added back to the Hover state and its background-role text no longer claims the border changes. 2026-09-04: documented the HC-only Selected/Selected-disabled overrides in the spec — --pos-color-interactive/--pos-color-interactive-disabled (card surface) and --pos-color-content-inverted-text (all text, applied to the card itself so it is inherited by loose inline text too, not just the title/stat spans — fixed a bug where that loose text stayed the light/dark supplementary/disabled color, e.g. white on the turquoise HC surface, when the spans around it had already switched to black) were previously only in the CSS, per the \"every token must appear in the inspect spec\" rule. 2026-09-04: added --pos-color-content-icon-interactive as a new shared.color entry, referenced by every Normal-variant state — the Overflow kebab trigger icon (still present in the merged Normal variant markup) is fixed to the interactive-icon token regardless of hover/focus/disabled; CSS override added as .pos-tab.pos-tabs-overflow to reliably beat inherited .pos-tab state color rules. 2026-10-02: props list added (was empty) from the real CSS classes / attributes.",
+  "component": "tab",
+  "name": "Tab",
+  "description": "A row of tabs for switching between related views or sections — a simple underlined style, with an overflow kebab menu for tabs that don't fit, or a detailed card style showing a title and stats per tab.",
+  "whenToUse": [
+    "Switching between a small, fixed set of related views or filtered sections of the same page, without navigating away.",
+    "The Detailed variant specifically: when each tab itself carries meaningful summary data (e.g. a count) worth showing before the user switches to it."
+  ],
+  "whenNotToUse": [
+    "Navigating to a genuinely different page or URL outside the current context — use real navigation/links instead.",
+    "More than a handful of mutually-exclusive short options with no summary data of their own — consider Segmented button instead."
+  ],
+  "do": [
+    "Mark the active tab with <code>pos-tab--active</code> (Simple/Overflow) or <code>pos-tab-detailed--active</code> (Detailed), and set <code>aria-current=\"page\"</code> on it.",
+    "Use a real <code>&lt;nav&gt;</code> wrapper (<code>.pos-tabs</code>) for the Simple/Overflow variants so assistive technology recognizes it as a navigation landmark.",
+    "For Overflow, move tabs that no longer fit into a real menu behind the kebab trigger (e.g. a Popover menu instance) — this component only styles the trigger button itself."
+  ],
+  "dont": [
+    "Mix the Simple/Overflow tab classes with the Detailed card classes in the same tab row.",
+    "Use more than one active tab at a time."
+  ],
+  "accessibility": [
+    "Set <code>aria-current=\"page\"</code> on the active tab so assistive technology announces which one is selected.",
+    "The Overflow kebab trigger needs <code>aria-haspopup=\"menu\"</code> and a real accessible label (e.g. <code>aria-label=\"More tabs\"</code>) since it carries no visible text."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "container class",
+      "type": "'pos-tabs' | 'pos-tabs-detailed'",
+      "default": "pos-tabs",
+      "description": "Wrapper of the tab buttons: pos-tabs for the normal variant, pos-tabs-detailed for the detailed variant (title + stat per tab). Use a <nav> when the tabs switch pages, a <div> when they switch views on the same page."
+    },
+    {
+      "name": "tab class",
+      "type": "'pos-tab' | 'pos-tab-detailed'",
+      "default": "pos-tab",
+      "description": "One button per tab, matching the container: pos-tab inside pos-tabs, pos-tab-detailed inside pos-tabs-detailed (with pos-tab-detailed-title and pos-tab-detailed-stat children)."
+    },
+    {
+      "name": "active",
+      "type": "class 'pos-tab--active' | 'pos-tab-detailed--active' + aria-current=\"page\"",
+      "default": "none",
+      "description": "Marks the current tab — exactly one per group. Always pair the class with aria-current so the state is announced, not only shown."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "disabled on a <button> tab, aria-disabled=\"true\" on a link tab (<a class=\"pos-tab\">) — greyed out, not-allowed cursor, no hover. Works on active and normal tabs."
+    },
+    {
+      "name": "pos-tabs-overflow",
+      "type": "class on a trailing button",
+      "default": "none",
+      "description": "Kebab trigger for tabs that no longer fit, pushed to the end of the row. CSS only styles the trigger; moving tabs behind it (measuring the width) is up to the product."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "normal",
+      "detailed"
+    ],
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "selected",
+      "disabled",
+      "selected-disabled"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-color-frame",
+        "figma": "Backgrounds/Frame",
+        "role": "The whole tab row's own bottom divider line — constant across every state, not a property of any individual tab",
+        "swatch": true
+      }
+    ],
+    "color": [
+      {
+        "css": "--pos-color-content-icon-interactive",
+        "figma": "General elements-theme/Graphic Normal - interactive",
+        "role": "Overflow kebab trigger icon — fixed regardless of hover/focus, grey in light/dark, turquoise in HC",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "detailed": {
+      "label": "Detailed",
+      "classes": [
+        "pos-tabs-detailed",
+        "pos-tab-detailed"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "role": "Title text at rest — same grey as the stat/body text in light/dark, turns HC yellow to signal interactivity",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Stat/body text — fixed, unaffected by state",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title text on hover — fully prominent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Card surface on hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card border — stays the same as Normal on hover, unlike Selected which goes transparent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Stat/body text — fixed, unaffected by state",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Active tab's shadow, cast upward (see _about for the rotation technique) — layer 1 of 2",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "Active tab's shadow, cast upward — layer 2 of 2",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Title text, selected — fully prominent",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Selected/active card surface — its own border becomes transparent (unlike Hover, which keeps the Normal border)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Stat/body text — fixed, unaffected by state",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "HC-only override — card surface becomes turquoise in HC instead of the plain light/dark white card (component-scoped HC rule in pos-tab.css, reusing this existing token)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted text",
+                  "role": "HC-only override — title, stat, and any other text on the card all switch to black for contrast against the turquoise HC surface above",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Active tab's shadow, cast upward (see _about for the rotation technique) — layer 1 of 2",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "Active tab's shadow, cast upward — layer 2 of 2",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Title text, disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Card border, disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Stat/body text, disabled — now matches the title instead of staying supplementary",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-supplementary-interactive",
+                  "figma": "General elements-theme/Supplementary - text - interactive",
+                  "role": "Title text — same as at rest, unaffected by the focus outline",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Card border",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Keyboard focus outline",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Stat/body text — fixed, unaffected by state",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Title text, selected + disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Selected/active card surface, unaffected by disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Stat/body text, selected + disabled — now matches the title instead of staying supplementary",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "HC-only override — card surface becomes grey in HC instead of the plain light/dark white card (component-scoped HC rule in pos-tab.css, reusing this existing token)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted text",
+                  "role": "HC-only override — title, stat, and any other text on the card all switch to black for contrast against the grey HC surface above",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Gap between tabs",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-radius-card",
+                  "figma": "Card corner",
+                  "role": "Top corner radius (bottom is always square — the tab visually connects to the panel below it)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-size-1",
+                  "figma": "Size/1 unit",
+                  "role": "Gap between the title and the stat line",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-heading",
+                  "figma": "Family/headlines",
+                  "role": "Title font family",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-m",
+                  "figma": "Size/font M",
+                  "role": "Title font size",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-weight-bold",
+                  "figma": "Weight/bold",
+                  "role": "Title and stat-number font weight",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-font-size-body-small",
+                  "figma": "Size/font Body Small",
+                  "role": "Base/stat text size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-medium",
+                  "figma": "Elevation/Medium shadow",
+                  "role": "Active tab's shadow, cast upward (see _about for the rotation technique) — layer 1 of 2",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-shadow-layered",
+                  "figma": "Elevation/Medium layered",
+                  "role": "Active tab's shadow, cast upward — layer 2 of 2",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "normal": {
+      "label": "Normal",
+      "classes": [
+        "pos-tabs",
+        "pos-tab"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Tab text at rest",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Normal tab text on hover",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "role": "Active tab text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Active tab underline",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Disabled tab text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Tab text at rest",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Keyboard focus outline",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-disabled",
+                  "figma": "General elements-theme/Interactive text disabled",
+                  "role": "Disabled active/selected tab text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Disabled active/selected tab underline",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-gap-section-elements",
+                  "figma": null,
+                  "role": "Tab vertical padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-cell",
+                  "figma": "Paddings/table cells",
+                  "role": "Tab horizontal padding",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Overflow kebab trigger icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.color"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<nav class=\"pos-tabs\">\n  <button type=\"button\" class=\"pos-tab pos-tab--active\" aria-current=\"page\">Active tab</button>\n  <button type=\"button\" class=\"pos-tab\">Normal tab</button>\n</nav>\n\n<!-- Detailed variant -->\n<div class=\"pos-tabs-detailed\">\n  <button type=\"button\" class=\"pos-tab-detailed pos-tab-detailed--active\" aria-current=\"page\">\n    <span class=\"pos-tab-detailed-title\">Frontend</span>\n    <span class=\"pos-tab-detailed-stat\">11,670</span> following\n  </button>\n</div>"
+}
+{% endraw %}
+</script>

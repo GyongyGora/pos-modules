@@ -1,0 +1,239 @@
+{% comment %}
+  Generated from tokens/components/radio.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md section 6.4) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields (usageExample especially) can legitimately contain literal Liquid-looking example code, which would otherwise be executed as real template code instead of staying inert JSON text.
+{% endcomment %}
+<script type="application/json" id="comp-spec-radio">
+{% raw %}
+{
+  "_about": "Component spec for pos-radio (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Radio\" section. Reuses the already-curated usage prose from COMP_CONFIGS['radio'].usage and token data from COMP_CONFIGS['radio'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). Disabled checked fill/frame borrows the primary button disabled tokens (--pos-color-button-primary-disabled-background / -frame) — documented exception to RULES.md 2.2, see COMPONENT-RULES.md.",
+  "component": "radio",
+  "name": "Radio",
+  "description": "Selecting exactly one option from a set of mutually exclusive choices.",
+  "whenToUse": [
+    "Selecting exactly one option from a set of mutually exclusive choices.",
+    "The user must make a choice — all options should be visible upfront."
+  ],
+  "whenNotToUse": [
+    "Multiple selections are valid — use checkboxes instead.",
+    "There are more than ~6 options — consider a <code>&lt;select&gt;</code> dropdown instead.",
+    "There is only one option — use a checkbox or switch instead."
+  ],
+  "do": [
+    "Group all related radio inputs under the same <code>name</code> attribute so only one can be selected at a time.",
+    "Wrap each input+label pair in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code> describing the group.",
+    "Pre-select the most common or safe default option with the <code>checked</code> attribute."
+  ],
+  "dont": [
+    "Use a radio group for binary yes/no — a checkbox or toggle is clearer.",
+    "Leave the group with no default selection unless the user must actively choose."
+  ],
+  "accessibility": [
+    "All radio inputs in a group must share the same <code>name</code> — this is how the browser enforces mutual exclusion and announces the group to screen readers.",
+    "Each input must have a <code>&lt;label&gt;</code> associated via matching <code>for</code> and <code>id</code>.",
+    "Wrap the group in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code> so assistive technology announces the group label before each option."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "name",
+      "type": "attribute",
+      "default": "required",
+      "description": "All radios in a group must share the same name attribute — enforces mutual exclusion."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native disabled attribute."
+    },
+    {
+      "name": "checked",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native checked attribute — selected state."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "selected",
+      "disabled",
+      "selected-disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "radio": {
+      "label": "Radio",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "swatch": true,
+                  "role": "Checked control fill (disabled) — neutral grey in dark mode"
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-frame",
+                  "figma": "Primary/Button Prim Frame Disabled",
+                  "swatch": true,
+                  "role": "Checked control border (disabled)"
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<fieldset class=\"pos-form-simple\">\n  <input type=\"radio\" name=\"group\" id=\"radio-a\">\n  <label for=\"radio-a\">Option A</label>\n</fieldset>"
+}
+{% endraw %}
+</script>

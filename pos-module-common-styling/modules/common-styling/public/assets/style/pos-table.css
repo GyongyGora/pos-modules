@@ -10,6 +10,15 @@
     width: 100%;
   }
 
+  /* outer frame — invisible in light/dark, white in HC (same token Card/Toast/Dialog use). Drawn as an
+     outline offset outward so it adds no layout size (legacy component: appearance-only changes) and
+     keeps the flush first/last cells off the line. The card variant already has the card's own frame. */
+  .pos-table:not(:has(> .pos-table-content.pos-card)) {
+    outline: 1px solid var(--pos-color-frame-transparent);
+    outline-offset: var(--pos-padding-cell);
+    border-radius: var(--pos-radius-card);
+  }
+
     @media (min-width: 801px) {
       .pos-table {
         display: table;
@@ -32,7 +41,7 @@
         padding-block: calc(var(--pos-padding-cell) / 2);
         display: table-cell;
 
-        font-size: .9rem;
+        font-size: var(--pos-font-size-xs);
       }
 
       .pos-table > header > :first-of-type {
@@ -51,6 +60,16 @@
     }
 
   /* content */
+  .pos-table-content > ul > li {
+    color: var(--pos-color-content-text);
+  }
+
+  /* a secondary link under a cell's main value (e.g. Name's URL) reads as supplementary detail,
+     same "sidenote" size as the table header. */
+  .pos-table-content .pos-link {
+    font-size: var(--pos-font-size-xs);
+  }
+
   @media (min-width: 801px) {
     .pos-table-content {
       display: table-row-group;
@@ -63,6 +82,11 @@
     .pos-table-content > ul > li {
       padding: var(--pos-padding-cell);
       display: table-cell;
+      /* a plain element with display: table-cell does NOT get the browser's UA-stylesheet default
+         of vertical-align: middle the way a real <td> does — its CSS initial value is baseline,
+         which looked uneven once cells varied in content height (e.g. Name's 2-line name+URL next
+         to single-line cells, or the Actions column's icon buttons). */
+      vertical-align: middle;
     }
 
       .pos-table-content > ul > li:first-of-type {
@@ -91,6 +115,10 @@
     }
 
   /* content, card variant */
+  .pos-table-content.pos-card {
+    background-color: var(--pos-color-content-background);
+  }
+
   @media (min-width: 801px) {
     .pos-table-content.pos-card > ul:first-of-type > li:first-of-type {
       border-top-left-radius: var(--pos-radius-card);
@@ -115,6 +143,22 @@
     .pos-table-content.pos-card > ul > li:last-of-type {
       padding-inline-end: var(--pos-padding-cell);
     }
+
+    /* card frame (invisible in light/dark, white in HC). On desktop the card is a table-row-group,
+       whose own border is never painted, so the frame is drawn on the edge cells instead — inset
+       box-shadows follow the cells' corner radii and add no layout size (appearance-only). */
+    .pos-table-content.pos-card > ul > li {
+      box-shadow:
+        inset 0 var(--_pos-table-frame-top, 0) 0 0 var(--pos-color-frame-transparent),
+        inset 0 calc(-1 * var(--_pos-table-frame-bottom, 0px)) 0 0 var(--pos-color-frame-transparent),
+        inset var(--_pos-table-frame-start, 0) 0 0 0 var(--pos-color-frame-transparent),
+        inset calc(-1 * var(--_pos-table-frame-end, 0px)) 0 0 0 var(--pos-color-frame-transparent);
+    }
+
+    .pos-table-content.pos-card > ul:first-of-type > li { --_pos-table-frame-top: 1px; }
+    .pos-table-content.pos-card > ul:last-of-type > li { --_pos-table-frame-bottom: 1px; }
+    .pos-table-content.pos-card > ul > li:first-of-type { --_pos-table-frame-start: 1px; }
+    .pos-table-content.pos-card > ul > li:last-of-type { --_pos-table-frame-end: 1px; }
   }
 
     @media (max-width: 800px) {

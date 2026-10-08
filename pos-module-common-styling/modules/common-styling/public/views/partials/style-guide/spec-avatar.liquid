@@ -1,0 +1,127 @@
+{% comment %}
+  Generated from tokens/components/avatar.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-avatar">
+{% raw %}
+{
+  "_about": "Component spec for pos-avatar (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Avatar\" section. Reuses the already-curated usage prose from COMP_CONFIGS['avatar'].usage and token data from the existing inspect-avatar.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). 2026-09-16: no-image avatar background switched from --pos-color-highlight-background to --pos-color-interactive (a solid, more prominent fill), initials text switched from --pos-color-interactive-text to --pos-color-content-inverted-text (needed for contrast on the new solid interactive background), and hover now also swaps the background to --pos-color-interactive-hover (previously hover only added the inset ring, no background change).",
+  "component": "avatar",
+  "name": "Avatar",
+  "description": "Representing a user, contact, or entity with a profile image or initials.",
+  "whenToUse": [
+    "Representing a user, contact, or entity with a profile image or initials.",
+    "Appearing in lists, headers, comments, or chat interfaces alongside user-generated content."
+  ],
+  "whenNotToUse": [
+    "Displaying a logo or brand mark — use an <code>&lt;img&gt;</code> directly instead.",
+    "The context does not relate to a specific person or entity."
+  ],
+  "do": [
+    "Always provide a meaningful <code>alt</code> attribute on the inner <code>&lt;img&gt;</code> — use the person's name.",
+    "Show initials as a fallback when no image is available.",
+    "Use the <code>pos-avatar-lg</code> (48px) default for most contexts; choose smaller sizes only when space is limited."
+  ],
+  "dont": [
+    "Use the avatar as a button or interactive element without adding appropriate ARIA roles and keyboard handling.",
+    "Omit the <code>alt</code> attribute or leave it empty when the image conveys the user's identity."
+  ],
+  "accessibility": [
+    "Initials text inside a no-image avatar should be aria-hidden if the user's name is already present nearby.",
+    "When the avatar is interactive (e.g. a link to a profile), wrap it in an <code>&lt;a&gt;</code> with a descriptive <code>aria-label</code>."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "size",
+      "type": "'pos-avatar-xs' | '-s' | '-m' | '-lg' | ...",
+      "default": "pos-avatar-lg",
+      "description": "Size modifier class on the root element — controls the circle diameter."
+    },
+    {
+      "name": "content",
+      "type": "text initials | <img>",
+      "default": "initials",
+      "description": "Show initials as text content, or an <img> filling the circle (object-fit: cover) when a photo is available."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "avatar": {
+      "label": "Avatar",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Background color (no-image avatar)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Initials text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Border — transparent in light/dark, visible in HC mode",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Background color on hover (no-image avatar)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-text",
+                  "figma": "General elements-theme/Inverted - text",
+                  "role": "Initials text color",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame-transparent",
+                  "figma": "Backgrounds/Frame transparent",
+                  "role": "Border — transparent in light/dark, visible in HC mode",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Hover ring color (2px inset)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<!-- Initials -->\n<div class=\"pos-avatar pos-avatar-lg\">JD</div>\n\n<!-- Image -->\n<div class=\"pos-avatar pos-avatar-lg\">\n  <img src=\"avatar.jpg\" alt=\"Jane Doe\" style=\"width:100%;height:100%;object-fit:cover\">\n</div>"
+}
+{% endraw %}
+</script>

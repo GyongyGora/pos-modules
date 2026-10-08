@@ -7,6 +7,25 @@
 
 @layer common-styling {
 
+  /* a part of the page in another color mode (pos-scheme-light / -dark / -a11y, tokens in
+     pos-config.css): its text color and the browser's own controls / scrollbars follow it.
+     The background is up to the element (e.g. a card, or --pos-color-page-background).
+  ============================================================================ */
+  .pos-scheme-light,
+  .pos-scheme-dark,
+  .pos-scheme-a11y {
+    color: var(--pos-color-content-text);
+  }
+
+  .pos-scheme-light {
+    color-scheme: light;
+  }
+
+  .pos-scheme-dark,
+  .pos-scheme-a11y {
+    color-scheme: dark;
+  }
+
   /* headings
   ============================================================================ */
   .pos-heading-with-action {

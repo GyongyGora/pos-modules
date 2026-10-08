@@ -1,0 +1,552 @@
+{
+  "_about": "Component spec for pos-toast (style/pos-toast.css + partials/toasts.liquid + assets/js/pos-toast.js). Built 2026-09-03 from the real, already-shipped CSS/JS — style/pos-toast.css already existed (136 lines) before this spec, just never had a Tokens-panel spec, docs page, or nav wiring beyond a coming-soon badge placeholder. The 'info' variant (.pos-toast-info) previously used --pos-color-warning/--pos-color-warning-muted by mistake (a real pre-existing bug in the legacy CSS, not a spec error) — fixed 2026-09-03 to use the same neutral/grey treatment as the Info alert card (--pos-color-highlight-background/--pos-color-frame/--pos-color-content-text-supplementary). Four types: success/error/info/warning (warning added 2026-09-03, see below). The close button (.pos-toast-close) has no :focus-visible styling anywhere in the CSS — a real, pre-existing accessibility gap, flagged as a known gap, not invented here. The toast message text has no color rule of its own in this component's CSS — it inherits --pos-color-content-text from the app-root .pos-app rule (pos-page.css). Listed under shared.text for completeness even though it is ambient, not component-local. The outer .pos-toasts container's own fixed positioning (width, inset, stacking gap) is deliberately excluded from this spec, same as the established instance-to-instance-gap exclusion (RULES.md §7.6, --pos-gap-card-card example) — it describes where the one shared container sits on the page, not the individual toast message being documented here. Regenerate spec-toast.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. The close button (×) color was unified 2026-09-03 across all three intents — previously each intent tinted it with its own utility color at rest and all three faded to plain content-text on hover; now it always uses the shared subdued icon-interactive token at rest and the shared plain interactive token on hover, matching the standard icon-signals-interactivity pattern used elsewhere in the DS (RULES.md §4.10). 2026-09-03: added the real fourth Warning type (pos-toast.js accepts any string type; only the CSS/spec previously limited docs to three) — background --pos-color-warning-muted, same shared border/icon/text/layout/elevation as the other three intents. The toast border is no longer tinted per intent — it now uses the shared --pos-color-frame-transparent token (invisible in light/dark, visible in HC), same as Card/Alert card, and every toast now carries the standard medium elevation shadow (--pos-primitive-shadow-medium). 2026-09-03: the close button switched from a literal × character to the real x icon SVG, sized with --pos-primitive-size-125 (10px), matching Tag’s remove icon (also reduced to the same size) that the two be visually equal. 2026-09-03: the close button now composes the shared .pos-close component (pos-close.css) instead of duplicating its own color/hover CSS — fixes two issues found in review: the icon was misaligned (align-self: start left over from when it was a text glyph, not centered like a fixed-size SVG) and missing .pos-close's hover scale-up (1.2x), which Tag's own remove button already gets via the same shared class. Fixed to align-self: center and to compose .pos-close directly (.pos-toast-close.pos-close compound selector, so its own padding/margin/font-size overrides always win over .pos-close's regardless of stylesheet load order). 2026-09-03: the close animation now uses the shared .pos-anim-dismiss--out (pos-behaviors.css, fade + scale down to 0.85) instead of the old bespoke slide-left-and-collapse keyframes — pos-toast.js adds both pos-toast-unloading (legacy class name, kept for backward compatibility; style/pos-toast.css no longer defines it) and pos-anim-dismiss--out (the animation that actually plays). 2026-09-04: composedOf also lists control-icons — the close (×) button composes the shared .pos-close component, which has its own dedicated spec/Tokens panel (control-icons.json); the color tokens stay directly listed here too since they drive this component's own Normal/Hover toggle, but composedOf now correctly points to where the icon's full detail (including states not relevant here) actually lives. 2026-09-04: matched the real Figma toast component — added a bold message text weight (--pos-font-weight-bold, was unset/inherited-normal), and an optional severity badge icon (checkBadge/errorBadge/info/warning, new errorBadge icon derived from checkBadge's outer seal path + warning's exclamation glyph, both already-licensed assets) toggled via a new `icon` setting on window.pos.modules.toast() (default false, so existing callers render unchanged) and mirrored in the docs preview as an Options-panel switch-card. The close (×) button stays present even with the icon enabled — this diverges intentionally from the literal Figma mockup, which shows no close button at all. 2026-09-04: added requiresSelector to the severity badge icon color tokens so the Tokens panel correctly adds/removes them when the Options-panel Icon switch is toggled (previously showed regardless of toggle state).",
+  "component": "toast",
+  "name": "Toast",
+  "description": "A floating, auto-dismissing notification confirming the result of an action (success, error, info, warning), stacked bottom-left on the page.",
+  "whenToUse": [
+    "Confirming the result of a user action (save, delete, submit) without interrupting their flow.",
+    "Showing a brief success/error/info message that does not need to stay on screen or block interaction."
+  ],
+  "whenNotToUse": [
+    "Showing a message that must stay visible in context next to specific content — use Alert card instead.",
+    "Requiring the user to make a decision or acknowledge before continuing — use a Dialog instead."
+  ],
+  "do": [
+    "Trigger via <code>new window.pos.modules.toast(type, message)</code> — never build the notification markup by hand.",
+    "Use <code>success</code> for confirmations, <code>error</code> for failures, <code>info</code> for neutral updates.",
+    "Keep the message short — one line, no more than a sentence."
+  ],
+  "dont": [
+    "Stack more than a few toasts at once — they queue visually but too many becomes unreadable.",
+    "Rely on a toast alone for critical/blocking errors the user must not miss — pair with inline validation or an Alert card too."
+  ],
+  "accessibility": [
+    "Each toast has <code>role=\"alert\"</code> and <code>aria-live=\"assertive\"</code> so screen readers announce it immediately.",
+    "The close button has a visually-hidden <code>.label</code> span with real text, not just the <code>×</code> glyph, for screen reader users."
+  ],
+  "composedOf": [
+    "control-icons"
+  ],
+  "props": [
+    {
+      "name": "type",
+      "type": "'success' | 'error' | 'info' | 'warning'",
+      "default": "n/a (required)",
+      "description": "Selects the color variant and which muted/normal utility tokens apply."
+    },
+    {
+      "name": "message",
+      "type": "string (HTML)",
+      "default": "n/a (required)",
+      "description": "The notification text, inserted as innerHTML — may contain inline markup."
+    },
+    {
+      "name": "delay",
+      "type": "number (ms)",
+      "default": "false (shows immediately)",
+      "description": "Optional delay before the toast appears."
+    },
+    {
+      "name": "autohide",
+      "type": "boolean",
+      "default": "true for success, false otherwise",
+      "description": "Whether the toast dismisses itself automatically after 5s."
+    },
+    {
+      "name": "icon",
+      "type": "boolean",
+      "default": "false",
+      "description": "Settings option (third argument of window.pos.modules.toast): shows the severity badge icon before the message (adds pos-toast-has-icon)."
+    }
+  ],
+  "dimensions": {
+    "intent": [
+      "success",
+      "error",
+      "info",
+      "warning"
+    ],
+    "state": [
+      "normal",
+      "hover"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-radius-panel",
+        "figma": "Panel corner",
+        "swatch": false
+      },
+      {
+        "css": "--pos-padding-cell",
+        "figma": "Paddings/table cells",
+        "role": "Block-axis padding is half this value (calc(var(--pos-padding-cell) / 2)), inline-axis padding is the full value",
+        "swatch": false
+      },
+      {
+        "css": "--pos-primitive-size-125",
+        "figma": "Size/1.25 unit",
+        "role": "Close button (×) icon size — shared with Tag’s remove icon, both now the same size",
+        "swatch": false
+      },
+      {
+        "css": "--pos-primitive-size-15",
+        "figma": "Size/1.5 unit",
+        "role": "Gap between icon, message content, and close button",
+        "swatch": false
+      }
+    ],
+    "text": [
+      {
+        "css": "--pos-color-content-text",
+        "figma": "General elements-theme/Normal - text",
+        "role": "Message text color — not set by this component's own CSS; inherited from the app-root .pos-app rule (pos-page.css), same as any element with no local color override. Font-weight (bold) IS set explicitly by this component, see shared.text-weight.",
+        "swatch": true
+      }
+    ],
+    "icon-normal": [
+      {
+        "css": "--pos-color-content-icon-interactive",
+        "figma": "General elements-theme/Graphic Normal - interactive",
+        "role": "Close button (×) color at rest — shared across all four intents, the subdued icon-signals-interactivity pattern (RULES.md §4.10), via the shared .pos-close component",
+        "swatch": true
+      }
+    ],
+    "icon-hover": [
+      {
+        "css": "--pos-color-interactive",
+        "figma": "General elements-theme/Graphic Interactive",
+        "role": "Close button (×) color on hover — shared across all four intents, switches to the plain interactive color and scales up 1.2x (via the shared .pos-close component)",
+        "swatch": true
+      }
+    ],
+    "border": [
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "Toast border — invisible in light/dark, becomes visible (white) in HC mode for legibility; no longer tinted per intent",
+        "swatch": true
+      }
+    ],
+    "elevation": [
+      {
+        "css": "--pos-primitive-shadow-medium",
+        "figma": "Elevation/Medium shadow",
+        "role": "Toast shadow — shared across all intents and both states",
+        "swatch": false
+      }
+    ],
+    "text-weight": [
+      {
+        "css": "--pos-font-weight-bold",
+        "figma": "Weight/bold",
+        "role": "Message text weight — always bold, matching the real Figma toast component",
+        "swatch": false
+      }
+    ]
+  },
+  "variants": {
+    "success": {
+      "label": "Success",
+      "classes": [
+        "pos-toast-success"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "Toast background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-normal"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-confirmation-muted",
+                  "figma": "Utility/Confirmation Muted",
+                  "role": "Toast background (unchanged on close-button hover)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-hover"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        }
+      }
+    },
+    "error": {
+      "label": "Error",
+      "classes": [
+        "pos-toast-error"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "Toast background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-normal"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-important-muted",
+                  "figma": "Utility/Important Muted",
+                  "role": "Toast background (unchanged on close-button hover)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-hover"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        }
+      }
+    },
+    "info": {
+      "label": "Info",
+      "classes": [
+        "pos-toast-info"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Toast background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-normal"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-highlight-background",
+                  "figma": "Backgrounds/Highlighted Background",
+                  "role": "Toast background (unchanged on close-button hover)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon",
+                  "figma": "General elements-theme/Graphic Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-hover"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        }
+      }
+    },
+    "warning": {
+      "label": "Warning",
+      "classes": [
+        "pos-toast-warning"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "Toast background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-normal"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-warning-muted",
+                  "figma": "Utility/Warning Muted",
+                  "role": "Toast background (unchanged on close-button hover)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-warning",
+                  "figma": "Utility/Warning Normal",
+                  "role": "Optional severity badge icon color — only visible when the Icon option is enabled (off by default, see .pos-toast-has-icon)",
+                  "swatch": true,
+                  "requiresSelector": ".comp-preview-variant-row:not([hidden]) .pos-toast-has-icon"
+                }
+              ]
+            },
+            {
+              "heading": "Color",
+              "ref": "shared.border"
+            },
+            {
+              "heading": "Icon",
+              "ref": "shared.icon-hover"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text"
+            },
+            {
+              "heading": "Text",
+              "ref": "shared.text-weight"
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<script>\n  new window.pos.modules.toast('success', 'Changes saved successfully.');\n  new window.pos.modules.toast('error', 'Something went wrong. Please try again.');\n  new window.pos.modules.toast('info', 'Your session will expire in 5 minutes.');\n<\\/script>"
+}

@@ -1,0 +1,2415 @@
+{
+  "General elements-theme": {
+    "Prominent - text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Prominent text used to highlight important information, e.g. headlines, prices",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:125",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Normal - text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.9529411792755127,
+          0.9607843160629272,
+          0.9725490212440491
+        ],
+        "alpha": 1,
+        "hex": "#F3F5F8"
+      },
+      "$description": "General, normal content text",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:126",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:9a19744b3399b75fdbcabb6ff9fdd744b952e6b0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Light 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Supplementary - text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.6574328541755676,
+          0.7140460014343262,
+          0.804627001285553
+        ],
+        "alpha": 1,
+        "hex": "#A8B6CD"
+      },
+      "$description": "Secondary or meta text, e.g. table headers, sidenotes, or metadata. Safe to use on content or page backgrounds, but does not provide sufficient contrast on highlighted backgrounds. For highlighted backgrounds, use the normal text color instead.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:127",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:e1e38205a7584d287fb0fe863fe41906579db738/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Medium",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Disabled - text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.250980406999588,
+          0.3333333432674408,
+          0.40784314274787903
+        ],
+        "alpha": 1,
+        "hex": "#405568"
+      },
+      "$description": "Disabled texts",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18127:147929",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7ccb19ff671bb0f3b7de4ee2a6e6e25f97f50a35/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 2",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Inverted - text": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 1,
+        "hex": "#000000"
+      },
+      "$description": "Color of content (text, icons, ui elements) that are placed on a contrasty background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:129",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Interactive text normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.5139091610908508,
+          0.7375109195709229,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#83BCFF"
+      },
+      "$description": "Clickable texts, e.g. links, breadcrumbs",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:131",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7b314d8c2a4981b3731e2f227a44a58daaa347b7/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Interactive text hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Clickable text color in hover state — links, breadcrumbs, and interactive labels being hovered.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:132",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Interactive text active": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Clickable text color in the pressed/active state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:15902:236893",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Interactive text disabled": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.27843138575553894,
+          0.5215686559677124
+        ],
+        "alpha": 1,
+        "hex": "#344785"
+      },
+      "$description": "Clickable text color when the interactive element is disabled and non-functional.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:133",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:d8036105edf82e7cbb7c6b2150432266955bfd19/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 5",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Interactive text inverted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.27843138575553894,
+          0.5215686559677124
+        ],
+        "alpha": 1,
+        "hex": "#344785"
+      },
+      "$description": "Interactive text on a contrasty background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18128:147931",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:d8036105edf82e7cbb7c6b2150432266955bfd19/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 5",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.9529411792755127,
+          0.9607843160629272,
+          0.9725490212440491
+        ],
+        "alpha": 1,
+        "hex": "#F3F5F8"
+      },
+      "$description": "Decorative or informative graphics, icons without functionality or interactivity",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:128",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:9a19744b3399b75fdbcabb6ff9fdd744b952e6b0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Light 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Disabled": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.250980406999588,
+          0.3333333432674408,
+          0.40784314274787903
+        ],
+        "alpha": 1,
+        "hex": "#405568"
+      },
+      "$description": "Decorative or informative graphics, icons without functionality or interactivity in their disabled state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18128:147930",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7ccb19ff671bb0f3b7de4ee2a6e6e25f97f50a35/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 2",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Inverted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 1,
+        "hex": "#000000"
+      },
+      "$description": "Icons, graphical elements over contrasty background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16051:54827",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Interactive": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.5139091610908508,
+          0.7375109195709229,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#83BCFF"
+      },
+      "$description": "Clickable, interactive icons and graphics (e.g. filter icons, dropdown chevrons or buttons)",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:130",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7b314d8c2a4981b3731e2f227a44a58daaa347b7/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Interactive Hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Hover state of clickable, interactive icons and graphics (e.g. filter icons, dropdown chevrons)",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16051:54826",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Interactive Active": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Active state of clickable, interactive icons and graphics (e.g. filter icons, dropdown chevrons)",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18094:147928",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Interactive Disabled": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.27843138575553894,
+          0.5215686559677124
+        ],
+        "alpha": 1,
+        "hex": "#344785"
+      },
+      "$description": "Disabled state of clickable, interactive icons and graphics (e.g. filter icons, dropdown chevrons)",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16051:54825",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:d8036105edf82e7cbb7c6b2150432266955bfd19/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 5",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Graphic Interactive Inverted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.27843138575553894,
+          0.5215686559677124
+        ],
+        "alpha": 1,
+        "hex": "#344785"
+      },
+      "$description": "Interactive icons and graphics (e.g. filter icons, dropdown chevrons) on a contrasty background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18128:147932",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:d8036105edf82e7cbb7c6b2150432266955bfd19/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 5",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Focused": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.7568910121917725,
+          0.6442307829856873,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#C1A4FF"
+      },
+      "$description": "Focus ring color for keyboard navigation on standard (light) backgrounds. Required on all interactive elements.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:71730",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:6dc980dd5672cc41b5903dc57f6a28abcfb92af8/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Supplementary 2",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Focused inverse": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.5149335861206055,
+          0.14807656407356262,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#8326FF"
+      },
+      "$description": "Focus ring color for keyboard navigation on inverted or dark backgrounds — use instead of Focused when the focus indicator must remain visible on a dark or brand-colored surface.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16062:53502",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:38c9dd22951c07243fd4282c5e013369f076bce2/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Supplementary 1",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Gradients-theme": {
+    "Gradient1 From": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Start color of brand gradient 1. Used for gradient hero sections, decorative backgrounds, and brand accents.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13634:22933",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Gradient1 To": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.5139091610908508,
+          0.7375109195709229,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#83BCFF"
+      },
+      "$description": "End color of brand gradient 1.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13634:22934",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7b314d8c2a4981b3731e2f227a44a58daaa347b7/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Gradient2 From": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.4000000059604645,
+          0.8901960849761963
+        ],
+        "alpha": 1,
+        "hex": "#3466E3"
+      },
+      "$description": "Start color of brand gradient 2. Alternative gradient for visual variety in hero or decorative areas.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13634:22935",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:9e5650764fbd7f2eae89438c7cde6319c2262f47/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 2",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Gradient2 To": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.20392157137393951,
+          0.27843138575553894,
+          0.5215686559677124
+        ],
+        "alpha": 1,
+        "hex": "#344785"
+      },
+      "$description": "End color of brand gradient 2.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:13634:22936",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:d8036105edf82e7cbb7c6b2150432266955bfd19/-1:-1",
+          "targetVariableName": "Colors/Brand/Brand Primary 5",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Backgrounds": {
+    "Page Background": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 1,
+        "hex": "#000000"
+      },
+      "$description": "Background of the whole page",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:154",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Content Background": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.10196078568696976,
+          0.11372549086809158,
+          0.12941177189350128
+        ],
+        "alpha": 1,
+        "hex": "#1A1D21"
+      },
+      "$description": "Background color used under the content, like: cards, sections, panels, popups, bars etc.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:155",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7796627746a9a93b48e09fe63eb71468a846c790/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 3",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Content Background 50%": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.10352189838886261,
+          0.11409080028533936,
+          0.13100102543830872
+        ],
+        "alpha": 0.5,
+        "hex": "#1A1D21"
+      },
+      "$description": "Semi-transparent variant of Content Background (50% opacity). Used for overlay panels, frosted drawers, or elements that partially reveal content beneath them.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16314:17279",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:beb7749c8c890aad8229e0a713953b181ff3de6b/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 3 50%",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Highlighted Background": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.07058823853731155,
+          0.0784313753247261,
+          0.0941176488995552
+        ],
+        "alpha": 1,
+        "hex": "#121418"
+      },
+      "$description": "Background for elements that need to slightly stand out from the page or panel background — such as highlighted sections, page title bars, filter bars, table headers. Typically, this uses a slightly different shade than the page background, helping visually separate sections through subtle color difference.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:156",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:2d25f29cc2ab5b5d0bba029123668ddc58b34b8d/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 4",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Inverted Background": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "alpha": 1,
+        "hex": "#FFFFFF"
+      },
+      "$description": "Used for surfaces that contrast with the surrounding layout to create emphasis, such as a dark background on a light page or a light background on a dark page. It is typically applied to elements like CTAs, cards, or highlighted sections to establish visual hierarchy, improve focus, and clearly separate key content from its context.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16011:65219",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:b6ba3147bdf8bf3f8d269b7350848fb096a57228/-1:-1",
+          "targetVariableName": "Colors/Greyscale/White",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Shadow": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 1,
+        "hex": "#000000"
+      },
+      "$description": "Shadow color for box-shadow declarations. Always reference this token for shadows — never hardcode a color value.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:158",
+        "com.figma.scopes": [
+          "EFFECT_COLOR"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Frame subtle": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.21568627655506134,
+          0.2549019753932953,
+          0.3176470696926117
+        ],
+        "alpha": 1,
+        "hex": "#374151"
+      },
+      "$description": "Low-contrast border used for less emphasized elements. Provides gentle structure without drawing attention. Not suitable where strong contrast is required. Can also be used for disabled elements to indicate reduced emphasis. Used for lines that visually separate elements, e.g.: table rows, dividers, separators, frames.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:157",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:c4b214c5dc5d4e83e0c09944b3bf79e8434c744a/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 1",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Frame default": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.250980406999588,
+          0.3333333432674408,
+          0.40784314274787903
+        ],
+        "alpha": 1,
+        "hex": "#405568"
+      },
+      "$description": "Standard border used when clear visibility and sufficient contrast are important. Recommended for input fields, containers, and key UI elements.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:18166:148075",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:7ccb19ff671bb0f3b7de4ee2a6e6e25f97f50a35/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Grey Dark 2",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Standout elements": {
+    "Standout Background": {
+      "$type": "color",
+      "$value": "{General elements-theme.Graphic Interactive Hover}",
+      "$description": "Background of sections of the page that needs to really stand out, like call to action section bg, mid-page CTA bar, custom cards",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:134",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Standout Background Hover": {
+      "$type": "color",
+      "$value": "{General elements-theme.Graphic Interactive}",
+      "$description": "Hover state of the Standout background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:135",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Standout bg - Normal text, icon": {
+      "$type": "color",
+      "$value": "{General elements-theme.Inverted - text}",
+      "$description": "Color of content (icons, text) that appear over the Standout background.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:136",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Standout bg -  Supplementary text, icon": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 0.5,
+        "hex": "#000000"
+      },
+      "$description": "Color of a less emphasized content that appears over the Standout background (e.g. label, metadata, sidenote).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:137",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:ad652bc64f254dc6c9030325ba0933e550e258a6/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black 50%",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Selection Background": {
+      "$type": "color",
+      "$value": "{General elements-theme.Focused}",
+      "$description": "Background color applied behind selected text to indicate user selection and focus state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:71731",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Selection Text": {
+      "$type": "color",
+      "$value": "{General elements-theme.Inverted - text}",
+      "$description": "Text color applied to content when it is selected by the user, ensuring sufficient contrast against the selection background.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:71732",
+        "com.figma.scopes": [
+          "TEXT_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Banner stats": {
+      "$type": "color",
+      "$value": "{General elements-theme.Graphic Interactive Hover}",
+      "$description": "Background of small icons or badges that appear over the standout background",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16239:16679",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Buttons": {
+    "Primary": {
+      "Button Prim Bg Normal": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive}",
+        "$description": "Background/fill color of Primary buttons",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:140",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Bg Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Hover}",
+        "$description": "Background of Primary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:141",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Bg Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Active}",
+        "$description": "Background of Primary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236894",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Bg Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Disabled}",
+        "$description": "Background of Primary button in disabled state — muted to indicate non-interactable.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236897",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Frame Normal": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive}",
+        "$description": "Stroke color of Primary buttons",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:142",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Frame Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Hover}",
+        "$description": "Stroke of Primary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:143",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Frame Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Active}",
+        "$description": "Stroke of Primary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236895",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Frame Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Disabled}",
+        "$description": "Stroke of Primary button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236898",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Text, icon": {
+        "$type": "color",
+        "$value": "{General elements-theme.Inverted - text}",
+        "$description": "Text and icon color of Primary buttons",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:144",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Text, icon Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Inverted - text}",
+        "$description": "Text and icon color of Primary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:145",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Text, icon Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Inverted - text}",
+        "$description": "Text and icon color of Primary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236896",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Prim Text, icon Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Inverted - text}",
+        "$description": "Text and icon color of Primary button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236899",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    },
+    "Secondary": {
+      "Button Sec Bg Normal 0%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of transparent (ghost) secondary button in resting state — fully transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:146",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Bg Normal 100%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.10196078568696976,
+            0.11372549086809158,
+            0.12941177189350128
+          ],
+          "alpha": 1,
+          "hex": "#1A1D21"
+        },
+        "$description": "Background of non-transparent (filled) secondary button in resting state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:147",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:7796627746a9a93b48e09fe63eb71468a846c790/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Grey Dark 3",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Bg Hover 0%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Hover background of transparent (ghost) secondary button.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:148",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Bg Hover 100%": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.10196078568696976,
+            0.11372549086809158,
+            0.12941177189350128
+          ],
+          "alpha": 1,
+          "hex": "#1A1D21"
+        },
+        "$description": "Hover background of non-transparent (filled) secondary button.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:149",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:7796627746a9a93b48e09fe63eb71468a846c790/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Grey Dark 3",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Bg Active": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.21568627655506134,
+            0.2549019753932953,
+            0.3176470696926117
+          ],
+          "alpha": 1,
+          "hex": "#374151"
+        },
+        "$description": "Background of Secondary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236900",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:c4b214c5dc5d4e83e0c09944b3bf79e8434c744a/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Grey Dark 1",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Bg Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of Secondary button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236901",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Frame Normal": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Disabled}",
+        "$description": "Stroke of Secondary button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:150",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Frame Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Hover}",
+        "$description": "Stroke of Secondary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:151",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Frame Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Active}",
+        "$description": "Stroke of Secondary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236902",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Frame Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Disabled}",
+        "$description": "Stroke of Secondary button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236903",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Text, icon": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text normal}",
+        "$description": "Text and icon color of Secondary buttons",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:152",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Text, icon Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text hover}",
+        "$description": "Text and icon color of Secondary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:12801:153",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Text, icon Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text active}",
+        "$description": "Text and icon color of Secondary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236904",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Sec Text, icon Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text disabled}",
+        "$description": "Text and icon color of Secondary button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:15902:236905",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    },
+    "Inverted": {
+      "Button Inv Bg Normal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0.07058823853731155,
+            0.0784313753247261,
+            0.0941176488995552
+          ],
+          "alpha": 1,
+          "hex": "#121418"
+        },
+        "$description": "Background of Inverted button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57491",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:2d25f29cc2ab5b5d0bba029123668ddc58b34b8d/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Grey Dark 4",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Bg Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Background of Inverted button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57492",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Bg Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Background of Inverted button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57493",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Bg Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#000000"
+        },
+        "$description": "Background of Inverted button in disabled state — semi-transparent to indicate non-interactable.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57494",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:086d14597d517d1c5478d46e9e1286b1112a4cf4/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black 20%",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Frame Normal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 1,
+          "hex": "#000000"
+        },
+        "$description": "Stroke of Inverted button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57495",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Frame Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Stroke of Inverted button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57496",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Frame Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Stroke of Inverted button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57497",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Frame Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#000000"
+        },
+        "$description": "Stroke of Inverted button in disabled state — semi-transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57498",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:086d14597d517d1c5478d46e9e1286b1112a4cf4/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black 20%",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Text, icon": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text normal}",
+        "$description": "Text and icon color of Inverted button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57499",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Text, icon Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text hover}",
+        "$description": "Text and icon color of Inverted button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57500",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Text, icon Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text active}",
+        "$description": "Text and icon color of Inverted button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57501",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button Inv Text, icon Disabled": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text inverted}",
+        "$description": "Text and icon color of Inverted button in disabled state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16064:57502",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      }
+    },
+    "Inverted Sec": {
+      "Button InvSec Bg Normal": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of Inverted Secondary button in normal state — fully transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59298",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Bg Hover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of Inverted Secondary button in hover state — transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59299",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Bg Active": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of Inverted Secondary button in active/pressed state — semi-transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59300",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:1857bf186d839aac130961c26f9d9685effa1409/-1:-1",
+            "targetVariableName": "Colors/Greyscale/White 20%",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Bg Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            1,
+            1,
+            1
+          ],
+          "alpha": 0,
+          "hex": "#FFFFFF"
+        },
+        "$description": "Background of Inverted Secondary button in disabled state — fully transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59301",
+          "com.figma.scopes": [
+            "FRAME_FILL",
+            "SHAPE_FILL"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:82c1d43fe299f54941d31b68d652e1294d8bdb50/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Transparent",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Frame Normal": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Disabled}",
+        "$description": "Stroke of Inverted Secondary button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59302",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Frame Hover": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Stroke of Inverted Secondary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59303",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Frame Active": {
+        "$type": "color",
+        "$value": "{General elements-theme.Graphic Interactive Inverted}",
+        "$description": "Stroke of Inverted Secondary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59304",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Frame Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#000000"
+        },
+        "$description": "Stroke of Inverted Secondary button in disabled state — semi-transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59305",
+          "com.figma.scopes": [
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:086d14597d517d1c5478d46e9e1286b1112a4cf4/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black 20%",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Text, icon": {
+        "$type": "color",
+        "$value": "{General elements-theme.Interactive text inverted}",
+        "$description": "Text and icon color of Inverted Secondary button in normal state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59306",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Text, icon Hover": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 1,
+          "hex": "#000000"
+        },
+        "$description": "Text and icon color of Inverted Secondary button in hover state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59307",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Text, icon Active": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 1,
+          "hex": "#000000"
+        },
+        "$description": "Text and icon color of Inverted Secondary button in active/pressed state.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59308",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      },
+      "Button InvSec Text, icon Disabled": {
+        "$type": "color",
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [
+            0,
+            0,
+            0
+          ],
+          "alpha": 0.20000000298023224,
+          "hex": "#000000"
+        },
+        "$description": "Text and icon color of Inverted Secondary button in disabled state — semi-transparent.",
+        "$extensions": {
+          "com.figma.variableId": "VariableID:16065:59309",
+          "com.figma.scopes": [
+            "ALL_FILLS",
+            "STROKE"
+          ],
+          "com.figma.aliasData": {
+            "targetVariableId": "VariableID:086d14597d517d1c5478d46e9e1286b1112a4cf4/-1:-1",
+            "targetVariableName": "Colors/Greyscale/Black 20%",
+            "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+            "targetVariableSetName": "--- BT Primitives"
+          },
+          "com.figma.isOverride": true
+        }
+      }
+    }
+  },
+  "Forms": {
+    "Input field Bg Normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0,
+          0,
+          0
+        ],
+        "alpha": 1,
+        "hex": "#000000"
+      },
+      "$description": "Background of form elements (input, textarea, select) in resting state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:159",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:32085af9c6a16ba1bfa3dff39a5fdf1fae5b04f0/-1:-1",
+          "targetVariableName": "Colors/Greyscale/Black",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Bg Hover, Active": {
+      "$type": "color",
+      "$value": "{Forms.Input field Bg Normal}",
+      "$description": "Background of form elements in hover and active/focused states.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73031",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Bg Filled": {
+      "$type": "color",
+      "$value": "{Forms.Input field Bg Normal}",
+      "$description": "Background of form elements when they contain user-entered content.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73032",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Bg Disabled": {
+      "$type": "color",
+      "$value": "{Forms.Input field Bg Normal}",
+      "$description": "Background of form elements in disabled state — muted to indicate non-interactable.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73033",
+        "com.figma.scopes": [
+          "FRAME_FILL",
+          "SHAPE_FILL"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Frame Normal": {
+      "$type": "color",
+      "$value": "{Backgrounds.Frame default}",
+      "$description": "Border/stroke of form elements in resting state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:160",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Frame Hover, Active": {
+      "$type": "color",
+      "$value": "{General elements-theme.Graphic Interactive}",
+      "$description": "Border/stroke of form elements in hover and active/focused states — typically stronger than default.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73034",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Frame Filled": {
+      "$type": "color",
+      "$value": "{Forms.Input field Frame Normal}",
+      "$description": "Border/stroke of form elements when they contain user-entered content.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73035",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input field Frame Disabled": {
+      "$type": "color",
+      "$value": "{Backgrounds.Frame subtle}",
+      "$description": "Border/stroke of form elements in disabled state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73036",
+        "com.figma.scopes": [
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input Field Text Normal": {
+      "$type": "color",
+      "$value": "{General elements-theme.Supplementary - text}",
+      "$description": "Text (value and placeholder) color in form elements in resting state.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:161",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input Field Text Hover, Active": {
+      "$type": "color",
+      "$value": "{General elements-theme.Supplementary - text}",
+      "$description": "Text color in form elements in hover and active/focused states.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73037",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input Field Text Filled": {
+      "$type": "color",
+      "$value": "{General elements-theme.Prominent - text}",
+      "$description": "Text color in form elements when they contain user-entered content.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73038",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    },
+    "Input Field Text Disabled": {
+      "$type": "color",
+      "$value": "{General elements-theme.Disabled - text}",
+      "$description": "Text color in form elements in disabled state — muted to indicate non-interactable.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16013:73039",
+        "com.figma.scopes": [
+          "ALL_FILLS",
+          "STROKE"
+        ],
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "Utility": {
+    "Important Normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          0.8509615659713745,
+          0.8509615659713745
+        ],
+        "alpha": 1,
+        "hex": "#FFD9D9"
+      },
+      "$description": "Error state color, expressing danger. Used to communicate errors, destructive actions, and critical states. Signals immediate attention and indicates that something has gone wrong or requires correction. Commonly applied to error messages, validation states, alerts, and destructive actions (e.g., delete or remove).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:162",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:cbcdf5f782824251b7046615afd832072d2a0e18/-1:-1",
+          "targetVariableName": "Colors/Utility/Red Light",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Important Hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.7921568751335144,
+          0.22745098173618317,
+          0.1921568661928177
+        ],
+        "alpha": 1,
+        "hex": "#CA3A31"
+      },
+      "$description": "Hover state of the error/important color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:163",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:265637a8f39dc7b7b07b83da3c399974f023e879/-1:-1",
+          "targetVariableName": "Colors/Utility/Red Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Important Active": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.7921568751335144,
+          0.22745098173618317,
+          0.1921568661928177
+        ],
+        "alpha": 1,
+        "hex": "#CA3A31"
+      },
+      "$description": "Active state of the error/important color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16038:49861",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:265637a8f39dc7b7b07b83da3c399974f023e879/-1:-1",
+          "targetVariableName": "Colors/Utility/Red Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Important Muted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.321884423494339,
+          0.055225569754838943,
+          0.055225569754838943
+        ],
+        "alpha": 1,
+        "hex": "#520E0E"
+      },
+      "$description": "Muted/subdued variant of the error/important color for disabled and low-emphasis error states.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:164",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:06955d5be81ea3253117dea71b1d826f518f4403/-1:-1",
+          "targetVariableName": "Colors/Utility/Red Deep",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Confirmation Normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.8066543936729431,
+          0.955128014087677,
+          0.8759421110153198
+        ],
+        "alpha": 1,
+        "hex": "#CEF4DF"
+      },
+      "$description": "Success state color, expressing confirmation. Used to communicate successful operations, positive states, and completed actions. Signals that something has worked as expected. Commonly applied to success messages, validation states, and positive indicators (e.g., saved, completed, approved).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:165",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:40305b995dc843dd9ad3f95af41f56e5cae5a6c7/-1:-1",
+          "targetVariableName": "Colors/Utility/Green Light",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Confirmation Hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.03515625,
+          0.5625,
+          0.41247981786727905
+        ],
+        "alpha": 1,
+        "hex": "#098F69"
+      },
+      "$description": "Hover state of the confirmation/success color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:166",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:8400a4e4bbe7346695ddfd9550a9605456625358/-1:-1",
+          "targetVariableName": "Colors/Utility/Green Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Confirmation Active": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.03515625,
+          0.5625,
+          0.41247981786727905
+        ],
+        "alpha": 1,
+        "hex": "#098F69"
+      },
+      "$description": "Active state of the confirmation/success color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16038:49862",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:8400a4e4bbe7346695ddfd9550a9605456625358/-1:-1",
+          "targetVariableName": "Colors/Utility/Green Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Confirmation Muted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.008603480644524097,
+          0.21474339067935944,
+          0.12198043614625931
+        ],
+        "alpha": 1,
+        "hex": "#02371F"
+      },
+      "$description": "Muted/subdued variant of the confirmation/success color for disabled and low-emphasis success states.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:167",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:efc59b10070f095be421ef797d88066d2f33ae85/-1:-1",
+          "targetVariableName": "Colors/Utility/Green Deep",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Warning Normal": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          0.9133332967758179,
+          0.7833333015441895
+        ],
+        "alpha": 1,
+        "hex": "#FFE9C8"
+      },
+      "$description": "Warning state color, expressing caution. Used to communicate non-critical issues, advisories, and situations requiring attention. Signals that something may need review but has not yet failed. Commonly applied to warning messages, advisory states, and cautionary indicators (e.g., approaching limits, incomplete steps).",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:168",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:6c1dc026c8b8a73b9b4297f12ebc3ce73b200c5a/-1:-1",
+          "targetVariableName": "Colors/Utility/Yellow Light",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Warning Hover": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          0.7433332800865173,
+          0.3583333492279053
+        ],
+        "alpha": 1,
+        "hex": "#FFBE5B"
+      },
+      "$description": "Hover state of the warning color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:169",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:44aebf77469e18e93aa1966b705a7d2d1bf581a5/-1:-1",
+          "targetVariableName": "Colors/Utility/Yellow Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Warning Active": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          0.7433332800865173,
+          0.3583333492279053
+        ],
+        "alpha": 1,
+        "hex": "#FFBE5B"
+      },
+      "$description": "Active state of the warning color.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:16038:49863",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:44aebf77469e18e93aa1966b705a7d2d1bf581a5/-1:-1",
+          "targetVariableName": "Colors/Utility/Yellow Mid",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    },
+    "Warning Muted": {
+      "$type": "color",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.3481697142124176,
+          0.24247677624225616,
+          0.08393736183643341
+        ],
+        "alpha": 1,
+        "hex": "#593E15"
+      },
+      "$description": "Muted/subdued variant of the warning color for disabled and low-emphasis warning states.",
+      "$extensions": {
+        "com.figma.variableId": "VariableID:12801:170",
+        "com.figma.scopes": [
+          "ALL_SCOPES"
+        ],
+        "com.figma.aliasData": {
+          "targetVariableId": "VariableID:e24bcc1b6eecddb5347a2996a28ea35b3d1322e9/-1:-1",
+          "targetVariableName": "Colors/Utility/Yellow Deep",
+          "targetVariableSetId": "VariableCollectionId:ee18a4932f9ba3e060f41550691a15d94d0cacb0/-1:-1",
+          "targetVariableSetName": "--- BT Primitives"
+        },
+        "com.figma.isOverride": true
+      }
+    }
+  },
+  "$extensions": {
+    "com.figma.modeName": "Dark mode"
+  }
+}

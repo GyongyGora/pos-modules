@@ -1,0 +1,230 @@
+{
+  "_about": "Component spec for pos-checkbox (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Checkbox\" section. Reuses the already-curated usage prose from COMP_CONFIGS['checkbox'].usage and token data from COMP_CONFIGS['checkbox'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated). 2026-10-02: hover while checked darkens to --pos-color-interactive-hover (it had no hover feedback). Disabled checked fill/frame borrows the primary button disabled tokens (--pos-color-button-primary-disabled-background / -frame) — documented exception to RULES.md 2.2, see COMPONENT-RULES.md.",
+  "component": "checkbox",
+  "name": "Checkbox",
+  "description": "Selecting zero or more independent options from a list.",
+  "whenToUse": [
+    "Selecting zero or more independent options from a list.",
+    "Toggling a single boolean setting (e.g. \"Remember me\", \"Agree to terms\")."
+  ],
+  "whenNotToUse": [
+    "Exactly one option must be selected — use radio buttons instead.",
+    "The toggle is part of a larger interactive card — use <code>pos-switch-card</code> instead."
+  ],
+  "do": [
+    "Always associate a visible <code>&lt;label&gt;</code> with each checkbox via <code>for</code>/<code>id</code>.",
+    "Mark required checkboxes with the <code>required</code> attribute.",
+    "Use a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code> when grouping related checkboxes."
+  ],
+  "dont": [
+    "Use for mutually exclusive choices — that is what radio buttons are for.",
+    "Rely on visual proximity alone to associate the label — always use <code>for</code>/<code>id</code>."
+  ],
+  "accessibility": [
+    "Each checkbox must have an associated <code>&lt;label&gt;</code> so screen readers announce its purpose.",
+    "Use <code>aria-required=\"true\"</code> or the <code>required</code> attribute on required checkboxes.",
+    "Group related checkboxes in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native disabled attribute — switches to the disabled color set."
+    },
+    {
+      "name": "checked",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Native checked attribute — selected state, shows the checkmark icon."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "selected",
+      "disabled",
+      "selected-disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "checkbox": {
+      "label": "Checkbox",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "selected": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Box border + fill on hover while checked (unchecking is still an action)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "selected-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-button-primary-disabled-background",
+                  "figma": "Primary/Button Prim Bg Disabled",
+                  "swatch": true,
+                  "role": "Checked control fill (disabled) — neutral grey in dark mode"
+                },
+                {
+                  "css": "--pos-color-button-primary-disabled-frame",
+                  "figma": "Primary/Button Prim Frame Disabled",
+                  "swatch": true,
+                  "role": "Checked control border (disabled)"
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<fieldset class=\"pos-form-simple\">\n  <input type=\"checkbox\" id=\"checkbox-a\">\n  <label for=\"checkbox-a\">Option A</label>\n</fieldset>"
+}

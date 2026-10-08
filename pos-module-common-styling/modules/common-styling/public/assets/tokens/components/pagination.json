@@ -1,0 +1,243 @@
+{
+  "_about": "Component spec for pos-pagination (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Pagination\" section. Reuses the already-curated usage prose from COMP_CONFIGS['pagination'].usage and token data from the existing inspect-pagination.liquid (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Updated 2026-08-26: hover/focus states added explicitly (duplicating normal) rather than left absent — verified against pos-pagination.css that neither state actually changes any token for non-active page links (no dedicated :hover/:focus-visible color rule exists there at all; the only :hover rule targets the already-active link and keeps its color unchanged). This is a genuine pre-existing accessibility gap (no visible focus indicator on pagination links), tracked separately — not something this spec should paper over by inventing tokens that do not exist in the CSS. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "pagination",
+  "name": "Pagination",
+  "description": "Splitting long lists, search results, or data tables into discrete numbered pages.",
+  "whenToUse": [
+    "Splitting long lists, search results, or data tables into discrete numbered pages.",
+    "The total number of pages is known and users benefit from seeing their position."
+  ],
+  "whenNotToUse": [
+    "Fewer than 2 pages of results — do not show pagination at all.",
+    "Infinite scroll or \"load more\" patterns are more appropriate for the content type."
+  ],
+  "do": [
+    "Set <code>aria-current=\"true\"</code> on the current page link.",
+    "Include a visually-hidden <code>pos-label</code> on the prev/next arrow links so screen readers announce the action.",
+    "Wrap the whole component in <code>&lt;nav role=\"navigation\" aria-label=\"Pagination Navigation\"&gt;</code>."
+  ],
+  "dont": [
+    "Hide the prev/next arrows — they are important for keyboard and screen reader navigation.",
+    "Show pagination when there is only one page of results."
+  ],
+  "accessibility": [
+    "Every page link must have an <code>aria-label</code>: \"Go to page N\" for non-current pages, \"Current Page, Page N\" for the active one.",
+    "Prev/next links must have a descriptive accessible name even when they display only an icon.",
+    "Surround with <code>&lt;nav&gt;</code> so assistive technology exposes it as a navigation landmark."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "aria-current",
+      "type": "\"true\" | (absent)",
+      "default": "absent",
+      "description": "Set on the current page's <a> — also drives its active visual style."
+    },
+    {
+      "name": "prev/next visibility",
+      "type": "omit the <a> entirely",
+      "default": "shown",
+      "description": "Hide the previous arrow on page 1 and the next arrow on the last page by omitting the element, not by disabling it."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "pagination": {
+      "label": "Pagination",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "role": "Normal page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "Active page link background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "Active page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Prev / next arrow icon",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Shape",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Page link border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Spacing",
+              "tokens": [
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "role": "Gap between page links (halved in calc)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-card-card",
+                  "figma": "Gaps/card-card",
+                  "role": "Top margin from the content above",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "role": "Normal page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "Active page link background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "Active page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Prev / next arrow icon",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Shape",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Page link border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Spacing",
+              "tokens": [
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "role": "Gap between page links (halved in calc)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-card-card",
+                  "figma": "Gaps/card-card",
+                  "role": "Top margin from the content above",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text-interactive",
+                  "figma": "General elements-theme/Normal - text - interactive",
+                  "role": "Normal page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-background",
+                  "figma": "Primary/Button Prim Bg Normal",
+                  "role": "Active page link background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-button-primary-text",
+                  "figma": "Primary/Button Prim Text, icon",
+                  "role": "Active page link text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Prev / next arrow icon",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Shape",
+              "tokens": [
+                {
+                  "css": "--pos-radius-button",
+                  "figma": "Button corner",
+                  "role": "Page link border radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Spacing",
+              "tokens": [
+                {
+                  "css": "--pos-gap-text-text",
+                  "figma": "Gaps/text-text",
+                  "role": "Gap between page links (halved in calc)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-gap-card-card",
+                  "figma": "Gaps/card-card",
+                  "role": "Top margin from the content above",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<nav role=\"navigation\" aria-label=\"Pagination Navigation\" class=\"pos-pagination\">\n  <a href=\"?page=2\" class=\"pos-pagination-previous\" aria-label=\"Previous page\">\n    <span class=\"pos-label\">Previous page</span>\n    <!-- dashLeft icon -->\n  </a>\n  <ul>\n    <li><a href=\"?page=1\" aria-label=\"Go to page 1\">1</a></li>\n    <li>\n      <a href=\"?page=3\" aria-current=\"true\" aria-label=\"Current Page, Page 3\">3</a>\n    </li>\n  </ul>\n  <a href=\"?page=4\" class=\"pos-pagination-next\" aria-label=\"Next page\">\n    <span class=\"pos-label\">Next page</span>\n    <!-- dashRight icon -->\n  </a>\n</nav>"
+}

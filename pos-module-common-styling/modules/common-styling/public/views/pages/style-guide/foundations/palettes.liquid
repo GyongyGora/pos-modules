@@ -1,0 +1,69 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/foundations/palettes' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+      <article class="styleguide-ds-article styleguide-ds-article--full">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Palettes</h1>
+          <p>The 10-step color scales the new palette is built from (brand primary, brand supplementary, red, yellow, green). Every scale is generated from one base color in OKLCH and shares the same contrast target per step, so the same step number gives the same contrast on every scale — and on every scale combined. The grey scale and the high-contrast theme are not part of these scales.</p>
+        </header>
+
+        <div class="pos-palettes">
+          <section class="panel">
+              <h2>Usage rules</h2>
+              <ul class="rules">
+                <li><b>Text and icons can sit on steps 100–300 (light mode) and 800–1000 (dark mode)</b> — besides the grey backgrounds.</li>
+                <li><b>300 and 800 are the stronger tints</b> (also strokes, borders, hover states) — every text and icon color passes on them, the grey supplementary text included.</li>
+                <li><b>Light mode:</b> text, links = 700 and darker · icons, graphics, buttons = 600 and darker. For interactive elements stop at 800, so the hover (two steps darker) still has a step.</li>
+                <li><b>Dark mode:</b> text, links = 400 and lighter · icons, graphics, buttons = 500 and lighter (the mirror: interactive elements stop at 300).</li>
+                <li>Holds for every scale and across scales (e.g. red text on a brand 100 background), because every scale uses the same contrast targets.</li>
+                <li><b>The dot on a range is a recommendation, not a rule</b> &mdash; the step with the best-balanced contrast. Every step inside a range passes, so a theme or a component may move within it: themes with a deep brand color put their buttons on 700 or 800, and the Default theme keeps its dark-mode buttons and interactive icons on 400 (brighter, the same step as links) instead of the recommended 500.</li>
+              </ul>
+            </section>
+          
+            <section class="panel">
+              <h2>Contrast targets</h2>
+              <p class="lead" style="margin:4px 0 12px">
+                <b>The middle four steps (400–700) are calculated against the grey background with the least contrast in
+                their mode: the darkest light-mode bg and the lightest dark-mode bg</b> — text needs the higher minimum, icons/graphics the lower one. 100–300 are measured
+                against white, 800–1000 against black. Middle steps use their exact minimum. Only if the minimums would put them out of order
+                (400 must stay lighter than 500, 500 lighter than 600, 600 lighter than 700) are 500 and 600 spread between the
+                text steps instead — then they get more contrast than their minimum, never less.
+              </p>
+              <div class="refline">
+                <span><i style="background:#e7ecf3"></i>darkest light-mode bg <code>#e7ecf3</code> (highlight bg)</span>
+                <span><i style="background:#1a1d21"></i>lightest dark-mode bg <code>#1a1d21</code> (content bg)</span>
+              </div>
+              <div class="scroll">
+                <div class="grid usage" id="pal-usage-targets"></div>
+                <div class="grid" id="pal-targets"></div>
+              </div>
+            </section>
+          
+            <div id="pal-scales"></div>
+          
+            <section class="panel">
+              <h2>Equal-contrast check</h2>
+              <p class="lead" style="margin:4px 0 14px">Actual contrast vs white of every step after hex rounding. Values should match down a column; the base step is the intended exception (marked *).</p>
+              <div class="scroll"><table class="compare" id="pal-compare"></table></div>
+            </section>
+        </div>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<link rel="stylesheet" href="{{ 'modules/common-styling/style-guide/palettes.css' | asset_url }}">
+<script src="{{ 'modules/common-styling/style-guide/palettes.js' | asset_url }}" defer></script>

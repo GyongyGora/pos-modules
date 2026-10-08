@@ -1,0 +1,294 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/workflow' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content">
+
+      <article id="workflow" class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Workflow</h1>
+          <p>Key milestones of the design system build — from understanding the existing system to a fully documented and validated DS.</p>
+        </header>
+
+        <div class="workflow-timeline">
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'eye' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Understand the existing system</h2>
+              <p class="workflow-step-desc">Map existing CSS components, tokens and their relationships; understand the module architecture and dependency graph.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} You can only improve what you understand. Without a complete picture of the existing tokens, components, and architecture, changes risk breaking things silently. This step prevented blind spots and made every subsequent decision informed.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'ui-webpage-template' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Connect the Figma design system</h2>
+              <p class="workflow-step-desc">Load the Figma file via MCP, read token collections and components. Snapshot cache enables fast incremental runs without hitting the API every time.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Figma is the visual source of truth. Connecting it via MCP means every token value in code can be traced back to a design decision — and verified automatically. This closes the gap between what designers intend and what developers ship.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--warning">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'dashboard' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Token diff report</h2>
+              <p class="workflow-step-desc">Automatically compare Figma and CSS tokens. Identify Match / Mismatch / Missing / Alias statuses and print a report in the terminal via the <code class="pos-code pos-code--small">/token-sync</code> command.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} The diff shows exactly where the system has drifted: values changed without updating CSS, tokens that exist in Figma but not in code, mismatches that cause visual inconsistencies. Without this, fixing token drift is guesswork.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--important">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'warning' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Assess change risk</h2>
+              <p class="workflow-step-desc">Determine the compatibility risk of each change: token value updates (safe) vs. class renames, HTML structure changes, or JS API modifications (breaking).</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Not all changes are equal. A color value update is safe to ship; a class rename breaks every template that uses it. Assessing risk before acting means the team knows what can be shipped confidently and what needs a coordinated migration.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'hierarchy-3' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Migration plan</h2>
+              <p class="workflow-step-desc">Document how the old and new DS stacks are separated, and define the step-by-step path for migrating each module and product to the new DS without breaking existing functionality. <a href="/style-guide/migration-plan" class="pos-link">View migration plan &rarr;</a></p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Without a plan, "migrate to the new DS" is an open-ended commitment that never gets done. A concrete, phased plan turns it into a trackable sequence of steps — each with a clear definition of done.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'layers-stacked' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Synchronize tokens</h2>
+              <p class="workflow-step-desc">Decide per token whether to sync, skip or flag for review. Approved values are updated in <code class="pos-code pos-code--small">pos-config.css</code> — all components pick up the new values automatically.</p>
+              <p class="workflow-step-desc">The result is a human-reviewed, validated, and fully synchronized Figma–CSS token system — checkable any time via the <code class="pos-code pos-code--small">/token-sync</code> command.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Tokens are the foundation of the entire system. A mismatch between Figma and CSS means the design and the shipped product look different. Syncing here means all 291 tokens are authoritative, validated, and correct — and every component picks up the right values automatically, without per-component fixes. For AI-assisted workflows, accurate tokens are what make consistent, on-brand generation possible.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'dashboard' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">AI-readable token mapping</h2>
+              <p class="workflow-step-desc">Generate <code class="pos-code pos-code--small">token-map.json</code> — a structured reference that maps every Figma variable name to its CSS custom property counterpart, documents the full resolution chain (semantic → primitive → final value) for light, dark, and HC mode, and groups tokens by their Figma collection. Enables AI-assisted component generation and token validation without reading multiple CSS files. Browsable on the <a href="/style-guide/foundations/tokens" class="pos-link">Tokens</a> foundation page.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} AI-assisted generation is only as good as its inputs. Without a machine-readable token map, every AI tool would need to interpret raw CSS files — slow, fragile, and error-prone. This mapping makes token-correct AI generation practical and reliable.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'color-palette-sample' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Dark mode token mapping</h2>
+              <p class="workflow-step-desc">Once light-mode tokens are synced and validated, map each semantic color token to its dark-mode equivalent from the Figma Dark Mode variable collection. Overrides are defined in the dark-mode block of <code class="pos-code pos-code--small">pos-config.css</code> — no component markup changes required. Run <code class="pos-code pos-code--small">/token-sync</code> against the dark mode collection to verify coverage.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Dark mode is not a separate theme built from scratch — it is a set of token overrides on the same component structure. Map the tokens once and every component gets dark mode automatically, with no per-component markup changes required.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'color-palette-sample' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">High contrast mode</h2>
+              <p class="workflow-step-desc">Map each semantic color token to its high contrast equivalent from the Figma High Contrast Mode variable collection. HC semantics are built for maximum legibility on black: white text and icons, cyan for interactive graphics, yellow for interactive text and focus indicators. All primitive shadow tokens are set to <code class="pos-code pos-code--small">none</code> — borders replace elevation for separation. Borders defined with <code class="pos-code pos-code--small">--pos-color-frame-transparent</code> become visible automatically in HC without any per-component overrides.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} High contrast mode is not a visual style — it is an accessibility requirement. Users with low vision or contrast sensitivity rely on it to use the product at all. Because it is built as a third token layer on the same component structure, no component markup changes are needed: map the tokens once and every component gets HC support automatically.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'eye' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Base font size scaling</h2>
+              <p class="workflow-step-desc">A three-step font size toggle (100% / 112.5% / 125%) was added to the documentation sidebar. Selecting a size sets <code class="pos-code pos-code--small">html.style.fontSize</code> and dispatches a <code class="pos-code pos-code--small">resize</code> event — components with layout-dependent calculations (sliding indicator, segmented control pill) re-run their measurements automatically. All components are built with <code class="pos-code pos-code--small">em</code> and <code class="pos-code pos-code--small">rem</code> units, so the entire UI scales proportionally with no per-component changes. Preference is persisted in <code class="pos-code pos-code--small">localStorage</code>.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} WCAG 1.4.4 requires text to remain readable and functional at 200% zoom. Testing at larger base sizes surfaces layout breakage early — a component that only works at 100% is not production-ready. Building with relative units from the start means scaling is free; fixing it later is expensive.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'ui-webpage-template' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Define token documentation layout template</h2>
+              <p class="workflow-step-desc">Design and build a reusable Liquid layout template shared by all component documentation pages. Defines the standard anatomy: live preview with variant and state controls, token table, usage guidelines, do/don't examples, and the AI-readable JSON spec block. Building this once ensures every component page is structurally consistent and maintainable from a single source.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Without a shared template, each documentation page would be structured differently — harder to read, harder to maintain, and impossible to parse reliably by tools. One template means consistency is automatic, not enforced case by case.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'eye' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Variants / Usage / Tokens panel</h2>
+              <p class="workflow-step-desc">Every component page has a persistent right-side panel with three tabs — <strong>Variants</strong> (state, size, and intent controls that update the live preview), <strong>Usage</strong> (when to use / avoid, do's and don'ts, accessibility notes), and <strong>Tokens</strong> (the full token breakdown — Color, Layout, Typography, Elevation, Focus indicator — for the currently selected variant and state, read directly from the embedded AI-readable JSON spec). No clicking into the preview required — the panel always reflects the current selection.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Design intent has to be visible right next to the live component, not buried in a separate spreadsheet or hidden behind a click. Anyone — designer, developer, or AI tool — can see exactly which token controls which property just by looking at the panel.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'hierarchy-3' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">First component documentation</h2>
+              <p class="workflow-step-desc">First batch of component documentation pages completed: Button, Tag, Link, Segmented control, Tile button, Control icons. Each page includes two mandatory layers — a <strong>human-readable layer</strong> (interactive preview with variant and state controls, live token table, usage guidelines) and an <strong>AI-readable layer</strong> (a fully-rendered <code class="pos-code pos-code--small">&lt;script type="application/json"&gt;</code> block with every variant × state × token mapping, available at page load without JS).</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Documentation without examples is a specification. Examples without documentation are unexplained demos. Starting with the most complex component (Button, 8+ variants) validated the documentation format under real conditions — proving it works before scaling it to the rest of the library.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--warning">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'dashboard' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Process review &amp; refactor</h2>
+              <p class="workflow-step-desc">After the first documentation batch, we reviewed what worked and what didn't — identifying two patterns that were too slow and error-prone to scale: a monolithic inspect JSON blob (157 KB, single syntax error breaks everything) and a three-step token lookup chain (component CSS → config → token-map). Both were refactored: the inspect blob was split into independent per-component spec files (<code class="pos-code pos-code--small">tokens/components/*.json</code>), which are now the source for each component's Tokens panel, and a direct <code class="pos-code pos-code--small">css-to-figma.json</code> lookup was generated.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} A documentation process that is too slow or error-prone will be skipped. The refactor reduced the cost of adding a component from hours of fragile JSON editing to a predictable, tool-supported workflow. Efficiency here multiplies across every remaining component — the earlier this runs, the more it saves.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--confirmation">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'hierarchy-3' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Component documentation — continued</h2>
+              <p class="workflow-step-desc">All remaining components were documented using the refined tooling and a standardized component boilerplate template, each page following the same structure established in the first batch.</p>
+              <p class="workflow-step-why">{% render 'modules/common-styling/icon', icon: 'info' %} Every component without documentation is a gap where design intent, correct token usage, and accessibility requirements are invisible to the people building with it. Complete documentation is what turns a collection of CSS classes into a design system.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--sub workflow-step--pending">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon"></div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Visual validation</h2>
+              <p class="workflow-step-desc">Opportunistic, not a mandatory per-component step — spot-check against the Figma reference when one exists. Most components are already Figma-aligned, so this isn't a required round-trip on every change.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--sub workflow-step--pending">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon"></div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Push components back to Figma</h2>
+              <p class="workflow-step-desc">New components generated in code are added to the live Figma DS via MCP — creating the main component, defining its properties, and connecting it to the existing token variables. This closes the loop: Figma remains the single source of truth even for components that originated in code.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'hierarchy-3' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Documentation refactor</h2>
+              <p class="workflow-step-desc">The documentation UI itself was audited and rebuilt using the DS's own components instead of one-off markup — <code class="pos-code pos-code--small">/style-guide</code> is now a living example of the design system, built entirely from the same components it documents.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--done workflow-step--interactive">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'ui-webpage-template' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">AI-assisted UI generation</h2>
+              <p class="workflow-step-desc">The foundation for this is in place — AI rules (<code class="pos-code pos-code--small">RULES.md</code>), <code class="pos-code pos-code--small">AGENTS.md</code>, the <code class="pos-code pos-code--small">ds-index.json</code> catalog and AI-readable component specs (the embedded JSON on every page) let Claude generate new UI surfaces and components from a prompt alone, reading token values, anatomy, constraints and keyboard behavior directly from the documentation layer, and checking its own output automatically. Generated UI uses the real components and tokens — no hardcoding or guessing.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--current">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'layers-stacked' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Customization &amp; white-label</h2>
+              <p class="workflow-step-desc">15 built-in brand themes (<code class="pos-code pos-code--small">pos-brand-&lt;key&gt;</code>, <code class="pos-code pos-code--small">pos-themes.css</code>, generated by <code class="pos-code pos-code--small">npm run build:themes</code>) and a Themes page that exports a custom theme as CSS. Every visual customization stays within the token system — no structural changes, no forking components.</p>
+            </div>
+          </div>
+
+          <div class="workflow-step workflow-step--pending workflow-step--last">
+            <div class="workflow-step-marker">
+              <div class="workflow-step-icon">
+                {% render 'modules/common-styling/icon', icon: 'dashboard' %}
+              </div>
+            </div>
+            <div class="workflow-step-content">
+              <h2 class="workflow-step-title pos-heading-4">Maintenance &amp; component usage tracking</h2>
+              <p class="workflow-step-desc">Track which components and tokens are actively used, overused, or candidates for deprecation. Usage data is gathered by scanning Liquid templates for <code class="pos-code pos-code--small">{% raw %}{% render %}{% endraw %}</code> calls and CSS files for token references. Deprecated components are flagged in the documentation with a migration guide before removal. Keeps the DS lean, intentional, and free of dead weight over time.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>

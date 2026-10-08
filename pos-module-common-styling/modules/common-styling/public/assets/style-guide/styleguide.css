@@ -1,3 +1,26 @@
+/*
+  styleguide.css — Documentation UI styles only
+
+  This file contains styles for the documentation page shell and layout.
+  It is NOT a component file. Do not add component styles here.
+
+  Contents:
+    - Page layout         (.styleguide grid, .styleguide-columns)
+    - Code example blocks (.styleguide-code, pre, syntax highlighting)
+    - Live example frames (.styleguide-example)
+    - Copy button         (.styleguide-copy)
+    - Typography helpers  (.styleguide-heading-4, .styleguide-subheading)
+    - Definition lists    (.styleguide-details)
+    - Spacing examples    (.styleguide-spacings-example)
+    - Placeholder elements(.styleguide-placeholder-input)
+    - Coming soon page    (.styleguide--new, .styleguide-coming-soon)
+
+  Component styles (toggle, buttons, forms, etc.) live in:
+    modules/common-styling/public/assets/style/pos-<component>.css
+*/
+
+
+
 /* layout
 ============================================================================ */
 .styleguide {
@@ -13,7 +36,8 @@ article {
   scroll-margin: var(--pos-padding-page);
 }
 
-article + article {
+article + article,
+.styleguide-ds-article section + section {
   margin-block-start: var(--pos-gap-section-section);
 }
 
@@ -37,13 +61,13 @@ article + article {
 
 /* common elements
 ============================================================================ */
-/* code samples */
-code {
+/* code samples — exclude DS pos-code component so layer styles are not overridden */
+code:not(.pos-code) {
   font-family: monospace;
   font-size: 1rem;
 }
 
-p code {
+p code:not(.pos-code) {
   padding-inline: .3em;
 
   border-radius: 4px;
@@ -168,9 +192,9 @@ p code {
   }
 
 /* headings */
-.pos-heading-2,
-.pos-heading-3 {
-  margin-block-end: .2em;
+.styleguide-ds-article .pos-heading-2,
+.styleguide-ds-article .pos-heading-3 {
+  margin-block-end: var(--pos-gap-section-title-content);
 }
 
 .styleguide-heading-4 {
@@ -741,3 +765,3744 @@ p code {
   border-radius: var(--pos-radius-input);
   background-color: var(--pos-color-highlight-background);
 }
+
+
+/* DS version toggle (Current / New)
+============================================================================ */
+.styleguide-toggle-wrapper {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+
+
+/* New DS documentation layout
+============================================================================ */
+
+/* override body padding from pos-page.css (.pos-app body sets padding:16px — match specificity to win) */
+.pos-app body {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* .pos-app is set on <html> itself. Without this, <html> has no overflow rule of its own —
+   when a URL loads with a #comp-section-* hash, the browser's native anchor-scroll-into-view
+   runs on <html> (the actual scrolling box whenever total page content taller than the
+   viewport, since body alone being overflow:hidden doesn't stop the *document* from
+   scrolling) before the app's own JS scroll-sync (which targets #main-content) ever runs.
+   That shifts the entire fixed-height (.styleguide-ds { height: 100dvh }) layout — including
+   the right sidebar's tabs — up and out of view. Confirmed via reproduction at 1193x810
+   with a #comp-section-* URL: window.scrollY landed at 132, matching the exact upward shift.
+   Blocking it here forces all scrolling through the intended #main-content container. */
+html.pos-app {
+  overflow: hidden;
+  /* Chrome's CSS Scroll Anchoring feature was the actual cause of the shift this rule alone
+     didn't fix: when a late-loading image (e.g. an avatar preview) shifts layout above the
+     fold, Chrome auto-adjusts scroll position on whichever box it picks as the anchoring
+     scroll container to compensate — and it can pick <html> even though it's not meant to be
+     scrollable at all here. Confirmed via reproduction: the jump landed exactly when the
+     avatar's <img> finished loading (~1.8s in), not on initial page load. */
+  overflow-anchor: none;
+}
+
+/* thin scrollbar everywhere inside the DS layout */
+.styleguide-ds ::-webkit-scrollbar { width: 6px; height: 6px; }
+.styleguide-ds ::-webkit-scrollbar-track { background: transparent; }
+/* scrollbar thumb color of the whole docs site (on Windows the small arrows follow it): the frame grey at 40%;
+   high contrast: solid white — 2026-10-03 (the plain frame was too faint, the full grey too dark) */
+.styleguide-ds {
+  --styleguide-scrollbar: color-mix(in srgb, var(--pos-color-frame-default) 40%, transparent);
+}
+
+:root.pos-theme-a11y .styleguide-ds {
+  --styleguide-scrollbar: var(--pos-color-frame-transparent);
+}
+
+.styleguide-ds ::-webkit-scrollbar-thumb { background: var(--styleguide-scrollbar); border-radius: 3px; }
+
+.styleguide-ds {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--pos-color-page-background);
+  font-family: var(--pos-font-default);
+  font-size: var(--pos-font-size-ss); /* 14px — doc default body text */
+  color: var(--pos-color-content-text);
+  /* doc-only spacing override — section gap is larger here than the DS default */
+  --pos-gap-section-section: var(--pos-primitive-size-10);
+}
+
+
+.styleguide-ds-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* rem, not px: the sidebar grows with the text size setting (A / A / A), so long items like
+     "Complex components" keep their chevron on the same line (250px at the default 16px) */
+  grid-template-columns: 15.625rem 1fr;
+}
+
+
+/* sidebar search
+---------------------------------------------------------------------------- */
+.styleguide-ds-nav-search {
+  padding: var(--pos-gap-card-elements) var(--pos-gap-section-elements);
+  border-block-end: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-ds-nav-search .pos-label {
+  position: absolute;
+  inset-inline-start: -200vw;
+}
+
+.styleguide-nav-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.styleguide-nav-search-wrapper .pos-form-input {
+  width: 100%;
+  height: var(--pos-height-button-small); /* 30px */
+  font-size: .8125rem;
+  padding-inline-start: 2rem;
+  padding-inline-end: 0.5rem; /* 8px */
+  border-color: var(--pos-color-frame);
+}
+
+.styleguide-nav-search-icon {
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  top: 0;
+  bottom: 0;
+  color: var(--pos-color-content-icon);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.styleguide-nav-search-icon .pos-icon {
+  width: var(--pos-size-icon-s);  /* 16px */
+  height: var(--pos-size-icon-s);
+}
+
+.styleguide-nav-search-clear {
+  position: absolute;
+  inset-inline-end: 0.5rem; /* 8px from right edge */
+  top: 0;
+  bottom: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--pos-color-content-icon);
+  display: flex;
+  align-items: center;
+  border-radius: var(--pos-radius-button);
+  opacity: 0;
+  pointer-events: none;
+  transition: color 0.1s linear, opacity 0.1s linear;
+}
+
+.styleguide-nav-search-clear:hover {
+  color: var(--pos-color-interactive);
+}
+
+.styleguide-nav-search-clear:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+}
+
+.styleguide-nav-search-clear .pos-icon {
+  width: var(--pos-size-icon-xs);  /* 12px */
+  height: var(--pos-size-icon-xs);
+}
+
+/* hide browser-native search clear button — we use our own */
+.styleguide-nav-search-wrapper input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+.styleguide-nav-search-wrapper input[type="search"]::-webkit-search-decoration {
+  display: none;
+}
+
+
+/* sidebar
+---------------------------------------------------------------------------- */
+.styleguide-ds-sidebar {
+  overflow: hidden;
+  background-color: var(--pos-color-content-background);
+  box-shadow: 2px 0 12px color-mix(in srgb, var(--pos-color-shadow) 8%, transparent);
+  border-inline-end: 1px solid var(--pos-color-frame-transparent);
+  display: flex;
+  flex-direction: column;
+}
+
+.styleguide-ds-sidebar .pos-collapsible {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--styleguide-scrollbar) transparent;
+}
+
+.styleguide-ds-sidebar .pos-collapsible::-webkit-scrollbar { width: 6px; }
+.styleguide-ds-sidebar .pos-collapsible::-webkit-scrollbar-track { background: transparent; }
+
+.styleguide-ds-theme-toggle-wrapper {
+  padding: var(--pos-gap-section-elements);
+  padding-block-start: var(--pos-gap-card-elements);
+  border-block-start: 1px solid var(--pos-color-frame);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pos-gap-button-button-small);
+  /* freeze button size — don't scale with the font-size toggle */
+  --pos-height-button-small: 30px;
+}
+
+.styleguide-ds-theme-toggle-wrapper svg,
+#themes-scheme svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  display: block;
+}
+
+/* icon-only toggle buttons: square, icon centered, no inline padding — desktop only (30px < 44px min touch target) */
+#styleguide-theme-toggle .pos-segmented-control-btn,
+#styleguide-font-toggle .pos-segmented-control-btn,
+#themes-scheme .pos-segmented-control-btn {
+  padding-inline: 0;
+  width: var(--pos-height-button-small); /* 30×30px square — small variant, desktop-only */
+}
+
+.styleguide-ds-sidebar .pos-collapsible {
+  padding: var(--pos-gap-section-elements);
+  padding-inline-end: 0;
+  font-size: .875rem;
+}
+
+/* section headers (Design System, Foundations, Components) — no url, no <a> */
+.styleguide-ds-sidebar .pos-collapsible > li:not(:has(> a)) {
+  cursor: pointer;
+  min-height: 40px;
+  padding-inline-end: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--pos-font-heading);
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.styleguide-ds-nav-section-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 16px */
+}
+
+.styleguide-ds-nav-section-label .pos-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--pos-color-content-icon);
+}
+
+/* no open/close transition in sidebar nav */
+.styleguide-ds-sidebar .pos-collapsible div {
+  transition: none;
+}
+
+/* remove default item gap from pos-collapsible */
+.styleguide-ds-sidebar .pos-collapsible li {
+  padding-block: 0;
+  padding-inline-end: 1rem; /* 16px */
+}
+
+/* remove left bar and indent from submenu */
+.styleguide-ds-sidebar .pos-collapsible ul::before {
+  display: none;
+}
+
+.styleguide-ds-sidebar .pos-collapsible ul {
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}
+
+.styleguide-ds-sidebar .pos-collapsible ul li {
+  margin-inline-start: 0;
+}
+
+/* sub-items — regular weight, default text color */
+.styleguide-ds-sidebar .pos-collapsible a {
+  font-family: var(--pos-font-default);
+  text-decoration: none;
+  color: var(--pos-color-content-text);
+  font-size: 0.75rem; /* 12px at default — scales with font size toggle */
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 40px;
+  padding-inline-start: 2rem; /* 32px */
+  padding-inline-end: 4px;
+  border-radius: var(--pos-radius-button);
+  width: 100%;
+}
+
+/* hover — pale grey background */
+.styleguide-ds-sidebar .pos-collapsible a:hover {
+  /* same hover surface as the collapsible's own toggle button (pos-collapsible.css) */
+  background-color: var(--pos-color-highlight-background);
+  color: var(--pos-color-content-text);
+}
+
+/* active/selected — interactive color background, inverted text */
+.styleguide-ds-sidebar .pos-collapsible .pos-collapsible-active > a {
+  background-color: var(--pos-color-interactive);
+  color: var(--pos-color-content-inverted-text);
+  padding-inline-end: .75rem; /* 12px */
+  box-shadow: var(--pos-primitive-shadow-bevel), var(--pos-primitive-shadow-layered);
+}
+
+/* remove default left-bar indicator from active item */
+.styleguide-ds-sidebar .pos-collapsible .pos-collapsible-active > a::before {
+  display: none;
+}
+
+.styleguide-ds-sidebar .pos-collapsible-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pos-color-interactive);
+  flex-shrink: 0;
+}
+
+.styleguide-ds-sidebar .pos-collapsible-toggle:hover {
+  color: var(--pos-color-interactive);
+}
+
+.styleguide-ds-sidebar .pos-collapsible-toggle svg {
+  display: none;
+}
+
+.styleguide-ds-sidebar .pos-collapsible-toggle::after {
+  content: '';
+  display: block;
+  width: .5em;
+  height: .5em;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform .15s linear;
+  flex-shrink: 0;
+}
+
+.styleguide-ds-sidebar .pos-collapsible li:not(:has(> [inert])) > .pos-collapsible-toggle::after {
+  transform: rotate(45deg);
+}
+
+
+/* sync "was" indicator — shows previous value in after table
+---------------------------------------------------------------------------- */
+.sync-was {
+  display: block;
+  margin-block-start: .2em;
+  font-size: .75em;
+  color: var(--pos-color-important);
+  opacity: .8;
+}
+
+
+/* sync before/after tabs
+---------------------------------------------------------------------------- */
+.sync-panel-tabs {
+  margin-block-end: var(--pos-gap-section-elements);
+}
+
+
+/* main content
+---------------------------------------------------------------------------- */
+.styleguide-ds-main {
+  overflow-y: auto;
+  padding: calc(var(--pos-padding-page) * 2.5) calc(var(--pos-padding-page) * 3);
+}
+
+.styleguide-ds-article {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+/* full-width article for wide, table-heavy pages (e.g. Core › Palettes) so the 10-step scale grids fit without horizontal scrolling */
+.styleguide-ds-article--full {
+  max-width: none;
+}
+
+.styleguide-ds-article-header {
+  margin-block-end: var(--pos-gap-title-content);
+}
+
+.styleguide-ds-article-header :is(h1, h2, h3, .pos-heading-1, .pos-heading-2, .pos-heading-3) {
+  margin-block-end: 0;
+}
+
+.styleguide-ds-article-header p {
+  margin-block-start: var(--pos-gap-text-text);
+  color: var(--pos-color-content-text-supplementary);
+}
+
+
+/* risk legend
+---------------------------------------------------------------------------- */
+.styleguide-ds-risk-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .4em 2em;
+  margin-block-end: var(--pos-gap-section-elements);
+  padding: var(--pos-padding-cell);
+
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-panel);
+
+  font-size: .85rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-ds-risk-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+}
+
+.styleguide-ds-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .15em .5em;
+  cursor: default;
+  border-radius: var(--pos-radius-tag);
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+.styleguide-ds-risk-badge[title] {
+  cursor: help;
+}
+
+.styleguide-ds-risk-badge--grey,
+.styleguide-ds-risk-badge--none {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+  overflow: hidden;
+  background: var(--pos-color-frame);
+  flex-shrink: 0;
+}
+
+.styleguide-ds-risk-badge--low {
+  background-color: color-mix(in srgb, var(--pos-color-confirmation) 15%, transparent);
+  color: var(--pos-color-confirmation);
+}
+
+.styleguide-ds-risk-badge--medium {
+  background-color: color-mix(in srgb, var(--pos-color-warning) 20%, transparent);
+  color: color-mix(in srgb, var(--pos-color-warning) 80%, var(--pos-color-content-text));
+}
+
+.styleguide-ds-risk-badge--high {
+  background-color: color-mix(in srgb, var(--pos-color-important) 15%, transparent);
+  color: var(--pos-color-important);
+}
+
+
+/* changelog table
+---------------------------------------------------------------------------- */
+.styleguide-ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+  color: var(--pos-color-content-text);
+  background-color: var(--pos-color-content-background);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--pos-color-shadow) 10%, transparent);
+}
+
+.styleguide-ds-table th,
+.styleguide-ds-table td {
+  padding: var(--pos-padding-cell);
+  text-align: left;
+  border-block-end: 1px solid var(--pos-color-frame);
+  vertical-align: top;
+}
+
+.styleguide-ds-table thead tr {
+  background-color: var(--pos-color-highlight-background);
+}
+
+.styleguide-ds-table thead th {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--pos-color-content-text);
+  border-block-end: 2px solid var(--pos-color-frame);
+}
+
+.styleguide-ds-table td:first-child {
+  white-space: nowrap;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-ds-table td:nth-child(3) {
+  color: var(--pos-color-content-text);
+}
+
+.styleguide-ds-table code {
+  font-size: .8em;
+}
+
+.styleguide-ds-table i {
+  font-style: italic;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+/* risk badges inside the table: dot only, no background */
+.styleguide-ds-table .styleguide-ds-risk-badge {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* All neutral (non-colored) badges → uniform light grey dot */
+.styleguide-ds-table .styleguide-ds-risk-badge--grey,
+.styleguide-ds-table .styleguide-ds-risk-badge--none,
+.styleguide-ds-table .styleguide-ds-risk-badge:not(.styleguide-ds-risk-badge--low):not(.styleguide-ds-risk-badge--medium):not(.styleguide-ds-risk-badge--high) {
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  overflow: hidden;
+  background: var(--pos-color-frame);
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+tr[data-risk="grey"] td:nth-child(2) {
+  color: var(--pos-color-content-text-supplementary);
+}
+
+
+/* token sync report
+---------------------------------------------------------------------------- */
+.styleguide-ds-risk-legend--column {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .5em;
+}
+
+.sync-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pos-gap-card-elements);
+  margin-block-end: var(--pos-gap-section-elements);
+}
+
+.sync-generated-at {
+  font-size: .8rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.sync-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .4em 2em;
+  margin-block-end: var(--pos-gap-section-elements);
+  padding: var(--pos-padding-cell);
+
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-panel);
+
+  font-size: .85rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.sync-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5em 1.5em;
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.sync-stat {
+  display: inline-flex;
+  align-items: center;
+  padding: .15em .5em;
+  border-radius: var(--pos-radius-tag);
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.sync-stat--match      { background-color: color-mix(in srgb, var(--pos-color-confirmation) 15%, transparent); color: var(--pos-color-confirmation); }
+.sync-stat--mismatch   { background-color: color-mix(in srgb, var(--pos-color-important) 15%, transparent);    color: var(--pos-color-important); }
+.sync-stat--missing,
+.sync-stat--no-mapping { background-color: color-mix(in srgb, var(--pos-color-warning) 20%, transparent);      color: color-mix(in srgb, var(--pos-color-warning) 80%, var(--pos-color-content-text)); }
+.sync-stat--alias      { background-color: color-mix(in srgb, var(--pos-color-interactive) 12%, transparent);  color: var(--pos-color-interactive); }
+.sync-stat--total      { color: var(--pos-color-content-text-supplementary); background: none; }
+
+.sync-footer-divider {
+  border: none;
+  border-block-start: 1px solid var(--pos-color-frame);
+  margin-block: var(--pos-gap-section-section) var(--pos-gap-section-elements);
+}
+
+.sync-footer-note {
+  font-size: .75rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+/* ─── workflow stats ─────────────────────────────────────────────────────── */
+
+.workflow-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--pos-gap-card-card);
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.workflow-stat {
+  display: flex;
+  flex-direction: column;
+  gap: .25em;
+  padding: var(--pos-padding-card);
+  background-color: var(--pos-color-content-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--pos-color-shadow) 8%, transparent);
+}
+
+.workflow-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.workflow-stat-label {
+  font-size: .8rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+/* ─── workflow timeline ──────────────────────────────────────────────────── */
+
+.workflow-timeline {
+  position: relative;
+  padding-block-end: var(--pos-gap-section-elements);
+}
+
+/* vertical connector line */
+.workflow-timeline::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 1.25rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--pos-color-frame);
+}
+
+.workflow-step {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--pos-gap-card-elements);
+  padding-block-end: var(--pos-gap-section-section);
+  position: relative;
+}
+
+.workflow-step--last {
+  padding-block-end: 0;
+}
+
+/* icon circle */
+.workflow-step-marker {
+  position: relative;
+  z-index: 1;
+}
+
+.workflow-step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--pos-color-frame);
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.workflow-step-icon .pos-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  --pos-icon-stroke-width: 1.75;
+  overflow: visible;
+}
+
+/* done states — different color per step */
+.workflow-step--done .workflow-step-icon {
+  color: var(--pos-color-content-inverted-icon);
+}
+
+.workflow-step--confirmation .workflow-step-icon { background-color: var(--pos-color-confirmation); }
+.workflow-step--interactive .workflow-step-icon  { background-color: var(--pos-color-interactive); }
+.workflow-step--warning .workflow-step-icon      { background-color: color-mix(in srgb, var(--pos-color-warning) 90%, var(--pos-color-content-text) 10%); }
+.workflow-step--important .workflow-step-icon    { background-color: var(--pos-color-important); }
+
+/* current step — in progress */
+@keyframes workflow-in-progress {
+  0%   { box-shadow: 0 0 0 0    color-mix(in srgb, var(--pos-color-interactive) 70%, transparent); }
+  60%  { box-shadow: 0 0 0 10px color-mix(in srgb, var(--pos-color-interactive) 0%,  transparent); }
+  100% { box-shadow: 0 0 0 0    color-mix(in srgb, var(--pos-color-interactive) 0%,  transparent); }
+}
+
+.workflow-step--current .workflow-step-icon {
+  background-color: var(--pos-color-highlight-background);
+  color: var(--pos-color-content-icon);
+  animation: workflow-in-progress 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-step--current .workflow-step-icon { animation: none; }
+}
+/* high contrast: no glow — a static 2px interactive ring marks the current step */
+:root.pos-theme-a11y.pos-theme-a11yEnabled .workflow-step--current .workflow-step-icon {
+  animation: none;
+  outline: 2px solid var(--pos-color-interactive);
+  outline-offset: -2px;
+}
+
+/* pending */
+.workflow-step--pending .workflow-step-icon {
+  background-color: var(--pos-color-highlight-background);
+  color: var(--pos-color-content-text-supplementary);
+  border: 2px dashed var(--pos-color-frame);
+}
+
+.workflow-step-content {
+  padding-block-start: .35rem;
+}
+
+.workflow-step-title {
+  margin-block-end: var(--pos-gap-section-title-content);
+}
+
+.workflow-step--pending .workflow-step-title,
+.workflow-step--pending .workflow-step-desc {
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.workflow-step-desc {
+  font-size: .9rem;
+  color: var(--pos-color-content-text);
+  margin: 0;
+}
+
+/* a step with several description paragraphs: paragraph spacing between them */
+.workflow-step-desc + .workflow-step-desc {
+  margin-block-start: var(--pos-gap-text-text);
+}
+
+.workflow-step--current .workflow-step-title {
+  color: var(--pos-color-interactive);
+}
+
+/* sub-step — small dot, no icon, treated as part of the preceding major step */
+.workflow-step--sub {
+  padding-block-end: var(--pos-gap-card-elements);
+}
+
+/* reduce gap before a sub-step so it sits close to its parent */
+.workflow-step:has(+ .workflow-step--sub) {
+  padding-block-end: var(--pos-gap-card-elements);
+}
+
+/* restore full gap before the next major step after a sub-step group */
+.workflow-step--sub + .workflow-step:not(.workflow-step--sub) {
+  margin-block-start: calc(var(--pos-gap-section-section) - var(--pos-gap-card-elements));
+}
+
+.workflow-step--sub .workflow-step-icon {
+  width: 0.625rem;
+  height: 0.625rem;
+  margin: 0.9rem auto 0;
+  border: none;
+  background-color: var(--pos-color-frame-default);
+}
+
+.workflow-step--sub.workflow-step--pending .workflow-step-icon {
+  border: none;
+  background-color: var(--pos-color-frame-default);
+}
+
+.workflow-step-why {
+  display: flex;
+  gap: .4em;
+  align-items: flex-start;
+  margin-block-start: .75em;
+  margin: .75em 0 0;
+  font-size: .8rem;
+  color: var(--pos-color-content-text-supplementary);
+  font-style: italic;
+}
+.workflow-step-why .pos-icon {
+  flex-shrink: 0;
+  width: var(--pos-size-icon-s);
+  height: var(--pos-size-icon-s);
+  margin-block-start: .1em;
+  opacity: .7;
+}
+
+.sync-group-header {
+  margin-block: var(--pos-gap-section-elements) var(--pos-gap-section-title-content);
+
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.sync-table {
+  margin-block-end: var(--pos-gap-section-elements);
+}
+
+.sync-row--mismatch td {
+  background-color: color-mix(in srgb, var(--pos-color-important) 6%, transparent);
+}
+.sync-row--no-mapping td {
+  background-color: color-mix(in srgb, var(--pos-color-warning) 8%, transparent);
+}
+.sync-row--alias td {
+  background-color: color-mix(in srgb, var(--pos-color-interactive) 6%, transparent);
+}
+
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  padding: .15em .5em;
+  border-radius: var(--pos-radius-tag);
+  font-size: .75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sync-status--match      { background-color: color-mix(in srgb, var(--pos-color-confirmation) 15%, transparent); color: var(--pos-color-confirmation); }
+.sync-status--match::before      { content: '🟢 '; }
+.sync-status--mismatch   { background-color: color-mix(in srgb, var(--pos-color-important) 15%, transparent);    color: var(--pos-color-important); }
+.sync-status--mismatch::before   { content: '🔴 '; }
+.sync-status--missing,
+.sync-status--no-mapping { background-color: color-mix(in srgb, var(--pos-color-warning) 20%, transparent);      color: color-mix(in srgb, var(--pos-color-warning) 80%, var(--pos-color-content-text)); }
+.sync-status--missing::before,
+.sync-status--no-mapping::before { content: '🟡 '; }
+.sync-status--alias      { background-color: color-mix(in srgb, var(--pos-color-interactive) 20%, transparent);  color: var(--pos-color-interactive); }
+.sync-status--alias::before      { content: '🔵 '; }
+
+.sync-swatch {
+  display: inline-block;
+  width: .9em;
+  height: .9em;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--pos-color-content-text) 15%, transparent);
+  vertical-align: middle;
+  margin-inline-end: .3em;
+}
+
+/* token name and CSS variable columns: normal text styling, not monospace code */
+.sync-table td:nth-child(1) > code,
+.sync-table td:nth-child(3) > code {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--pos-color-content-text);
+}
+
+/* collapsible details block */
+.styleguide-ds-details {
+  margin-block-end: var(--pos-gap-section-elements);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+}
+
+.styleguide-ds-details--last {
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.styleguide-ds-details > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: .5em;
+  padding: var(--pos-padding-card);
+  user-select: none;
+}
+
+.styleguide-ds-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.styleguide-ds-details > summary::before {
+  content: '';
+  display: inline-block;
+  width: .45em;
+  height: .45em;
+  border-right: 1.5px solid var(--pos-color-interactive);
+  border-bottom: 1.5px solid var(--pos-color-interactive);
+  transform: rotate(-45deg);
+  transition: transform 0.15s linear;
+  flex-shrink: 0;
+  margin-block-start: 2px;
+}
+
+.styleguide-ds-details[open] > summary::before {
+  transform: rotate(45deg);
+  margin-block-start: -2px;
+}
+
+.styleguide-ds-details > .styleguide-ds-risk-legend {
+  padding: var(--pos-padding-card);
+  border: none;
+  border-radius: 0;
+  margin-block-end: 0;
+}
+
+/* report legend status: icon + text in utility colors */
+.sync-legend-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.sync-legend-status .pos-icon,
+.sync-col-sync .pos-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
+  fill: none; /* stroke icons — override global fill: currentColor */
+  --pos-icon-stroke-width: 2;
+  overflow: visible;
+}
+
+/* sync table: icon column */
+.sync-col-sync,
+.sync-col-risk {
+  text-align: center;
+  white-space: nowrap;
+  width: 1%;
+}
+
+.sync-col-sync span[title] {
+  cursor: help;
+}
+
+.sync-col-sync--match     { color: var(--pos-color-confirmation); }
+.sync-col-sync--mismatch  { color: var(--pos-color-important); }
+.sync-col-sync--missing,
+.sync-col-sync--no-mapping { color: var(--pos-color-warning); }
+.sync-col-sync--alias     { color: var(--pos-color-interactive); }
+
+.sync-legend-status--match     { color: var(--pos-color-confirmation); }
+.sync-legend-status--mismatch  { color: var(--pos-color-important); }
+.sync-legend-status--missing,
+.sync-legend-status--no-mapping { color: var(--pos-color-warning); }
+.sync-legend-status--alias     { color: var(--pos-color-interactive); }
+
+/* reference chain below the token name */
+.sync-chain {
+  display: block;
+  font-size: 0.78em;
+  color: var(--pos-color-content-text-supplementary);
+  margin-block-start: 0.2em;
+}
+
+
+
+/* ============================================================================
+   Token reference tables — foundations/tokens page
+   ============================================================================ */
+
+/* Sections separated by section-section spacing */
+.styleguide-token-section {
+  margin-block-start: var(--pos-gap-section-section);
+  padding-block-start: var(--pos-gap-section-section);
+  border-top: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-token-section:first-of-type {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-top: none;
+}
+
+.styleguide-token-section-heading {
+  margin-block-end: var(--pos-gap-section-title-content);
+}
+
+.styleguide-token-section-desc {
+  font-size: var(--pos-font-size-ss);
+  color: var(--pos-color-content-text-supplementary);
+  line-height: 1.55;
+  max-width: 72ch;
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.styleguide-token-group {
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.styleguide-token-group-label {
+  font-size: var(--pos-font-size-body-small);
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent);
+  margin-block-end: var(--pos-gap-text-text);
+}
+
+.styleguide-token-group-desc {
+  font-size: var(--pos-font-size-ss);
+  color: var(--pos-color-content-text-supplementary);
+  line-height: 1.55;
+  margin-block-end: var(--pos-gap-card-elements);
+  max-width: 72ch;
+}
+
+/* Sticky column header bar — rendered once, spans all tables */
+.styleguide-token-header-bar {
+  display: grid;
+  grid-template-columns: 28% 27% 20% 25%;
+  position: sticky;
+  top: calc(var(--pos-padding-page) * -2.5);
+  z-index: 10;
+  background: var(--pos-color-highlight-background);
+  border-bottom: 1px solid var(--pos-color-frame);
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.styleguide-token-header-cell {
+  padding: var(--pos-primitive-size-1) var(--pos-primitive-size-2);
+  font-size: var(--pos-font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pos-color-content-text-supplementary);
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  white-space: nowrap;
+}
+
+/* Name mode select (in sticky header) */
+.t-name-select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: var(--pos-font-size-xs);
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--pos-color-content-text-supplementary-interactive);
+  background-color: var(--pos-color-content-background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--pos-primitive-size-1) center;
+  background-size: 10px;
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-primitive-radius-slightly-rounded);
+  padding: var(--pos-primitive-size-05) var(--pos-primitive-size-3) var(--pos-primitive-size-05) var(--pos-primitive-size-1);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+.t-name-select:hover {
+  border-color: var(--pos-color-interactive);
+}
+
+/* Token page — section navigation popover (panel handled by pos-popover) */
+#t-nav-popup {
+  position-area: block-end span-inline-end;
+}
+
+.t-name-select:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 1px;
+}
+
+/* ── Introduction page ──────────────────────────────────────────── */
+.intro-section {
+  margin-bottom: var(--pos-gap-section-section);
+  font-size: var(--pos-font-size-ss);
+}
+
+.intro-section > .pos-heading-2 {
+  margin-bottom: var(--pos-gap-text-text);
+}
+
+.intro-section > p {
+  margin-bottom: var(--pos-gap-card-elements);
+  color: var(--pos-color-content-text);
+}
+
+.intro-divider {
+  border: none;
+  border-top: 1px solid var(--pos-color-frame);
+  margin: var(--pos-gap-section-section) 0;
+}
+
+.intro-code-inline {
+  font-family: var(--pos-font-code);
+  font-size: var(--pos-font-size-xs);
+  color: var(--pos-color-content-text);
+  background: var(--pos-color-highlight-background);
+  border: 1px solid var(--pos-color-frame);
+  padding-block: 0.125rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--pos-radius-tag);
+  white-space: nowrap;
+}
+
+.intro-code-block {
+  background: var(--pos-primitive-color-grey-dark-4);
+  color: var(--pos-color-content-inverted-text);
+  font-family: var(--pos-font-code);
+  font-size: var(--pos-font-size-s);
+  line-height: 1.65;
+  padding: var(--pos-padding-card);
+  border-radius: var(--pos-radius-card);
+  overflow-x: auto;
+  margin: var(--pos-gap-card-elements) 0 0;
+  white-space: pre;
+}
+
+.intro-code-block code {
+  font-family: inherit;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+.intro-rules-card {
+  background: var(--pos-color-highlight-background);
+  border-radius: var(--pos-radius-card);
+  border: 1px solid var(--pos-color-frame);
+  overflow: hidden;
+}
+
+.intro-rule {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  gap: var(--pos-gap-card-elements);
+  padding: var(--pos-primitive-size-2) var(--pos-padding-card);
+  border-bottom: 1px solid var(--pos-color-frame);
+  align-items: baseline;
+}
+
+.intro-rule:last-child {
+  border-bottom: none;
+}
+
+.intro-rule-name {
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent);
+  font-size: var(--pos-font-size-s);
+}
+
+.intro-rule-desc {
+  color: var(--pos-color-content-text);
+  font-size: var(--pos-font-size-s);
+  line-height: 1.55;
+}
+
+/* ── Download tokens button & dropdown ─────────────────────────── */
+.styleguide-ds-article-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pos-gap-card-elements);
+}
+
+.token-download-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.token-download-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+}
+
+.token-download-chevron {
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s linear;
+}
+
+.token-download-btn[aria-expanded="true"] .token-download-chevron {
+  transform: rotate(180deg);
+}
+
+.token-download-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--pos-color-content-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--pos-color-shadow) 15%, transparent);
+  min-width: 180px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.token-download-option {
+  all: unset;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--pos-primitive-size-125) var(--pos-primitive-size-2);
+  font-size: var(--pos-font-size-s);
+  color: var(--pos-color-content-text);
+  cursor: pointer;
+  transition: background 0.1s linear;
+}
+
+.token-download-option:hover {
+  background: var(--pos-color-highlight-background);
+  color: var(--pos-color-content-text-prominent);
+}
+
+.token-download-option:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: -2px;
+}
+
+
+/* ── Token hierarchy diagram ────────────────────────────────────── */
+.token-hierarchy-diagram {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  flex-wrap: wrap;
+  margin-bottom: var(--pos-gap-section-section);
+}
+
+.token-hierarchy-step {
+  padding: var(--pos-primitive-size-125) var(--pos-padding-card);
+  border-radius: var(--pos-radius-card);
+  font-size: var(--pos-font-size-s);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.token-hierarchy-step--primitive {
+  background: var(--pos-color-page-background);
+  color: var(--pos-color-content-text-supplementary);
+  border: 1px solid var(--pos-color-frame);
+}
+
+.token-hierarchy-step--semantic {
+  background: var(--pos-color-highlight-background);
+  color: var(--pos-color-content-text);
+  border: 1px solid var(--pos-color-frame);
+}
+
+.token-hierarchy-step--component {
+  background: var(--pos-color-standout-background);
+  color: var(--pos-color-standout-text);
+  font-weight: 700;
+}
+
+.token-hierarchy-arrow {
+  color: var(--pos-color-content-text-supplementary);
+  font-size: var(--pos-font-size-m);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ── Token level table ──────────────────────────────────────────── */
+/* docs-site tables: frame invisible in light/dark, white in HC. Outline (not border) so the
+   collapsed tables keep their rounded corners and no layout size changes. */
+.token-level-table,
+.styleguide-token-table,
+.styleguide-ds-table {
+  outline: 1px solid var(--pos-color-frame-transparent);
+  outline-offset: -1px;
+}
+
+.token-level-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--pos-color-content-background);
+  table-layout: fixed;
+  border-radius: var(--pos-radius-card);
+  overflow: hidden;
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--pos-color-shadow) 20%, transparent);
+  margin-bottom: var(--pos-gap-section-section);
+}
+
+.token-level-table .col-level   { width: 16%; }
+.token-level-table .col-file    { width: 33%; }
+.token-level-table .col-purpose { width: 51%; }
+
+.token-level-table thead tr {
+  background: var(--pos-color-highlight-background);
+}
+
+.token-level-table th {
+  padding: var(--pos-primitive-size-125) var(--pos-primitive-size-2);
+  text-align: left;
+  font-size: var(--pos-font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pos-color-content-text-supplementary);
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.token-level-table td {
+  padding: var(--pos-primitive-size-2) var(--pos-primitive-size-2);
+  border-bottom: 1px solid var(--pos-color-frame);
+  vertical-align: middle;
+  font-size: inherit;
+}
+
+.token-level-table tr:last-child td {
+  border-bottom: none;
+}
+
+.token-level-table .t-level-name {
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.token-level-table code {
+  font-family: var(--pos-font-code);
+  font-size: var(--pos-font-size-xs);
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.token-level-table .t-level-highlight {
+  color: var(--pos-color-interactive-text);
+}
+
+/* Table — no thead, just tbody */
+.styleguide-token-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--pos-color-content-background);
+  table-layout: fixed;
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--pos-color-shadow) 20%, transparent);
+}
+
+.styleguide-token-table .col-token { width: 28%; }
+.styleguide-token-table .col-chain { width: 27%; }
+.styleguide-token-table .col-value { width: 20%; }
+.styleguide-token-table .col-desc  { width: 25%; }
+
+.styleguide-token-table td {
+  padding: var(--pos-primitive-size-125) var(--pos-primitive-size-2);
+  border-bottom: 1px solid var(--pos-color-frame);
+  vertical-align: top;
+  background: var(--pos-color-content-background);
+  overflow-wrap: break-word;
+  word-break: break-all; /* needed for long token/CSS names without spaces */
+}
+
+.styleguide-token-table td.t-desc-cell {
+  word-break: normal; /* prose — break only at word boundaries */
+}
+
+.styleguide-token-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* doc-site: token/value/reference display tags — small-tag size, code font */
+.t-name-figma.pos-tag,
+.t-name-css.pos-tag,
+.t-copy-pill,
+.t-ref-pill,
+.t-inline-ref {
+  font-family: var(--pos-font-code);
+  font-size: var(--pos-font-size-xs);
+  font-weight: normal;
+}
+
+/* name chips — full small-tag compactness (single-line, nowrap) */
+.t-name-figma.pos-tag,
+.t-name-css.pos-tag {
+  padding-block: 0.125rem;
+  padding-inline: 0.5rem;
+  min-height: 20px;
+  line-height: 1;
+}
+
+/* Reference pill — base visual from pos-tag pos-tag-interactive; only layout overrides here */
+.t-ref-pill {
+  white-space: normal;
+  word-break: break-all;
+}
+
+/* Highlight animation when scrolled-to row is targeted */
+@keyframes t-row-flash {
+  0%, 50% {
+    background-color: color-mix(in srgb, var(--pos-color-interactive) 12%, transparent);
+    outline: 2px solid var(--pos-color-interactive);
+    outline-offset: -2px;
+  }
+  100% {
+    background-color: transparent;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+}
+
+.t-row--highlight {
+  animation: t-row-flash 3s ease-out forwards;
+}
+
+.t-swatch {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: var(--pos-primitive-radius-slightly-rounded);
+  border: 1px solid var(--pos-color-frame);
+  flex-shrink: 0;
+}
+
+/* Value cell: swatch + pill side by side */
+.t-value-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+}
+
+
+.t-desc-cell {
+  font-size: var(--pos-font-size-xs);
+  line-height: 1.55;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.t-desc-existing {
+  display: block;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.t-desc-proposal {
+  display: block;
+  margin-top: 4px;
+}
+
+.t-desc-proposal--improve,
+.t-desc-proposal--new {
+  color: var(--pos-color-interactive);
+}
+
+.t-desc-proposal--fix {
+  color: var(--pos-color-important);
+}
+
+.t-empty {
+  color: var(--pos-color-content-text-supplementary);
+  font-size: var(--pos-font-size-xs);
+}
+
+/* Name mode visibility toggle */
+[data-name-mode="css"]   .t-name-figma { display: none; }
+[data-name-mode="figma"] .t-name-css   { display: none; }
+
+/* ── Color mode toggle — visual styling via pos-segmented-control DS component ─ */
+/* No custom button styles needed — pos-segmented-control--small handles sizing.
+   Icon-only buttons use padding-inline: 0 and fixed width for square shape. */
+#t-color-mode-toggle .pos-segmented-control-btn {
+  width: 30px;
+  padding-inline: 0;
+  justify-content: center;
+}
+
+/* ── Color mode: light/dark/a11y content visibility ─────────────────── */
+/* ID selector gives specificity (1,1,0) — beats any class-based conflicts */
+#token-table-wrapper .t-color-dark { display: none; }
+#token-table-wrapper .t-color-a11y { display: none; }
+
+#token-table-wrapper[data-color-mode="dark"] .t-color-light { display: none; }
+#token-table-wrapper[data-color-mode="dark"] .t-color-dark  { display: block; }
+#token-table-wrapper[data-color-mode="dark"] .t-color-dark.t-value-cell { display: flex; }
+
+#token-table-wrapper[data-color-mode="a11y"] .t-color-light { display: none; }
+#token-table-wrapper[data-color-mode="a11y"] .t-color-a11y  { display: block; }
+#token-table-wrapper[data-color-mode="a11y"] .t-color-a11y.t-value-cell { display: flex; }
+
+/* Copy pill — base visual from pos-tag pos-tag-confirmation; only copy-behavior rules here */
+.t-copy-pill {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+  padding-block: 0.125rem;
+  padding-inline: 0.5rem;
+  min-height: 20px;
+  line-height: 1;
+}
+
+.t-copy-pill-text {
+  display: block;
+}
+
+.t-copy-pill-overlay,
+.t-copy-pill-done {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-primitive-size-05);
+  background: var(--pos-color-confirmation-muted);
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: var(--pos-font-size-xs);
+  transition: opacity 0.1s linear;
+}
+
+.t-copy-pill-overlay svg,
+.t-copy-pill-done svg {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.t-copy-pill-overlay {
+  color: var(--pos-color-interactive-text);
+}
+
+.t-copy-pill-done {
+  color: var(--pos-color-confirmation);
+}
+
+.t-copy-pill:hover .t-copy-pill-overlay {
+  opacity: 1;
+}
+
+.t-copy-pill--copied .t-copy-pill-overlay {
+  opacity: 0;
+}
+
+.t-copy-pill--copied .t-copy-pill-done {
+  opacity: 1;
+}
+
+/* Loading / error state */
+.styleguide-token-loading {
+  padding: var(--pos-padding-card);
+  color: var(--pos-color-content-text-supplementary);
+  font-size: var(--pos-font-size-xs);
+  font-style: italic;
+}
+
+
+/* ============================================================================
+   Component documentation page — three-column layout
+   Shell styles only. No component styles go here.
+   ============================================================================ */
+
+/* comp-doc-body: fills the second grid column of .styleguide-ds-layout,
+   splits it into center content + resize handle + right panel */
+.comp-doc-body {
+  display: flex;
+  min-height: 0;
+  overflow: clip; /* clip prevents scroll overflow but doesn't cut box-shadows */
+  font-size: var(--pos-font-size-ss); /* 14px — base body text for doc UI */
+}
+
+/* center: scrollable main content area */
+.comp-doc-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: calc(var(--pos-padding-page) * 2) calc(var(--pos-padding-page) * 3);
+  padding-inline-end: 40px;
+  padding-block-end: 25vh;
+  scroll-padding-top: 25vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--styleguide-scrollbar) transparent;
+  color-scheme: light;
+}
+
+.pos-theme-dark .comp-doc-content {
+  color-scheme: dark;
+}
+
+.comp-doc-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comp-doc-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* resize drag handle between center and right panel
+   Width: 0 — takes no flex space so the content scrollbar sits
+   flush against the right panel border.
+   ::before provides a 16px-wide invisible hit area for dragging.
+   The grip icon floats over the scrollbar area.                   */
+.comp-doc-resize-handle {
+  position: relative;
+  width: 0;
+  flex-shrink: 0;
+  cursor: col-resize;
+  user-select: none;
+  overflow: visible;
+}
+
+/* invisible hit area + hover indicator line, centered on the panel boundary */
+.comp-doc-resize-handle::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  top: 0;
+  bottom: 0;
+  cursor: col-resize;
+}
+
+/* active indicator: 2px line that grows leftward (inset) — no layout shift */
+.comp-doc-resize-handle::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--pos-color-interactive);
+  opacity: 0;
+  transition: opacity 0.12s;
+  pointer-events: none;
+}
+
+.comp-doc-resize-handle:hover::after,
+.comp-doc-resize-handle--dragging::after {
+  opacity: 1;
+}
+
+/* grip icon: floats over the scrollbar, centered vertically */
+.comp-doc-resize-grip {
+  color: var(--pos-color-content-text-supplementary);
+  display: flex;
+  align-items: center;
+  transition: color 0.12s;
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.comp-doc-resize-handle:hover .comp-doc-resize-grip,
+.comp-doc-resize-handle--dragging .comp-doc-resize-grip {
+  color: var(--pos-color-interactive);
+}
+
+.comp-doc-resize-handle--dragging::after {
+  transition: none;
+}
+
+/* right panel: fixed width (overridden by JS drag), flex row so main column +
+   tokens side-panel sit side by side */
+.comp-doc-right {
+  width: 320px;
+  min-width: 320px;
+  /* max-width enforced dynamically by JS as 50% of viewport */
+  flex-shrink: 0;
+  background: var(--pos-color-content-background);
+  box-shadow: -2px 0 12px color-mix(in srgb, var(--pos-color-shadow) 8%, transparent);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* suppress transitions while dragging — prevents lag */
+.comp-doc-right--dragging,
+.comp-doc-right--dragging .comp-tokens-panel {
+  transition: none !important;
+}
+
+/* main column within right panel: flex column for sticky + scrollable panels */
+.comp-doc-right-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Component section (center content)
+   ---------------------------------------------------------------------------- */
+.comp-doc-section {
+  padding-block: 30vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-doc-section-header {
+  max-width: 900px;
+  margin-inline: auto;
+  margin-block-end: var(--pos-gap-section-title-content);
+  text-align: center;
+}
+
+.comp-doc-page-title {
+  text-align: center;
+  margin-block-end: var(--pos-gap-title-content);
+}
+
+.comp-doc-section-header :is(h1, h2, h4, .pos-heading-1, .pos-heading-2, .pos-heading-4) {
+  margin-block-end: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-gap-card-elements);
+  flex-wrap: wrap;
+  font-weight: 700;
+}
+
+.comp-doc-section-header p {
+  color: var(--pos-color-content-text-supplementary);
+  max-width: 72ch;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Preview stage — live component rendering area
+   ---------------------------------------------------------------------------- */
+.comp-preview-stage {
+  background: var(--pos-color-page-background);
+  border-radius: var(--pos-primitive-size-2);
+  padding: calc(var(--pos-padding-page) * 1.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--pos-gap-section-elements) * 1.5);
+  margin-block-end: var(--pos-gap-section-section);
+}
+
+.comp-doc-section .comp-preview-stage {
+  margin-block-end: 0;
+}
+
+.comp-preview-stage--row {
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.comp-preview-variant-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-2);
+}
+
+/* the `hidden` attribute alone loses to the `display: flex` rule above (author CSS always beats
+   the user-agent stylesheet's [hidden]{display:none}, even at equal specificity) — this explicit
+   rule is what actually makes JS-driven row.hidden = true/false work (e.g. Button's Variant/Base
+   toggle filtering the preview). */
+.comp-preview-variant-row[hidden] {
+  display: none;
+}
+
+.comp-preview-variant-row--full {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Spec-driven code snippet under a preview stage (Button pilot, docs/inspect refactor) — a small,
+   always-visible dark pos-code block, not a <details> toggle. Fixed at ~5 lines tall (was ~2 —
+   widened 2026-08-26 now every migrated component uses this block, and several produce longer
+   generic-clone snippets than Button's single line); longer snippets still scroll vertically
+   inside the block instead of growing it. Real DS copy button (via pos.modules.codeCopy) still
+   works normally — position: relative on .pos-code--block already anchors it, untouched here. */
+.comp-preview-code {
+  margin-block-start: var(--pos-primitive-size-4);
+  margin-inline: auto;   /* center it — fit-content width, matches "previews always centered" */
+  width: fit-content;
+  /* uniform cap across every component's block, 2026-08-27 (500px -> 600px) — can be narrower
+     (fit-content still shrinks it for short snippets), never wider than this; min() keeps it from
+     overflowing a narrower container too. */
+  max-width: min(600px, 100%);
+  /* 1.5em line-height + var(--pos-primitive-size-1) padding — both match pos-code--small +
+     pos-code--block's current values (see pos-code.css); keep these two in sync if either changes */
+  max-height: calc(1.5em * 5 + 2 * var(--pos-primitive-size-1));
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  /* stronger, clearly-visible scrollbar thumb — the browser default was near-invisible on this
+     block's light background. Dark grey at 20% opacity (color-mix, not a hardcoded rgba/hex, per
+     the token-first rule) — was interactive-blue, changed 2026-08-26 per feedback, then tuned down
+     from 40% -> 30% -> 20%. */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--pos-color-content-text) 20%, transparent) transparent;
+}
+
+.comp-preview-code::-webkit-scrollbar {
+  width: 8px;
+}
+
+.comp-preview-code::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.comp-preview-code::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--pos-color-content-text) 20%, transparent);
+  border-radius: var(--pos-radius-button);
+}
+
+/* HC mode — scrollbar thumb goes to 100% opaque foreground (not the 20%-opacity dark-grey mix used
+   in light/dark), per feedback. --pos-color-content-text already resolves to the HC foreground
+   (--pos-primitive-color-a11y-foreground: #f2f2f2), so this is a full-strength version of the same
+   token, not a new hardcoded color. */
+:root.pos-theme-a11y:where(.pos-theme-a11yEnabled) .comp-preview-code {
+  scrollbar-color: var(--pos-color-content-text) transparent;
+}
+
+:root.pos-theme-a11y:where(.pos-theme-a11yEnabled) .comp-preview-code::-webkit-scrollbar-thumb {
+  background-color: var(--pos-color-content-text);
+}
+
+/* Belt-and-suspenders on top of pos-code.css's own fix: pin the font-size directly, by class, on
+   every .comp-preview-code block AND every descendant (including highlight.js's own
+   <span class="hljs-*"> tokens, which inherit font-size from <code> — if anything upstream ever
+   wins the inheritance chain again, this still forces the correct size here specifically, without
+   touching the shared pos-code component). Applies to every component's under-preview code block
+   (originally Button-only via an ID selector — generalized 2026-08-26 once the same class started
+   being reused by the other 20 migrated components and hit the identical bug). Specificity
+   (0,2,0 / 0,2,1) still reliably beats styleguide.css's own `code:not(.pos-code)` fallback (0,1,1)
+   regardless of layer or file load order. */
+.comp-preview-code,
+.comp-preview-code code,
+.comp-preview-code code * {
+  font-size: var(--pos-font-size-xs);
+}
+
+/* Same belt-and-suspenders, applied proactively to the Code component's own demo page (2026-08-26)
+   — its block example (#comp-code-block) can now also get pos-code--small via the unified Size
+   toggle. Conditioned on that class actually being present (.pos-code--small), unlike the Button
+   rule above which is unconditional — this one must NOT force small when the toggle is on Default. */
+#comp-code-block.pos-code--small,
+#comp-code-block.pos-code--small code,
+#comp-code-block.pos-code--small code * {
+  font-size: var(--pos-font-size-xs);
+}
+
+.comp-preview-variant-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+
+  font-size: var(--pos-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pos-color-content-text-supplementary);
+  text-align: center;
+}
+
+.comp-preview-variant-class {
+  font-size: var(--pos-font-size-xs);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pos-color-content-text-supplementary);
+  font-family: var(--pos-font-code);
+  opacity: 0.7;
+}
+
+.comp-preview-variant-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-gap-card-elements);
+}
+
+/* Button preview — correct inter-button gap per size */
+#comp-section-button .comp-preview-variant-items {
+  gap: var(--pos-gap-button-button);
+}
+#comp-section-button .comp-preview-stage[data-size="small"] .comp-preview-variant-items {
+  gap: var(--pos-gap-button-button-small);
+}
+#comp-section-button .comp-preview-stage[data-scheme="inverted"] {
+  background-color: var(--pos-color-inverted-background);
+  border-radius: var(--pos-radius-card);
+}
+
+/* ----------------------------------------------------------------------------
+   Right panel — sticky header + tabs (non-scrolling)
+   ---------------------------------------------------------------------------- */
+.comp-right-sticky-top {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--pos-color-frame);
+  background: var(--pos-color-content-background);
+}
+
+.comp-right-header {
+  height: 40px;
+  flex-shrink: 0;
+  padding-inline: var(--pos-padding-card);
+  display: flex;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+}
+
+.comp-right-comp-name {
+  font-size: var(--pos-font-size-s);
+  font-weight: 600;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.comp-right-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 40px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--pos-color-frame);
+  background: var(--pos-color-page-background);
+  gap: 1px;
+  background-clip: content-box;
+}
+
+.comp-right-tab + .comp-right-tab {
+  border-left: 1px solid var(--pos-color-frame);
+}
+
+.comp-right-tab {
+  all: unset;
+  cursor: pointer;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-inline: 8px;
+  font-size: var(--pos-font-size-xs);
+  font-weight: 500;
+  color: var(--pos-color-content-text-supplementary-interactive);
+  background: var(--pos-color-page-background);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.1s, border-color 0.1s, background 0.1s;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.comp-right-tab:hover {
+  color: var(--pos-color-content-text);
+}
+
+.comp-right-tab:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: -2px;
+}
+
+.comp-right-tab--active {
+  color: var(--pos-color-interactive-text);
+  background: var(--pos-color-content-background);
+  border-bottom-color: var(--pos-color-interactive);
+  font-weight: 600;
+}
+
+.comp-right-tab--tokens {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-primitive-size-1);
+}
+
+.comp-tab-icon-arrow {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.comp-right-tab--tokens[aria-expanded="true"] .comp-tab-icon-arrow {
+  transform: rotate(180deg);
+}
+
+/* Inspect tab: both icons use interactive icon color in inactive state */
+.comp-right-tab--tokens .comp-tab-icon-brackets,
+.comp-right-tab--tokens .comp-tab-icon-arrow {
+  color: var(--pos-color-content-icon-interactive);
+}
+.comp-right-tab--tokens.comp-right-tab--active .comp-tab-icon-brackets,
+.comp-right-tab--tokens.comp-right-tab--active .comp-tab-icon-arrow {
+  color: inherit;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Right panel — scrollable tab panels
+   ---------------------------------------------------------------------------- */
+.comp-right-panels {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+  color-scheme: light;
+  border-inline-start: 1px solid var(--pos-color-frame-transparent);
+}
+
+.pos-theme-dark .comp-right-panels {
+  color-scheme: dark;
+}
+
+.comp-right-tab-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--pos-padding-card);
+}
+
+/* only the Usage tab has long text content that may need to scroll */
+#comp-tab-usage {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--styleguide-scrollbar) transparent;
+}
+
+#comp-tab-usage::-webkit-scrollbar {
+  width: 6px;
+}
+
+#comp-tab-usage::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.comp-right-control-section {
+  margin-block-end: var(--pos-gap-card-card);
+}
+
+/* card / feature card Variant tiles: a round swatch in the mid tone (500) of the scale whose pale tint
+   is the card background — default = white, highlighted = mid grey. Round, so it never reads as a checkbox. */
+.comp-bg-swatch {
+  display: block;
+  width: var(--pos-size-icon-s);
+  height: var(--pos-size-icon-s);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--pos-color-frame-transparent);
+}
+.comp-bg-swatch--default { background-color: var(--pos-primitive-color-white); box-shadow: inset 0 0 0 1px var(--pos-color-frame-default); }
+.comp-bg-swatch--highlighted { background-color: var(--pos-primitive-color-grey-dark-6); }
+.comp-bg-swatch--brand-primary { background-color: var(--pos-primitive-color-brand-primary-500); }
+.comp-bg-swatch--brand-supplementary { background-color: var(--pos-primitive-color-brand-supplementary-500); }
+/* on the selected (brand-filled) tile a white ring keeps the swatch visible — brand primary 500 would melt into it */
+.pos-tile-btn--selected .comp-bg-swatch { box-shadow: 0 0 0 1.5px var(--pos-primitive-color-white); }
+
+/* gap between the background tiles and the alignment toggle in the feature card Variant section */
+.comp-bg-tiles-next { margin-block-start: var(--pos-gap-card-elements); }
+
+.comp-right-control-label {
+  font-size: var(--pos-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pos-color-content-text-supplementary);
+  margin-block-end: var(--pos-primitive-size-2);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Status option buttons (doc shell UI — not a DS component)
+   ---------------------------------------------------------------------------- */
+/* Status grid: 3-column default; 6-column above 480px panel width */
+.comp-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--pos-primitive-size-1);
+  align-items: stretch;
+}
+
+/* Tile buttons inside the status grid: fill their column and row equally */
+.comp-status-grid .pos-tile-btn {
+  width: 100%;
+  height: 100%;
+  min-width: 0;  /* allow shrinking below content size in grid */
+}
+
+@container (min-width: 480px) {
+  .comp-status-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Intent control: tile buttons fill full panel width */
+[data-comp-control="intent"] .pos-tile-btn-group--vertical,
+[data-comp-control="form-intent"] .pos-tile-btn-group--vertical {
+  max-width: none;
+}
+[data-comp-control="intent"] .pos-tile-btn,
+[data-comp-control="form-intent"] .pos-tile-btn {
+  width: 100%;
+}
+
+/* Card-style state button with icon on top */
+.comp-status-btn {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-primitive-size-1);
+  padding: var(--pos-primitive-size-1);
+  aspect-ratio: 1;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--pos-color-content-text-supplementary);
+  background: var(--pos-color-page-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-button);
+  transition: border-color 0.1s, border-width 0.1s, background 0.1s, color 0.1s, box-shadow 0.1s;
+  line-height: 1.3;
+}
+
+/* Variant: on content-background (white) surfaces */
+.comp-status-btn--on-content {
+  background: var(--pos-color-content-background);
+}
+
+.comp-status-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pos-color-content-text-supplementary);
+  transition: color 0.1s;
+}
+
+.comp-status-btn-label {
+  font-size: var(--pos-font-size-small-button-text);
+}
+
+.comp-status-btn-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.comp-status-btn:hover:where(:not(:disabled, .comp-status-btn--disabled)) {
+  border-color: var(--pos-color-interactive);
+  box-shadow: inset 0 0 0 1px var(--pos-color-interactive);
+  color: var(--pos-color-interactive-text);
+}
+
+.comp-status-btn:hover:where(:not(:disabled, .comp-status-btn--disabled)) .comp-status-btn-icon {
+  color: var(--pos-color-interactive);
+}
+
+.comp-status-btn:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+.comp-status-btn--active {
+  background: var(--pos-color-button-primary-background);
+  border-color: var(--pos-color-button-primary-background);
+  color: var(--pos-color-button-primary-text);
+  font-weight: 600;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.comp-status-btn--active .comp-status-btn-icon {
+  color: var(--pos-color-button-primary-text);
+}
+
+.comp-status-btn--active:hover {
+  background: var(--pos-color-button-primary-background);
+  border-color: var(--pos-color-button-primary-background);
+  color: var(--pos-color-button-primary-text);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.comp-status-btn--active:hover .comp-status-btn-icon {
+  color: var(--pos-color-button-primary-text);
+}
+
+.comp-status-btn:disabled,
+.comp-status-btn--disabled {
+  cursor: not-allowed;
+  color: var(--pos-color-button-secondary-disabled-text);
+  border-color: var(--pos-color-frame);
+}
+
+.comp-status-btn:disabled .comp-status-btn-icon,
+.comp-status-btn--disabled .comp-status-btn-icon {
+  color: var(--pos-color-button-secondary-disabled-text);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Usage tab
+   ---------------------------------------------------------------------------- */
+.comp-right-usage {
+  font-size: var(--pos-font-size-small-button-text);
+  color: var(--pos-color-content-text);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-4);
+}
+
+.comp-right-usage {
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-usage-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-2);
+  padding-block-start: 0;
+  padding-block-end: var(--pos-primitive-size-4);
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.comp-usage-section:last-child {
+  border-bottom: none;
+}
+
+/* Label — icon + uppercase text, no background */
+.comp-usage-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  padding: 0;
+  font-size: var(--pos-font-size-small-button-text);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.comp-usage-heading--use,
+.comp-usage-heading--do {
+  color: var(--pos-color-confirmation);
+}
+
+.comp-usage-heading--avoid,
+.comp-usage-heading--dont {
+  color: var(--pos-color-important);
+}
+
+.comp-usage-heading--a11y {
+  color: var(--pos-color-content-text-prominent);
+}
+
+.comp-usage-heading--surface {
+  color: var(--pos-color-content-text-supplementary);
+}
+
+/* surface recommendation table */
+.comp-usage-surface-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pos-font-size-body-small);
+  line-height: 1.5;
+}
+
+.comp-usage-surface-table th,
+.comp-usage-surface-table td {
+  padding: var(--pos-primitive-size-1) var(--pos-primitive-size-2);
+  text-align: left;
+  border-bottom: 1px solid var(--pos-color-frame);
+  vertical-align: middle;
+}
+
+.comp-usage-surface-table thead th {
+  font-weight: 600;
+  color: var(--pos-color-content-text-supplementary);
+  font-size: var(--pos-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.comp-usage-surface-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.comp-usage-swatch {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 2px;
+  border: 1px solid var(--pos-color-frame);
+  vertical-align: middle;
+  margin-inline-end: var(--pos-primitive-size-1);
+  flex-shrink: 0;
+}
+
+.comp-usage-heading svg {
+  flex-shrink: 0;
+}
+
+.comp-right-usage p,
+.comp-right-usage ul {
+  margin: 0;
+  line-height: 1.6;
+  font-size: var(--pos-font-size-body-small);
+}
+
+.comp-right-usage ul {
+  padding-inline-start: 1.2em;
+  list-style: disc outside;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-15);
+}
+
+.comp-right-usage code {
+  font-family: monospace;
+  font-size: 0.9em;
+  background: var(--pos-color-highlight-background);
+  padding: 0 var(--pos-primitive-size-05);
+  border-radius: 2px;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Token tab
+   ---------------------------------------------------------------------------- */
+.comp-right-token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pos-font-size-xs);
+}
+
+.comp-token-col-name  { width: 65%; }
+.comp-token-col-value { width: 35%; }
+
+.comp-token-group-row td {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pos-color-content-text-supplementary);
+  padding-block: var(--pos-primitive-size-1);
+  padding-block-start: var(--pos-primitive-size-3);
+}
+
+.comp-token-group-row:first-child td {
+  padding-block-start: var(--pos-primitive-size-1);
+}
+
+.comp-right-token-table tr:not(.comp-token-group-row) td {
+  padding-block: var(--pos-primitive-size-1);
+  border-bottom: 1px solid var(--pos-color-frame);
+  vertical-align: middle;
+}
+
+.comp-token-name {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--pos-color-content-text);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.comp-token-value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--pos-color-content-text-supplementary);
+  background: var(--pos-color-highlight-background);
+  padding: 1px var(--pos-primitive-size-1);
+  border-radius: var(--pos-primitive-size-05);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.comp-token-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid var(--pos-color-frame);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Full-width toggle group modifier (e.g. Size toggle in right panel)
+   ---------------------------------------------------------------------------- */
+.comp-toggle-group--full {
+  width: 100%;
+}
+
+.comp-toggle-group--full .pos-segmented-control-btn {
+  flex: 1;
+  min-width: 0;           /* allow shrinking below content size */
+  justify-content: center;
+  padding-inline: 0.5rem; /* narrower than default 1rem — fits in 320px panel at all font sizes */
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Intent selector — horizontal toggle buttons (Default / Success / Error / Warning)
+   Same visual style as .comp-status-btn but row layout, no fixed aspect ratio.
+   ---------------------------------------------------------------------------- */
+.comp-intent-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-1);
+}
+
+.comp-intent-btn {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pos-primitive-size-2);
+  padding: var(--pos-primitive-size-1) var(--pos-primitive-size-2);
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: var(--pos-font-size-small-button-text);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--pos-color-content-text-supplementary);
+  background: var(--pos-color-page-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-button);
+  transition: border-color 0.1s, background 0.1s, color 0.1s, box-shadow 0.1s;
+}
+
+.comp-intent-btn-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--pos-color-content-text-supplementary);
+  transition: color 0.1s;
+}
+
+.comp-intent-btn:hover {
+  border-color: var(--pos-color-interactive);
+  box-shadow: inset 0 0 0 1px var(--pos-color-interactive);
+  color: var(--pos-color-interactive-text);
+}
+
+.comp-intent-btn:hover .comp-intent-btn-icon {
+  color: var(--pos-color-interactive);
+}
+
+.comp-intent-btn:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+.comp-intent-btn--active {
+  background: var(--pos-color-button-primary-background);
+  border-color: var(--pos-color-button-primary-background);
+  color: var(--pos-color-button-primary-text);
+  font-weight: 600;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.comp-intent-btn--active .comp-intent-btn-icon {
+  color: var(--pos-color-button-primary-text);
+}
+
+.comp-intent-btn--active:hover {
+  background: var(--pos-color-button-primary-background);
+  border-color: var(--pos-color-button-primary-background);
+  color: var(--pos-color-button-primary-text);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.comp-intent-btn--active:hover .comp-intent-btn-icon {
+  color: var(--pos-color-button-primary-text);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Accessibility toggle switch rows
+   ---------------------------------------------------------------------------- */
+.comp-switch-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-1);
+}
+
+.comp-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--pos-primitive-size-1) var(--pos-primitive-size-2);
+  border-radius: var(--pos-radius-button);
+  background: var(--pos-color-page-background);
+  border: 1px solid var(--pos-color-frame);
+  cursor: pointer;
+  gap: var(--pos-primitive-size-2);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.comp-switch-row:not(:has(.comp-switch:checked)):hover {
+  border-color: var(--pos-color-interactive);
+  box-shadow: inset 0 0 0 1px var(--pos-color-interactive);
+}
+
+.comp-switch-row:has(.comp-switch:checked) {
+  background: var(--pos-color-button-primary-background);
+  border-color: var(--pos-color-button-primary-background);
+  color: var(--pos-color-button-primary-text);
+}
+
+.comp-switch-row:has(.comp-switch:checked) .comp-switch-label {
+  color: var(--pos-color-button-primary-text);
+}
+
+.comp-switch-label {
+  font-size: var(--pos-font-size-small-button-text);
+  font-weight: 500;
+  color: var(--pos-color-content-text-supplementary);
+  flex: 1;
+  pointer-events: none;
+}
+
+.comp-switch {
+  appearance: none;
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--pos-color-highlight-background);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.comp-switch::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-start: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--pos-color-content-background);
+  transition: transform 0.15s;
+}
+
+.comp-switch:checked {
+  background: var(--pos-color-interactive);
+}
+
+.comp-switch-row:has(.comp-switch:checked) .comp-switch {
+  background: color-mix(in srgb, var(--pos-color-content-background) 30%, transparent);
+}
+
+.comp-switch:checked::before {
+  transform: translateX(16px);
+}
+
+.comp-switch:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Tokens side-panel — second column inside .comp-doc-right
+   ---------------------------------------------------------------------------- */
+/* tokens panel: hidden via width:0, animates open with width transition.
+   overflow:hidden clips content during animation; inner elements have min-width
+   so they don't squish — they clip cleanly instead. */
+.comp-tokens-panel {
+  display: flex;
+  flex-direction: column;
+  width: 0;
+  flex-shrink: 0;
+  border-left: 0px solid var(--pos-color-frame);
+  background: var(--pos-color-content-background);
+  overflow: hidden;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-left-width 0s 0.25s; /* border appears only after open */
+}
+
+.comp-tokens-panel--visible {
+  border-left-width: 1px;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-left-width 0s; /* border appears immediately on open */
+}
+
+/* prevent inner content from squishing during animation — clips cleanly */
+.comp-tokens-panel-header,
+.comp-tokens-panel-body {
+  min-width: 260px;
+}
+
+/* panel header: format selector (left) + close button (right) */
+.comp-tokens-panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pos-primitive-size-2);
+  height: 40px;
+  padding-inline: var(--pos-primitive-size-2) var(--pos-primitive-size-3);
+  border-bottom: 1px solid var(--pos-color-frame);
+  background: var(--pos-color-content-background);
+}
+
+/* comp-tokens-close-btn removed — button uses pos-close component */
+
+/* scrollable body */
+.comp-tokens-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--pos-padding-card);
+  scrollbar-width: thin;
+  scrollbar-color: var(--styleguide-scrollbar) transparent;
+  color-scheme: light;
+}
+
+.pos-theme-dark .comp-tokens-panel-body {
+  color-scheme: dark;
+}
+
+.comp-tokens-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comp-tokens-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Code side panel removed 2026-08-26 — the #comp-code-panel-body wrap override that used to live
+   here is gone too; see .comp-preview-code below the preview stage rules instead. */
+
+.comp-tokens-section {
+  margin-block-end: var(--pos-primitive-size-4);
+}
+
+.comp-composed-of-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pos-gap-tag-tag);
+}
+
+.comp-composed-of-chip {
+  cursor: pointer;
+}
+
+/* tokens panel intro — matches comp-right-header height */
+.comp-tokens-panel-intro {
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-inline: var(--pos-primitive-size-3);
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.comp-tokens-panel-intro-title {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  font-size: var(--pos-font-size-body-small);
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent);
+}
+
+.comp-tokens-panel-intro-title .pos-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--pos-color-content-icon);
+  flex-shrink: 0;
+}
+
+.comp-tokens-panel-intro-desc {
+  font-size: var(--pos-font-size-xs);
+  color: var(--pos-color-content-text-supplementary);
+  margin: 0;
+}
+
+.comp-tokens-section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  font-size: var(--pos-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pos-color-content-text-supplementary);
+  margin-block-end: var(--pos-primitive-size-2);
+}
+
+.comp-tokens-section-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+.comp-tokens-group-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  font-size: var(--pos-font-size-body-small);
+  font-weight: 700;
+  color: var(--pos-color-content-text-prominent);
+  margin: 0;
+  padding-block: var(--pos-primitive-size-2);
+  border-bottom: 1px solid var(--pos-color-frame);
+  margin-block-start: var(--pos-primitive-size-2);
+}
+
+.comp-tokens-group-heading .comp-tokens-section-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* token row: swatch | name  value */
+.comp-tokens-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--pos-primitive-size-1);
+  padding-block: var(--pos-primitive-size-1);
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.comp-tokens-row--no-swatch .comp-token-swatch-sm {
+  display: none;
+}
+
+.comp-token-swatch-sm {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid var(--pos-color-frame);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.comp-token-name-sm {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--pos-color-content-text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Figma-name display mode, but this specific token has no Figma variable (figma: null) —
+   still shows the CSS name (the only name it has) but visually marked as CSS-only so it
+   doesn't read as a real Figma variable name sitting in a list of them. */
+.comp-token-name-sm--css-fallback {
+  font-style: italic;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.comp-token-val-sm {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--pos-color-content-text-supplementary);
+  background: var(--pos-color-highlight-background);
+  padding: 1px 3px;
+  border-radius: 2px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  flex-shrink: 1;
+  min-width: 0;
+  margin-inline-start: auto;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Loading state preview (doc shell only — not a DS component style)
+   ---------------------------------------------------------------------------- */
+.comp-preview-stage .pos-button.pos-debug-button-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+/* .comp-status-icon-spin and pos-debug-button-loading spinner
+   replaced by pos-spinner DS component — see pos-spinner.css */
+
+/* ----------------------------------------------------------------------------
+   Link visited state reset inside preview stage
+   Browsers mark href="#" as visited; override to keep interactive color in previews.
+   ---------------------------------------------------------------------------- */
+.comp-preview-stage .pos-link:visited {
+  color: var(--pos-color-interactive-text);
+}
+
+/* ----------------------------------------------------------------------------
+   Tag state preview (doc shell only — not a DS component style)
+   Forces hover/focus/active/disabled/selected visual states on tags.
+   ---------------------------------------------------------------------------- */
+
+/* hover — show animated underline at full width */
+.comp-preview-stage button.pos-tag.pos-tag-interactive.pos-debug-tag-hover,
+.comp-preview-stage a.pos-tag.pos-tag-interactive.pos-debug-tag-hover,
+.comp-preview-stage span.pos-tag.pos-tag-interactive.pos-debug-tag-hover {
+  background-size: calc(100% - var(--pos-padding-tag) * 2) 1px;
+}
+
+/* focus — visible focus ring */
+.comp-preview-stage button.pos-tag.pos-debug-tag-focus,
+.comp-preview-stage a.pos-tag.pos-debug-tag-focus,
+.comp-preview-stage span.pos-tag.pos-debug-tag-focus {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+/* disabled — muted text, no underline; keeps pointer events so the not-allowed cursor shows
+   (RULES.md 4.12) — the demo also sets aria-disabled, which skips the hover rules */
+.comp-preview-stage button.pos-tag.pos-debug-tag-disabled,
+.comp-preview-stage a.pos-tag.pos-debug-tag-disabled,
+.comp-preview-stage span.pos-tag.pos-debug-tag-disabled {
+  color: var(--pos-color-interactive-disabled);
+  cursor: not-allowed;
+  background-size: 0% 1px;
+}
+
+
+/* ----------------------------------------------------------------------------
+   Removable tag preview — reset button
+   Preview-only: dismiss animation is handled by pos-anim-dismiss--out
+   (defined in pos-behaviors.css). Only the reset button style lives here.
+   ---------------------------------------------------------------------------- */
+
+.comp-preview-reset-btn {
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: inherit;
+  color: var(--pos-color-interactive-text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.comp-preview-reset-btn:hover {
+  color: var(--pos-color-interactive);
+}
+
+/* ----------------------------------------------------------------------------
+   Tile button state preview (doc shell only — not a DS component style)
+   Forces hover visual state on tile buttons.
+   ---------------------------------------------------------------------------- */
+
+.comp-preview-stage .pos-tile-btn.pos-debug-tile-btn-hover {
+  border-color: var(--pos-color-interactive);
+  outline-color: var(--pos-color-interactive);
+  color: var(--pos-color-interactive-text);
+}
+
+.comp-preview-stage .pos-tile-btn.pos-debug-tile-btn-hover .pos-tile-btn-icon {
+  color: var(--pos-color-interactive);
+}
+
+.comp-preview-stage .pos-tile-btn.pos-debug-tile-btn-focus {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+.comp-preview-stage .pos-switch-card.pos-debug-switch-card-focus {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+/* mirrors the real :hover rule in pos-behaviors.css (.pos-switch-card:has(...):hover) —
+   the docs preview simulates state via a debug class, not real mouse :hover */
+.comp-preview-stage .pos-switch-card.pos-debug-switch-card-hover {
+  outline-color: var(--pos-color-interactive);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Elevation foundations page
+   ---------------------------------------------------------------------------- */
+
+.styleguide-elevation-table-wrapper {
+  margin-block-start: var(--pos-primitive-size-3);
+}
+
+.styleguide-elevation-header-bar {
+  position: static;
+  grid-template-columns: 72px 28% 30% 1fr;
+  margin-block-end: 0;
+}
+
+.styleguide-elevation-table {
+  background: transparent;
+  box-shadow: none;
+}
+
+.styleguide-elevation-table .col-preview { width: 96px; }
+.styleguide-elevation-table .col-token   { width: 28%; }
+.styleguide-elevation-table .col-value   { width: 30%; }
+.styleguide-elevation-table .col-desc    { width: 38%; }
+
+.styleguide-elevation-preview {
+  width: 48px;
+  height: 48px;
+  background-color: var(--pos-color-content-background);
+  border-radius: var(--pos-radius-button);
+  border: 1px solid var(--pos-color-frame-transparent);
+  flex-shrink: 0;
+  margin: 12px;
+}
+
+
+/* DS tag override — allow long shadow values to wrap inside the table cell */
+.styleguide-elevation-value {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.styleguide-divider {
+  border: none;
+  border-top: 1px solid var(--pos-color-frame);
+  margin-block: var(--pos-primitive-size-5);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Typography foundations page
+   ---------------------------------------------------------------------------- */
+
+.styleguide-typography-table-wrapper {
+  margin-block-start: var(--pos-primitive-size-3);
+}
+
+.styleguide-typography-header-bar {
+  grid-template-columns: 25% 38% 12% 25%;
+  margin-block-end: 0;
+}
+
+.styleguide-typography-table {
+  background: transparent;
+  border-collapse: collapse;
+}
+
+.styleguide-typography-table .col-preview { width: 25%; }
+.styleguide-typography-table .col-token   { width: 38%; }
+.styleguide-typography-table .col-value   { width: 12%; }
+.styleguide-typography-table .col-desc    { width: 25%; }
+
+.typo-preview-cell {
+  vertical-align: middle;
+  padding-block: 1.75rem;
+  padding-inline: var(--pos-primitive-size-2);
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-typography-table tbody:last-child .typo-preview-cell {
+  border-bottom: none;
+}
+
+.typo-class-label {
+  display: block;
+  margin-block-start: 0.5rem;
+  font-size: var(--pos-font-size-xs);
+  font-family: var(--pos-font-code);
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-typography-table td {
+  word-break: normal;
+}
+
+/* intra-group rows have a lighter divider; the last row of each group gets none */
+.styleguide-typography-table tbody tr td {
+  border-bottom: 1px solid var(--pos-color-frame-transparent);
+}
+
+.styleguide-typography-table tbody tr:last-child td {
+  border-bottom: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-typography-table tbody:last-child tr:last-child td {
+  border-bottom: none;
+}
+
+.typo-val-pill {
+  white-space: nowrap;
+}
+
+/* legacy card debug states */
+.pos-card-content.pos-debug-card-hover {
+  box-shadow: var(--pos-primitive-shadow-blurred);
+}
+.pos-card-content.pos-debug-card-hover .pos-card-content-title {
+  color: var(--pos-color-interactive-text);
+}
+.pos-card-content.pos-debug-card-hover .pos-card-content-title > span {
+  background-size: 100% 2px;
+}
+.pos-card-content.pos-debug-card-focus {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+/* feature-card debug states */
+.pos-feature-card.pos-debug-feature-card-hover {
+  box-shadow: var(--pos-primitive-shadow-blurred);
+}
+.pos-feature-card.pos-debug-feature-card-hover .pos-feature-card-title {
+  color: var(--pos-color-interactive-text);
+}
+
+/* avatar debug states */
+.pos-avatar.pos-debug-avatar-hover {
+  background-color: var(--pos-color-interactive-hover);
+  box-shadow: inset 0 0 0 2px var(--pos-color-interactive);
+}
+.pos-feature-card.pos-debug-feature-card-hover .pos-feature-card-title > span {
+  background-size: 100% 2px;
+}
+
+.comp-preview-stage .pos-feature-card.pos-debug-feature-card-centered {
+  align-items: center;
+  text-align: center;
+}
+.comp-preview-stage .pos-feature-card.pos-debug-feature-card-centered .pos-feature-card-body {
+  align-items: center;
+  width: 100%;
+}
+.comp-preview-stage .pos-feature-card.pos-debug-feature-card-centered .pos-feature-card-actions {
+  justify-content: center;
+}
+
+
+/* code component preview
+============================================================================ */
+.comp-code-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+  max-width: 400px;
+  width: 100%;
+}
+
+.comp-form-inputs-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-gap-card-elements);
+}
+
+.comp-form-inputs-stack fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comp-code-block-wrap {
+  max-width: 400px;
+  width: 100%;
+}
+
+.comp-code-kind-row {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* the "Kind" toggle (Variants tab) filters these to one at a time — [hidden] alone can silently
+   lose to an author display rule (see the .comp-preview-variant-row[hidden] comment earlier in
+   this file, same underlying gotcha); explicit here defensively even though neither wrapper
+   currently sets its own conflicting display. */
+.comp-code-kind-row[hidden],
+.comp-code-block-wrap[hidden] {
+  display: none;
+}
+
+/* component section — collapsible code snippet
+============================================================================ */
+.comp-section-code-toggle {
+  margin-block-start: var(--pos-gap-card-card);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.comp-section-code-toggle > summary {
+  align-self: center;
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  padding: .35em 1em;
+  border-radius: var(--pos-radius-button);
+  font-size: var(--pos-font-size-body-small);
+  background: var(--pos-color-inverted-background);
+  color: var(--pos-color-content-inverted-text);
+  user-select: none;
+}
+
+.comp-section-code-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.comp-section-code-toggle > summary::before {
+  content: '';
+  display: inline-block;
+  width: .38em;
+  height: .38em;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s linear;
+  flex-shrink: 0;
+  margin-block-start: 1px;
+}
+
+.comp-section-code-toggle[open] > summary::before {
+  transform: rotate(45deg);
+  margin-block-start: -2px;
+}
+
+.comp-section-code-toggle > pre {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-block-start: 0;
+  overflow-x: auto;
+}
+
+/* interactions foundation page
+============================================================================ */
+.styleguide-behavior-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.styleguide-behavior-entry {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--pos-gap-card-card);
+  align-items: start;
+  padding-block: var(--pos-gap-section-elements);
+  border-block-end: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-behavior-entry:first-child {
+  border-block-start: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-behavior-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-gap-card-elements);
+  min-height: 100px;
+  padding: var(--pos-padding-card);
+  background: var(--pos-color-page-background);
+  border-radius: var(--pos-radius-card);
+  border: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-behavior-demo-hint {
+  font-size: 0.75rem;
+  color: var(--pos-color-content-text-supplementary);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.styleguide-behavior-name {
+  display: flex;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+  flex-wrap: wrap;
+  margin-block-end: 0.4em;
+}
+
+.styleguide-behavior-used-by {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  margin-block-start: 0.5em;
+  margin-block-end: 0.75em;
+  font-size: 0.8125rem;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-behavior-used-by strong {
+  font-weight: 500;
+  color: var(--pos-color-content-text);
+}
+
+.styleguide-behavior-props {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  margin-block-start: 0.75em;
+}
+
+.styleguide-behavior-props th {
+  padding-block: 0.2em 0.4em;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pos-color-content-text-supplementary);
+  border-block-end: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-behavior-props td {
+  padding-block: 0.35em;
+  padding-inline-end: 0.75em;
+  vertical-align: top;
+  border-block-end: 1px solid var(--pos-color-frame);
+}
+
+.styleguide-behavior-props td:last-child { padding-inline-end: 0; }
+
+.styleguide-behavior-props td:first-child {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--pos-color-content-text-supplementary);
+  white-space: nowrap;
+}
+
+.styleguide-behavior-props td:nth-child(2) {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--pos-color-interactive-text);
+  white-space: nowrap;
+}
+
+/* demo element: elevate */
+.sg-demo-elevate-el {
+  padding: var(--pos-gap-card-elements) var(--pos-padding-card);
+  background: var(--pos-color-content-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+  box-shadow: var(--pos-primitive-shadow-medium);
+  font-size: var(--pos-font-size-s);
+  color: var(--pos-color-content-text);
+  cursor: pointer;
+  user-select: none;
+  --_anim-elevate-shadow: var(--pos-primitive-shadow-blurred);
+}
+
+/* demo element: dismiss wrapper */
+.sg-demo-dismiss-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+  width: 100%;
+}
+
+.sg-demo-dismiss-el {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+  padding: 0.4em 0.75em;
+  background: var(--pos-color-highlight-background);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-panel);
+  font-size: var(--pos-font-size-s);
+  color: var(--pos-color-content-text);
+}
+
+.sg-demo-dismiss-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--pos-color-content-text-supplementary);
+  border-radius: 50%;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.15s linear;
+}
+
+.sg-demo-dismiss-close:hover { color: var(--pos-color-interactive); }
+
+@media (max-width: 900px) {
+  .styleguide-behavior-entry {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* interactions page — v2 layout
+============================================================================ */
+.sg-behavior-section {
+  margin-block-start: var(--pos-gap-section-section);
+}
+
+.sg-behavior-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+}
+
+.sg-behavior-heading h2 {
+  margin: 0;
+}
+
+.sg-demo-link {
+  font-size: var(--pos-font-size-m);
+}
+
+.sg-colorize-demo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.sg-colorize-item {
+  background: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--pos-font-size-m);
+  font-family: inherit;
+  color: var(--pos-color-content-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Explicit hover override outside @layer so it wins over the unlayered base color rule.
+   Without this, the unlayered .sg-colorize-item { color } beats the layered
+   .pos-anim-colorize:hover { color } regardless of specificity. */
+.sg-colorize-item:hover {
+  color: var(--pos-color-interactive);
+}
+
+.sg-elevate-card {
+  max-width: 280px;
+}
+
+.sg-demo-chip {
+  cursor: default;
+}
+
+.sg-stroke-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pos-gap-card-elements);
+}
+
+.sg-demo-dismiss-v2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--pos-gap-card-elements);
+}
+
+/* tooltip — room above the control for the bubble, so it never runs into the section title
+============================================================================ */
+#comp-tooltip-preview .comp-preview-variant-items {
+  padding-block-start: var(--pos-primitive-size-6);
+}
+
+/* dropdown button — room below the trigger for the menu shown in the Active state
+============================================================================ */
+#comp-dropdown-button-preview {
+  padding-block-end: calc(var(--pos-primitive-size-10) + var(--pos-primitive-size-10));
+}
+
+/* popover — trigger + caret + panel layout in static preview
+============================================================================ */
+#comp-popover-preview {
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4rem;
+}
+
+#comp-popover-preview .pos-popover,
+#comp-popover-content-preview .pos-popover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comp-popover-demo-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comp-popover-demo-caret {
+  width: 16px;
+  height: 11px;
+  margin-block-start: 6px;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background-color: var(--pos-color-content-background);
+}
+
+.comp-popover-demo-panel {
+  min-width: 160px;
+  border: 1px solid var(--pos-color-frame-transparent);
+  border-radius: var(--pos-radius-panel);
+  background-color: var(--pos-color-content-background);
+  box-shadow: var(--pos-shadow-popover);
+  overflow: hidden;
+}
+
+#comp-popover-content-preview .comp-popover-demo-caret,
+#comp-popover-content-preview .comp-popover-content-panel,
+#comp-popover-preview .comp-popover-demo-caret,
+#comp-popover-preview .comp-popover-demo-panel {
+  display: none;
+}
+
+#comp-popover-content-preview.is-opened .comp-popover-demo-caret,
+#comp-popover-content-preview.is-opened .comp-popover-content-panel,
+#comp-popover-preview.is-opened .comp-popover-demo-caret,
+#comp-popover-preview.is-opened .comp-popover-demo-panel {
+  display: block;
+}
+
+
+/* dialog — static preview (real .pos-dialog class + tokens, only the fixed/
+   viewport-centering positioning is neutralized so it renders inline inside
+   the preview stage instead of covering the actual page; a plain div fakes
+   the ::backdrop dimming, since a real ::backdrop only renders for a dialog
+   opened via showModal(), never for a statically-open preview instance).
+============================================================================ */
+.comp-dialog-demo-backdrop {
+  width: 100%;
+  min-height: 22rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--pos-radius-card);
+  background-color: color-mix(in srgb, var(--pos-color-page-background) 70%, transparent);
+}
+
+.comp-dialog-demo-backdrop .pos-dialog {
+  position: static;
+  inset: auto;
+  margin: 0;
+  opacity: 1;
+  scale: 1;
+}
+
+
+/* popover — text-based trigger (Figma-style nav trigger)
+============================================================================ */
+.comp-popover-demo-text-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: bold;
+  font-size: var(--pos-font-size-m);
+  color: var(--pos-color-content-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+
+.comp-popover-content-panel {
+  padding: 1rem 1.25rem;
+}
+
+.pos-popover menu li a.pos-debug-popover-item-hover,
+.pos-popover menu li button.pos-debug-popover-item-hover {
+  background-color: var(--pos-color-interactive);
+  color: var(--pos-color-content-inverted-text);
+  outline: none;
+}
+
+.pos-popover menu li a.pos-debug-popover-item-selected,
+.pos-popover menu li button.pos-debug-popover-item-selected {
+  background-color: var(--pos-color-interactive);
+  color: var(--pos-color-content-inverted-text);
+  outline: none;
+}
+
+.pos-popover .pos-popover-menu-item-important a.pos-debug-popover-item-hover,
+.pos-popover .pos-popover-menu-item-important button.pos-debug-popover-item-hover {
+  background-color: var(--pos-color-important);
+  color: var(--pos-color-content-inverted-text);
+}
+
+.pos-popover .pos-popover-menu-item-important a.pos-debug-popover-item-selected,
+.pos-popover .pos-popover-menu-item-important button.pos-debug-popover-item-selected {
+  background-color: var(--pos-color-important);
+  color: var(--pos-color-content-inverted-text);
+}
+
+
+/* multiselect debug states — real rule lives in pos-forms.css (higher-specificity
+   .comp-preview-stage duplicate removed 2026-08-27; it had drifted out of sync and
+   was overriding the component CSS fix) */
+
+
+/* password debug states
+============================================================================ */
+
+.comp-preview-stage .pos-form-password-toggle.pos-debug-pw-toggle-hover {
+  color: var(--pos-color-interactive-hover);
+}
+
+
+/* ----------------------------------------------------------------------------
+   Foundations — Icons page
+   ---------------------------------------------------------------------------- */
+.styleguide-icon-category {
+  margin-block-start: var(--pos-gap-section-section);
+}
+
+.styleguide-icon-category:first-child {
+  margin-block-start: var(--pos-gap-section-title-content);
+}
+
+.styleguide-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--pos-gap-card-card);
+  margin-block-start: var(--pos-gap-section-title-content);
+}
+
+.styleguide-icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pos-primitive-size-1);
+  padding: var(--pos-primitive-size-2);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+  background-color: var(--pos-color-content-background);
+  text-align: center;
+  cursor: default;
+}
+
+.styleguide-icon-card-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pos-color-content-icon);
+  width: var(--pos-size-icon-l);
+  height: var(--pos-size-icon-l);
+}
+
+.styleguide-icon-card-glyph .pos-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.styleguide-icon-card-name {
+  word-break: break-all;
+}
+
+.styleguide-icon-card-purpose {
+  margin: 0;
+  font-size: var(--pos-font-size-xs);
+  color: var(--pos-color-content-text-supplementary);
+  line-height: 1.3;
+}
+
+/* Icons page — icon color examples (one card per icon role). Colors only from the DS tokens. */
+.styleguide-icon-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--pos-gap-card-card);
+  margin-block-start: var(--pos-gap-section-title-content);
+}
+
+.styleguide-icon-color-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-1);
+  padding: var(--pos-padding-card);
+  border: 1px solid var(--pos-color-frame);
+  border-radius: var(--pos-radius-card);
+  background-color: var(--pos-color-content-background);
+}
+
+.styleguide-icon-color-card > h3 {
+  margin: 0;
+}
+
+.styleguide-icon-color-card > p {
+  margin: 0;
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-icon-color-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pos-primitive-size-2);
+  min-height: var(--pos-primitive-size-8);
+  margin-block-end: var(--pos-primitive-size-1);
+  border-radius: var(--pos-radius-card);
+  background-color: var(--pos-color-page-background);
+}
+
+.styleguide-icon-color-stage .pos-icon {
+  display: block;
+  width: var(--pos-size-icon-l);
+  height: var(--pos-size-icon-l);
+}
+
+.styleguide-icon-color-btn {
+  display: inline-flex;
+  padding: var(--pos-primitive-size-05);
+  border: none;
+  border-radius: var(--pos-radius-button);
+  background: none;
+  cursor: pointer;
+  transition: color 0.15s linear;
+}
+
+.styleguide-icon-color-btn:focus-visible {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+.styleguide-icon-color--decorative    { color: var(--pos-color-content-icon); }
+.styleguide-icon-color--subdued       { color: var(--pos-color-content-icon-interactive); }
+.styleguide-icon-color--interactive   { color: var(--pos-color-interactive); }
+.styleguide-icon-color--subdued:hover,
+.styleguide-icon-color--interactive:hover  { color: var(--pos-color-interactive-hover); }
+.styleguide-icon-color--interactive:active { color: var(--pos-color-interactive-active); }
+.styleguide-icon-color--important     { color: var(--pos-color-important); }
+.styleguide-icon-color--warning       { color: var(--pos-color-warning); }
+.styleguide-icon-color--confirmation  { color: var(--pos-color-confirmation); }
+.styleguide-icon-color--supplementary { color: var(--pos-color-supplementary); }
+
+.styleguide-icon-color-tokens {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pos-primitive-size-05);
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pos-font-size-xs);
+  color: var(--pos-color-content-text-supplementary);
+}
+
+.styleguide-icon-color-tokens > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pos-primitive-size-05);
+}
+
+.styleguide-icon-color-tokens code {
+  overflow-wrap: anywhere;
+}
+
+/* breadcrumb — debug classes for simulated interaction states (generate-component.js).
+   Hover/focus apply to whichever interactive sub-element is actually visible for the current
+   Variant — the first link in Expanded, the back-chevron button in Collapsed — mirroring the
+   real :hover/:focus-visible rules that .pos-link / .pos-breadcrumb-back already carry. */
+.pos-breadcrumb.pos-debug-breadcrumb-hover:not(.pos-breadcrumb--collapsed) .pos-breadcrumb-item:first-child .pos-link {
+  color: var(--pos-color-interactive-text-hover);
+}
+
+.pos-breadcrumb.pos-debug-breadcrumb-hover.pos-breadcrumb--collapsed .pos-breadcrumb-back {
+  color: var(--pos-color-interactive-hover);
+}
+
+.pos-breadcrumb.pos-debug-breadcrumb-focus:not(.pos-breadcrumb--collapsed) .pos-breadcrumb-item:first-child .pos-link {
+  border-radius: var(--pos-radius-button);
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+  color: var(--pos-color-interactive-text-hover);
+}
+
+.pos-breadcrumb.pos-debug-breadcrumb-focus.pos-breadcrumb--collapsed .pos-breadcrumb-back {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 2px;
+}
+
+/* ── High contrast: no elevation on the docs site ───────────────
+   DS component shadows already resolve to none in HC via the --pos-primitive-shadow-* tokens; these
+   are the docs site's own hand-written shadows (color-mixed from content-text, which turns into a
+   white glow in HC). The two side panels get a crisp 1px separator instead — a line, not a shadow. */
+:root.pos-theme-a11y.pos-theme-a11yEnabled :is(
+  .styleguide-ds-table,
+  .workflow-stat,
+  .comp-status-btn--active,
+  .comp-intent-btn--active,
+  .token-level-table,
+  .styleguide-token-table
+) {
+  box-shadow: none;
+}
+
+:root.pos-theme-a11y.pos-theme-a11yEnabled .styleguide-ds-sidebar {
+  box-shadow: inset -1px 0 0 var(--pos-color-frame-transparent);
+}
+
+:root.pos-theme-a11y.pos-theme-a11yEnabled .comp-doc-right {
+  box-shadow: inset 1px 0 0 var(--pos-color-frame-transparent);
+}
+
+/* slider — debug classes for simulated interaction states (generate-component.js) */
+/* mirrors .pos-slider:focus-visible in pos-slider.css */
+.pos-slider.pos-debug-slider-focus {
+  outline: 2px solid var(--pos-color-focused);
+  outline-offset: 3px;
+}
+
+/* dropdown-button — hover / focus reuse the Button's debug classes on the trigger; the open state
+   (Active) is simulated in pos-dropdown-button.css with .pos-debug-dropdown-button-active, which
+   also shows the menu in place (a real popover lives in the top layer and closes on any click) */

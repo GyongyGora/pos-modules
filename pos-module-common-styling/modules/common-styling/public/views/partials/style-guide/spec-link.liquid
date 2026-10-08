@@ -1,0 +1,289 @@
+{% comment %}
+  Generated from tokens/components/link.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-link">
+{% raw %}
+{
+  "_about": "Component spec for pos-link (docs/inspect refactor, component migration batch, 2026-08-26). Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Link\" section. Reuses the already-curated usage prose from COMP_CONFIGS['link'].usage and token data from COMP_CONFIGS['link'].tokens (verified-accurate, currently-live data) restructured into the new schema. Single representative variant — this component's preview shows one instance (no Variant/Base toggle needed per the 2026-08-25/26 \"multiple sub-variants side by side\" rule). Regenerate the spec partial with the script in RULES.md 6.4 if the source data changes; do not hand-edit token values here. Regenerated 2026-08-26 after fixing a real production bug in buildLinkTokens() (was missing the 'visited' state entirely, even though LINK_TOKENS_BASE.visited had correct data) and adding a sizeOverrides.small entry so the Size toggle swaps --pos-font-size-body -> -body-small in the Tokens panel too. Updated 2026-08-27: added usageExample/props/composedOf (Target architecture point 1 fields that were left empty when this spec was first generated).",
+  "component": "link",
+  "name": "Link",
+  "description": "Navigating to another page, section, or URL — inline within body text, or as a standalone navigation target.",
+  "whenToUse": "Navigating to another page, section, or URL — inline within body text, or as a standalone navigation target. Use <code>&lt;a href=\"...\"&gt;</code> whenever the outcome is navigation, not an action.",
+  "whenNotToUse": "Triggering a JavaScript action (submit, delete, toggle, open dialog) — use a <code>&lt;button&gt;</code> instead. Never use a link where pressing Enter would be unexpected.",
+  "do": "Use descriptive link text that makes sense out of context — \"View order details\" not \"Click here\". Always underline inline text links so they are visually distinguishable without relying on color alone.",
+  "dont": "Do not use a bare <code>javascript:void(0)</code> or empty <code>href=\"#\"</code> for action links — use a <code>&lt;button&gt;</code>. Never remove the underline from inline text links; it is required for WCAG compliance.",
+  "composedOf": [],
+  "props": [
+    {
+      "name": "pos-link--small",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Compact size — smaller font-size and icon size."
+    },
+    {
+      "name": "icon",
+      "type": "optional leading/trailing <svg>",
+      "default": "none",
+      "description": "A leading icon (e.g. link icon) or trailing icon (e.g. external-link) can be placed inside the anchor alongside the text."
+    },
+    {
+      "name": "target=\"_blank\"",
+      "type": "attribute",
+      "default": "none",
+      "description": "For external links — always pair with rel=\"noopener noreferrer\" and a visually-hidden \"(opens in new tab)\" label."
+    },
+    {
+      "name": "pos-link--disabled",
+      "type": "boolean class",
+      "default": "false",
+      "description": "Disabled link — always pair with aria-disabled=\"true\" so screen readers announce it as disabled. Shows the not-allowed cursor; clicks are blocked by the click guard in views/partials/init.liquid (RULES.md 4.12)."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "active",
+      "visited",
+      "disabled"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "link": {
+      "label": "Link",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-hover",
+                  "figma": "General elements-theme/Interactive text hover",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "active": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-active",
+                  "figma": "General elements-theme/Interactive text active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text",
+                  "figma": "General elements-theme/Interactive text normal",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "visited": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-active",
+                  "figma": "General elements-theme/Interactive text active",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-active",
+                  "figma": "General elements-theme/Graphic Interactive Active",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-interactive-text-disabled",
+                  "figma": "General elements-theme/Interactive text disabled",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-font-size-body",
+                  "figma": null,
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-s",
+                  "figma": "Icon/icon-s",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "sizeOverrides": {
+    "small": [
+      {
+        "from": "--pos-font-size-body",
+        "to": "--pos-font-size-body-small",
+        "figma": null
+      }
+    ]
+  },
+  "usageExample": "<!-- Text link -->\n<a href=\"/page\" class=\"pos-link\">Link</a>\n\n<!-- With icon -->\n<a href=\"/page\" class=\"pos-link\">\n  <!-- link icon -->\n  Link\n</a>\n\n<!-- External link -->\n<a href=\"https://example.com\" class=\"pos-link\"\n  target=\"_blank\" rel=\"noopener noreferrer\">\n  Link\n  <!-- external-link icon -->\n  <span class=\"pos-label\">(opens in new tab)</span>\n</a>"
+}
+{% endraw %}
+</script>

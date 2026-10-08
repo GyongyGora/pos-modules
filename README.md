@@ -56,23 +56,26 @@ Provides comprehensive user management with session-based authentication and Rol
 
 ---
 
-### [pos-module-common-styling](./pos-module-common-styling) ![v1.38.5](https://img.shields.io/badge/version-1.38.5-blue)
+### [pos-module-common-styling](./pos-module-common-styling) ![v2.0.0](https://img.shields.io/badge/version-2.0.0-blue)
 
-**Design system and CSS/JavaScript utilities.**
+**The pOS design system — AI-native, optimized for UI generation by coding agents: design tokens, component CSS, JavaScript and documentation.**
 
-Provides reusable UI components and styling utilities with:
+Version 2.0 is the new, refreshed design system, built on the 1.x one (which stays on `master`):
 
-- CSS variables system (pos-config.css) for theming
-- Theme support (light/dark mode)
-- Responsive design utilities
-- Components: forms, buttons, cards, dialogs, popovers, tables, toasts, markdown editor, uploads
-- Style guide page for browsing available components
-- JavaScript utilities in `window.pos` namespace
-- Scoped with `pos-` prefix to avoid conflicts
+- Design tokens: primitive → semantic → component CSS variables
+- 10-step color scales with the same contrast target per step on every scale — switching a scale or brand theme keeps contrast accessible
+- Light, dark and high contrast modes, 15 brand themes, per-section color modes
+- Wireframe mode for prototypes (black-and-white, hand-drawn look)
+- Component wizard: draft a new component with the real styles in the browser, no deploy needed
+- Documented components with token specs: buttons, form fields, cards, dialogs, popovers, tables, tabs, toasts, tooltips, badges, slider, breadcrumb and more
+- `/style-guide` documentation site (foundations, components, themes, migration plan)
+- Accessibility: WCAG 2.2 AA contrast checked in every mode and theme
+- Machine-readable catalog for AI coding agents (AGENTS.md, llms.txt)
+- JavaScript utilities in the `window.pos` namespace; scoped with the `pos-` prefix and CSS layers
 
 **Dependencies**: None
 
-**Links**: [README](./pos-module-common-styling/README.md) | [Marketplace](https://partners.platformos.com/marketplace/pos_modules/154)
+**Links**: [README](./pos-module-common-styling/README.md) | [Documentation site (preview)](https://gyongy-design-system.staging.oregon.platform-os.com/style-guide/overview) | [Marketplace](https://partners.platformos.com/marketplace/pos_modules/154)
 
 ---
 

@@ -1,0 +1,359 @@
+/*
+  DS Behaviors — pos-behaviors.css
+
+  Composable interaction behaviors, independent of component visual styling.
+  Each behavior is a self-contained class applied to any element by name.
+  Components configure behaviors via private CSS custom properties (--_anim-*).
+
+  Loading order: after component CSS files — behaviors must win over base component
+  declarations for shared properties like background-image, outline, transition.
+
+  Behaviors:
+    .pos-anim-underline  — animated underline slides in from left on hover
+    .pos-anim-colorize   — text color transitions to interactive color on hover
+    .pos-anim-elevate    — element lifts with shadow on hover
+    .pos-anim-grow       — element scales up slightly on hover (icons, cards, chips)
+    .pos-anim-shrink     — element scales down slightly on hover (counterpart to grow)
+    .pos-anim-stroke     — 2px interaction-color inset outline appears on hover
+    .pos-anim-dismiss    — container fades + scales out when its .pos-close is clicked
+*/
+
+
+@layer common-styling {
+
+  /* ============================================================
+     pos-anim-underline
+     ============================================================
+     Purpose   Communicates interactivity on text elements by
+               revealing a 1px underline that slides in from the
+               left on hover.
+     Use for   Interactive text elements: links, tags, breadcrumbs,
+               inline text actions.
+     Avoid     Elements with non-solid or patterned backgrounds
+               where the gradient underline may be invisible.
+     Used by   .pos-link, a (in .pos-app), button.pos-tag, a.pos-tag
+
+     Config custom properties (set in component CSS):
+       --_anim-underline-x          Horizontal position of center  (default: 50% = center-out)
+       --_anim-underline-y          Offset from bottom              (default: 0px)
+       --_anim-underline-width      Hover width                     (default: 100%)
+       --_anim-underline-duration   Duration                        (default: 0.2s)
+     ============================================================ */
+
+  .pos-anim-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: var(--_anim-underline-x, 50%) calc(100% - var(--_anim-underline-y, 0px));
+    transition: background-size var(--_anim-underline-duration, 0.2s) ease;
+  }
+
+  .pos-anim-underline:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-size: var(--_anim-underline-width, 100%) 2px;
+  }
+
+
+  /* ============================================================
+     pos-anim-colorize
+     ============================================================
+     Purpose   Signals interactivity on neutral-colored elements
+               by transitioning their text color to the
+               interaction color on hover.
+     Use for   Nav items, breadcrumbs, collapsible toggles,
+               icon labels — neutral at rest, interactive on hover.
+     Avoid     Elements already using the interaction color at
+               rest; the effect would be invisible.
+     Used by   (none yet)
+
+     Config custom properties:
+       --_anim-colorize-color     Target color   (default: --pos-color-interactive)
+       --_anim-colorize-duration  Duration       (default: 0.15s)
+     ============================================================ */
+
+  .pos-anim-colorize {
+    transition: color var(--_anim-colorize-duration, 0.15s) linear;
+  }
+
+  .pos-anim-colorize:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    color: var(--_anim-colorize-color, var(--pos-color-interactive));
+  }
+
+
+  /* ============================================================
+     pos-anim-elevate
+     ============================================================
+     Purpose   Communicates interactivity on card-like or
+               button-like surfaces by lifting the element and
+               deepening its shadow on hover.
+     Use for   Cards, action panels, interactive list items,
+               elevated buttons.
+     Avoid     Inline elements or items inside tight scrollable
+               lists where translateY causes visual jumps.
+     Used by   (none yet)
+
+     Config custom properties:
+       --_anim-elevate-y         Lift distance            (default: -2px)
+       --_anim-elevate-shadow    Box-shadow at hover      (default: --pos-shadow-popover)
+       --_anim-elevate-duration  Duration                 (default: 0.15s)
+     ============================================================ */
+
+  .pos-anim-elevate {
+    transition: transform var(--_anim-elevate-duration, 0.15s) ease,
+                box-shadow var(--_anim-elevate-duration, 0.15s) ease;
+  }
+
+  .pos-anim-elevate:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    transform: translateY(var(--_anim-elevate-y, -2px));
+    box-shadow: var(--_anim-elevate-shadow, var(--pos-shadow-popover));
+  }
+
+
+  /* ============================================================
+     pos-anim-grow
+     ============================================================
+     Purpose   Communicates interactivity or focus by slightly
+               scaling the element up on hover. Works on any
+               sized element — from a 12px icon to a full card.
+     Use for   Close/remove icons, avatar badges, small action
+               icons, cards, interactive chips, thumbnail images.
+     Avoid     Text elements (scale distorts text differently
+               from surrounding content). Elements in tight
+               flexbox/grid rows where scale causes overlap.
+               Elements that already use transform for positioning.
+
+     Config custom properties (set in component CSS):
+       --_anim-grow-scale     Target scale factor  (default: 1.15)
+       --_anim-grow-origin    transform-origin     (default: center)
+       --_anim-grow-duration  Duration             (default: 0.15s)
+     ============================================================ */
+
+  .pos-anim-grow {
+    transition: scale var(--_anim-grow-duration, 0.15s) ease;
+    transform-origin: var(--_anim-grow-origin, center);
+  }
+
+  .pos-anim-grow:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    scale: var(--_anim-grow-scale, 1.15);
+  }
+
+
+  /* ============================================================
+     pos-anim-shrink
+     ============================================================
+     Purpose   Counterpart to pos-anim-grow. Slightly scales the
+               element DOWN on hover — communicates a "press" or
+               "recede" affordance, or creates contrast when a
+               sibling element grows.
+     Use for   Secondary/passive elements in a group where the
+               primary one grows (the passive one shrinks to give
+               the active one visual priority). Destructive
+               confirmation icons where shrinking signals caution.
+     Avoid     Primary interactive elements — shrinking reduces
+               perceived affordance. Text elements.
+
+     Config custom properties (set in component CSS):
+       --_anim-shrink-scale     Target scale factor  (default: 0.85)
+       --_anim-shrink-origin    transform-origin     (default: center)
+       --_anim-shrink-duration  Duration             (default: 0.15s)
+     ============================================================ */
+
+  .pos-anim-shrink {
+    transition: scale var(--_anim-shrink-duration, 0.15s) ease;
+    transform-origin: var(--_anim-shrink-origin, center);
+  }
+
+  .pos-anim-shrink:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    scale: var(--_anim-shrink-scale, 0.85);
+  }
+
+
+  /* ============================================================
+     pos-anim-stroke
+     ============================================================
+     Purpose   Reveals a 2px interaction-color outline on hover,
+               communicating that a surface is interactive.
+               Drawn inset (outline-offset: -2px) so the stroke
+               stays within the element — no layout shift.
+     Use for   Sidebar action buttons, icon buttons, panel
+               headers, any control needing a clear hover ring.
+     Avoid     Elements with a visible :focus-visible outline at
+               the same offset — stroke and focus ring may visually
+               overlap. Adjust --_anim-stroke-offset if needed.
+     Used by   Sidebar buttons (right sidebar nav)
+
+     Config custom properties:
+       --_anim-stroke-color     Stroke color   (default: --pos-color-interactive)
+       --_anim-stroke-offset    outline-offset (default: -2px, inset)
+       --_anim-stroke-duration  Duration       (default: 0.15s)
+     ============================================================ */
+
+  .pos-anim-stroke {
+    outline: 2px solid transparent;
+    outline-offset: var(--_anim-stroke-offset, -2px);
+    transition: outline-color var(--_anim-stroke-duration, 0.15s) linear;
+  }
+
+  .pos-anim-stroke:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    outline-color: var(--_anim-stroke-color, var(--pos-color-interactive));
+  }
+
+
+  /* ============================================================
+     Component applications
+     Applied via direct selectors — no HTML class change needed.
+     The behavior class (e.g. .pos-anim-underline) remains
+     available for any future element that needs opt-in.
+  ============================================================ */
+
+  /* stroke — .pos-tile-btn
+     Hover renders a 2px interactive-color inset stroke via the pos-anim-stroke
+     behavior. Applied via direct selector — no HTML class change needed.
+     The outline base is set here; outline-color transition is in pos-tile-btn.css
+     (merged with its other transitions to avoid shorthand override conflicts).
+  */
+  .pos-tile-btn {
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+
+  .pos-tile-btn:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    outline-color: var(--_anim-stroke-color, var(--pos-color-interactive));
+  }
+
+  /* stroke — .pos-switch-card
+     Hover renders a 2px interactive-color inset stroke via the pos-anim-stroke
+     behavior, matching Choice button (.pos-tile-btn). Applied via direct selector —
+     no HTML class change needed. The base rule is a bare class selector (same
+     specificity tier as .pos-tile-btn's own base) so pos-switch-card.css's
+     higher-specificity :has(...:focus-visible) rule always wins the cascade for
+     outline-offset regardless of stylesheet load order. The hover rule is scoped to
+     :has(...:not(:disabled)) because .pos-switch-card is a <label> — hover would
+     otherwise still visually fire even when the wrapped input is disabled (the
+     disabled card keeps pointer events for its not-allowed cursor, RULES.md 4.12,
+     so this guard is what keeps it still). The outline-color transition is set in
+     pos-switch-card.css (merged with its own transitions).
+  */
+  .pos-switch-card {
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+
+  .pos-switch-card:has(.pos-switch-card-input:not(:disabled)):hover {
+    outline-color: var(--_anim-stroke-color, var(--pos-color-interactive));
+  }
+
+
+  /* underline — .pos-link (opt-in)
+     Always underlined at rest (accessibility). On hover, replays the
+     center-out draw animation once via @keyframes so the underline
+     re-draws from the center even though it was already at full width.
+     Using animation (not transition) because the animation must restart
+     from 0% on each hover regardless of the current background-size value.
+     Only .pos-link gets this — no broad a selector. Components using <a>
+     (nav items, segmented control, toggle group, etc.) are unaffected.
+  */
+  .pos-link {
+    text-decoration: none;          /* background-image provides the underline instead */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 100% 2px;
+    background-position: 50% 100%;
+    transition: color .1s linear;
+  }
+
+  .pos-link:hover:where(:not([aria-disabled="true"], .pos-link--disabled, .pos-debug-link-disabled)) {
+    animation: pos-underline-draw 0.3s ease forwards;
+  }
+
+
+  /* underline — icon + text links
+     Component rule: icons inside links must never be underlined, only the text.
+     The background-image underline spans the full element width and cannot skip
+     the icon. Switch to text-decoration: underline instead — browsers render it
+     only under text runs, not under SVG elements.
+     The center-out animation is not applied to icon links; static underline
+     satisfies accessibility without risking visual noise on the icon.
+     If animated underline is required on an icon link, wrap the text in
+     <span class="pos-link-text"> and apply the behavior to that span directly.
+  */
+  .pos-link:has(svg) {
+    background-image: none;
+    animation: none;
+    text-decoration: underline;
+  }
+
+
+  /* underline — interactive tags (.pos-tag-interactive only)
+     Position and width are tag-specific (offset by padding).
+     Transition is set in pos-tag.css.
+  */
+  button.pos-tag-interactive,
+  a.pos-tag-interactive {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    /* 4-value syntax: centers horizontally, places underline 3px above bottom edge.
+       Avoids depending on --pos-padding-tag-block which gets overridden in small-size tags. */
+    background-position: center bottom 3px;
+  }
+
+  button.pos-tag-interactive:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)),
+  a.pos-tag-interactive:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+    background-size: calc(100% - var(--pos-padding-tag) * 2) 2px;
+  }
+
+
+  /* ============================================================
+     pos-anim-dismiss
+     ============================================================
+     Purpose   Animates a container element out of view when its
+               internal .pos-close button is activated. The JS
+               removes the element from the DOM after the animation
+               (unless data-anim-no-remove is present, e.g. for
+               preview/undo flows where the element must be kept).
+     Use for   Closeable alerts, banners, notifications,
+               dismissible tags and chips, removable list items.
+     Avoid     Elements that need complex show/hide logic managed
+               by a parent component — use that component's own
+               dismiss mechanism instead.
+     Used by   pos-behavior-dismiss.js (event delegation on click)
+
+     Activation:
+       JS adds .pos-anim-dismiss--out to trigger the exit animation,
+       then removes the element on animationend (unless opted out).
+       A pos:dismissed CustomEvent is dispatched before removal
+       so consumers can react (show undo, update counts, etc.).
+
+     Config custom properties:
+       --_anim-dismiss-duration   Duration   (default: 0.2s)
+       --_anim-dismiss-scale      End scale  (default: 0.85)
+       --_anim-dismiss-easing     Easing     (default: ease)
+     ============================================================ */
+
+  .pos-anim-dismiss--out {
+    animation: _pos-dismiss-out
+               var(--_anim-dismiss-duration, 0.2s)
+               var(--_anim-dismiss-easing, ease)
+               forwards;
+    pointer-events: none;
+  }
+
+}
+
+
+/* ============================================================
+   Keyframe animations referenced by behaviors above.
+   Defined outside @layer to ensure global availability.
+============================================================ */
+
+/* center-out underline draw — used by link hover */
+@keyframes pos-underline-draw {
+  from { background-size: 0%   2px; }
+  to   { background-size: 100% 2px; }
+}
+
+/* dismiss exit — used by .pos-anim-dismiss--out */
+@keyframes _pos-dismiss-out {
+  from { opacity: 1; scale: 1; }
+  to   { opacity: 0; scale: var(--_anim-dismiss-scale, 0.85); }
+}

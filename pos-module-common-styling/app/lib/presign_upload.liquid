@@ -1,4 +1,4 @@
 {% liquid
   function presigned_upload = 'queries/uploads/presign', table: 'uploads', property: 'upload'
-  assign context.presigned_upload = presigned_upload
+  hash_assign context['presigned_upload'] = presigned_upload
 %}

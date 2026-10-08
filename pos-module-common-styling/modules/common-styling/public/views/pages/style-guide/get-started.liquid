@@ -1,0 +1,322 @@
+---
+layout: 'modules/common-styling/style-guide'
+---
+<div class="styleguide-ds">
+
+  <div class="styleguide-ds-layout">
+
+    <aside class="styleguide-ds-sidebar">
+      {% render 'modules/common-styling/style-guide/nav-left', active: '/style-guide/get-started' %}
+    </aside>
+
+    <main class="styleguide-ds-main" id="main-content" data-smooth-scroll data-scroll-link-scope=".setup-paths">
+      <article class="styleguide-ds-article">
+
+        <header class="styleguide-ds-article-header">
+          <h1 class="pos-heading-1">Get started</h1>
+          <p>pOS Core is a headless, token-driven component library built for platformOS. All visual properties are controlled through CSS custom properties &mdash; components carry no hardcoded values and adapt automatically to any brand or theme.</p>
+        </header>
+
+        <!-- ── Two paths: new project / migration ───────────────── -->
+        <div class="setup-paths">
+          <div class="pos-feature-card pos-feature-card--small">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'plus' %}</div>
+            <div class="pos-feature-card-body">
+              <h2 class="pos-feature-card-title"><span>Start a new project</span></h2>
+              <p class="pos-feature-card-text">Starting a new project with the design system? Install the module, load it in your layout and use the components.</p>
+            </div>
+            <div class="pos-feature-card-actions">
+              <a href="#start" class="pos-button pos-button-primary pos-button-small">Get started</a>
+            </div>
+          </div>
+          <div class="pos-feature-card pos-feature-card--small">
+            <div class="pos-feature-card-icon">{% render 'modules/common-styling/icon', icon: 'expand-horizontal-4' %}</div>
+            <div class="pos-feature-card-body">
+              <h2 class="pos-feature-card-title"><span>Migrate an existing product</span></h2>
+              <p class="pos-feature-card-text">Moving an existing product from the old design system? Follow the migration plan step by step.</p>
+            </div>
+            <div class="pos-feature-card-actions">
+              <a href="/style-guide/migration-plan" class="pos-button pos-button-secondary pos-button-small">Migration plan</a>
+            </div>
+          </div>
+        </div>
+
+        <hr class="intro-divider">
+
+        <!-- ── Start a new project ─────────────────────────────── -->
+        <section class="intro-section" id="start">
+          <h2 class="pos-heading-2">Start a new project</h2>
+          <p><strong>1. Install the module</strong> in your platformOS project, then deploy:</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-bash">pos-cli modules install common-styling
+pos-cli deploy &lt;env&gt;</code></pre>
+          <p class="setup-step"><strong>2. Load the design system in your layout</strong> &mdash; one render call in the <code class="pos-code pos-code--small">&lt;head&gt;</code> (your own CSS after it), and <code class="pos-code pos-code--small">pos-app</code> on the main container:</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;head&gt;
+  &#123;% render 'modules/common-styling/init', reset: true %&#125;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main class="pos-app"&gt;&hellip;&lt;/main&gt;
+&lt;/body&gt;</code></pre>
+          <p class="setup-step"><strong>3. Use the components</strong> &mdash; copy the markup from a component page (its Usage tab), or render a partial:</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;button type="button" class="pos-button pos-button-primary"&gt;Save&lt;/button&gt;
+
+&#123;% render 'modules/common-styling/content/alert', type: 'success', title: 'Saved', content: 'Your changes are live.' %&#125;</code></pre>
+          <p class="setup-step">Colors, spacing and sizes come from the <code class="pos-code pos-code--small">--pos-*</code> tokens only &mdash; never hardcoded values. Building with an AI agent? Point it at <code class="pos-code pos-code--small">AGENTS.md</code> in the module repository; <code class="pos-code pos-code--small">npm run check:ui</code> checks the result.</p>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Token Architecture ──────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Token Architecture</h2>
+          <p>All visual properties flow through a strict three-level hierarchy:</p>
+
+          <div class="token-hierarchy-diagram" aria-hidden="true">
+            <div class="token-hierarchy-step token-hierarchy-step--primitive">Primitive tokens</div>
+            <div class="token-hierarchy-arrow">&rarr;</div>
+            <div class="token-hierarchy-step token-hierarchy-step--semantic">Semantic tokens</div>
+            <div class="token-hierarchy-arrow">&rarr;</div>
+            <div class="token-hierarchy-step token-hierarchy-step--component">Component tokens</div>
+          </div>
+
+          <table class="token-level-table">
+            <colgroup>
+              <col class="col-level">
+              <col class="col-file">
+              <col class="col-purpose">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>File</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="t-level-name">Primitive</span></td>
+                <td><code class="pos-code pos-code--small">style/pos-primitives.css</code></td>
+                <td>Raw values &mdash; colors, sizes, radius. Never use color primitives directly in components.</td>
+              </tr>
+              <tr>
+                <td><span class="t-level-name">Semantic</span></td>
+                <td><code class="pos-code pos-code--small">style/pos-config.css</code></td>
+                <td>Contextual roles &mdash; text, surface, stroke, graphics. <a href="#theming" class="pos-link">Light, dark &amp; HC modes defined here.</a></td>
+              </tr>
+              <tr>
+                <td><span class="t-level-name">Component</span></td>
+                <td><code class="pos-code pos-code--small">pos-config.css</code></td>
+                <td>Button and form-field tokens referencing semantic tokens (other components use semantic tokens directly).</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Theming ─────────────────────────────────────────── -->
+        <section class="intro-section" id="theming">
+          <h2 class="pos-heading-2">Theming</h2>
+          <p>Light mode is the default. Dark and accessibility (high contrast) mode are opt-in on the root element: <code class="pos-code pos-code--small">pos-theme-darkEnabled</code> lets dark mode follow the OS (<code class="pos-code pos-code--small">prefers-color-scheme: dark</code>), adding <code class="pos-code pos-code--small">pos-theme-dark</code> forces it; <code class="pos-code pos-code--small">pos-theme-a11y pos-theme-a11yEnabled</code> switches on high contrast (manual only).</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;!-- dark mode follows the OS preference --&gt;
+&lt;html class="pos-theme-darkEnabled"&gt;...&lt;/html&gt;
+
+&lt;!-- dark mode, always --&gt;
+&lt;html class="pos-theme-dark pos-theme-darkEnabled"&gt;...&lt;/html&gt;
+
+&lt;!-- accessibility (high contrast) mode --&gt;
+&lt;html class="pos-theme-a11y pos-theme-a11yEnabled"&gt;...&lt;/html&gt;</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)">Brand themes: add <code class="pos-code pos-code--small">pos-brand-&lt;key&gt;</code> to <code class="pos-code pos-code--small">&lt;html&gt;</code> to pick a built-in theme. There are 15: Default (no class needed) plus 14 <code class="pos-code pos-code--small">pos-brand-&lt;key&gt;</code> classes. The Wireframe theme also needs <code class="pos-code pos-code--small">pos-style-wireframe</code> (<code class="pos-code pos-code--small">&lt;html class="pos-brand-wireframe pos-style-wireframe"&gt;</code>) for its sketch-style frames and Monda headlines. Or export your own from the Themes page &mdash; no component markup changes required.</p>
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Your own colors, headline font and radii</h3>
+          <p>On the <a href="/style-guide/foundations/themes" class="pos-link">Themes</a> page, pick a color theme, a headline font and the button / input radius, then press <strong>Export CSS</strong>. The downloaded <code class="pos-code pos-code--small">pos-theme-&lt;key&gt;.css</code> holds only <code class="pos-code pos-code--small">:root</code> token overrides (brand color scales, headline font with its Google Fonts import, radii) &mdash; load it after the design system CSS.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&#123;% render 'modules/common-styling/init' %&#125;
+&lt;link rel="stylesheet" href="/css/pos-theme-forest.css"&gt;</code></pre>
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">One part of the page in another mode</h3>
+          <p>Put <code class="pos-code pos-code--small">pos-scheme-light</code>, <code class="pos-code pos-code--small">pos-scheme-dark</code> or <code class="pos-code pos-code--small">pos-scheme-a11y</code> on any element: everything inside it uses that mode, whatever mode the page is in &mdash; a dark hero on a light page, a light card on a dark page, a preview box. The brand theme still applies. The element gets the mode's text color; give it a background (a card, or <code class="pos-code pos-code--small">--pos-color-page-background</code>) yourself.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;section class="pos-scheme-dark" style="background: var(--pos-color-page-background)"&gt;
+  &lt;!-- everything here is in dark mode --&gt;
+&lt;/section&gt;</code></pre>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Core Rules ──────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Core Rules</h2>
+          <div class="intro-rules-card">
+            <div class="intro-rule">
+              <span class="intro-rule-name">No hardcoded values</span>
+              <span class="intro-rule-desc">Every visual property must reference a token. No hex colors, px spacing, or font names inline.</span>
+            </div>
+            <div class="intro-rule">
+              <span class="intro-rule-name">No primitive color tokens</span>
+              <span class="intro-rule-desc">Never use <code class="pos-code pos-code--small">--pos-primitive-color-*</code> directly in components &mdash; primitive colors are fixed values that do not switch between light and dark mode. Always go through semantic or component tokens. Value primitives (size, radius) are acceptable when no semantic equivalent exists.</span>
+            </div>
+            <div class="intro-rule">
+              <span class="intro-rule-name">Accessibility by default</span>
+              <span class="intro-rule-desc">Keyboard navigation and visible focus indicators required on all interactive components. Accessibility (high contrast) mode is available for maximum contrast and accessibility &mdash; activate it by applying <code class="pos-code pos-code--small">class="pos-theme-a11y pos-theme-a11yEnabled"</code> to the root element.</span>
+            </div>
+            <div class="intro-rule">
+              <span class="intro-rule-name">Headless</span>
+              <span class="intro-rule-desc">No enforced brand styles &mdash; all visual properties are customizable via token overrides. Components define structure and behavior, not appearance.</span>
+            </div>
+            <div class="intro-rule">
+              <span class="intro-rule-name">Responsive</span>
+              <span class="intro-rule-desc">All components work across mobile, tablet, and desktop without per-component hacks. Small variants are desktop-only.</span>
+            </div>
+            <div class="intro-rule">
+              <span class="intro-rule-name">Figma is source of truth</span>
+              <span class="intro-rule-desc">Token values live in the CSS (<code class="pos-code pos-code--small">pos-primitives.css</code>, <code class="pos-code pos-code--small">pos-config.css</code>) and are kept in sync with the Figma variables (<code class="pos-code pos-code--small">/token-sync</code>). Never add or change a token without the maintainers' approval.</span>
+            </div>
+          </div>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Font Setup ──────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Font Setup</h2>
+          <p>This system uses <strong>Google Sans</strong> (headlines &amp; titles), <strong>Inter</strong> (body, UI, buttons, sidenotes), and <strong>Roboto Mono</strong> (code); the Wireframe theme adds <strong>Monda</strong> (headlines and button labels). <code class="pos-code pos-code--small">init</code> loads them from Google Fonts &mdash; the link below is only needed if you build a page without <code class="pos-code pos-code--small">init</code>.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=Inter:wght@400;500;600;700&amp;family=Monda:wght@400;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap"&gt;</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)">Font family tokens are defined in <code class="pos-code pos-code--small">--pos-font-heading</code>, <code class="pos-code pos-code--small">--pos-font-default</code>, and <code class="pos-code pos-code--small">--pos-font-code</code>. Override them in a theme file to substitute any font without touching component CSS.</p>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Font Size ──────────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Font Size Scaling</h2>
+          <p>All spacing, size, and typography values in this system use <code class="pos-code pos-code--small">rem</code> units, anchored to the root font size on <code class="pos-code pos-code--small">&lt;html&gt;</code>. Changing the base font size scales the entire UI proportionally &mdash; no component overrides required.</p>
+
+          <p style="margin-top: var(--pos-gap-card-elements)">The sidebar toggle switches between three scales:</p>
+
+          <table class="token-level-table" style="margin-top: var(--pos-gap-card-elements)">
+            <colgroup>
+              <col class="col-level">
+              <col class="col-file">
+              <col class="col-purpose">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Step</th>
+                <th>Root font size</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="t-level-name">Default</span></td>
+                <td><code class="pos-code pos-code--small">100%</code> (browser default, typically 16px)</td>
+                <td>Standard UI density</td>
+              </tr>
+              <tr>
+                <td><span class="t-level-name">Large</span></td>
+                <td><code class="pos-code pos-code--small">112.5%</code> (~18px)</td>
+                <td>Increased readability</td>
+              </tr>
+              <tr>
+                <td><span class="t-level-name">Extra large</span></td>
+                <td><code class="pos-code pos-code--small">125%</code> (~20px)</td>
+                <td>Maximum accessibility scale</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p style="margin-top: var(--pos-gap-card-elements)">The toggle sets <code class="pos-code pos-code--small">html.style.fontSize</code> and immediately dispatches a <code class="pos-code pos-code--small">resize</code> event so that any layout-dependent component (e.g. components that measure DOM dimensions with <code class="pos-code pos-code--small">getBoundingClientRect</code>) recalculates automatically.</p>
+
+          <p style="margin-top: var(--pos-gap-card-elements)">If you build a component that measures DOM geometry at initialization, bind a recalculation to <code class="pos-code pos-code--small">window.addEventListener('resize', ...)</code>. The font size toggle uses that same event &mdash; no special handling is needed.</p>
+
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">// example: component with layout-dependent measurement
+window.pos.modules.myComponent = function(container) {
+  function update() {
+    var w = container.getBoundingClientRect().width;
+    // recalculate layout based on w
+  }
+  update();
+  window.addEventListener('resize', update);
+};</code></pre>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── App Integration ────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">App Integration: Theme &amp; Font Size</h2>
+          <p>For apps built on this DS, <code class="pos-code pos-code--small">pos-prefs.js</code> provides a ready-made utility for theme switching and font size control &mdash; with automatic <code class="pos-code pos-code--small">localStorage</code> persistence and flash-free restore on load.</p>
+
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Setup</h3>
+          <p>Load the script and call <code class="pos-code pos-code--small">pos.prefs.init()</code> as early as possible &mdash; ideally in a <code class="pos-code pos-code--small">&lt;script&gt;</code> tag in <code class="pos-code pos-code--small">&lt;head&gt;</code>, before first paint, to prevent a flash of the wrong theme or size.</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">&lt;script src="&#123;&#123; 'modules/common-styling/js/pos-prefs.js' | asset_url &#125;&#125;"&gt;&lt;/script&gt;
+&lt;script&gt;pos.prefs.init();&lt;/script&gt;</code></pre>
+
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Theme switching</h3>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">pos.prefs.theme.set('dark');    // force dark mode
+pos.prefs.theme.set('light');   // force light mode
+pos.prefs.theme.set('auto');    // follow OS preference (default)
+pos.prefs.theme.toggle();       // switch between light and dark
+pos.prefs.theme.get();          // returns 'light' | 'dark' | 'auto'</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)"><code class="pos-code pos-code--small">'auto'</code> removes the forced theme and lets <code class="pos-code pos-code--small">prefers-color-scheme</code> decide (it sets <code class="pos-code pos-code--small">pos-theme-darkEnabled</code>); <code class="pos-code pos-code--small">'dark'</code> sets <code class="pos-code pos-code--small">pos-theme-dark pos-theme-darkEnabled</code>.</p>
+
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Accessibility (high contrast) mode</h3>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">pos.prefs.a11y.set(true);   // enable accessibility (high contrast) mode
+pos.prefs.a11y.set(false);  // disable accessibility (high contrast) mode
+pos.prefs.a11y.toggle();    // toggle on/off
+pos.prefs.a11y.get();       // returns true | false</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)">Accessibility (high contrast) mode is independent of light/dark &mdash; it can be combined with either. It adds <code class="pos-code pos-code--small">pos-theme-a11y pos-theme-a11yEnabled</code> to <code class="pos-code pos-code--small">&lt;html&gt;</code> and persists the preference to <code class="pos-code pos-code--small">localStorage</code>.</p>
+
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Font size</h3>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">pos.prefs.fontSize.set('default');  // 100%  — standard
+pos.prefs.fontSize.set('large');    // 112.5% — increased readability
+pos.prefs.fontSize.set('xl');       // 125%  — maximum scale
+pos.prefs.fontSize.get();           // returns 'default' | 'large' | 'xl'</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)">Setting a font size updates <code class="pos-code pos-code--small">html.style.fontSize</code> and dispatches a <code class="pos-code pos-code--small">resize</code> event so layout-dependent components recalculate automatically.</p>
+
+          <h3 class="pos-heading-4" style="margin-top: var(--pos-gap-section-title-content)">Wiring up your own toggle</h3>
+          <p>Connect any button or control to the API &mdash; the utility handles persistence and DOM updates:</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-javascript">// theme toggle button
+document.getElementById('my-theme-btn').addEventListener('click', function() {
+  pos.prefs.theme.toggle();
+});
+
+// font size selector
+document.querySelectorAll('[data-font-size]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    pos.prefs.fontSize.set(this.dataset.fontSize);
+  });
+});</code></pre>
+        </section>
+
+        <hr class="intro-divider">
+
+        <!-- ── Icons ──────────────────────────────────────────────── -->
+        <section class="intro-section">
+          <h2 class="pos-heading-2">Icons</h2>
+          <p>Icons come from <a href="https://tabler.io/icons" class="pos-link" target="_blank" rel="noopener">Tabler Icons</a> (open source, MIT). Use them by logical name &mdash; <code class="pos-code pos-code--small">&#123;% render 'modules/common-styling/icon', icon: 'delete' %&#125;</code> &mdash; and add new ones through <code class="pos-code pos-code--small">tokens/icon-registry.json</code> + <code class="pos-code pos-code--small">npm run build:icons</code>.</p>
+
+          <p>Usage in Liquid:</p>
+          <pre class="pos-code pos-code--block pos-code--numbered"><code class="language-html">{% raw %}{% render 'modules/common-styling/icon', icon: 'check' %}{% endraw %}</code></pre>
+          <p style="margin-top: var(--pos-gap-card-elements)">Icons inherit <code class="pos-code pos-code--small">color: currentColor</code> and <code class="pos-code pos-code--small">width/height</code> from the surrounding context. Stroke-based icons require <code class="pos-code pos-code--small">style="fill:none"</code> on each path to prevent the global <code class="pos-code pos-code--small">fill: currentColor</code> rule from filling them.</p>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+</div>
+
+<style>
+  /* the two path cards under the header: side by side, stacked on narrow screens */
+  .setup-paths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--pos-gap-card-card);
+    margin-block-end: var(--pos-gap-section-section);
+  }
+
+  /* Start a new project: space between a code block and the next step */
+  .setup-step {
+    margin-block-start: var(--pos-gap-card-elements);
+  }
+</style>

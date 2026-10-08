@@ -1,4 +1,4 @@
-/*
+﻿/*
   popover menu that floats around the button that triggers it's visiblity
 
   popover position
@@ -17,6 +17,20 @@
     cursor: pointer;
   }
 
+    .pos-popover > [popovertarget]:hover:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+      color: var(--pos-color-interactive-hover);
+    }
+
+    .pos-popover > [popovertarget]:active:where(:not(:disabled, [aria-disabled="true"], [aria-disabled="true"] *)) {
+      color: var(--pos-color-interactive-active);
+    }
+
+    /* a disabled trigger: not-allowed over all of it, never the pointer above (RULES.md 4.12) */
+    .pos-popover > [popovertarget]:is(:disabled, [aria-disabled="true"]),
+    .pos-popover > [popovertarget]:is(:disabled, [aria-disabled="true"]) * {
+      cursor: not-allowed;
+    }
+
   .pos-popover [popover] {
     min-width: 100px;
     max-width: 600px;
@@ -26,6 +40,7 @@
     overflow: hidden;
     position-anchor: auto;
 
+    border: 1px solid var(--pos-color-frame-transparent);
     border-radius: var(--pos-radius-panel);
     background-color: var(--pos-color-content-background);
     box-shadow: var(--pos-shadow-popover);
@@ -61,13 +76,13 @@
     left: calc(50% - 8px);
 
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    background-color: var(--pos-color-interactive);
+    background-color: var(--pos-color-content-background);
 
     content: '';
   }
 
   .pos-popover:has(:popover-open) .pos-button {
-    background-color: var(--pos-color-button-secondary-hover-background);
+    background-color: var(--pos-color-highlight-background);
     border-color: var(--pos-color-button-secondary-hover-frame);
 
     color: var(--pos-color-button-secondary-hover-text);
@@ -78,6 +93,19 @@
     border-color: var(--pos-color-button-primary-hover-frame);
 
     color: var(--pos-color-button-primary-hover-text);
+  }
+
+
+  /* group separator
+  ============================================================================ */
+  .pos-popover menu li[role="separator"] {
+    padding: 0;
+  }
+
+  .pos-popover menu li[role="separator"] hr {
+    border: none;
+    border-block-start: 1px solid var(--pos-color-frame);
+    margin: 0;
   }
 
 
@@ -93,23 +121,47 @@
 
     cursor: pointer;
 
+    text-decoration: none;
+    text-transform: none;
+    letter-spacing: normal;
     white-space: nowrap;
-    color: var(--pos-color-interactive);
+    font-weight: normal;
+    color: var(--pos-color-content-text-interactive);
 
     transition-property: color, background-color;
     transition-duration: .1s;
     transition-timing-function: linear;
   }
 
-  .pos-popover menu li a:hover,
-  .pos-popover menu li button:hover,
-  .pos-popover menu li a:focus-visible,
-  .pos-popover menu li button:focus-visible {
+  .pos-popover menu li a:hover:not([aria-disabled="true"]):not(.pos-link--disabled),
+  .pos-popover menu li button:hover:not([aria-disabled="true"], :disabled),
+  .pos-popover menu li a:focus-visible:not([aria-disabled="true"]):not(.pos-link--disabled),
+  .pos-popover menu li button:focus-visible:not([aria-disabled="true"], :disabled) {
     outline: none;
     border-radius: 0;
-    background-color: var(--pos-color-button-primary-background);
+    background-color: var(--pos-color-interactive);
+    color: var(--pos-color-content-inverted-text);
+  }
 
-    color: var(--pos-color-button-primary-text);
+  /* a disabled menu item: not-allowed over the whole item, never the pointer above (RULES.md 4.12) */
+  .pos-popover menu li :is(a, button):is(:disabled, [aria-disabled="true"], .pos-link--disabled),
+  .pos-popover menu li :is(a, button):is(:disabled, [aria-disabled="true"], .pos-link--disabled) * {
+    cursor: not-allowed;
+  }
+
+  .pos-popover menu li a[aria-current],
+  .pos-popover menu li button[aria-current],
+  .pos-popover menu li a[aria-selected="true"],
+  .pos-popover menu li button[aria-selected="true"] {
+    background-color: var(--pos-color-interactive);
+    color: var(--pos-color-content-inverted-text);
+  }
+
+  .pos-popover .pos-popover-menu-item-important a[aria-current],
+  .pos-popover .pos-popover-menu-item-important button[aria-current],
+  .pos-popover .pos-popover-menu-item-important a[aria-selected="true"],
+  .pos-popover .pos-popover-menu-item-important button[aria-selected="true"] {
+    background-color: var(--pos-color-important);
   }
 
   .pos-popover menu svg {
@@ -119,24 +171,34 @@
     color: var(--pos-color-content-text-supplementary);
   }
 
-    .pos-popover menu li a:hover svg,
+    .pos-popover menu li a:hover:where(:not([aria-disabled="true"], .pos-link--disabled)) svg,
     .pos-popover menu li a:focus-visible svg,
-    .pos-popover menu li button:hover svg,
-    .pos-popover menu li button:focus-visible svg {
+    .pos-popover menu li button:hover:where(:not([aria-disabled="true"], :disabled)) svg,
+    .pos-popover menu li button:focus-visible svg,
+    .pos-popover menu li a[aria-current] svg,
+    .pos-popover menu li button[aria-current] svg,
+    .pos-popover menu li a[aria-selected="true"] svg,
+    .pos-popover menu li button[aria-selected="true"] svg {
       color: inherit;
     }
 
   .pos-popover .pos-popover-menu-item-important button,
-  .pos-popover .pos-popover-menu-item-important a,
+  .pos-popover .pos-popover-menu-item-important a {
+    color: var(--pos-color-important);
+  }
+
   .pos-popover .pos-popover-menu-item-important svg {
     color: var(--pos-color-important);
   }
 
-    .pos-popover  .pos-popover-menu-item-important a:hover,
-    .pos-popover  .pos-popover-menu-item-important button:hover,
-    .pos-popover  .pos-popover-menu-item-important a:focus-visible,
-    .pos-popover  .pos-popover-menu-item-important button:focus-visible {
+    .pos-popover .pos-popover-menu-item-important a:hover:not([aria-disabled="true"]):not(.pos-link--disabled),
+    .pos-popover .pos-popover-menu-item-important button:hover:not([aria-disabled="true"], :disabled),
+    .pos-popover .pos-popover-menu-item-important a:focus-visible:not([aria-disabled="true"]):not(.pos-link--disabled),
+    .pos-popover .pos-popover-menu-item-important button:focus-visible:not([aria-disabled="true"], :disabled) {
       background-color: var(--pos-color-important);
+      color: var(--pos-color-content-inverted-text);
     }
+
+
 
 }

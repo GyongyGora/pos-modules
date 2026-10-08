@@ -1,0 +1,246 @@
+{
+  "_about": "Component spec for pos-dialog (style/pos-dialog.css + views/partials/content/dialog.liquid + assets/js/pos-dialog.js). Built 2026-09-04 from the real, already-shipped CSS/JS — style/pos-dialog.css already existed (147 lines) before this spec, just never had a Tokens-panel spec, docs page, or nav wiring beyond a coming-soon badge placeholder. A real, pre-existing bug was found and fixed while building this: content/dialog.liquid's close button was missing the pos-close class that pos-dialog.css's own comment says provides its color/hover — without it the button had no color and no hover feedback at all. The docs preview cannot use the real showModal()/::backdrop (: static always-visible mockup, matching Popover's own precedent) — it renders the real .pos-dialog class and tokens with only the fixed/viewport-centering positioning neutralized (comp-dialog-demo-backdrop in styleguide.css, docs-only), and fakes the ::backdrop dimming with a plain div since a real ::backdrop only renders for a dialog opened via showModal(). The Default/Simple variant is layout-only (whether a title is shown) — it changes no token, only normal/hover/focus (the close button's own states) do. Two tokens have no Figma variable and are not silently invented: --pos-gap-section-elements (a literal 1rem value in pos-config.css, not routed through a primitive) and --pos-shadow-popover (aliases to --pos-primitive-shadow-layered, which itself has no Figma mapping). Regenerate spec-dialog.liquid via the Node regen snippet (RULES.md §6.4) if this file changes. All 11 real --pos-* custom properties in pos-dialog.css are documented, including two easy to miss because the docs preview never visually exercises them: --pos-color-page-background (only ever seen via the real ::backdrop, not this static mockup) and --pos-padding-page (only applies below a 500px viewport). --pos-transition-ui-detail is the one CSS variable intentionally excluded, matching the established convention across every other spec in this codebase of not documenting transition-timing tokens in the Tokens panel. 2026-09-04, caught via live review: (1) composedOf was wrongly left empty — the Default variant's own example content (Cancel/Confirm) uses real .pos-button instances, which RULES.md §7.12's own “practical check” explicitly calls out (composition can come from a component's own example content, not just its most obvious visual appearance) — this was an execution miss during the QA pass, not a missing rule; fixed to composedOf: [\"button\"]. (2) .pos-dialog had no border at all (relied solely on box-shadow) — added the same --pos-color-frame-transparent treatment as Card/Alert card/Toast. (3) .pos-dialog-actions used justify-content: center — changed to flex-end (buttons always right-aligned, primary action at the right edge — already the case since Cancel comes before Confirm in source order). (4) Real pre-existing bug caught live: the Simple variant's header used margin-block-end: -1rem (presumably meant to compensate for a taller title-bearing header, but wrongly applied even with no title), pulling the content paragraph up far enough to visually overlap the close icon — fixed to margin-block-end: 0. 2026-09-04, two more live-review fixes: (5) the title (.pos-heading-2, 32px/weight 500 by default) was resized to match the default Feature card title exactly (--pos-font-size-l/24px, weight 700, line-height 1.17). (6) the Simple (no-title) variant looked broken with the header-then-content stacking made obvious once the earlier overlap bug was fixed — restructured via .pos-dialog:has(.pos-dialog-header-simple) { display: grid; grid-template-columns: 1fr auto } so the close button sits in its own right-aligned column beside the first line of content, instead of alone in a full-width row above it. 2026-09-04: after resizing the title to 24px, the header's old align-items: start plus a stale margin-block-start: -.3em (hand-tuned for the previous 32px size) made the title visually overflow above/below the header's own box instead of lining up with the close button — fixed to align-items: center on the header (robust regardless of exact font metrics) and removed the now-wrong negative margin entirely. 2026-09-04: replaced the CSS grid approach for the Simple variant (produced an extra empty row and a header box taller than the icon itself, confirmed via DevTools inspection) with a plain absolute-positioned corner button — content now starts at the very top of the dialog in line with the close button, and the button stays pinned top-right regardless of how many lines the content wraps to, since it is fully decoupled from document flow. 2026-09-04: composedOf also lists control-icons — the close (×) button composes the shared .pos-close component, which has its own dedicated spec/Tokens panel (control-icons.json); the color tokens stay directly listed here too since they drive this component's own Normal/Hover toggle, but composedOf now correctly points to where the icon's full detail (including states not relevant here) actually lives. 2026-09-04: found the actual root cause of the persistent Simple-variant misalignment — the content's first element (a <p>) carries the browser's own default top margin (pos-reset.css does not zero <p> margins), pushing its text below the absolutely-positioned close button's top edge; the button was never actually misplaced, the text was pushed down. Fixed with margin-block-start: 0 on the same rule that already reserves horizontal space for the button. 2026-09-04: replaced the absolute-positioned corner button for the Simple variant with a floated one (float: inline-end) after the absolute approach, though correct per the CSS spec's containing-block math, did not actually align in the browser (confirmed live, twice) — floating sidesteps that reasoning entirely by letting the browser's own text-wrapping engine position the content relative to the icon. 2026-09-04: matched the real Figma popup component (node 5767-76437) — supersedes fix (3) above: .pos-dialog-actions is left-aligned (justify-content: flex-start, not flex-end) with the primary button leftmost and secondary/Cancel to its right (button source order swapped to match); also added a divider (border-block-end: 1px solid --pos-color-frame) under the title+close row, with matching padding-block-end so the divider sits with even spacing above and below it, scoped only to the default (titled) header — the Simple variant's floated header has no full-width row to divide, so it explicitly resets padding/border/margin to none.",
+  "component": "dialog",
+  "name": "Dialog",
+  "description": "A native, modal <dialog> window that dims and disables the rest of the page until the user confirms, cancels, or closes it.",
+  "whenToUse": [
+    "Requiring the user to make a decision or confirm/cancel an action before continuing.",
+    "Showing focused content that needs the rest of the page dimmed and inert while it is open."
+  ],
+  "whenNotToUse": [
+    "Showing a brief, non-blocking confirmation — use a Toast instead.",
+    "Showing a message that must stay visible in context next to specific content — use an Alert card instead."
+  ],
+  "do": [
+    "Trigger via <code>new window.pos.modules.dialog({ container, trigger })</code> — never call <code>.showModal()</code> directly on the element.",
+    "Give the trigger a <code>data-dialogtarget</code> matching the dialog's <code>id</code> when no explicit trigger/container is passed.",
+    "Use the Simple variant (no title, just a close button) only for minimal confirmation content."
+  ],
+  "dont": [
+    "Omit a way to close the dialog — always include a <code>.pos-dialog-close</code> button, even alongside action buttons.",
+    "Nest a dialog inside another dialog."
+  ],
+  "accessibility": [
+    "The native <code>&lt;dialog&gt;</code> element with <code>showModal()</code> provides a built-in focus trap and Escape-to-close for free.",
+    "The close button has a visually-hidden <code>.pos-label</code> span with real text, not just the <code>×</code> glyph, for screen reader users."
+  ],
+  "composedOf": [
+    "button",
+    "control-icons"
+  ],
+  "props": [
+    {
+      "name": "id",
+      "type": "string",
+      "default": "n/a (required)",
+      "description": "Unique id for the dialog, matched by a trigger's data-dialogtarget."
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "none (renders the Simple variant)",
+      "description": "Optional heading text — when omitted, the header collapses to just the close button."
+    },
+    {
+      "name": "content",
+      "type": "string (HTML)",
+      "default": "n/a (required)",
+      "description": "The dialog body, inserted as raw HTML — may contain any markup, including .pos-dialog-actions."
+    }
+  ],
+  "dimensions": {
+    "variant": [
+      "default",
+      "simple"
+    ],
+    "state": [
+      "normal",
+      "hover",
+      "focus"
+    ]
+  },
+  "shared": {
+    "layout": [
+      {
+        "css": "--pos-color-frame-transparent",
+        "figma": "Backgrounds/Frame transparent",
+        "role": "Dialog border — invisible in light/dark, becomes visible (white) in HC mode for legibility, same pattern as Card/Alert card/Toast",
+        "swatch": true
+      },
+      {
+        "css": "--pos-radius-card",
+        "figma": "Card corner",
+        "role": "Dialog corner radius",
+        "swatch": false
+      },
+      {
+        "css": "--pos-padding-card",
+        "figma": "Paddings/cards, boxes",
+        "role": "Dialog padding",
+        "swatch": false
+      },
+      {
+        "css": "--pos-gap-section-elements",
+        "figma": null,
+        "role": "Gap between the header and the dialog content, and between the title+close row and its divider (padding-block-end on each side of the divider line)",
+        "swatch": false
+      },
+      {
+        "css": "--pos-color-frame",
+        "figma": "Backgrounds/Frame",
+        "role": "Divider under the title+close row — default (titled) header only, not present on the Simple variant's floated header",
+        "swatch": true
+      },
+      {
+        "css": "--pos-radius-button",
+        "figma": "Button corner",
+        "role": "Close button's own corner radius (its hover/focus shape)",
+        "swatch": false
+      },
+      {
+        "css": "--pos-gap-button-button",
+        "figma": "Gaps/button N-button N",
+        "role": "Gap between the action buttons — left-aligned, primary (Confirm) leftmost, secondary (Cancel) to its right, per the real Figma popup component",
+        "swatch": false
+      },
+      {
+        "css": "--pos-padding-page",
+        "figma": "Paddings/page content",
+        "role": "Used only below a 500px viewport width, to calculate the dialog's mobile width (100vw minus 2× this)",
+        "swatch": false
+      }
+    ],
+    "elevation": [
+      {
+        "css": "--pos-shadow-popover",
+        "figma": null,
+        "role": "Dialog shadow",
+        "swatch": false
+      }
+    ],
+    "backdrop": [
+      {
+        "css": "--pos-color-page-background",
+        "figma": "Backgrounds/Page Background",
+        "role": "Backdrop dimming color, mixed 70% with transparent — only rendered by a real showModal()/::backdrop; not visible in this static preview (see _about)",
+        "swatch": true
+      }
+    ]
+  },
+  "variants": {
+    "dialog": {
+      "label": "Dialog",
+      "classes": [
+        "pos-dialog"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Dialog background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Close button (×) color at rest — via the shared .pos-close component, the subdued icon-signals-interactivity pattern (RULES.md §4.10)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            },
+            {
+              "heading": "Backdrop",
+              "ref": "shared.backdrop"
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Dialog background (unchanged on close-button hover)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Close button (×) color on hover — via the shared .pos-close component, switches to the plain interactive color and scales up 1.2x",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            },
+            {
+              "heading": "Backdrop",
+              "ref": "shared.backdrop"
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-background",
+                  "figma": "Backgrounds/Content Background",
+                  "role": "Dialog background (unchanged on close-button focus)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-icon-interactive",
+                  "figma": "General elements-theme/Graphic Normal - interactive",
+                  "role": "Close button (×) color on focus — unchanged from rest; only the outline below indicates focus",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Close button (×) focus outline color",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "ref": "shared.layout"
+            },
+            {
+              "heading": "Elevation",
+              "ref": "shared.elevation"
+            },
+            {
+              "heading": "Backdrop",
+              "ref": "shared.backdrop"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<button type=\"button\" data-dialogtarget=\"my-dialog\">Open dialog</button>\n\n<dialog class=\"pos-dialog\" id=\"my-dialog\">\n  <header class=\"pos-dialog-header\">\n    <h2 class=\"pos-heading-2\">Dialog title</h2>\n    <button title=\"Close\" class=\"pos-dialog-close pos-close\">\n      <span class=\"pos-label\">Close</span>\n      <!-- x icon -->\n    </button>\n  </header>\n  Dialog content goes here.\n</dialog>\n\n<script>\n  new window.pos.modules.dialog({\n    trigger: document.querySelector('[data-dialogtarget=\"my-dialog\"]'),\n    container: document.getElementById('my-dialog'),\n  });\n<\\/script>"
+}

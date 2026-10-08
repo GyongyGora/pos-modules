@@ -3,7 +3,6 @@
 
   container
   validation
-  content
 */
 
 
@@ -14,7 +13,6 @@
   ============================================================================ */
   .pos-markdown {
       width: 100%;
-      position: relative;
   }
 
   .EasyMDEContainer .editor-toolbar {
@@ -34,10 +32,49 @@
     color: var(--pos-color-input-text);
   }
 
+  /* toolbar buttons — icon-only controls, so they get the icon-interactive token (grey in
+     light/dark, turquoise in HC) instead of inheriting the toolbar's own text color, matching the
+     standard icon-signals-interactivity pattern used elsewhere in the DS (RULES.md §4.10). */
+  .EasyMDEContainer .editor-toolbar button {
+    color: var(--pos-color-content-icon-interactive);
+  }
+
+  .EasyMDEContainer .editor-toolbar button:hover {
+    color: var(--pos-color-interactive);
+  }
+
+  /* EasyMDE adds this class to the TOOLBAR ITSELF while the live preview is showing (not to each
+     button individually, confirmed in dependency-easyMde.js — the class lands on toolbar_div), but
+     ships no matching CSS of its own — the buttons looked fully active/clickable with no visual
+     indication they do nothing right now. First attempt targeted button.disabled-for-preview
+     directly, which never matched anything since no button ever carries this class itself. */
+  .EasyMDEContainer .editor-toolbar.disabled-for-preview button:not(.active) {
+    color: var(--pos-color-content-icon-disabled);
+    pointer-events: none;
+  }
+
+  /* the one sanctioned exception to RULES.md 4.12: EasyMDE's own click handlers don't check this
+     state, so the vendor-disabled buttons keep pointer-events: none (that is what blocks them) —
+     the toolbar under them shows the not-allowed cursor instead; the active preview button keeps
+     its own pointer */
+  .EasyMDEContainer .editor-toolbar.disabled-for-preview {
+    cursor: not-allowed;
+  }
+
+  /* active/hover toolbar button — EasyMDE's own bundled CSS hardcodes a near-white background and
+     grey border here (#fcfcfc / #95a5a6), invisible against a dark toolbar in dark/HC mode. */
+  .EasyMDEContainer .editor-toolbar button.active,
+  .EasyMDEContainer .editor-toolbar button:hover {
+    background: var(--pos-color-highlight-background) !important;
+    border-color: var(--pos-color-input-frame) !important;
+  }
+
   .EasyMDEContainer .CodeMirror {
     border-color: var(--pos-color-input-frame) !important;
     border-end-start-radius: var(--pos-radius-input) !important;
     border-end-end-radius: var(--pos-radius-input) !important;
+    background-color: var(--pos-color-content-background) !important;
+    color: var(--pos-color-content-text) !important;
   }
 
   .EasyMDEContainer .editor-preview-side {
@@ -54,88 +91,11 @@
     width: auto;
   }
 
-  /* focused state */
-  .EasyMDEContainer:has(.CodeMirror-focused) {
-    outline: 2px solid var(--pos-color-focused);
-  }
-
-  /* text color */
-  .EasyMDEContainer:not(:has(.CodeMirror-focused)) .CodeMirror-code {
-    color: var(--pos-color-input-text) !important;
-  }
-
 
   /* validation
   ============================================================================ */
   .pos-markdown-error-disabled {
     display: none;
-  }
-
-
-  /* @mention popup
-  ============================================================================ */
-  .pos-markdown-mention [popover] {
-    margin-inline-start: calc(var(--pos-radius-card) * -2);
-    overflow: visible;
-
-    /* absolute (document-relative), not fixed (viewport-relative): this lets the popup scroll
-       with the page natively. Mobile Safari mishandles `position: fixed` while the on-screen
-       keyboard is open (panning the page can leave fixed elements behind or misplaced), so we
-       anchor in document coordinates instead and let the browser carry it along on scroll. */
-    position: absolute;
-  }
-
-  .pos-markdown-mention [popover]:after {
-    width: 16px;
-    height: 11px;
-    position: absolute;
-    top: -11px;
-    inset-inline-start: calc(var(--pos-radius-card) * 2);
-
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    background-color: var(--pos-color-interactive);
-
-    content: '';
-  }
-
-    @media (max-width: 600px) {
-      .pos-markdown-mention [popover] {
-        margin-inline-start: 0;
-      }
-
-      .pos-markdown-mention [popover]:after {
-        inset-inline-start: calc(50% - 8px);
-      }
-    }
-
-  .pos-markdown-mention menu li button {
-    padding: .5rem .75rem;
-  }
-
-  .pos-markdown-mention menu li:first-child button {
-    border-start-start-radius: var(--pos-radius-card);
-    border-start-end-radius: var(--pos-radius-card);
-  }
-
-  .pos-markdown-mention menu li:last-child button {
-    border-end-start-radius: var(--pos-radius-card);
-    border-end-end-radius: var(--pos-radius-card);
-  }
-
-  /* @mention mark inside the editor */
-  .EasyMDEContainer .CodeMirror .pos-markdown-mention-mark {
-    font-weight: 600 !important;
-    color: var(--pos-color-interactive-active) !important;
-    text-decoration: none !important;
-  }
-
-
-  /* content
-  ============================================================================ */
-  .EasyMDEContainer .CodeMirror-code [data-img-src]::after {
-    width: auto !important;
-    max-height: 50vh !important;
-    padding-top: min(var(--height), 35vh) !important;
   }
 
 }

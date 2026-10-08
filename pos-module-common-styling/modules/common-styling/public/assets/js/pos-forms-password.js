@@ -56,6 +56,8 @@ window.pos.modules.password = function(container, settings){
     });
 
     module.settings.toggle.addEventListener('click', event => {
+      // a disabled field's toggle shows the not-allowed cursor but does nothing (RULES.md 4.12)
+      if(module.settings.input.disabled) return;
       this.toggleVisibility();
     });
   };

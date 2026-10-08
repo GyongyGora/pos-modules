@@ -1,0 +1,217 @@
+{% comment %}
+  Generated from tokens/components/slider.json — never hand-edit, regenerate via scripts/generate-component.js (or the inline regen snippet in RULES.md §6) if the source JSON changes.
+  The JSON below is wrapped in a raw block because spec string fields can legitimately contain
+  literal Liquid-looking example code, which must stay inert text, not executable template code.
+{% endcomment %}
+<script type="application/json" id="comp-spec-slider">
+{% raw %}
+{
+  "_about": "Component spec for pos-slider — created 2026-10-06 from the approved component-wizard draft via scripts/generate-component.js. Single source of truth for the Variants/Usage/Tokens tabs on /style-guide. One variant; the value bubble is the Tooltip component's look — declared via composedOf, its tokens live on the Tooltip panel (RULES.md 7.12); states normal and focus (keyboard focus ring on the input). Behavior (fill + value tooltip follow the input) lives in assets/js/pos-slider.js, loaded by init. Figma names resolved through pos-config.css (RULES.md §6.4). Regenerate spec-slider.liquid after any change here — never hand-edit the .liquid partial.",
+  "component": "slider",
+  "name": "Slider",
+  "description": "Picks a value from a range (0–100 by default) by dragging a handle along a track — a real <input type=\"range\">, so keyboard and screen readers work out of the box. The filled part shows the value; while dragging, a tooltip above the handle shows the number.",
+  "whenToUse": [
+    "Choosing an approximate value from a continuous range where the position matters more than the exact number (volume, opacity, a percentage).",
+    "Giving immediate visual feedback while the value changes."
+  ],
+  "whenNotToUse": [
+    "The user needs to enter an exact number — use a text input (type=\"number\").",
+    "There are only a few distinct options — use a segmented control, radio buttons or a select.",
+    "The range is very large (e.g. 0–10 000) — a small handle can't pick precise values; use an input."
+  ],
+  "do": [
+    "Give it a visible label (or at least an aria-label) that says what is being set.",
+    "Show the current value next to the slider too when it matters after letting go — the tooltip only shows while dragging.",
+    "Keep the default range 0–100 unless the context needs another one (set min / max / step on the input)."
+  ],
+  "dont": [
+    "Use a slider for an on / off choice — use a toggle button.",
+    "Hide the track or the fill — the filled part is how the value is read at a glance.",
+    "Make it narrower than about 160px — the handle needs room to move."
+  ],
+  "accessibility": [
+    "It is a native range input: arrow keys, Page Up / Down, Home / End and screen readers work without extra code; label it with <label for> or aria-label.",
+    "The value tooltip is visual only (aria-hidden) — the input itself announces its value.",
+    "The keyboard focus ring sits on the input (the regular DS focus color)."
+  ],
+  "composedOf": [
+    "tooltip"
+  ],
+  "props": [
+    {
+      "name": "min / max / step / value",
+      "type": "input attributes",
+      "default": "0 / 100 / 1 / 50",
+      "description": "The native range input attributes; the module reads them for the fill and the value tooltip."
+    },
+    {
+      "name": "--ratio",
+      "type": "inline custom property on .pos-slider-field",
+      "default": "set by the module",
+      "description": "0–1, where the handle is; the JS module keeps it in sync with the input — set it in the markup too, so the fill is right before the JS runs."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "focus"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "slider": {
+      "label": "Slider",
+      "classes": [],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Track (not yet reached)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Track frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Fill and handle",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-shadow",
+                  "figma": "Backgrounds/Shadow",
+                  "role": "Fill shading (25%, towards the bottom)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "role": "Handle grip dots",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-size-2",
+                  "figma": "Size/2 unit",
+                  "role": "Track height (handle = 1.5x, fill inset 2px)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Track, fill and handle radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-small",
+                  "figma": null,
+                  "role": "Handle shadow",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-icon-disabled",
+                  "figma": "General elements-theme/Graphic Disabled",
+                  "role": "Track (not yet reached)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Track frame",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Fill and handle",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-shadow",
+                  "figma": "Backgrounds/Shadow",
+                  "role": "Fill shading (25%, towards the bottom)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-inverted-icon",
+                  "figma": "General elements-theme/Graphic Inverted",
+                  "role": "Handle grip dots",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-size-2",
+                  "figma": "Size/2 unit",
+                  "role": "Track height (handle = 1.5x, fill inset 2px)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-primitive-radius-rounded",
+                  "figma": "Radius/Rounded",
+                  "role": "Track, fill and handle radius",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Elevation",
+              "tokens": [
+                {
+                  "css": "--pos-primitive-shadow-small",
+                  "figma": null,
+                  "role": "Handle shadow",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "Focus ring (2px, 3px offset)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<div class=\"pos-slider-field\" style=\"--ratio:.42\">\n  <span class=\"pos-slider-value\" aria-hidden=\"true\">42</span>\n  <input type=\"range\" class=\"pos-slider\" min=\"0\" max=\"100\" value=\"42\" aria-label=\"Volume\">\n</div>"
+}
+{% endraw %}
+</script>
