@@ -8,8 +8,11 @@
   reuse rather than re-invoking.
 
   @return {object} the effective config: protocol_version, server_{name,version},
-                   endpoint_path, defaults{timeout_ms,max_input_bytes,
-                   max_schema_depth,rate_limit_per_min}, ledger{retention_days}.
+                   defaults{max_input_bytes,max_schema_depth,rate_limit_per_min,…},
+                   resources{…}, oauth{…}, resource_identifier.
+
+  Only keys the engine acts on belong here: an adopter who sets a key must get the
+  behaviour it names. A feature that is not implemented yet gets its key when it is.
 {%- endcomment -%}
 {% liquid
   # Per-request memo (spec §17.3). config is a PURE function of the MCP_CONFIG /
@@ -57,7 +60,6 @@
   # instance via MCP_CONFIG {"server_name":"acme-community"} to brand the server.
   assign c['server_name'] = 'pos-module-mcp'
   assign c['server_version'] = '0.1.0'
-  assign c['endpoint_path'] = '/mcp'
   # App-provided registry partial (Layer-2 tool declarations, spec §8.2). An app
   # partial at app/views/partials/mcp/registry.liquid returning [{manifest},...].
   assign c['registry_partial'] = 'mcp/registry'
@@ -83,7 +85,6 @@
   assign c['tools_list_scope'] = 'open'
 
   assign d = {}
-  assign d['timeout_ms'] = 5000
   assign d['max_input_bytes'] = 65536
   assign d['max_schema_depth'] = 5
   # Depth cap for a tool's output_schema (declared for clients, never used to validate
@@ -109,10 +110,6 @@
   assign d['abuse_window_seconds'] = 300
   assign c['defaults'] = d
 
-  assign l = {}
-  assign l['retention_days'] = 730
-  assign c['ledger'] = l
-
   # Zero-config .md resources (spec §3.2, §17.1). OFF by default — an operator
   # turns it on via MCP_CONFIG and names the slug prefixes to expose (allowlist),
   # so no page is agent-readable unless explicitly opted in.
@@ -122,15 +119,14 @@
   assign r['markdown_page_prefixes'] = default_prefixes
   assign c['resources'] = r
 
-  # OAuth (spec §9.5, RFC 9728; backlog/decision-4). The instance is BOTH the protected
-  # resource and — via the built-in authorization server (/oauth/*) — the issuer of
-  # opaque access tokens bound to a real user (same mcp_token store as manual tokens,
-  # so no JWT signing keys are needed). `issuer`, when set via the MCP_OAUTH_ISSUER
-  # constant, advertises an EXTERNAL AS instead (future JWT strategy); empty by default.
+  # OAuth (spec §9.5, RFC 9728). The instance is BOTH the protected resource and — via
+  # the built-in authorization server (/oauth/*) — the issuer of opaque access tokens
+  # bound to a real user (same mcp_token store as manual tokens, so no JWT signing keys
+  # are needed). An external authorization server is not supported yet: it needs
+  # token validation in identity/resolve_principal before it can be configured.
   assign o = {}
-  assign o['issuer'] = context.constants.MCP_OAUTH_ISSUER | default: ''
-  assign o['audience'] = context.constants.MCP_OAUTH_AUDIENCE | default: c.server_name
-  # Built-in authorization server (OAuth 2.1 authorization code + PKCE S256).
+  # Built-in authorization server (OAuth 2.1 authorization code + PKCE S256). false
+  # turns it off; only manual tokens from /mcp-tools then work.
   assign o['authorization_server'] = true
   # User permission required to authorize a client (same gate as minting at /mcp-tools).
   assign o['required_permission'] = 'mcp.tokens.manage'
@@ -154,9 +150,11 @@
   # open for existing clients.
   assign o['challenge_initialize'] = false
   assign c['oauth'] = o
-  # The OAuth resource identifier this instance defends (RFC 9728) = the /mcp URL.
+  # The OAuth resource identifier this instance defends (RFC 9728) = the /mcp URL. The
+  # path is fixed: the endpoint page and the RFC 9728 metadata path are both `mcp`, and
+  # every OAuth grant is bound to this value.
   function origin = 'modules/mcp/queries/origin'
-  assign c['resource_identifier'] = origin | append: c.endpoint_path
+  assign c['resource_identifier'] = origin | append: '/mcp'
 
   # Override from the MCP_CONFIG constant, when present and valid JSON. hash_merge
   # is shallow, so merge the nested `defaults` object explicitly before the
@@ -185,12 +183,18 @@
     endunless
   endif
 
-  # Derived: the built-in AS is live only when enabled AND no external issuer is
-  # configured (an external issuer owns token issuance; we must not mint in parallel).
+  # Derived: whether the built-in AS is live (the flag callers check). An instance that
+  # still sets the retired MCP_OAUTH_ISSUER constant meant "an external issuer, not
+  # this instance": keep the built-in AS off (fail closed) rather than start minting.
   assign oauth_cfg = c.oauth
   assign builtin = false
-  if oauth_cfg.authorization_server and oauth_cfg.issuer == blank
+  if oauth_cfg.authorization_server
     assign builtin = true
+  endif
+  assign retired_issuer = context.constants.MCP_OAUTH_ISSUER | default: ''
+  if retired_issuer != blank
+    assign builtin = false
+    log 'MCP_OAUTH_ISSUER is no longer supported; the built-in authorization server stays off while it is set', type: 'mcp.config_retired_issuer'
   endif
   assign oauth_cfg['builtin'] = builtin
 

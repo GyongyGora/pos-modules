@@ -29,10 +29,11 @@
 
   assign tools = []
   assign excluded = []
-  # Names owned by the built-in engine tools appended below. An app manifest may not
-  # claim one: resolve_tool returns the FIRST match, so an app tool would otherwise
-  # replace the built-in's handler and policy.
-  assign reserved_names = ["mcp_approval_status"]
+  # Tool names starting with `mcp_` belong to the engine's built-in tools (appended
+  # below). An app manifest may not claim one: resolve_tool returns the FIRST match, so
+  # an app tool would otherwise replace a built-in's handler and policy — and reserving
+  # the whole prefix means a future built-in never collides with an existing app tool.
+  assign reserved_prefix = 'mcp_'
 
   if entries
     for entry in entries
@@ -79,12 +80,13 @@
         continue
       endif
 
-      # --- Reserved-name guard: built-in tool names cannot be claimed by the app. ---
-      if reserved_names contains manifest.name
+      # --- Reserved-prefix guard: the app cannot claim a built-in tool name. ---
+      assign name_prefix = manifest.name | append: '' | slice: 0, 4
+      if name_prefix == reserved_prefix
         assign ex = {}
         assign ex['name'] = manifest.name
         assign errs = []
-        assign rmsg = 'tool name "' | append: manifest.name | append: '" is reserved for a built-in engine tool'
+        assign rmsg = 'tool name "' | append: manifest.name | append: '" uses the mcp_ prefix, which is reserved for built-in engine tools'
         assign errs = errs | array_add: rmsg
         assign ex['errors'] = errs
         assign excluded = excluded | array_add: ex

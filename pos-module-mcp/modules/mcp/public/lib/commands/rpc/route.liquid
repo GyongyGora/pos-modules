@@ -9,7 +9,13 @@
   - MODERN (2026-07-28): server/discover, tools/*, resources/*, prompts/*, plus the
     Tasks extension (tasks/get, tasks/update, tasks/cancel) for a client that declares
     it. initialize, ping and logging/setLevel do not exist in this revision. An unknown
-    method answers 404 (modern) or 400 (legacy), both with -32601.
+    method answers -32601 with 404 (modern, per the 2026-07-28 transport) or 200
+    (legacy).
+
+  HTTP STATUS. A method-level JSON-RPC error answers 200 so a 2025-06-18 client reads
+  the typed error instead of a transport failure. The exceptions are spec-defined:
+  401 for a missing or invalid bearer, and the modern-only 404 / 400 above and in
+  commands/protocol.
 
   @param {string} method  - the request method (body, or legacy Mcp-Method header)
   @param {object} params  - context.params (the whole parsed JSON-RPC request)
@@ -22,7 +28,7 @@
   function cfg = 'modules/mcp/commands/config'
   assign out = {}
 
-  assign not_found_status = 400
+  assign not_found_status = 200
   if proto.modern
     assign not_found_status = 404
     assign modern_methods = 'server/discover,tools/list,tools/call,resources/list,resources/templates/list,resources/read,prompts/list,prompts/get,tasks/get,tasks/update,tasks/cancel' | split: ','
@@ -124,7 +130,7 @@
         assign handled = true
       else
         function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Invalid params: unknown logging level'
-        assign out['http_status'] = 400
+        assign out['http_status'] = 200
         assign out['body'] = body
         return out
       endif
@@ -159,7 +165,7 @@
     function pr = 'modules/mcp/commands/rpc/prompts_get', params: params.params
     unless pr._error == blank
       function body = 'modules/mcp/commands/rpc/error', id: id, code: pr._error.code, message: pr._error.message
-      assign out['http_status'] = 400
+      assign out['http_status'] = 200
       assign out['body'] = body
       return out
     endunless
@@ -197,7 +203,7 @@
         function tr = 'modules/mcp/commands/rpc/tasks_cancel', params: params.params, headers: headers
       endif
       unless tr._error == blank
-        assign est = 400
+        assign est = 200
         if tr._error.code == -32001
           assign est = 401
         endif

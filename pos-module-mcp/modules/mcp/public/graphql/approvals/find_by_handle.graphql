@@ -15,6 +15,7 @@ query find_by_handle($handle: String!) {
       input_sha256: property(name: "input_sha256")
       requested_by_agent: property(name: "requested_by_agent")
       principal_id: property(name: "principal_id")
+      token_id: property(name: "token_id")
       authz_policy: property(name: "authz_policy")
       status: property(name: "status")
       decided_by: property(name: "decided_by")

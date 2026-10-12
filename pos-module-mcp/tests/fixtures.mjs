@@ -14,7 +14,7 @@
  * Matrix:
  *   operator  mcp_operator  +token   console / approvals / eval / ledger export
  *   member    mcp_user      +token   normal tool calls, idempotency, own token
- *   outsider  (no role)     +token   authz-deny: authenticated but unauthorized
+ *   outsider  (no role)     +token   token rejected: the user holds no MCP access
  *
  * Env (optional; falls back to the repo .pos "ps" env):
  *   MCP_URL   - instance base url

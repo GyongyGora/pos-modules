@@ -26,6 +26,7 @@ query search(
     total_pages
     results {
       id
+      canonical_version: property(name: "canonical_version")
       seq: property(name: "seq")
       occurred_at: property(name: "occurred_at")
       method: property(name: "method")

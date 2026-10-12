@@ -73,7 +73,7 @@ Six controls. Zero lines of governance code written by you.
 
 ### Reads work on day one
 
-Because platformOS pages already expose clean Markdown at `/:slug.md` — a format we shipped explicitly for agent consumption — your documentation and catalogue become MCP resources the moment you install the module. Governed, rate-limited, freshness-stamped. No authoring required.
+Because platformOS pages already expose clean Markdown at `/:slug.md` — a format we shipped explicitly for agent consumption — your documentation and catalogue can become MCP resources without authoring anything: resources are off by default, and one setting turns them on for the slug prefixes you choose.
 
 No scraping rendered HTML. No brittle DOM parsing. No agent guessing at your structure.
 
@@ -113,7 +113,7 @@ And we log the denials. A ledger that records only successes is useless during a
 
 Most implementations give the agent its own credentials and hope the blast radius stays small.
 
-We support **on-behalf-of** delegation as a first-class mode: the token carries the agent's identity *and* the human principal it acts for. Your authorization policies evaluate against the human. The ledger records both.
+Today the agent acts **as** the user who authorized it: your policies evaluate against that human, and the ledger records both the human and the client. The contract already carries a `delegation_mode`, so **on-behalf-of** delegation, where an agent holds narrower authority than its human, can be added without changing your tools or policies.
 
 A buyer's agent inherits the buyer's scope. It never holds its own. That distinction is invisible on a feature comparison chart and decisive in a security review.
 
@@ -131,7 +131,7 @@ The regulatory direction of travel is unambiguous: logging, data governance, hum
 
 Every organisation deploying agents will eventually need to produce evidence of exactly that. Most will assemble it retroactively, in a panic, from logs that were never designed for the purpose.
 
-Yours is already written. Chained, immutable, queryable via GraphQL, exportable on demand — generated as a *byproduct* of running the system correctly, not as a separate compliance project.
+Yours is already written. Hash-chained, tamper-evident, queryable via GraphQL, exportable on demand — generated as a *byproduct* of running the system correctly, not as a separate compliance project.
 
 ---
 
@@ -142,7 +142,7 @@ Yours is already written. Chained, immutable, queryable via GraphQL, exportable 
 | Authorization | You build it | Coarse, at the perimeter | **Named policies, per call, per identity** |
 | Rollback on failure | You build it | Not addressed | **Transactional by default** |
 | Input validation | You build it | Schema pass-through | **Typed, enforced, unknown keys rejected** |
-| Audit trail | You build it | Gateway-level logs | **Chained, immutable, transaction-bound** |
+| Audit trail | You build it | Gateway-level logs | **Hash-chained, tamper-evident, transaction-bound** |
 | Tool poisoning defence | Hope | Scanning | **Structural — review-gated by design** |
 | Delegated identity | Rare | Sometimes | **First-class on-behalf-of** |
 | Multi-tenancy | You build it | Per deployment | **Native** |

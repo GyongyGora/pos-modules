@@ -76,7 +76,7 @@ Every plane is on from the first call. Zero lines of governance code written by 
 
 ### Reads work on day one
 
-Because platformOS pages already expose clean Markdown at `/:slug.md` — a format we shipped explicitly for agent consumption — your documentation and catalogue become MCP resources the moment you install the module. Governed, rate-limited, freshness-stamped. No authoring required.
+Because platformOS pages already expose clean Markdown at `/:slug.md` — a format we shipped explicitly for agent consumption — your documentation and catalogue can become MCP resources without authoring anything: resources are off by default, and one setting turns them on for the slug prefixes you choose.
 
 No scraping rendered HTML. No brittle DOM parsing. No agent guessing at your structure.
 
@@ -134,7 +134,7 @@ The abuse counter is content-aware: rate-limit hits, schema rejections, and auth
 
 ### 5. Least exposure, by default
 
-Delegation done properly: we support **on-behalf-of** as a first-class mode. The token carries the agent's identity *and* the human principal it acts for; your policies evaluate against the human, and the ledger records both. A buyer's agent inherits the buyer's scope. It never holds its own.
+Delegation without a standing credential: the agent acts **as** the user who authorized it, so a buyer's agent inherits the buyer's scope and never holds its own. Your policies evaluate against the human, and the ledger records both the human and the client. The contract already carries a `delegation_mode`, so a separate **on-behalf-of** mode can be added without changing your tools or policies.
 
 And that scope is tight by construction. A token can be **narrowed to a specific subset of tools**, so a compromised credential can only reach what it was minted for. Any token can be **revoked centrally in one move** — a leaked bearer is cut off by flipping its status, instantly, everywhere. Tool discovery itself is scoped: `tools/list` can be filtered to only the tools the caller is actually authorized to invoke, so an unauthorized or anonymous agent doesn't even learn your privileged surface exists.
 
@@ -154,7 +154,7 @@ The regulatory direction of travel is unambiguous: logging, data governance, hum
 
 Every organisation deploying agents will eventually need to produce evidence of exactly that. Most will assemble it retroactively, in a panic, from logs that were never designed for the purpose.
 
-Yours is already written. Chained, immutable, queryable via GraphQL, exportable on demand — generated as a *byproduct* of running the system correctly, not as a separate compliance project.
+Yours is already written. Hash-chained, tamper-evident, queryable via GraphQL, exportable on demand — generated as a *byproduct* of running the system correctly, not as a separate compliance project.
 
 And you don't have to query it blind. The module ships a built-in **operator console** — a single, dependency-free screen showing live call metrics, one-glance chain verification, the approval queue, the abuse watchlist, active tokens with a one-click kill-switch, access requests, and a ledger export. When something does go wrong, the console doesn't just alarm — it points you at the exact entries involved. Incident response is a page, not a project.
 
@@ -177,7 +177,7 @@ And we validate the validator: the harness is exercised against deliberately-vul
 | Input validation | You build it | Schema pass-through | **Typed, enforced, unknown keys rejected** |
 | Rate / abuse limiting | You build it | Sometimes, coarse | **Per-principal, with auto-suspend** |
 | Human approval gate | You build it | Rare | **Declared per tool, executes as principal** |
-| Audit trail | You build it | Gateway-level logs | **Chained, immutable, transaction-bound** |
+| Audit trail | You build it | Gateway-level logs | **Hash-chained, tamper-evident, transaction-bound** |
 | Tamper detection | Rare | No | **Built-in chain verifier** |
 | Tool poisoning defence | Hope | Scanning | **Structural — review-gated by design** |
 | Delegated identity | Rare | Sometimes | **First-class on-behalf-of** |

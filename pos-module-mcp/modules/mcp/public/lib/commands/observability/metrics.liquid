@@ -48,8 +48,12 @@
   # error-code buckets (stored as an integer property).
   graphql csr = 'modules/mcp/ledger/count_by_int', name: 'error_code', value_int: -32602
   assign schema_rejections = csr.records.total_entries | plus: 0
-  graphql crl = 'modules/mcp/ledger/count_by_int', name: 'error_code', value_int: -32002
+  graphql crl = 'modules/mcp/ledger/count_by_int', name: 'error_code', value_int: -32004
   assign rate_limited = crl.records.total_entries | plus: 0
+  # Rate limits were ledgered as -32002 before 0.2 (the ledger only records tools/call,
+  # so -32002 there never meant "resource not found"). Count both.
+  graphql crl_old = 'modules/mcp/ledger/count_by_int', name: 'error_code', value_int: -32002
+  assign rate_limited = crl_old.records.total_entries | plus: rate_limited
 
   # by_tool — exact count per REGISTERED tool (+ the built-in poll tool), enumerated
   # from the (cached) registry. Historical calls to tools no longer registered are not

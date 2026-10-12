@@ -22,12 +22,13 @@ Every request enters through **one door** (`POST /mcp` → `rpc/dispatch`) and, 
    └────────┬─────────┘
             │
    1. IDENTITY      who is calling?        identity/ · tokens/ · access/
-   2. REGISTRY      does this tool exist?  registry/
-   3. VALIDATE      are the args legal?    validate/
-   4. AUTHORIZE     are they allowed?      authorize/
-   5. LIMITS        are they abusing it?   limits/
-   6. APPROVAL      needs a human?         approval/ · builtin/
-   7. EXECUTE       run it (txn-wrapped)   execute/ · idempotency/
+   2. LIMITS        are they abusing it?   limits/   (auto-suspend, then rate limit)
+   3. REGISTRY      does this tool exist?  registry/ (+ the token's allowed_tools)
+   4. SCOPE         may this token do it?  OAuth scope: mcp:write for mutating tools
+   5. VALIDATE      are the args legal?    validate/
+   6. AUTHORIZE     are they allowed?      authorize/
+   7. APPROVAL      needs a human?         approval/ · builtin/
+   8. EXECUTE       run it (txn-wrapped)   idempotency/ · execute/
             │
         LEDGER      attest every outcome   ledger/
 ```

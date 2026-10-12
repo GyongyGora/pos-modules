@@ -32,7 +32,7 @@ The module's job is to make each of those either **impossible** or **detectable 
 
 ### 2.1 Token model
 
-Identity is a **bearer token bound to a real platformOS user**. A user authenticates through the existing user/OAuth login and mints a token at `/mcp-tools`. The `mcp_token` row stores:
+Identity is a **bearer token bound to a real platformOS user**, from one of two sources in the same `mcp_token` table: a **manual** token the user mints at `/mcp-tools` (no expiry, all scopes), or an **OAuth** token issued by the built-in authorization server (short-lived, bound to one client, one resource and a scope set; see [oauth.md](oauth.md)). The `mcp_token` row stores:
 
 | property | meaning |
 |---|---|
@@ -40,6 +40,7 @@ Identity is a **bearer token bound to a real platformOS user**. A user authentic
 | `token_digest` | `sha256(raw token)`, hex — the **raw token is shown once and never stored** |
 | `label` | human/agent name shown in the ledger + operator UI |
 | `status` | `active` \| `revoked` (the central kill switch) |
+| `kind`, `client_id`, `scope`, `resource`, `expires_at` | OAuth tokens only: grant metadata checked on every call |
 | `allowed_tools` | optional per-token narrowing — intersects the served set, **never widens** (§6.2) |
 | `last_used_at` | best-effort recency stamp (throttled ≤1 write/min; not on the hot read path) |
 
@@ -53,7 +54,9 @@ Every `tools/call` resolves identity first. The cascade is fail-closed; each fai
 2. digest not found → `401`, `unknown_token`
 3. token `status != active` → `401`, `token_revoked`
 4. token not bound to a user → `401`, `token_unbound`
-5. success → `{ principal, agent, delegation_mode: 'direct', token_id }`
+5. OAuth token past `expires_at` → `401`, `token_expired`; bound to another resource → `401`, `wrong_audience`
+6. the user no longer holds `mcp.tokens.manage` (role removed by any path) → `401`, `permission_revoked`
+7. success → `{ principal, agent, delegation_mode: 'direct', token_id, token_kind, scopes }`
 
 **Pre-auth failures are not ledgered.** A request with no accountable identity (bad/missing/revoked token) is written to the **platform log only**, never the hash-chained ledger — so anonymous probes cannot spam or grow the tamper-evident chain (a DoS / integrity-noise vector). Every gate *after* identity has an accountable principal and **does** attest.
 
@@ -72,9 +75,10 @@ The module is an OAuth **protected resource**. On a `401` it emits `WWW-Authenti
 
 - `resource` — the per-instance resource identifier (`https://<host>/mcp`), so multi-tenant instances are distinguishable (§15);
 - `resource_name`, `bearer_methods_supported: ["header"]`;
-- `authorization_servers` — advertised **only** when an `MCP_OAUTH_ISSUER` is configured (the deferred external-AS/JWT strategy); absent by default.
+- `scopes_supported` — `mcp:read`, `mcp:write`;
+- `authorization_servers` — this instance, while the built-in authorization server is enabled ([oauth.md](oauth.md)).
 
-v1 authenticates instance-issued tokens, so no JWT signing keys are required; the posture is forward-compatible with an external authorization server.
+Tokens are opaque and instance-issued, so no JWT signing keys are required. An external authorization server is not supported yet.
 
 ### 2.5 Least-leakage on denial (`identity/deny`)
 
@@ -161,6 +165,7 @@ Appends serialize on a singleton `mcp_chain_lock` row: inside the append transac
 
 - **Size cap first:** a body over `max_input_bytes` (default 65536) → `413 / -32600 "Request too large"`, before parsing.
 - **Envelope validation:** `jsonrpc` (if present) must be exactly `"2.0"`; a missing `method` is `-32600`. Unknown / unimplemented method → `-32601`. Notifications (`notifications/*`) → `202`, no body.
+- **HTTP status:** a malformed request (envelope, size, legacy header desync) is a 4xx, as the 2025-06-18 transport allows. A method-level JSON-RPC error is **HTTP 200**: a 2025-06-18 client treats any other non-2xx answer as a transport failure and never reads the typed error. The exceptions are the ones the specs define at the HTTP level: `401` (authentication) and `403` `insufficient_scope` (step-up), plus the modern-only (`2026-07-28`) transport errors in [spec-2026-07-28-gap.md](spec-2026-07-28-gap.md).
 - **No lying surface:** a method the server does not implement returns `-32601`, never a partial/faked result.
 
 **Error hygiene (`rpc/error`):** every error envelope is built in one place; messages are stable, caller-safe strings — never a stack trace, GraphQL text, or schema/policy internal. Machine-readable context (e.g. `validation_errors`) travels in `data`, also caller-safe.
@@ -172,13 +177,17 @@ Appends serialize on a singleton `mcp_chain_lock` row: inside the append transac
 | code | HTTP | meaning |
 |---|---|---|
 | `-32600` | 400 / 413 | invalid request / oversized envelope |
-| `-32601` | 400 | method not found |
-| `-32602` | 400 / 409 | invalid params / unknown tool / arg-schema violation / idempotency-key reuse |
-| `-32001` | 401 / 403 | authentication required / invalid token / forbidden / suspended |
-| `-32002` | 429 | rate limit exceeded |
-| `-32003` | 200\* | mutating handler rolled back (tool error; the *protocol* call still succeeded) |
+| `-32601` | 200 (legacy) / 404 (modern) | method not found |
+| `-32602` | 200 | invalid params / unknown tool / idempotency-key reuse |
+| `-32001` | 401 | authentication required / invalid token |
+| `-32001` | 403 | insufficient scope (with `WWW-Authenticate … error="insufficient_scope"`) |
+| `-32001` | 200 | forbidden by policy / access suspended |
+| `-32002` | 200 | resource not found (legacy; modern requests get `-32602`) |
+| `-32004` | 200 | rate limit exceeded; `Retry-After` header and `error.data.retryAfter` (seconds) |
+| `-32005` | — | approval expired (Tasks `failed` error, never a direct response) |
+| `-32020` / `-32021` / `-32022` | 400 | modern only: header mismatch / missing client capability / unsupported protocol version |
 
-\* A rolled-back mutation returns the handler's tool-error result (`isError:true`, HTTP 200); the JSON-RPC call itself succeeded.
+Not protocol errors (HTTP 200, `result.isError: true`): **argument-schema violations** (`structuredContent.validation_errors`, so the model can correct its call — MCP 2025-11-25, SEP-1303), a handler business error, and a **rolled-back mutation** (ledgered as `-32003`).
 
 ---
 

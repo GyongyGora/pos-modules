@@ -10,6 +10,7 @@
   @param {string} input_sha256
   @param {object} principal
   @param {object} agent
+  @param {string} token_id       - the requesting mcp_token row (approval/execute re-checks it)
   @param {string} request_id
   @return {object} { handle, expires_at }
 {%- endcomment -%}
@@ -21,7 +22,7 @@
   assign u1 = '' | uuid | replace: '-', ''
   assign handle = 'mcp_pa_' | append: u1
 
-  graphql _ = 'modules/mcp/approvals/create', handle: handle, tool_name: tool.name, tool_version: tool.version, arguments_json: arguments_json, input_sha256: input_sha256, requested_by_agent: agent.id, principal_id: principal.id, authz_policy: tool.authorization_policy, expires_at: expires_at, request_id: request_id
+  graphql _ = 'modules/mcp/approvals/create', handle: handle, tool_name: tool.name, tool_version: tool.version, arguments_json: arguments_json, input_sha256: input_sha256, requested_by_agent: agent.id, principal_id: principal.id, token_id: token_id, authz_policy: tool.authorization_policy, expires_at: expires_at, request_id: request_id
 
   assign out = {}
   assign out['handle'] = handle

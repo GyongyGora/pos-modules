@@ -35,6 +35,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const APP = join(ROOT, 'app');
 const TOOLS_DIR = join(APP, 'views/partials/mcp/tools');
 const POLICIES_DIR = join(APP, 'views/partials/mcp/policies');
+// Built-in policies (authorize/evaluate). Every other `mcp_` policy name is reserved.
+const BUILTIN_POLICIES = ['mcp_authenticated'];
 const GRAPHQL_DIR = join(APP, 'graphql/mcp');
 const REGISTRY = join(APP, 'views/partials/mcp/registry.liquid');
 
@@ -160,7 +162,7 @@ function lintSchemaNode(tool, file, node, path, depth) {
 
   // ---- format sanity ----
   if (node.format !== undefined && !SUPPORTED_FORMATS.has(node.format)) {
-    add('warn', tool, file, 'format-unsupported', `${path}: format "${node.format}" is NOT enforced by the engine (only date-time/email/uuid are) — add a pattern instead of relying on it`);
+    add('error', tool, file, 'format-unsupported', `${path}: format "${node.format}" is not supported — the engine excludes this tool (only date-time/email/uuid are enforced); use a pattern instead`);
   }
 
   // ---- pattern sanity ----
@@ -250,6 +252,7 @@ function lintManifest(tool, manifestFile, m, registeredName) {
   if (!m.name) add('error', tool, F, 'name', 'manifest has no name');
   else if (!/^[a-z][a-z0-9_]{2,63}$/.test(m.name)) add('error', tool, F, 'name', `name "${m.name}" must match ^[a-z][a-z0-9_]{2,63}$`);
   if (registeredName && m.name && m.name !== registeredName) add('error', tool, F, 'name-mismatch', `manifest name "${m.name}" ≠ registered name "${registeredName}"`);
+  if (m.name && m.name.startsWith('mcp_')) add('error', tool, F, 'reserved-name', `name "${m.name}" uses the mcp_ prefix, reserved for built-in engine tools — the engine excludes this tool`);
 
   if (!m.version) add('error', tool, F, 'version', 'no version');
   else if (!/^\d+\.\d+\.\d+/.test(m.version)) add('error', tool, F, 'version', `version "${m.version}" is not SemVer`);
@@ -267,8 +270,9 @@ function lintManifest(tool, manifestFile, m, registeredName) {
     add('error', tool, F, 'no-implicit-allow', 'authorization_policy is empty — the engine excludes this tool (no implicit allow). Set a named policy.');
   } else {
     const pol = join(POLICIES_DIR, `${m.authorization_policy}.liquid`);
-    const builtin = ['mcp_authenticated'].includes(m.authorization_policy);
-    if (!builtin && !existsSync(pol)) add('error', tool, F, 'missing-policy', `authorization_policy "${m.authorization_policy}" has no file at ${rel(pol)}`);
+    const builtin = BUILTIN_POLICIES.includes(m.authorization_policy);
+    if (!builtin && m.authorization_policy.startsWith('mcp_')) add('error', tool, F, 'reserved-policy', `authorization_policy "${m.authorization_policy}" uses the mcp_ prefix, reserved for built-in policies (${BUILTIN_POLICIES.join(', ')}) — the engine excludes this tool`);
+    else if (!builtin && !existsSync(pol)) add('error', tool, F, 'missing-policy', `authorization_policy "${m.authorization_policy}" has no file at ${rel(pol)}`);
   }
 
   if (typeof m.mutating !== 'boolean') add('error', tool, F, 'mutating', 'mutating must be declared (boolean)');
@@ -452,6 +456,12 @@ export function lintAll({ includeVuln = false } = {}) {
         if (skip(d)) { skippedVuln.push(d); continue; }
         lintTool(d, full, { registered: false });
       }
+    }
+  }
+  // 3) app policy files may not use the reserved mcp_ prefix: the engine never loads them
+  if (existsSync(POLICIES_DIR)) {
+    for (const f of readdirSync(POLICIES_DIR)) {
+      if (f.startsWith('mcp_') && f.endsWith('.liquid')) add('error', f.replace(/\.liquid$/, ''), rel(join(POLICIES_DIR, f)), 'reserved-policy', 'policy file uses the mcp_ prefix, reserved for built-in policies — the engine never loads it');
     }
   }
 

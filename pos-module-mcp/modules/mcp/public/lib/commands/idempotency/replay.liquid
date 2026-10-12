@@ -1,7 +1,8 @@
 {%- comment -%}
   Answer a tools/call from a stored idempotency record (spec §16.3). The record was
   found for the same (key, principal, tool): same arguments → replay the original
-  result without re-executing; different arguments → 409, never silently served.
+  result without re-executing; different arguments → -32602 (HTTP 200), never
+  silently served.
   Attests the outcome in the ledger either way.
 
   @param {object} hit          - idempotency/lookup result (found:true)
@@ -17,7 +18,7 @@
     assign entry['error_code'] = -32602
     function _ = 'modules/mcp/commands/ledger/append', entry: entry
     function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Idempotency-Key reused with different arguments'
-    assign out['http_status'] = 409
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endif

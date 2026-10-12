@@ -1,8 +1,13 @@
 {%- comment -%}
   Execute an APPROVED action as the original principal (spec §9.6). Re-enters the
-  pipeline: re-resolve the tool, re-validate the arguments, and RE-AUTHORIZE against
-  the original principal (defense in depth — the tool, its schema, or its policy may
-  have changed, or the principal's rights may have been revoked, since the request).
+  pipeline: re-resolve the tool, re-check the requesting credential, re-validate the
+  arguments, and RE-AUTHORIZE against the original principal (defense in depth — the
+  tool, its schema, or its policy may have changed, or the requester's token or rights
+  may have been revoked, since the request). An operator's approval never revives a
+  credential that could no longer make the call itself:
+  the requesting token (approval.token_id) is re-checked by
+  identity/token_still_authorized — the same rules as the inline call. Approvals
+  queued before token_id was recorded only re-check the user's permission.
   Then execute inside a transaction and attest, linked to the original request by
   request_id.
 
@@ -13,9 +18,10 @@
   The outcome carries exactly what the inline tools/call would have answered, so a
   task reports it unchanged (Tasks extension, "Task Execution Errors"):
   - `error` — the JSON-RPC error when the call cannot run any more (unknown tool,
-    invalid arguments, forbidden), with the codes tools_call uses;
-  - `result` — the tool result (CallToolResult) once the handler ran, including a
-    handler error or a rolled-back write (isError: true).
+    requester's access revoked, forbidden), with the codes tools_call uses;
+  - `result` — the tool result (CallToolResult): arguments that no longer validate
+    (isError: true, structuredContent.validation_errors), or the handler's result,
+    including a handler error or a rolled-back write (isError: true).
 
   @param {object} approval    - the pending_approval record, already claimed (pending → approved) via approval/claim
   @param {string} decided_by  - operator user id (for the ledger + audit)
@@ -39,17 +45,39 @@
     return fail
   endif
 
+  # 1b. The requesting credential must still be able to make this call
+  #     (identity/token_still_authorized). Rows queued before token_id was recorded
+  #     have no token to re-check; for those only the user's permission is checked.
+  if approval.token_id == blank
+    assign perm_principal = {}
+    assign perm_principal['user_id'] = approval.principal_id | remove_first: 'user:'
+    function still_allowed = 'modules/mcp/queries/principal/can', principal: perm_principal, do: cfg.oauth.required_permission
+    assign cred = {}
+    assign cred['ok'] = still_allowed
+    assign cred['reason'] = 'permission_revoked'
+  else
+    function cred = 'modules/mcp/commands/identity/token_still_authorized', token_id: approval.token_id, principal_id: approval.principal_id, tool: tool
+  endif
+  unless cred.ok
+    log cred.reason, type: 'mcp.approval_requester_revoked'
+    assign err = {}
+    assign err['code'] = -32001
+    assign err['message'] = 'Forbidden'
+    assign fail['outcome'] = 'failed'
+    assign fail['summary'] = "Requester's access was revoked."
+    assign fail['error'] = err
+    return fail
+  endunless
+
   assign args = approval.arguments_json | parse_json
 
   # 2. Re-validate the persisted arguments against the current schema.
   function val = 'modules/mcp/commands/validate/json_schema', value: args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
   unless val.valid
-    assign err = {}
-    assign err['code'] = -32602
-    assign err['message'] = 'Invalid arguments'
+    function invalid_result = 'modules/mcp/commands/rpc/invalid_arguments_result', errors: val.errors, tool: tool
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Arguments no longer valid.'
-    assign fail['error'] = err
+    assign fail['result'] = invalid_result
     return fail
   endunless
 

@@ -248,12 +248,12 @@ curl -s -X POST https://<host>/mcp -H 'Content-Type: application/json' \
 
 | Field | Required | Meaning |
 |---|---|---|
-| `name` | yes | Unique. `^[a-z][a-z0-9_]{2,63}$` (no leading underscore, no dashes). Must equal the registered name. |
+| `name` | yes | Unique. `^[a-z][a-z0-9_]{2,63}$` (no leading underscore, no dashes). Must equal the registered name. Must not start with `mcp_`: that prefix is reserved for built-in engine tools, and a manifest using it is excluded. |
 | `version` | yes | SemVer `MAJOR.MINOR.PATCH`. Surfaced in `tools/list._meta` and the ledger. |
 | `description` | yes | Read by the model. Reviewed for injection (imperative instructions, cross-tool references, encoded blobs → flagged by lint). |
 | `input_schema` | yes | JSON-Schema subset (below). Root **must** be `type: object`. `additionalProperties` is forced `false`. |
 | `mutating` | yes | `true` ⇒ (Phase 2) runs inside a transaction. |
-| `authorization_policy` | yes | Named policy. **A blank policy makes the manifest invalid** — no implicit allow. |
+| `authorization_policy` | yes | Named policy. **A blank policy makes the manifest invalid** — no implicit allow. Names starting with `mcp_` are reserved for built-in policies (today only `mcp_authenticated`); any other `mcp_` name makes the manifest invalid, and the engine never loads an app policy file with that prefix. |
 | `requires_approval` | yes | `true` ⇒ (Phase 2) never runs inline; creates a pending approval. |
 | `handler` | yes | Partial path invoked with the validated arguments. |
 | `idempotent` | no | Declares safe retry (Phase 2 idempotency keys). |
@@ -261,7 +261,7 @@ curl -s -X POST https://<host>/mcp -H 'Content-Type: application/json' \
 | `annotations` | no | MCP behaviour hints served in `tools/list`: `readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`, each boolean; any other key or a non-boolean value makes the manifest invalid. Hints only — the engine enforces nothing from them. |
 | `output_schema` | no | Served as `outputSchema`. The root must be `type: object`. Checked at load in output mode: a field may list several types including `"null"` (`{"type":["string","null"]}`), and the depth limit is `defaults.max_output_schema_depth` (8). Never used to validate results, so keep every result the handler returns conforming — clients may validate `structuredContent` against it. |
 | `audit_fields` | no | Argument keys recorded verbatim in the ledger (must be non-sensitive). |
-| `timeout_ms` | no | Handler budget; defaults from config. |
+| `timeout_ms` | no | **Reserved.** Type-checked (integer) but not enforced: handlers run without a time limit. A later version may enforce it for tools that set it; tools that omit it will stay unlimited. |
 | `deprecated` | no | Still callable; flagged with a sunset note in `tools/list`. |
 
 Breaking a schema? Bump **major** and publish as a **new tool name**
@@ -277,7 +277,7 @@ never declare a constraint the engine does not enforce):
 
 - `type`: `object` | `string` | `integer` | `number` | `boolean` | `array`
 - object: `properties`, `required`, `additionalProperties` (always treated as `false`)
-- string: `minLength`, `maxLength`, `pattern` (bounded — no catastrophic backtracking), `enum`, `format` (`date-time` | `email` | `uuid`)
+- string: `minLength`, `maxLength`, `pattern` (bounded — no catastrophic backtracking), `enum`, `format` (`date-time` | `email` | `uuid` — any other value makes the manifest invalid, because the engine would not enforce it; use a `pattern` instead)
 - number/integer: `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `enum`
 - array: `items` (single schema), `minItems`, `maxItems`
 - annotations: `description`, `title`, `default`

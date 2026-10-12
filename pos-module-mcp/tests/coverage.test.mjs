@@ -130,7 +130,7 @@ describe('coverage · multi-principal governance planes', () => {
       const anonN = await listNames(null);
       ok('principal: operator sees all 3 tiers', tiers.every(t => opN.includes(t)), opN.filter(n => n.startsWith('test_')).join(','));
       ok('principal: member sees public+member but NOT admin', memN.includes('test_public') && memN.includes('test_member') && !memN.includes('test_admin'), memN.filter(n => n.startsWith('test_')).join(','));
-      ok('principal: outsider sees ONLY public (no member/admin leak)', outN.includes('test_public') && !outN.includes('test_member') && !outN.includes('test_admin'), outN.filter(n => n.startsWith('test_')).join(','));
+      ok('principal: outsider (token without MCP access) is listed as anonymous', !tiers.some(t => outN.includes(t)), outN.filter(n => n.startsWith('test_')).join(','));
       ok('principal: anon sees NO test tiers', !tiers.some(t => anonN.includes(t)), anonN.filter(n => n.startsWith('test_')).join(','));
     }
     await unsetConstant('MCP_CONFIG');
@@ -138,11 +138,12 @@ describe('coverage · multi-principal governance planes', () => {
 
   it('Authorization — deny path (§12)', async () => {
     ok('member → test_member allowed', isOkResult(await callTool(mem.rawToken, 'test_member', {})));
-    ok('outsider → test_member DENIED', isDenied(await callTool(out.rawToken, 'test_member', {})));
+    const outsider = await callTool(out.rawToken, 'test_member', {});
+    ok('outsider (no MCP role) → token rejected, 401', outsider.status === 401 && outsider.json?.error?.code === -32001, 'status=' + outsider.status);
     ok('member → test_admin DENIED', isDenied(await callTool(mem.rawToken, 'test_admin', {})));
     {
-      const led = await ledgerFor(out.principal);
-      ok('deny is attested in the ledger', led.some(x => x.authz === 'deny'));
+      const led = await ledgerFor(mem.principal);
+      ok('deny is attested in the ledger', led.some(x => x.authz === 'deny' && x.tool === 'test_admin'));
     }
   });
 
@@ -165,7 +166,7 @@ describe('coverage · multi-principal governance planes', () => {
       const rows = (await notesFor(mem.userId)).filter(x => x.source === 'test_write');
       ok('same key twice → exactly one row written', rows.length === 1, 'rows=' + rows.length);
       const conflict = await callTool(mem.rawToken, 'test_write', { label: 'different' }, { idempotencyKey: key });
-      ok('same key + different args → 409', conflict.status === 409, 'status=' + conflict.status);
+      ok('same key + different args → -32602 with HTTP 200', conflict.status === 200 && conflict.json?.error?.code === -32602, `status=${conflict.status} code=${conflict.json?.error?.code}`);
       // Both fixtures take {} → identical input_sha256. Keys are scoped per tool: the
       // same key on another tool runs that tool fresh — never replays tool A's result.
       const xkey = 'cov-idem-x-' + mem.userId;
@@ -236,6 +237,28 @@ describe('coverage · multi-principal governance planes', () => {
       const opNotes = (await notesFor(op.userId)).filter(x => x.source === 'test_approve');
       ok('approved action EXECUTED (row now exists)', memNotes.length === 1 && memNotes[0].label === 'execnow', 'member rows=' + memNotes.length);
       ok('executed AS THE ORIGINAL PRINCIPAL (member owns it, not the operator)', memNotes.length === 1 && opNotes.length === 0, 'op rows=' + opNotes.length);
+    }
+  });
+
+  it('Approval — a token revoked after the request does not run on approval (§9.6)', async () => {
+    await clearPendingFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+    await recordUpdate('modules/mcp/mcp_token', revokeTok.id, { status: 'active' });
+    try {
+      await callTool(revokeTok.raw, 'test_approve', { label: 'revokedreq' });
+      const pend = await pendingRecordsFor(mem.principal);
+      ok('one pending queued by the soon-revoked token', pend.length === 1, 'pending=' + pend.length);
+      await recordUpdate('modules/mcp/mcp_token', revokeTok.id, { status: 'revoked' });
+      await operatorLogin(op);
+      const adminPage = await (await webGet('mcp-admin')).text();
+      await webPost('mcp-admin/approve', { authenticity_token: _formTok(adminPage), handle: pend[0]?.handle });
+      const rows = (await notesFor(mem.userId)).filter(x => x.source === 'test_approve' && x.label === 'revokedreq');
+      ok('approval of a revoked requester does NOT execute', rows.length === 0, 'rows=' + rows.length);
+      const st = (await adm.gql(`{ records(per_page: 1, filter: { table: { value: "${T_PENDING}" } id: { value: "${pend[0]?.id}" } }) { results { status: property(name: "status") summary: property(name: "result_summary") } } }`))?.data?.records?.results?.[0];
+      ok('approval is failed with "access was revoked"', st?.status === 'failed' && /access was revoked/.test(st?.summary || ''), JSON.stringify(st));
+    } finally {
+      await recordUpdate('modules/mcp/mcp_token', revokeTok.id, { status: 'active' }); // seeded baseline; the lifecycle test revokes it later
+      await clearPendingFor(mem.principal);
     }
   });
 
@@ -314,6 +337,22 @@ describe('coverage · multi-principal governance planes', () => {
     }
   });
 
+  it('Token lifecycle — a token stops working when its user loses MCP access by any path (§9)', async () => {
+    // Not through the console (which revokes tokens itself): edit the profile directly,
+    // as a user-module admin or another app flow would. The token row stays active.
+    const profile = (await adm.gql(`{ records(per_page: 1, filter: { table: { value: "modules/user/profile" } properties: [{ name: "user_id", value: "${validator.userId}" }] }) { results { id } } }`))?.data?.records?.results?.[0];
+    const setRoles = (roles) => adm.gql(`mutation { record_update(id: ${profile.id}, record: { table: "modules/user/profile" properties: [{ name: "roles", value_array: ${JSON.stringify(roles)} }] }) { id } }`);
+    try {
+      ok('token works while the user holds mcp_user', isOkResult(await callTool(validator.rawToken, 'test_public', {})));
+      await setRoles([]);
+      const after = await callTool(validator.rawToken, 'test_public', {});
+      ok('role removed outside the console → 401, though the token row is still active', after.status === 401 && after.json?.error?.code === -32001, 'status=' + after.status);
+    } finally {
+      await setRoles(['mcp_user']);
+    }
+    ok('role restored → the same token works again', isOkResult(await callTool(validator.rawToken, 'test_public', {})));
+  });
+
   it('Approval — expired approval never executes (§9.6)', async () => {
     await clearPendingFor(mem.principal);
     await deleteNotesFor(mem.userId);
@@ -335,8 +374,9 @@ describe('coverage · multi-principal governance planes', () => {
     await operatorLogin(op);
     let page = await (await webGet('mcp-admin')).text();
     ok('chain intact before tamper', chainOk(page));
-    const q = `{ records(per_page: 1, filter: { table: { value: "${T_LEDGER}" } }, sort: [{ id: { order: DESC } }]) { results { id outcome: property(name: "execution_outcome") } } }`;
+    const q = `{ records(per_page: 1, filter: { table: { value: "${T_LEDGER}" } }, sort: [{ id: { order: DESC } }]) { results { id outcome: property(name: "execution_outcome") version: property(name: "canonical_version") } } }`;
     const row = (await adm.gql(q))?.data?.records?.results?.[0];
+    ok('new ledger rows record their hash format (canonical_version 1)', String(row?.version) === '1', 'canonical_version=' + row?.version);
     const original = row?.outcome;
     try {
       await recordUpdate(T_LEDGER, row.id, { execution_outcome: original === 'success' ? 'rolled_back' : 'success' });
@@ -351,7 +391,7 @@ describe('coverage · multi-principal governance planes', () => {
 
   it('Validation matrix (§10, strict, no coercion)', async () => {
     const V = (args) => callTool(validator.rawToken, 'test_validate', args); // dedicated: its many arg-rejections don't accrue on `member`
-    const rej = (r) => r.json?.error?.code === -32602;
+    const rej = (r) => r.status === 200 && r.json?.result?.isError === true && Array.isArray(r.json.result.structuredContent?.validation_errors);
     const valid = { kind: 'alpha', count: 5, ratio: 0.5, email: 'a@b.co', uid: '123e4567-e89b-12d3-a456-426614174000', when: '2026-01-01T00:00:00Z', tags: ['x'], code: 'abc' };
     ok('fully valid input accepted', isOkResult(await V(valid)));
     const bad = async (name, patch) => ok(name, rej(await V({ ...valid, ...patch })));
@@ -377,8 +417,8 @@ describe('coverage · multi-principal governance planes', () => {
     await pruneRate(adm, op.principal);
     {
       const codes = [];
-      for (let i = 0; i < 5; i++) codes.push((await callTool(rate.rawToken, 'test_public', {})).status);
-      ok('a principal exhausts its own limit → 429', codes.slice(0, 3).every(c => c === 200) && codes.slice(3).some(c => c === 429), codes.join(','));
+      for (let i = 0; i < 5; i++) { const r = await callTool(rate.rawToken, 'test_public', {}); codes.push(r.json?.error?.code ?? r.status); }
+      ok('a principal exhausts its own limit → -32004', codes.slice(0, 3).every(c => c === 200) && codes.slice(3).some(c => c === -32004), codes.join(','));
       const other = (await callTool(op.rawToken, 'test_public', {})).status;
       ok('a DIFFERENT principal is unaffected (isolation)', other === 200, 'status=' + other);
     }

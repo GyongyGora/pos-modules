@@ -4,7 +4,7 @@
   maps it to a principal (a REAL platformOS user) + agent identity.
 
   MODEL: instance-issued opaque tokens bound to a real user_id, from two sources
-  (same mcp_token store, decision-2 / decision-4):
+  (same mcp_token store; backlog/decision-2, docs/oauth.md):
     - manual — the user mints a bearer at /mcp-tools (no expiry, all scopes);
     - oauth  — issued by the built-in OAuth 2.1 AS (/oauth/token): short-lived,
       bound to ONE client, ONE resource (audience = this /mcp URL) and a scope set.
@@ -21,13 +21,19 @@
     - OAuth token whose bound resource != this server's resource identifier → 401
       (RFC 8707 audience check: a token minted for another MCP server/instance is
       never accepted here — no token passthrough).
+    - A token whose user no longer holds cfg.oauth.required_permission
+      (mcp.tokens.manage) → 401 permission_revoked. Access is checked on every use,
+      not only when the token is minted: a role removed by any path (profile edit,
+      another admin tool, demotion, user deletion) stops the user's manual AND OAuth
+      tokens at once, without waiting for the console to revoke them.
     - No token internals are ever returned on the wire; failures carry only a
       generic message + a stable machine `reason` for the ledger/log.
     - Constant work regardless of match: we always compute the digest before the
       lookup, so timing does not distinguish "no such token" from other paths.
 
   A future external-AS/JWT strategy (jwt_decode, verified working) can be
-  dispatched here by token shape; v1 does not depend on it (decision-2).
+  dispatched here by token shape; v1 does not depend on it (backlog/decision-2). Until
+  then no external issuer can be configured (commands/config).
 
   @param {object} headers - context.headers (needs HTTP_AUTHORIZATION)
   @return {object} success { authenticated:true, principal:{id,user_id}, agent:{id,client_id,registered,allowed_tools?}, delegation_mode:'direct', token_id, token_kind, scopes:[…] }
@@ -92,12 +98,20 @@
 
   # Stable principal id namespaced by kind so ledger subjects never collide.
   assign principal_id = 'user:' | append: token.user_id
-  # v1: the agent is the same user acting directly. Label identifies the bearer.
-  assign agent_id = token.label | default: principal_id
 
   assign principal = {}
   assign principal['id'] = principal_id
   assign principal['user_id'] = token.user_id
+
+  # The user must still hold MCP access (one profile lookup per authenticated call).
+  function still_allowed = 'modules/mcp/queries/principal/can', principal: principal, do: cfg.oauth.required_permission
+  unless still_allowed
+    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'permission_revoked', www_authenticate: wa_invalid
+    return f
+  endunless
+
+  # v1: the agent is the same user acting directly. Label identifies the bearer.
+  assign agent_id = token.label | default: principal_id
 
   assign agent = {}
   assign agent['id'] = agent_id

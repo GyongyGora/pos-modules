@@ -16,6 +16,7 @@ properties:
   - name: input_sha256
   - name: requested_by_agent
   - name: principal_id    # the action executes AS this principal on approval
+  - name: token_id        # mcp_token row that requested it; re-checked (active, allowed_tools, scope) when it runs
   - name: authz_policy
   - name: status          # pending | approved (claimed, executing) | rejected | cancelled | expired | executed | failed
   - name: decided_by      # operator user id
