@@ -15,7 +15,7 @@
  */
 import { describe, it, beforeAll, afterAll, afterEach, expect } from 'vitest';
 import { loadEnv, makeAdmin, pruneRate } from './fixtures.mjs';
-import { makeMcp, makeConstants, makeWeb } from './lib/harness.mjs';
+import { makeMcp, makeModern, makeConstants, makeWeb, TASKS_CAPABILITY } from './lib/harness.mjs';
 import { FIXT, applyReset, seededRecordIds } from './seed/seed.mjs';
 
 // Ids of the persistent seeded rows — NEVER delete these (a deleted fixed id cannot be
@@ -422,46 +422,194 @@ describe('coverage · multi-principal governance planes', () => {
     }
   });
 
-  it('Tasks extension — approval-as-task: poll / cancel / self-approve blocked (2026-07-28)', async () => {
-    const m26 = { _meta: { protocolVersion: '2026-07-28' } };
+  it('tools/list — title, annotations and outputSchema come from the manifest; invalid ones are excluded', async () => {
+    const r = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }, mem.rawToken);
+    const tools = r.json?.result?.tools || [];
+    const se = tools.find(t => t.name === 'search_events');
+    ok('search_events carries its title', se?.title === 'Search events', String(se?.title));
+    ok('search_events carries all four annotation hints as declared', JSON.stringify(se?.annotations) === JSON.stringify({ readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }), JSON.stringify(se?.annotations));
+    ok('search_events carries its outputSchema, nullable fields included', se?.outputSchema?.type === 'object' && JSON.stringify(se?.outputSchema?.properties?.events?.items?.properties?.venue?.type) === JSON.stringify(['string', 'null']), JSON.stringify(se?.outputSchema || {}).slice(0, 160));
+    const plain = tools.find(t => t.name === 'test_public');
+    ok('a tool that declares none of them carries none', plain && plain.title === undefined && plain.annotations === undefined && plain.outputSchema === undefined);
+    ok('a malformed annotation excludes the tool from tools/list', tools.length > 0 && !tools.some(t => t.name === 'test_bad_annotations'), tools.map(t => t.name).join(','));
+    const call = await callTool(mem.rawToken, 'test_bad_annotations', {});
+    ok('the excluded tool cannot be called', call.json?.error?.code === -32602 || call.json?.result?.isError === true, JSON.stringify(call.json?.error || call.json?.result || {}).slice(0, 120));
+  });
+
+  it('tools/list — a malformed cursor starts from the first page', async () => {
+    const first = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }, mem.rawToken);
+    const firstNames = (first.json?.result?.tools || []).map(t => t.name).join(',');
+    for (const cursor of ['###not-base64###', 'YQ', '=?bad?=']) {
+      const r = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: { cursor } }, mem.rawToken);
+      ok(`cursor ${JSON.stringify(cursor)} → 200 with the first page`, r.status === 200 && (r.json?.result?.tools || []).map(t => t.name).join(',') === firstNames, `status=${r.status}`);
+    }
+    const valid = await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/list', params: { cursor: Buffer.from('offset:1').toString('base64') } }, mem.rawToken);
+    ok('a valid cursor still pages (offset 1 skips the first tool)', valid.status === 200 && (valid.json?.result?.tools || [])[0]?.name === (first.json?.result?.tools || [])[1]?.name);
+  });
+
+  // ── Tasks extension (io.modelcontextprotocol/tasks) over the approval gate ──────────
+  // An approval-gated tools/call is a task for a modern client that declares the
+  // extension: CreateTaskResult, then tasks/get / tasks/update / tasks/cancel.
+  const TASK_ID = /^mcp_pa_[0-9a-f]{32}$/;
+  const isIso = (v) => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}([+-]\d{2}:\d{2}|Z)$/.test(v) && !Number.isNaN(Date.parse(v));
+  const modernClient = () => makeModern(base).send;
+  async function createTask(send, label) {
+    const r = await send('tools/call', { name: 'test_approve', arguments: { label } }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY });
+    return { res: r, taskId: r.json?.result?.taskId };
+  }
+  const getTask = (send, taskId, token = mem.rawToken) => send('tasks/get', { taskId }, { token, capabilities: TASKS_CAPABILITY });
+  // The operator signs in once per test (operatorLogin); each decision reuses the session.
+  async function decide(action, handle) {
+    const tok = _formTok(await (await webGet('mcp-admin?tab=approvals')).text());
+    const res = await webPost('mcp-admin/' + action, { authenticity_token: tok, handle });
+    return res.status === 302 || res.status === 200;
+  }
+
+  it('Tasks — tools/call answers with a task only when the request declares the extension', async () => {
+    const send = modernClient();
+    await clearAbuse(mem.principal);
     await clearPendingFor(mem.principal);
-    const pend = await callTool(mem.rawToken, 'test_approve', { label: 'tasks-ext' });
-    const taskId = pend.json?.result?.structuredContent?.taskId;
-    ok('pending response carries taskId (== handle)', !!taskId && taskId === pend.json?.result?.structuredContent?.handle, 'taskId=' + taskId);
+    await deleteNotesFor(mem.userId);
 
-    // Gated to a 2026 client; a 2025 client uses mcp_approval_status instead.
-    const g25 = await rpc({ jsonrpc: '2.0', id: 1, method: 'tasks/get', params: { taskId } }, mem.rawToken);
-    ok('tasks/get without 2026 negotiation → -32601 (method not found)', g25.json?.error?.code === -32601, 'code=' + g25.json?.error?.code);
+    const legacy = await callTool(mem.rawToken, 'test_approve', { label: 'task-legacy' });
+    const lsc = legacy.json?.result?.structuredContent || {};
+    ok('legacy client → pending CallToolResult with a handle', lsc.status === 'pending_approval' && TASK_ID.test(lsc.handle || ''), JSON.stringify(lsc).slice(0, 120));
+    ok('legacy pending result carries no taskId and no resultType', lsc.taskId === undefined && legacy.json?.result?.resultType === undefined);
 
-    const g26 = await rpc({ jsonrpc: '2.0', id: 2, method: 'tasks/get', ...m26, params: { taskId } }, mem.rawToken);
-    ok('owner tasks/get @2026 → status working, tool test_approve', g26.json?.result?.task?.status === 'working' && g26.json?.result?.task?.tool === 'test_approve', JSON.stringify(g26.json?.result?.task || g26.json?.error || {}).slice(0, 100));
-
-    const gOther = await rpc({ jsonrpc: '2.0', id: 3, method: 'tasks/get', ...m26, params: { taskId } }, op.rawToken);
-    ok('another principal tasks/get → not found (-32002, no enumeration)', gOther.json?.error?.code === -32002);
-
-    const upd = await rpc({ jsonrpc: '2.0', id: 4, method: 'tasks/update', ...m26, params: { taskId, status: 'cancelled' } }, mem.rawToken);
-    ok('owner tasks/update cancel → status cancelled', upd.json?.result?.task?.status === 'cancelled', JSON.stringify(upd.json?.result?.task || upd.json?.error || {}).slice(0, 100));
-    const gAfter = await rpc({ jsonrpc: '2.0', id: 5, method: 'tasks/get', ...m26, params: { taskId } }, mem.rawToken);
-    ok('tasks/get after cancel → cancelled', gAfter.json?.result?.task?.status === 'cancelled');
-    ok('cancel frees the pending queue slot', (await pendingFor(mem.principal)).length === 0, 'pending=' + (await pendingFor(mem.principal)).length);
-    const upd2 = await rpc({ jsonrpc: '2.0', id: 6, method: 'tasks/update', ...m26, params: { taskId } }, mem.rawToken);
-    ok('cancelling a non-pending task is refused (-32002)', upd2.json?.error?.code === -32002);
-
-    // SECURITY: an agent can NEVER self-approve via tasks/update — only cancel is allowed.
-    await clearPendingFor(mem.principal);
-    const pend2 = await callTool(mem.rawToken, 'test_approve', { label: 'tasks-ext2' });
-    const tid2 = pend2.json?.result?.structuredContent?.taskId;
-    const selfApprove = await rpc({ jsonrpc: '2.0', id: 7, method: 'tasks/update', ...m26, params: { taskId: tid2, status: 'approved' } }, mem.rawToken);
-    ok('agent CANNOT self-approve via tasks/update (only cancel) → -32602', selfApprove.json?.error?.code === -32602, 'code=' + selfApprove.json?.error?.code);
-    const stillPending = await rpc({ jsonrpc: '2.0', id: 8, method: 'tasks/get', ...m26, params: { taskId: tid2 } }, mem.rawToken);
-    ok('the self-approve attempt did NOT execute (still working)', stillPending.json?.result?.task?.status === 'working');
+    const plain = await send('tools/call', { name: 'test_approve', arguments: { label: 'task-plain' } }, { token: mem.rawToken });
+    ok('modern client without the extension → pending CallToolResult, resultType complete', plain.json?.result?.resultType === 'complete' && plain.json?.result?.structuredContent?.status === 'pending_approval' && plain.json?.result?.structuredContent?.taskId === undefined, plain.text.slice(0, 160));
     await clearPendingFor(mem.principal);
 
-    // Capability advertised only to a 2026 client.
-    const init26 = await rpc({ jsonrpc: '2.0', id: 9, method: 'initialize', ...m26, params: {} }, null);
-    ok('initialize @2026 advertises the tasks extension capability', !!init26.json?.result?.capabilities?.['io.modelcontextprotocol/tasks']);
-    const init25 = await rpc({ jsonrpc: '2.0', id: 10, method: 'initialize', params: {} }, null);
-    ok('initialize @2025 does NOT advertise the tasks extension', init25.json?.result?.capabilities?.['io.modelcontextprotocol/tasks'] === undefined);
+    const { res, taskId } = await createTask(send, 'task-create');
+    const t = res.json?.result || {};
+    ok('declaring client → CreateTaskResult (resultType task)', res.status === 200 && t.resultType === 'task', res.text.slice(0, 200));
+    ok('taskId is the opaque 128-bit handle', TASK_ID.test(taskId || ''), taskId);
+    ok('seed status working with a statusMessage', t.status === 'working' && typeof t.statusMessage === 'string' && t.statusMessage.length > 0);
+    ok('createdAt / lastUpdatedAt are ISO 8601', isIso(t.createdAt) && isIso(t.lastUpdatedAt), `${t.createdAt} ${t.lastUpdatedAt}`);
+    ok('ttlMs present and null (rows are kept)', 'ttlMs' in t && t.ttlMs === null);
+    ok('pollIntervalMs from config (30000)', t.pollIntervalMs === 30000, String(t.pollIntervalMs));
+    ok('no tool content on a task handle', t.content === undefined && t.result === undefined);
+    ok('_meta names the tool and the approval deadline', t._meta?.['com.platformos.mcp/approval']?.tool === 'test_approve' && isIso(t._meta?.['com.platformos.mcp/approval']?.expiresAt));
+    ok('nothing executed before approval', (await notesFor(mem.userId)).filter(x => x.source === 'test_approve').length === 0);
+
+    const g = await getTask(send, taskId);
+    ok('tasks/get right away resolves the task (durable before the answer)', g.status === 200 && g.json?.result?.taskId === taskId && g.json?.result?.status === 'working', g.text.slice(0, 160));
+    ok('tasks/get result has resultType complete', g.json?.result?.resultType === 'complete');
+    await clearPendingFor(mem.principal);
+  });
+
+  it('Tasks — capability, headers, authentication and self-scoping on tasks/*', async () => {
+    const send = modernClient();
+    await clearAbuse(mem.principal);
+    await clearPendingFor(mem.principal);
+    const { taskId } = await createTask(send, 'task-scope');
+
+    const undeclared = await send('tasks/get', { taskId }, { token: mem.rawToken });
+    ok('tasks/get without the extension declared → 400 -32021', undeclared.status === 400 && undeclared.json?.error?.code === -32021, `status=${undeclared.status} code=${undeclared.json?.error?.code}`);
+    ok('-32021 names the required extension', JSON.stringify(undeclared.json?.error?.data?.requiredCapabilities) === JSON.stringify({ extensions: { 'io.modelcontextprotocol/tasks': {} } }));
+    const undeclaredCancel = await send('tasks/cancel', { taskId }, { token: mem.rawToken });
+    ok('tasks/cancel without the extension declared → -32021', undeclaredCancel.json?.error?.code === -32021);
+    const legacy = await rpc({ jsonrpc: '2.0', id: 1, method: 'tasks/get', params: { taskId } }, mem.rawToken);
+    ok('legacy tasks/get → -32601 (method not found)', legacy.json?.error?.code === -32601, 'code=' + legacy.json?.error?.code);
+
+    const noName = await send('tasks/get', { taskId }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY, omitHeaders: ['Mcp-Name'] });
+    ok('tasks/get without Mcp-Name → 400 -32020', noName.status === 400 && noName.json?.error?.code === -32020);
+    const wrongName = await send('tasks/get', { taskId }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY, headers: { 'Mcp-Name': 'mcp_pa_other' } });
+    ok('Mcp-Name different from taskId → 400 -32020', wrongName.status === 400 && wrongName.json?.error?.code === -32020);
+
+    const anon = await send('tasks/get', { taskId }, { capabilities: TASKS_CAPABILITY });
+    ok('no bearer → 401 -32001', anon.status === 401 && anon.json?.error?.code === -32001, `status=${anon.status}`);
+    const other = await getTask(send, taskId, op.rawToken);
+    ok("another principal's task → -32602 Task not found", other.json?.error?.code === -32602 && other.json?.error?.message === 'Task not found');
+    const unknown = await getTask(send, 'mcp_pa_' + '0'.repeat(32));
+    ok('unknown task → the same -32602 Task not found (no probing)', unknown.json?.error?.code === -32602 && unknown.json?.error?.message === 'Task not found');
+    const otherCancel = await send('tasks/cancel', { taskId }, { token: op.rawToken, capabilities: TASKS_CAPABILITY });
+    ok("another principal cannot cancel it (-32602)", otherCancel.json?.error?.code === -32602);
+    ok('the task is still working after the foreign cancel', (await getTask(send, taskId)).json?.result?.status === 'working');
+
+    // SECURITY: tasks/update only carries input answers; it can never decide the task.
+    const upd = await send('tasks/update', { taskId, status: 'approved', inputResponses: { k1: { action: 'accept' } } }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY });
+    ok('tasks/update → empty acknowledgement (resultType complete)', upd.status === 200 && JSON.stringify(upd.json?.result) === JSON.stringify({ resultType: 'complete' }), upd.text.slice(0, 120));
+    ok('tasks/update cannot approve: still working, nothing executed', (await getTask(send, taskId)).json?.result?.status === 'working' && (await notesFor(mem.userId)).filter(x => x.label === 'task-scope').length === 0);
+    const updOther = await send('tasks/update', { taskId, inputResponses: {} }, { token: op.rawToken, capabilities: TASKS_CAPABILITY });
+    ok("tasks/update on another principal's task → -32602", updOther.json?.error?.code === -32602);
+    await clearPendingFor(mem.principal);
+  });
+
+  it('Tasks — tasks/cancel withdraws a pending action, idempotently', async () => {
+    const send = modernClient();
+    await clearAbuse(mem.principal);
+    await clearPendingFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+    const { taskId } = await createTask(send, 'task-cancel');
+
+    const c1 = await send('tasks/cancel', { taskId }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY });
+    ok('tasks/cancel → empty acknowledgement', c1.status === 200 && JSON.stringify(c1.json?.result) === JSON.stringify({ resultType: 'complete' }), c1.text.slice(0, 120));
+    const after = (await getTask(send, taskId)).json?.result || {};
+    ok('task is cancelled with an explanation', after.status === 'cancelled' && /withdrew/.test(after.statusMessage || ''), JSON.stringify(after).slice(0, 160));
+    ok('cancelled task carries neither result nor error', after.result === undefined && after.error === undefined);
+    ok('cancel frees the pending queue slot', (await pendingFor(mem.principal)).length === 0);
+    const c2 = await send('tasks/cancel', { taskId }, { token: mem.rawToken, capabilities: TASKS_CAPABILITY });
+    ok('cancelling again is still acknowledged and changes nothing', c2.status === 200 && (await getTask(send, taskId)).json?.result?.status === 'cancelled');
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    ok('approving a cancelled task does nothing', (await decide('approve', taskId)) && (await notesFor(mem.userId)).filter(x => x.label === 'task-cancel').length === 0 && (await getTask(send, taskId)).json?.result?.status === 'cancelled');
+    await clearPendingFor(mem.principal);
+  });
+
+  it('Tasks — operator decisions: approve → completed with the tool result, reject → cancelled', async () => {
+    const send = modernClient();
+    await clearAbuse(mem.principal);
+    await clearPendingFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+
+    const { taskId } = await createTask(send, 'task-approve');
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    ok('operator approves through the console', await decide('approve', taskId));
+    const done = (await getTask(send, taskId)).json?.result || {};
+    ok('task completed', done.status === 'completed', JSON.stringify(done).slice(0, 200));
+    ok('result is the tool result (isError false, structuredContent from the handler)', done.result?.isError === false && Array.isArray(done.result?.content) && done.result?.structuredContent?.label === 'task-approve' && done.result?.structuredContent?.owner === mem.principal, JSON.stringify(done.result || {}).slice(0, 200));
+    ok('lastUpdatedAt moved on from createdAt', Date.parse(done.lastUpdatedAt) >= Date.parse(done.createdAt));
+    ok('the action ran once, as the requester', (await notesFor(mem.userId)).filter(x => x.label === 'task-approve').length === 1);
+
+    const rej = await createTask(send, 'task-reject');
+    ok('operator rejects through the console', await decide('reject', rej.taskId));
+    const rejected = (await getTask(send, rej.taskId)).json?.result || {};
+    ok('rejected → cancelled with the reason', rejected.status === 'cancelled' && /rejected/.test(rejected.statusMessage || ''), JSON.stringify(rejected).slice(0, 160));
+    ok('rejected action never ran', (await notesFor(mem.userId)).filter(x => x.label === 'task-reject').length === 0);
+    await clearPendingFor(mem.principal);
+  });
+
+  it('Tasks — failures: tool gone → failed with the JSON-RPC error, handler error → completed isError, expired → failed -32005', async () => {
+    const send = modernClient();
+    await clearAbuse(mem.principal);
+    await clearPendingFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    const recId = async (handle) => (await adm.gql(`{ records(per_page: 1, filter: { table: { value: "${T_PENDING}" } properties: [{ name: "handle", value: "${handle}" }] }) { results { id } } }`))?.data?.records?.results?.[0]?.id;
+
+    const gone = await createTask(send, 'task-gone');
+    await recordUpdate(T_PENDING, await recId(gone.taskId), { tool_name: 'no_such_tool' });
+    await decide('approve', gone.taskId);
+    const g = (await getTask(send, gone.taskId)).json?.result || {};
+    ok('tool removed before approval → failed with -32602 Unknown tool', g.status === 'failed' && g.error?.code === -32602 && g.error?.message === 'Unknown tool' && g.result === undefined, JSON.stringify(g).slice(0, 200));
+
+    const broken = await createTask(send, 'task-handler-error');
+    await recordUpdate(T_PENDING, await recId(broken.taskId), { tool_name: 'test_fail' });
+    await decide('approve', broken.taskId);
+    const b = (await getTask(send, broken.taskId)).json?.result || {};
+    ok('handler failure → completed with an isError tool result (not failed)', b.status === 'completed' && b.result?.isError === true && Array.isArray(b.result?.content) && b.error === undefined, JSON.stringify(b).slice(0, 200));
+    ok('the failed handler left no row (rolled back)', (await notesFor(mem.userId)).filter(x => x.label === 'task-handler-error').length === 0);
+
+    const late = await createTask(send, 'task-expired');
+    const lateId = await recId(late.taskId);
+    const past = Math.floor(Date.now() / 1000) - 60;
+    await adm.gql(`mutation { record_update(id: ${lateId}, record: { table: "${T_PENDING}" properties: [{ name: "expires_at", value_int: ${past} }] }) { id } }`);
+    const e = (await getTask(send, late.taskId)).json?.result || {};
+    ok('pending past its window → failed with -32005', e.status === 'failed' && e.error?.code === -32005, JSON.stringify(e).slice(0, 200));
+    await decide('approve', late.taskId);
+    const e2 = (await getTask(send, late.taskId)).json?.result || {};
+    ok('approving after the window still reports expired, nothing ran', e2.status === 'failed' && e2.error?.code === -32005 && (await notesFor(mem.userId)).filter(x => x.label === 'task-expired').length === 0);
+    await clearPendingFor(mem.principal);
   });
 
   it('Idempotency — window expiry re-executes (§16.3)', async () => {

@@ -10,9 +10,16 @@
   scope, never the operator's. Returns an outcome the caller records on the approval
   row and shows the agent.
 
+  The outcome carries exactly what the inline tools/call would have answered, so a
+  task reports it unchanged (Tasks extension, "Task Execution Errors"):
+  - `error` — the JSON-RPC error when the call cannot run any more (unknown tool,
+    invalid arguments, forbidden), with the codes tools_call uses;
+  - `result` — the tool result (CallToolResult) once the handler ran, including a
+    handler error or a rolled-back write (isError: true).
+
   @param {object} approval    - the pending_approval record, already claimed (pending → approved) via approval/claim
   @param {string} decided_by  - operator user id (for the ledger + audit)
-  @return {object} { ok, outcome, summary }
+  @return {object} { ok, outcome: 'executed'|'failed', summary, result?, error? }
 {%- endcomment -%}
 {% liquid
   function cfg = 'modules/mcp/commands/config'
@@ -23,8 +30,12 @@
   # 1. Tool must still exist and be valid.
   function tool = 'modules/mcp/commands/registry/resolve_tool', name: approval.tool_name, allowed_tools: null
   if tool == blank
+    assign err = {}
+    assign err['code'] = -32602
+    assign err['message'] = 'Unknown tool'
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Tool no longer available.'
+    assign fail['error'] = err
     return fail
   endif
 
@@ -33,8 +44,12 @@
   # 2. Re-validate the persisted arguments against the current schema.
   function val = 'modules/mcp/commands/validate/json_schema', value: args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
   unless val.valid
+    assign err = {}
+    assign err['code'] = -32602
+    assign err['message'] = 'Invalid arguments'
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Arguments no longer valid.'
+    assign fail['error'] = err
     return fail
   endunless
 
@@ -48,8 +63,12 @@
   # 4. Re-authorize against the original principal (fail-closed).
   function authz = 'modules/mcp/commands/authorize/evaluate', policy: tool.authorization_policy, principal: principal, agent: agent, arguments: args, tool: tool, delegation_mode: 'direct'
   unless authz.allow
+    assign err = {}
+    assign err['code'] = -32001
+    assign err['message'] = 'Forbidden'
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Authorization denied at execution time.'
+    assign fail['error'] = err
     return fail
   endunless
 
@@ -107,14 +126,31 @@
     assign le['execution_outcome'] = 'rolled_back'
     assign le['error_code'] = -32003
     function _ = 'modules/mcp/commands/ledger/append', entry: le
+    # Same answer as the inline path: a handler business error keeps its own message;
+    # a handler success whose attestation failed is reported as rolled back.
+    if exec.outcome == 'success'
+      assign rb_content = []
+      assign rb_item = {}
+      assign rb_item['type'] = 'text'
+      assign rb_item['text'] = 'The action failed and was rolled back; no changes were saved.'
+      assign rb_content = rb_content | array_add: rb_item
+      assign failed_result = {}
+      assign failed_result['content'] = rb_content
+      assign failed_result['isError'] = true
+    else
+      function failed_result = 'modules/mcp/commands/execute/result_of', exec: exec
+    endif
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Execution failed and was rolled back.'
+    assign fail['result'] = failed_result
     return fail
   endunless
 
+  function result = 'modules/mcp/commands/execute/result_of', exec: exec
   assign out = {}
   assign out['ok'] = true
   assign out['outcome'] = 'executed'
+  assign out['result'] = result
   assign summary = 'Executed'
   unless exec.subject_id == blank
     assign summary = 'Executed — created ' | append: exec.subject_type | append: ' ' | append: exec.subject_id

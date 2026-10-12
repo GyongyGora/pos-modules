@@ -93,7 +93,7 @@
       endif
 
       # --- Meta-schema validation. ---
-      function v = 'modules/mcp/commands/registry/manifest_schema', manifest: manifest, max_depth: cfg.defaults.max_schema_depth
+      function v = 'modules/mcp/commands/registry/manifest_schema', manifest: manifest, max_depth: cfg.defaults.max_schema_depth, max_output_depth: cfg.defaults.max_output_schema_depth
       if v.valid
         assign m = manifest
         assign m['_warnings'] = v.warnings

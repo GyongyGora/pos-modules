@@ -21,7 +21,11 @@ query find_by_handle($handle: String!) {
       decided_at: property(name: "decided_at")
       expires_at: property(name: "expires_at")
       result_summary: property(name: "result_summary")
+      result_json: property(name: "result_json")
+      error_json: property(name: "error_json")
       request_id: property(name: "request_id")
+      created_at
+      updated_at
     }
   }
 }

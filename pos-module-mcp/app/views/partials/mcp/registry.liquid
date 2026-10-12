@@ -39,7 +39,7 @@
   # human-in-the-loop gate (approve).
   assign test_gate = context.constants.MCP_ENABLE_TEST_TOOLS | default: ''
   if test_gate == '1' or test_gate == 'true'
-    assign test_names = 'test_public,test_member,test_admin,test_echo,test_write,test_fail,test_approve,test_validate' | split: ','
+    assign test_names = 'test_public,test_member,test_admin,test_echo,test_write,test_fail,test_approve,test_validate,test_bad_annotations' | split: ','
     for tn in test_names
       assign te = {}
       assign te['name'] = tn

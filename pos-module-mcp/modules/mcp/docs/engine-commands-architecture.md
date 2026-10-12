@@ -52,12 +52,17 @@ Plus two cross-cutting concerns: **human-in-the-loop** (`approval/`, `builtin/`)
 
 ## 1. Transport layer — `rpc/`
 
-The wire protocol (JSON-RPC 2.0, MCP revision 2025-06-18). Everything enters here. These handlers are deliberately thin: they parse, route, and format — they do not make policy decisions.
+The wire protocol (JSON-RPC 2.0; MCP revisions 2025-06-18 and 2026-07-28, see `spec-2026-07-28-gap.md`). Everything enters here. These handlers are deliberately thin: they parse, route, and format — they do not make policy decisions.
 
 | Command | What it does | Why we have it |
 |---|---|---|
 | `rpc/dispatch` | The single entry point behind `POST /mcp`. Validates the JSON-RPC envelope, enforces the transport size cap, routes each method to its `rpc/*` handler, returns a transport-agnostic outcome. | One door means one place to enforce envelope rules and the size cap. Rejects batch arrays (the 2025-06-18 revision removed batching), so the surface never lies about what it accepts. |
-| `rpc/initialize` | MCP handshake: capability negotiation + server identity + house-rule `instructions`. Open (no auth, no ledger — pre-auth plumbing). | The client must learn what this server actually implements. `instructions` are model-read text, so they are kept factual and injection-free (security-relevant surface). |
+| `rpc/route` | Routes a validated request to its handler and wraps the result; knows which methods each protocol era defines (a modern request for a removed method answers 404). | Keeps `dispatch` to transport, version and header checks, so `resultType` is added to every modern result in one place. |
+| `protocol/negotiate` | Decides the era (legacy `initialize` handshake, or modern version in `_meta`) and refuses mismatched or unsupported versions (`-32020`, `-32022`). | A client and the server must agree on the revision before anything else is interpreted. |
+| `protocol/check_headers` | Modern requests: `Mcp-Method` and `Mcp-Name` must be present and equal to the body (Base64 sentinel decoded first). | Gateways route on headers; a header that disagrees with the body is a desync the server must refuse. |
+| `rpc/initialize` | Legacy MCP handshake: capability negotiation + server identity + house-rule `instructions`. Open (no auth, no ledger — pre-auth plumbing). | The client must learn what this server actually implements. `instructions` are model-read text, so they are kept factual and injection-free (security-relevant surface). |
+| `rpc/tasks_get`, `rpc/tasks_update`, `rpc/tasks_cancel`, `tasks/find_owned`, `tasks/present` | Tasks extension over the approval gate: read a task (with the stored tool result or error), acknowledge input responses, withdraw a pending approval. Every request is authenticated and self-scoped. | An approval-gated call is long-running; the extension lets a client poll it in a standard shape instead of a module-specific tool. |
+| `rpc/discover` | Modern replacement for `initialize`: supported revisions, capabilities, `instructions`, server identity, cache hint. Open. | Servers must implement `server/discover` in 2026-07-28; the text comes from `queries/instructions`, shared with `initialize`. |
 | `rpc/ping` | Liveness — returns `{}`. Open, unledgered. | Cheap health probe that must not require credentials or spam the chain. |
 | `rpc/success` | Builds the JSON-RPC success envelope. Pure. | One canonical success shape. |
 | `rpc/error` | Builds the JSON-RPC error envelope. Pure. | **The leak guard.** Error messages must never carry stack traces, GraphQL text, or schema/policy internals — only stable, caller-safe strings, with machine context in `data`. Centralizing this makes "don't leak internals" a structural property, not a per-caller discipline. |
@@ -137,7 +142,7 @@ For tools declared `requires_approval`: the action does not run at request time;
 | Command | What it does | Why we have it |
 |---|---|---|
 | `approval/create` | Records a pending approval and returns an opaque handle. Arguments are persisted (unlike the ledger) because execution is deferred. | Some actions are too consequential to run on agent say-so alone. This captures intent for later, after the requester is already authenticated + authorized to *request* it. |
-| `approval/execute` | Runs an **approved** action as the original principal, first re-resolving the tool, re-validating the args, and **re-authorizing** — then executing in a transaction and attesting, linked by `request_id`. | Defense in depth: between request and approval, the tool, its schema, its policy, or the principal's rights may have changed. The operator only *decides*; the action runs with the requester's identity and scope, never the operator's. |
+| `approval/execute` | Runs an **approved** action as the original principal, first re-resolving the tool, re-validating the args, and **re-authorizing** — then executing in a transaction and attesting, linked by `request_id`. Returns the tool result or the JSON-RPC error the inline call would have given, which the approve page stores for `tasks/get`. | Defense in depth: between request and approval, the tool, its schema, its policy, or the principal's rights may have changed. The operator only *decides*; the action runs with the requester's identity and scope, never the operator's. |
 | `builtin/approval_status` | The built-in `mcp_approval_status` tool: an agent polls the status of an action it requested. Self-scoped. | An agent needs to know if its deferred action ran. Self-scoping matters: an unknown handle and someone else's handle both return identical "not found", so handles cannot be enumerated. |
 
 ---

@@ -13,11 +13,18 @@
    - input_schema must be an object schema and pass the supported-subset walker
      (unsupported keyword anywhere → invalid).
    - Correct types for mutating/requires_approval/idempotent (boolean),
-     timeout_ms (integer), audit_fields (array).
+     timeout_ms (integer), audit_fields (array), title (string).
+   - annotations, when present, hold only the MCP behaviour hints readOnlyHint,
+     destructiveHint, idempotentHint and openWorldHint, each boolean. They are hints
+     for clients; the engine enforces nothing from them.
+   - output_schema, when present, is an object schema checked in output mode: a
+     field may list several types including "null", and its depth limit is
+     max_output_depth.
    - description lint warnings are attached (non-fatal, §12.3) for human attention.
 
   @param {object}  manifest  - the raw manifest hash
   @param {integer} max_depth - schema depth cap (from config.defaults.max_schema_depth)
+  @param {integer} max_output_depth - output_schema depth cap (config.defaults.max_output_schema_depth)
   @return {object} { valid, errors:[string], warnings:[string], name }
 {%- endcomment -%}
 {% liquid
@@ -100,6 +107,33 @@
       assign errors = errors | array_add: 'deprecated: must be boolean'
     endunless
   endunless
+  unless manifest.title == blank
+    assign tit = manifest.title | type_of | downcase
+    unless tit == 'string'
+      assign errors = errors | array_add: 'title: must be string'
+    endunless
+  endunless
+  unless manifest.annotations == blank
+    assign ann_kind = manifest.annotations | type_of | downcase
+    if ann_kind == 'hash'
+      assign hint_names = 'readOnlyHint,destructiveHint,idempotentHint,openWorldHint' | split: ','
+      assign ann_keys = manifest.annotations | hash_keys
+      for ann_key in ann_keys
+        if hint_names contains ann_key
+          assign hint_kind = manifest.annotations[ann_key] | type_of | downcase
+          unless hint_kind == 'boolean'
+            assign amsg = 'annotations.' | append: ann_key | append: ': must be boolean'
+            assign errors = errors | array_add: amsg
+          endunless
+        else
+          assign amsg = 'annotations: unsupported hint "' | append: ann_key | append: '"'
+          assign errors = errors | array_add: amsg
+        endif
+      endfor
+    else
+      assign errors = errors | array_add: 'annotations: must be an object'
+    endif
+  endunless
 
   # ---- input_schema (required; must be an object schema in the supported subset) ----
   assign isch = manifest.input_schema
@@ -120,7 +154,11 @@
   # ---- output_schema (optional; validated when present) ----
   assign osch = manifest.output_schema
   unless osch == blank
-    function ov = 'modules/mcp/commands/registry/validate_schema_node', node: osch, depth: 1, max_depth: max_depth, path: 'output_schema'
+    if osch.type != 'object'
+      assign errors = errors | array_add: 'output_schema: root type must be "object"'
+    endif
+    assign output_depth = max_output_depth | default: max_depth
+    function ov = 'modules/mcp/commands/registry/validate_schema_node', node: osch, depth: 1, max_depth: output_depth, path: 'output_schema', output: true
     unless ov.valid
       for e in ov.errors
         assign errors = errors | array_add: e

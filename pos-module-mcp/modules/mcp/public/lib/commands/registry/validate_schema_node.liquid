@@ -7,7 +7,10 @@
   hole, not a convenience).
 
   Enforced:
-   - `type` present and one of object/string/integer/number/boolean/array.
+   - `type` present and one of object/string/integer/number/boolean/array. For an
+     OUTPUT schema (`output: true`) `type` may also be a list of those types plus
+     "null", because a result field can be empty; the engine never validates
+     results against it, so the subset rule protects inputs only.
    - Only supported keywords per node (union set below); any other key → error.
    - additionalProperties, when present, must be boolean (it is FORCED to false at
      validation time regardless — §7.2 — but must be declarable only as a boolean).
@@ -19,6 +22,7 @@
   @param {integer} depth - current nesting depth (start 1)
   @param {integer} max_depth - cap
   @param {string}  path  - dotted location for error messages (e.g. properties.foo)
+  @param {boolean} output - true for an output_schema node (default false)
   @return {object} { valid:boolean, errors:[string] }
 {%- endcomment -%}
 {% liquid
@@ -43,16 +47,36 @@
     endunless
   endfor
 
+  assign output = output | default: false
   assign t = node.type
   assign valid_types = 'object,string,integer,number,boolean,array' | split: ','
+  assign node_types = []
   if t == blank
     assign msg = at | append: ': missing "type"'
     assign errors = errors | array_add: msg
   else
-    unless valid_types contains t
+    assign t_kind = t | type_of | downcase
+    if t_kind == 'array'
+      if output
+        assign output_types = valid_types | array_add: 'null'
+        for listed_type in t
+          if output_types contains listed_type
+            assign node_types = node_types | array_add: listed_type
+          else
+            assign msg = at | append: ': invalid type "' | append: listed_type | append: '"'
+            assign errors = errors | array_add: msg
+          endif
+        endfor
+      else
+        assign msg = at | append: ': "type" must be a single type'
+        assign errors = errors | array_add: msg
+      endif
+    elsif valid_types contains t
+      assign node_types = node_types | array_add: t
+    else
       assign msg = at | append: ': invalid type "' | append: t | append: '"'
       assign errors = errors | array_add: msg
-    endunless
+    endif
   endif
 
   # additionalProperties must be boolean if declared.
@@ -83,7 +107,7 @@
   endunless
 
   # Recurse: object properties.
-  if t == 'object'
+  if node_types contains 'object'
     assign props = node.properties
     unless props == blank
       assign pkeys = props | hash_keys
@@ -91,7 +115,7 @@
         assign child = props[pk]
         assign child_path = at | append: '.properties.' | append: pk
         assign next_depth = depth | plus: 1
-        function cr = 'modules/mcp/commands/registry/validate_schema_node', node: child, depth: next_depth, max_depth: max_depth, path: child_path
+        function cr = 'modules/mcp/commands/registry/validate_schema_node', node: child, depth: next_depth, max_depth: max_depth, path: child_path, output: output
         unless cr.valid
           for e in cr.errors
             assign errors = errors | array_add: e
@@ -102,12 +126,12 @@
   endif
 
   # Recurse: array items (single schema).
-  if t == 'array'
+  if node_types contains 'array'
     assign items = node.items
     unless items == blank
       assign child_path = at | append: '.items'
       assign next_depth = depth | plus: 1
-      function ir = 'modules/mcp/commands/registry/validate_schema_node', node: items, depth: next_depth, max_depth: max_depth, path: child_path
+      function ir = 'modules/mcp/commands/registry/validate_schema_node', node: items, depth: next_depth, max_depth: max_depth, path: child_path, output: output
       unless ir.valid
         for e in ir.errors
           assign errors = errors | array_add: e

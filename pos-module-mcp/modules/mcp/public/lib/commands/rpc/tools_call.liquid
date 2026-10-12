@@ -13,9 +13,12 @@
   evident chain (a DoS / integrity-noise vector). Rate-limiting (task-1.6) will
   additionally bound anonymous traffic ahead of this point.
 
-  @param {object} params  - context.params (JSON-RPC envelope)
-  @param {object} headers - context.headers
-  @param {*}      id       - JSON-RPC request id
+  @param {object}  params          - context.params (JSON-RPC envelope)
+  @param {object}  headers         - context.headers
+  @param {*}       id              - JSON-RPC request id
+  @param {boolean} tasks_extension - the request declared the Tasks extension
+                                     (commands/protocol/negotiate); an approval-gated
+                                     call then answers with a CreateTaskResult
   @return {object} { http_status, headers?, body }
 {%- endcomment -%}
 {% liquid
@@ -267,6 +270,19 @@
     assign le['execution_outcome'] = 'pending_approval'
     function _ = 'modules/mcp/commands/ledger/append', entry: le
 
+    # Tasks extension: a client that declared it gets a CreateTaskResult (the task
+    # handle, resultType "task"). The approval row is already committed, so tasks/get
+    # resolves it — the extension requires the task to be durable before answering.
+    if tasks_extension
+      graphql created = 'modules/mcp/approvals/find_by_handle', handle: pa.handle
+      function task = 'modules/mcp/commands/tasks/present', rec: created.records.results.first
+      assign task['resultType'] = 'task'
+      function body = 'modules/mcp/commands/rpc/success', id: id, result: task
+      assign out['http_status'] = 200
+      assign out['body'] = body
+      return out
+    endif
+
     assign content = []
     assign item = {}
     assign item['type'] = 'text'
@@ -278,9 +294,6 @@
     assign sc = {}
     assign sc['status'] = 'pending_approval'
     assign sc['handle'] = pa.handle
-    # 2026-07-28 Tasks alias: the handle IS the taskId — a Tasks-aware client can poll
-    # tasks/get / withdraw via tasks/update. Additive; 2025 clients ignore the extra key.
-    assign sc['taskId'] = pa.handle
     assign sc['expires_at'] = pa.expires_at
     assign result['structuredContent'] = sc
     function body = 'modules/mcp/commands/rpc/success', id: id, result: result

@@ -30,7 +30,7 @@ Agent  ──HTTP POST /mcp (JSON-RPC 2.0, Bearer token)──►  mcp.json.liqu
 
 Two families of methods leave `dispatch`:
 
-- **Open methods** — discovery and plumbing (`initialize`, `ping`, `tools/list`, `resources/list`, `resources/read`, `resources/templates/list`, `prompts/list`, `prompts/get`, `logging/setLevel`). No Bearer token required; **listing is not executing.** These do *not* write to the hash-chained ledger (they take no action). `tools/list` can optionally resolve identity to *filter* what it advertises, but never blocks.
+- **Open methods** — discovery and plumbing (`initialize`, `server/discover`, `ping`, `tools/list`, `resources/list`, `resources/read`, `resources/templates/list`, `prompts/list`, `prompts/get`, `logging/setLevel`). No Bearer token required; **listing is not executing.** These do *not* write to the hash-chained ledger (they take no action). `tools/list` can optionally resolve identity to *filter* what it advertises, but never blocks.
 - **`tools/call`** — the one path that can cause a side effect, and therefore the one path that runs every governance gate and writes a ledger entry for **every** authenticated outcome.
 
 Everywhere below, one rule holds: **fail-closed.** Any check that cannot conclusively say "allow" ends the request as deny / invalid / error — never as an accidental allow.
