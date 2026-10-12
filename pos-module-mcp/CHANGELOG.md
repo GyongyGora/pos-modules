@@ -21,8 +21,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   console. **Upgrading:** define the two roles in your permissions override, then grant
   `mcp_user` / `mcp_operator` to existing members (or rely on superadmin for operators).
 
+### Added
+
+- **Tool `title`, `annotations` and `outputSchema` in `tools/list`.** A manifest may
+  declare `title` (string), `annotations` (the four MCP behaviour hints, each boolean;
+  anything else makes the manifest invalid) and `output_schema`. `output_schema` is now
+  checked in output mode: the root must be an object, a field may list several types
+  including `"null"`, and the depth limit is the new `defaults.max_output_schema_depth`
+  (8). The reference tool `search_events` declares all three; the gated fixture
+  `test_bad_annotations` proves a malformed hint excludes the tool.
+
 ### Fixed
 
+- **MCP `2026-07-28` conformance.** Checked against the published schema and transport
+  spec; the engine is now dual-era by the spec's rules:
+  - Modern requests are recognised by `params._meta["io.modelcontextprotocol/protocolVersion"]`.
+    The header must be present and equal (400, `-32020`), and an unsupported revision is
+    refused (400, `-32022`, with `data.supported` and `data.requested`) instead of being
+    served as `2025-06-18`.
+  - New `server/discover` (supported revisions, capabilities, instructions, server
+    identity, cache hint).
+  - Every modern result carries `resultType: "complete"`.
+  - `cacheScope` uses the spec values `public` / `private`;
+    `resources/templates/list` gets a cache hint.
+  - Modern requests must send `Mcp-Method` and `Mcp-Name` matching the body (400,
+    `-32020`), with Base64-sentinel values decoded first.
+  - A modern request for a method the revision does not define (`ping`,
+    `logging/setLevel`, unknown methods) answers 404 `-32601`. A missing resource answers
+    `-32602` instead of the retired `-32002`.
+  - Legacy clients are unchanged, except that `initialize` no longer selects
+    `2026-07-28`: a handshake only negotiates a legacy revision.
+  - **BREAKING for early 2026 clients:** the non-standard top-level
+    `_meta.protocolVersion` is no longer read, and `cacheScope` values `shared` /
+    `per-principal` are gone.
+- **Tasks extension (`io.modelcontextprotocol/tasks`) conformance.** An approval-gated
+  `tools/call` from a modern request that declares the extension answers with a
+  `CreateTaskResult` (`resultType: "task"`).
+  - `tasks/get` returns the spec `Task`: `working`, then `completed` with the stored tool
+    result, `failed` with the JSON-RPC error the inline call would have returned, or
+    `cancelled`. An expired approval is `failed` with the new code `-32005`.
+  - New `tasks/cancel` withdraws a pending approval. `tasks/update` now only acknowledges
+    input responses (approval tasks never need input) and can no longer cancel.
+  - Unknown or foreign task → `-32602`; a client that did not declare the extension →
+    400 `-32021`; `Mcp-Name` must equal `params.taskId`.
+  - `server/discover` advertises the extension under `capabilities.extensions`.
+  - New `mcp_pending_approval` columns `result_json` and `error_json` hold the outcome;
+    new mutation `approvals/record_outcome`; new config `defaults.task_poll_interval_ms`
+    (30000).
+  - **BREAKING:** the pending `tools/call` result no longer carries a `taskId` alias (a
+    client that did not declare the extension cannot use it), and `tasks/update` with
+    `status: "cancelled"` is replaced by `tasks/cancel`.
+- **`GET` / `DELETE /mcp` answer 405 with `Allow: POST`** instead of 404, as the
+  2025-06-18 transport requires for a server without an SSE stream.
+- **The opt-in connect-time OAuth challenge (`oauth.challenge_initialize`) also covers
+  `server/discover`**, the modern client's first call.
 - **Absolute URLs honour the real origin.** The RFC 9728 resource identifier, the
   `WWW-Authenticate` `resource_metadata` link, resource `public_url`s and the `/mcp-tools`
   connect command were built as `https://` + host, which was wrong on plain http or a

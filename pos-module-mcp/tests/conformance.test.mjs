@@ -14,7 +14,7 @@
  * Env:  MCP_URL, MCP_TOKEN (admin api token) — falls back to the repo .pos "ps".
  */
 import { describe, it, beforeAll, afterAll, afterEach, expect } from 'vitest';
-import { loadEnv, makeAdmin, makeMcp, makeConstants } from './lib/harness.mjs';
+import { loadEnv, makeAdmin, makeMcp, makeModern, makeConstants } from './lib/harness.mjs';
 import { FIXT, applyReset } from './seed/seed.mjs';
 
 // ---- isolated conformance identity + fixtures (deterministic; TASK-5) ------
@@ -247,38 +247,167 @@ describe('conformance · protocol + governance pipeline', () => {
   });
 });
 
-// ── Protocol-version negotiation + 2026-07-28 stateless compat layer ────────────────
-// The server implements 2025-06-18 AND 2026-07-28 and negotiates per request. These
-// assert: the negotiation precedence, that a version-less/unknown request is UNCHANGED
-// (2025-06-18), that 2026-07-28 additions (cacheable lists, header routing) activate
-// ONLY when explicitly negotiated, and the Mcp-Method/Mcp-Name reconciliation.
-describe('conformance · protocol negotiation + 2026-07-28 compat', () => {
-  it('version negotiation — default / _meta / header / legacy / unsupported', async () => {
+// ── Protocol eras: legacy 2025-06-18 and modern 2026-07-28 ──────────────────────────
+// The server is dual-era. LEGACY: `initialize`, then requests with at most the
+// MCP-Protocol-Version header; a version-less request is legacy and unchanged. MODERN:
+// every request declares its revision in params._meta and mirrors it in headers
+// (2026-07-28 basic/versioning, transports/streamable-http). These assert both eras and
+// every modern rule: version errors, standard request headers, server/discover,
+// resultType, cache hints and the methods that no longer exist.
+describe('conformance · protocol eras (2025-06-18 legacy, 2026-07-28 modern)', () => {
+  const modern = makeModern(base);
+  const send = modern.send;
+
+  afterEach(async () => { try { await unsetConstant('MCP_CONFIG'); } catch {} });
+  afterAll(async () => { await unsetConstant('MCP_CONFIG'); await pruneRate(); });
+
+  it('legacy era — initialize handshake and version-less requests are unchanged', async () => {
     const none = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
-    ok('no version requested → default 2025-06-18 (unchanged)', none.json?.result?.protocolVersion === '2025-06-18', none.json?.result?.protocolVersion);
-    ok('initialize advertises supportedProtocolVersions in _meta', Array.isArray(none.json?.result?._meta?.supportedProtocolVersions) && none.json.result._meta.supportedProtocolVersions.includes('2026-07-28') && none.json.result._meta.supportedProtocolVersions.includes('2025-06-18'));
-    const meta = await rpc({ jsonrpc: '2.0', id: 2, method: 'initialize', _meta: { protocolVersion: '2026-07-28' }, params: {} });
-    ok('_meta.protocolVersion 2026-07-28 → negotiated up', meta.json?.result?.protocolVersion === '2026-07-28');
-    const hdr = await rpcH({ jsonrpc: '2.0', id: 3, method: 'initialize', params: {} }, { 'MCP-Protocol-Version': '2026-07-28' });
-    ok('MCP-Protocol-Version header → negotiated up', hdr.json?.result?.protocolVersion === '2026-07-28');
-    const legacy = await rpc({ jsonrpc: '2.0', id: 4, method: 'initialize', params: { protocolVersion: '2026-07-28' } });
-    ok('legacy initialize params.protocolVersion → negotiated up', legacy.json?.result?.protocolVersion === '2026-07-28');
-    const bad = await rpc({ jsonrpc: '2.0', id: 5, method: 'initialize', _meta: { protocolVersion: '1999-01-01' }, params: {} });
-    ok('unsupported version → fall back to 2025-06-18 (never error)', bad.json?.result?.protocolVersion === '2025-06-18', bad.json?.result?.protocolVersion);
+    ok('initialize without a version → 2025-06-18', none.json?.result?.protocolVersion === '2025-06-18', none.json?.result?.protocolVersion);
+    ok('initialize lists every supported revision in _meta', JSON.stringify(none.json?.result?._meta?.supportedProtocolVersions) === JSON.stringify(['2026-07-28', '2025-06-18']));
+    ok('initialize advertises no Tasks extension', none.json?.result?.capabilities?.['io.modelcontextprotocol/tasks'] === undefined && none.json?.result?.capabilities?.extensions === undefined);
+    ok('legacy results carry no resultType', none.json?.result?.resultType === undefined);
+
+    const asks26 = await rpc({ jsonrpc: '2.0', id: 2, method: 'initialize', params: { protocolVersion: '2026-07-28' } });
+    ok('initialize asking for 2026-07-28 → 2025-06-18 (a handshake only selects a legacy revision)', asks26.json?.result?.protocolVersion === '2025-06-18', asks26.json?.result?.protocolVersion);
+    const asksOld = await rpc({ jsonrpc: '2.0', id: 3, method: 'initialize', params: { protocolVersion: '1999-01-01' } });
+    ok('initialize asking for an unknown revision → 2025-06-18', asksOld.json?.result?.protocolVersion === '2025-06-18');
+    const modernInit = await send('initialize', { protocolVersion: '2025-06-18' });
+    ok('initialize carrying modern _meta still gets the legacy handshake', modernInit.status === 200 && modernInit.json?.result?.protocolVersion === '2025-06-18', `status=${modernInit.status}`);
+
+    const tl = await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/list', params: {} });
+    ok('version-less tools/list → no ttlMs, cacheScope or resultType', tl.status === 200 && tl.json?.result?.ttlMs === undefined && tl.json?.result?.cacheScope === undefined && tl.json?.result?.resultType === undefined);
+    const hdr25 = await rpcH({ jsonrpc: '2.0', id: 5, method: 'tools/list', params: {} }, { 'MCP-Protocol-Version': '2025-06-18' });
+    ok('MCP-Protocol-Version 2025-06-18 header → served as legacy', hdr25.status === 200 && Array.isArray(hdr25.json?.result?.tools) && hdr25.json?.result?.resultType === undefined);
+    const ping = await rpc({ jsonrpc: '2.0', id: 6, method: 'ping' });
+    ok('legacy ping → empty result', ping.status === 200 && ping.json?.result && Object.keys(ping.json.result).length === 0);
+    const disc = await rpc({ jsonrpc: '2.0', id: 7, method: 'server/discover', params: {} });
+    ok('server/discover is not a legacy method → 400 -32601', disc.status === 400 && disc.json?.error?.code === -32601, `status=${disc.status} code=${disc.json?.error?.code}`);
+    const tasks = await rpc({ jsonrpc: '2.0', id: 8, method: 'tasks/get', params: { taskId: 'x' } });
+    ok('tasks/get is not a legacy method → -32601', tasks.json?.error?.code === -32601);
+    const rr = await rpc({ jsonrpc: '2.0', id: 9, method: 'resources/read', params: { uri: 'mcp+page:///no-such-page' } });
+    ok('legacy unknown resource keeps -32002', rr.json?.error?.code === -32002, 'code=' + rr.json?.error?.code);
   });
 
-  it('cacheable list results — 2026-07-28 only, absent for 2025-06-18', async () => {
-    const tl25 = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} });
-    ok('tools/list @2025-06-18 → NO ttlMs (byte-for-byte unchanged)', tl25.json?.result?.ttlMs === undefined && tl25.json?.result?.cacheScope === undefined);
-    const tl26 = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list', _meta: { protocolVersion: '2026-07-28' }, params: {} });
-    ok('tools/list @2026-07-28 → ttlMs + cacheScope:shared', typeof tl26.json?.result?.ttlMs === 'number' && tl26.json?.result?.cacheScope === 'shared', `ttlMs=${tl26.json?.result?.ttlMs} scope=${tl26.json?.result?.cacheScope}`);
-    const pl26 = await rpc({ jsonrpc: '2.0', id: 3, method: 'prompts/list', _meta: { protocolVersion: '2026-07-28' }, params: {} });
-    ok('prompts/list @2026-07-28 → cache hint', typeof pl26.json?.result?.ttlMs === 'number' && pl26.json?.result?.cacheScope === 'shared');
-    const rl26 = await rpc({ jsonrpc: '2.0', id: 4, method: 'resources/list', _meta: { protocolVersion: '2026-07-28' }, params: {} });
-    ok('resources/list @2026-07-28 → cache hint', typeof rl26.json?.result?.ttlMs === 'number');
+  it('legacy header-only versions — unknown → -32022, modern without _meta → -32020', async () => {
+    const unknown = await rpcH({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }, { 'MCP-Protocol-Version': '1999-01-01' });
+    ok('unknown MCP-Protocol-Version header → 400 -32022', unknown.status === 400 && unknown.json?.error?.code === -32022, `status=${unknown.status} code=${unknown.json?.error?.code}`);
+    ok('-32022 data names the request and the legacy revisions', unknown.json?.error?.data?.requested === '1999-01-01' && JSON.stringify(unknown.json?.error?.data?.supported) === JSON.stringify(['2025-06-18']), JSON.stringify(unknown.json?.error?.data));
+    const noMeta = await send('tools/list', {}, { omitMeta: true });
+    ok('2026-07-28 header without the _meta version → 400 -32020', noMeta.status === 400 && noMeta.json?.error?.code === -32020, `status=${noMeta.status} code=${noMeta.json?.error?.code}`);
   });
 
-  it('header-based routing — Mcp-Method / Mcp-Name reconciliation', async () => {
+  it('modern versions — header required and matching, unsupported → -32022', async () => {
+    const noHeader = await send('tools/list', {}, { omitHeaders: ['MCP-Protocol-Version'] });
+    ok('_meta version without the MCP-Protocol-Version header → 400 -32020', noHeader.status === 400 && noHeader.json?.error?.code === -32020, `status=${noHeader.status} code=${noHeader.json?.error?.code}`);
+    const mismatch = await send('tools/list', {}, { headers: { 'MCP-Protocol-Version': '2025-06-18' } });
+    ok('header and _meta disagree → 400 -32020', mismatch.status === 400 && mismatch.json?.error?.code === -32020, `status=${mismatch.status} code=${mismatch.json?.error?.code}`);
+    const future = await send('tools/list', {}, { version: '2099-01-01' });
+    ok('unsupported modern revision → 400 -32022', future.status === 400 && future.json?.error?.code === -32022, `status=${future.status} code=${future.json?.error?.code}`);
+    ok('-32022 data lists the modern revisions and echoes the request', JSON.stringify(future.json?.error?.data?.supported) === JSON.stringify(['2026-07-28']) && future.json?.error?.data?.requested === '2099-01-01', JSON.stringify(future.json?.error?.data));
+    const legacyInMeta = await send('tools/list', {}, { version: '2025-06-18' });
+    ok('a legacy revision declared per request → 400 -32022', legacyInMeta.status === 400 && legacyInMeta.json?.error?.code === -32022, `status=${legacyInMeta.status} code=${legacyInMeta.json?.error?.code}`);
+    ok('error responses echo the request id', future.json?.id !== undefined && future.json?.jsonrpc === '2.0');
+  });
+
+  it('server/discover — revisions, capabilities, instructions, cache hint, server identity', async () => {
+    const d = await send('server/discover');
+    const r = d.json?.result || {};
+    ok('server/discover → 200', d.status === 200, `status=${d.status} ${d.text.slice(0, 120)}`);
+    ok('resultType complete', r.resultType === 'complete');
+    ok('supportedVersions lists the modern revisions', JSON.stringify(r.supportedVersions) === JSON.stringify(['2026-07-28']), JSON.stringify(r.supportedVersions));
+    ok('capabilities: tools, resources, prompts', !!r.capabilities?.tools && !!r.capabilities?.resources && !!r.capabilities?.prompts);
+    ok('advertises the Tasks extension under capabilities.extensions', JSON.stringify(r.capabilities?.extensions) === JSON.stringify({ 'io.modelcontextprotocol/tasks': {} }), JSON.stringify(r.capabilities?.extensions));
+    ok('no deprecated logging capability', r.capabilities?.logging === undefined);
+    ok('instructions present', typeof r.instructions === 'string' && r.instructions.length > 0);
+    ok('ttlMs + cacheScope public', typeof r.ttlMs === 'number' && r.ttlMs >= 0 && r.cacheScope === 'public', `ttlMs=${r.ttlMs} scope=${r.cacheScope}`);
+    ok('serverInfo in _meta', typeof r._meta?.['io.modelcontextprotocol/serverInfo']?.name === 'string' && typeof r._meta?.['io.modelcontextprotocol/serverInfo']?.version === 'string');
+  });
+
+  it('modern results — resultType on every result, spec cache scopes', async () => {
+    const tl = await send('tools/list');
+    ok('tools/list → resultType complete', tl.json?.result?.resultType === 'complete', tl.text.slice(0, 120));
+    ok('open tools/list → ttlMs + cacheScope public', typeof tl.json?.result?.ttlMs === 'number' && tl.json?.result?.cacheScope === 'public', `scope=${tl.json?.result?.cacheScope}`);
+    for (const m of ['prompts/list', 'resources/list', 'resources/templates/list']) {
+      const r = await send(m);
+      ok(`${m} → resultType complete + ttlMs + cacheScope public`, r.status === 200 && r.json?.result?.resultType === 'complete' && typeof r.json?.result?.ttlMs === 'number' && r.json?.result?.cacheScope === 'public', `${r.status} ${r.text.slice(0, 120)}`);
+    }
+
+    await setConstant('MCP_CONFIG', JSON.stringify({ tools_list_scope: 'principal' }));
+    const scoped = await send('tools/list', {}, { token: RAW_TOKEN });
+    ok('principal-scoped tools/list → cacheScope private', scoped.json?.result?.cacheScope === 'private', `scope=${scoped.json?.result?.cacheScope}`);
+    await unsetConstant('MCP_CONFIG');
+
+    const call = await send('tools/call', { name: 'search_events', arguments: { query: CONF_KEYWORD } }, { token: RAW_TOKEN });
+    ok('tools/call → result with resultType complete', call.status === 200 && call.json?.result?.resultType === 'complete' && call.json?.result?.isError === false, `${call.status} ${call.text.slice(0, 160)}`);
+    const legacyCall = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_events', arguments: { query: CONF_KEYWORD } } }, { token: RAW_TOKEN });
+    ok('legacy tools/call → no resultType', legacyCall.json?.result && legacyCall.json.result.resultType === undefined);
+
+    const rr = await send('resources/read', { uri: 'mcp+page:///no-such-page' });
+    ok('modern unknown resource → -32602 (2026-07-28 retired -32002)', rr.json?.error?.code === -32602, 'code=' + rr.json?.error?.code);
+  });
+
+  it('modern methods — removed or unknown methods answer 404 -32601', async () => {
+    for (const m of ['ping', 'logging/setLevel', 'completion/complete', 'no/such-method']) {
+      const r = await send(m, m === 'logging/setLevel' ? { level: 'info' } : {});
+      ok(`${m} → 404 -32601`, r.status === 404 && r.json?.error?.code === -32601, `status=${r.status} code=${r.json?.error?.code}`);
+    }
+    const note = await send('notifications/cancelled', { requestId: 1 });
+    ok('a notification → 202, no body', note.status === 202 && note.text === '', `status=${note.status}`);
+  });
+
+  it('modern request headers — Mcp-Method and Mcp-Name required and matching', async () => {
+    const noMethod = await send('tools/list', {}, { omitHeaders: ['Mcp-Method'] });
+    ok('missing Mcp-Method → 400 -32020', noMethod.status === 400 && noMethod.json?.error?.code === -32020, `status=${noMethod.status} code=${noMethod.json?.error?.code}`);
+    const wrongMethod = await send('tools/list', {}, { headers: { 'Mcp-Method': 'prompts/list' } });
+    ok('Mcp-Method disagrees with the body → 400 -32020', wrongMethod.status === 400 && wrongMethod.json?.error?.code === -32020);
+
+    const args = { name: 'search_events', arguments: { query: CONF_KEYWORD } };
+    const noName = await send('tools/call', args, { token: RAW_TOKEN, omitHeaders: ['Mcp-Name'] });
+    ok('tools/call without Mcp-Name → 400 -32020', noName.status === 400 && noName.json?.error?.code === -32020, `status=${noName.status} code=${noName.json?.error?.code}`);
+    const wrongName = await send('tools/call', args, { token: RAW_TOKEN, headers: { 'Mcp-Name': 'a_different_tool' } });
+    ok('Mcp-Name disagrees with the tool name → 400 -32020', wrongName.status === 400 && wrongName.json?.error?.code === -32020);
+    const encoded = await send('tools/call', args, { token: RAW_TOKEN, headers: { 'Mcp-Name': '=?base64?' + Buffer.from('search_events').toString('base64') + '?=' } });
+    ok('Base64-encoded Mcp-Name is decoded before the comparison', encoded.status === 200 && encoded.json?.result?.isError === false, `${encoded.status} ${encoded.text.slice(0, 120)}`);
+    const malformed = await send('tools/call', args, { token: RAW_TOKEN, headers: { 'Mcp-Name': '=?base64?###?=' } });
+    ok('malformed Base64 in Mcp-Name → 400 -32020', malformed.status === 400 && malformed.json?.error?.code === -32020, `status=${malformed.status}`);
+    const unpadded = await send('tools/call', args, { token: RAW_TOKEN, headers: { 'Mcp-Name': '=?base64?YQ?=' } });
+    ok('unpadded Base64 in Mcp-Name → 400 -32020', unpadded.status === 400 && unpadded.json?.error?.code === -32020, `status=${unpadded.status}`);
+
+    const unicode = await send('prompts/get', { name: 'zażółć_prompt', arguments: {} });
+    ok('a non-ASCII prompt name travels Base64-encoded and passes the header check', unicode.json?.error?.code !== -32020 && unicode.status !== 500, `status=${unicode.status} code=${unicode.json?.error?.code}`);
+    const promptWrong = await send('prompts/get', { name: 'one', arguments: {} }, { headers: { 'Mcp-Name': 'two' } });
+    ok('prompts/get Mcp-Name mismatch → 400 -32020', promptWrong.status === 400 && promptWrong.json?.error?.code === -32020);
+    const resNoName = await send('resources/read', { uri: 'mcp+page:///docs/x' }, { omitHeaders: ['Mcp-Name'] });
+    ok('resources/read without Mcp-Name → 400 -32020', resNoName.status === 400 && resNoName.json?.error?.code === -32020);
+    const resWrong = await send('resources/read', { uri: 'mcp+page:///docs/x' }, { headers: { 'Mcp-Name': 'mcp+page:///docs/y' } });
+    ok('resources/read Mcp-Name disagrees with the uri → 400 -32020', resWrong.status === 400 && resWrong.json?.error?.code === -32020);
+  });
+
+  it('transport — GET and DELETE on /mcp answer 405 with Allow: POST', async () => {
+    for (const m of ['GET', 'DELETE']) {
+      const r = await fetch(modern.MCP, { method: m });
+      ok(`${m} /mcp → 405`, r.status === 405, 'status=' + r.status);
+      ok(`${m} /mcp → Allow: POST`, r.headers.get('allow') === 'POST', String(r.headers.get('allow')));
+    }
+  });
+
+  it('connect-time OAuth challenge (opt-in) covers initialize and server/discover', async () => {
+    const openDisc = await send('server/discover');
+    ok('challenge off (default) → server/discover open', openDisc.status === 200);
+    await setConstant('MCP_CONFIG', JSON.stringify({ oauth: { challenge_initialize: true } }));
+    const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    ok('challenge on → initialize without a bearer → 401 + WWW-Authenticate', init.status === 401 && /resource_metadata=/.test(init.headers.get('www-authenticate') || ''), `status=${init.status}`);
+    const disc = await send('server/discover');
+    ok('challenge on → server/discover without a bearer → 401 + WWW-Authenticate', disc.status === 401 && /resource_metadata=/.test(disc.headers.get('www-authenticate') || ''), `status=${disc.status}`);
+    const discAuthed = await send('server/discover', {}, { token: RAW_TOKEN });
+    ok('challenge on → server/discover with a bearer → 200', discAuthed.status === 200 && discAuthed.json?.result?.resultType === 'complete', `status=${discAuthed.status}`);
+    const list = await send('tools/list');
+    ok('challenge on → other discovery stays open (tools/list 200)', list.status === 200);
+    await unsetConstant('MCP_CONFIG');
+  });
+
+  it('legacy header routing — Mcp-Method / Mcp-Name reconciliation unchanged', async () => {
     const agree = await rpcH({ jsonrpc: '2.0', id: 1, method: 'ping' }, { 'Mcp-Method': 'ping' });
     ok('Mcp-Method agrees with body → routed (ping ok)', agree.status === 200 && agree.json?.result && Object.keys(agree.json.result).length === 0);
     const supply = await rpcH({ jsonrpc: '2.0', id: 2 }, { 'Mcp-Method': 'ping' });

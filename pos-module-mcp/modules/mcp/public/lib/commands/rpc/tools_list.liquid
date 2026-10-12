@@ -4,7 +4,9 @@
   instance never bloats agent context in one page.
 
   Each tool exposes name + description + inputSchema (mapped from the manifest's
-  input_schema). Version and deprecation travel in `_meta` (MCP 2025-06-18 allows
+  input_schema), and, when the manifest declares them, title, outputSchema (from
+  output_schema) and annotations (the behaviour hints). Version and deprecation
+  travel in `_meta` (MCP 2025-06-18 allows
   `_meta`), and a deprecated tool additionally carries a human sunset notice
   appended to its description so a model reading the list sees it. Excluded/invalid
   manifests never appear here (§8.1).
@@ -83,6 +85,9 @@
     if idx >= offset and emitted < page_size
       assign t = {}
       assign t['name'] = m.name
+      unless m.title == blank
+        assign t['title'] = m.title
+      endunless
       assign desc = m.description
       if m.deprecated == true
         assign sunset = m.sunset | default: 'a future release'
@@ -90,6 +95,12 @@
       endif
       assign t['description'] = desc
       assign t['inputSchema'] = m.input_schema
+      unless m.output_schema == blank
+        assign t['outputSchema'] = m.output_schema
+      endunless
+      unless m.annotations == blank
+        assign t['annotations'] = m.annotations
+      endunless
       assign meta = {}
       assign meta['version'] = m.version
       assign is_dep = false

@@ -31,26 +31,28 @@
   endunless
 
   assign c = {}
-  # MCP protocol revisions. `protocol_version` is the DEFAULT a version-less request
-  # negotiates to — kept at 2025-06-18 so existing clients are byte-for-byte unchanged.
-  # `supported_protocol_versions` is what the server actually implements (latest first);
-  # a request may negotiate up to 2026-07-28 via _meta.protocolVersion, the
-  # MCP-Protocol-Version header, or initialize params (see commands/protocol/negotiate).
-  # spec §13.1/§18.7; 2026-07-28 stateless additions (per-request _meta, header routing,
-  # cacheable lists) activate ONLY when a client explicitly negotiates that revision.
+  # MCP protocol revisions (spec §13.1/§18.7; see commands/protocol/negotiate).
+  # `protocol_version` is the DEFAULT legacy revision: a version-less request and an
+  # `initialize` asking for an unknown revision get it, so existing clients are
+  # unchanged. `supported_protocol_versions` is every revision the server implements
+  # (latest first); `modern_protocol_versions` are those a client declares per request
+  # in `_meta` (2026-07-28 and later). The rest are legacy, reached through `initialize`.
   assign c['protocol_version'] = '2025-06-18'
   assign c['latest_protocol_version'] = '2026-07-28'
   assign c['supported_protocol_versions'] = '2026-07-28,2025-06-18' | split: ','
-  # Client-side cache hints (ttlMs/cacheScope) attached to list/read results ONLY for a
-  # 2026-07-28 client. The registry is deploy-invariant → long TTL; resources track page
-  # content → shorter. cacheScope: 'shared' = identical for every caller; 'per-principal'
-  # = varies by identity (principal-scoped tools/list). Tunable via MCP_CONFIG.cache.
+  assign c['modern_protocol_versions'] = '2026-07-28' | split: ','
+  # Client-side cache hints (ttlMs/cacheScope) attached to cacheable results ONLY for a
+  # modern request. The registry and server description are deploy-invariant → long
+  # TTL; resources track page content → shorter. cacheScope is 'public' (same for every
+  # caller) or 'private' (varies by identity: principal-scoped tools/list).
+  # Tunable via MCP_CONFIG.cache.
   assign cache = {}
   assign cache['tools_ttl_ms'] = 300000
   assign cache['prompts_ttl_ms'] = 300000
   assign cache['resources_ttl_ms'] = 60000
+  assign cache['discover_ttl_ms'] = 300000
   assign c['cache'] = cache
-  # Server display name — reported as serverInfo.name on `initialize` AND used as
+  # Server display name — reported as serverInfo.name on `initialize` and `server/discover` AND used as
   # the suggested `claude mcp add <name>` client alias on /mcp-tools. Override per
   # instance via MCP_CONFIG {"server_name":"acme-community"} to brand the server.
   assign c['server_name'] = 'pos-module-mcp'
@@ -63,7 +65,7 @@
   # resolves to <policy_prefix>/<name> = app/views/partials/mcp/policies/<name>.liquid.
   assign c['policy_prefix'] = 'mcp/policies'
   # App-provided connection instructions partial — the house rules / persona sent
-  # to the agent on `initialize`. app/views/partials/mcp/instructions.liquid
+  # to the agent on `initialize` and `server/discover`. app/views/partials/mcp/instructions.liquid
   # returning a string. Falls back to a built-in default when absent.
   assign c['instructions_partial'] = 'mcp/instructions'
   # App-provided prompt registry (§13.1 prompts). app/views/partials/mcp/prompts.liquid
@@ -84,6 +86,9 @@
   assign d['timeout_ms'] = 5000
   assign d['max_input_bytes'] = 65536
   assign d['max_schema_depth'] = 5
+  # Depth cap for a tool's output_schema (declared for clients, never used to validate
+  # input), which describes nested results such as lists of objects with lists.
+  assign d['max_output_schema_depth'] = 8
   assign d['rate_limit_per_min'] = 60
   # Idempotency replay window (§16.3): how long a client key can replay its result.
   assign d['idempotency_window_seconds'] = 86400
@@ -94,6 +99,9 @@
   # human-in-the-loop gate with garbage and bury legitimate proposals. Identical
   # proposals (same input_sha256) are additionally deduplicated. 0 disables the cap.
   assign d['approval_max_pending_per_principal'] = 3
+  # Suggested polling interval for an approval task (Tasks extension `pollIntervalMs`).
+  # An operator decides in minutes or hours, so polling faster only adds load.
+  assign d['task_poll_interval_ms'] = 30000
   # Abuse auto-suspend: if a principal accrues this many policy violations (denials,
   # rate-limits, invalid/unknown-tool attempts) within the window, its current token
   # is auto-suspended. A real control, not a message. 0 disables.
@@ -140,9 +148,10 @@
   assign o['dynamic_client_registration'] = true
   assign o['registration_rate_limit_per_min'] = 10
   assign o['token_rate_limit_per_min'] = 60
-  # When true, `initialize` WITHOUT a valid bearer answers 401 + WWW-Authenticate so
-  # MCP clients start the OAuth flow on connect (most clients only begin auth on a
-  # 401 at connect time). Off by default: discovery stays open for existing clients.
+  # When true, `initialize` (legacy) and `server/discover` (modern) WITHOUT a valid bearer
+  # answer 401 + WWW-Authenticate so MCP clients start the OAuth flow on connect (most
+  # clients only begin auth on a 401 at connect time). Off by default: discovery stays
+  # open for existing clients.
   assign o['challenge_initialize'] = false
   assign c['oauth'] = o
   # The OAuth resource identifier this instance defends (RFC 9728) = the /mcp URL.

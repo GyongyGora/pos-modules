@@ -1,0 +1,33 @@
+{% doc %}
+  Connection instructions: the house rules a client may show to the model. Sent by
+  `initialize` (legacy) and `server/discover` (modern). The app authors its own through
+  the instructions partial (Layer 2); the engine falls back to a governance-focused
+  default when the app has none. The text is model-read, so it is security-relevant
+  (§12.3): factual, short, no secrets. Clients may never fetch it, so anything an agent
+  must obey also belongs in the tool descriptions.
+{% enddoc %}
+{% liquid
+  function cfg = 'modules/mcp/commands/config'
+
+  assign instructions = null
+  try
+    function instructions = cfg.instructions_partial
+  catch e
+    assign instructions = null
+  endtry
+  if instructions == blank
+    capture instructions
+      echo 'This is a governed platformOS MCP server. Every tool call is bound to a '
+      echo 'real identity, checked against a named authorization policy, validated '
+      echo 'against a typed schema, and recorded in a tamper-evident ledger. '
+      echo 'Call tools/list to see the actions available to you; each tool description '
+      echo 'is authoritative. Pass arguments exactly as each tool schema requires — '
+      echo 'unknown or malformed arguments are rejected, not guessed. Do not retry a '
+      echo 'call that was denied or rejected as not permitted; it will not succeed, and '
+      echo 'repeated policy violations automatically suspend your access. Documentation '
+      echo 'and catalogue pages are available via resources/list.'
+    endcapture
+  endif
+  assign instructions = instructions | strip
+  return instructions
+%}

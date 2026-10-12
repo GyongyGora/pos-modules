@@ -24,5 +24,9 @@ properties:
     type: integer         # unix epoch
   - name: result_summary
     type: text            # short outcome shown to the agent after execution
+  - name: result_json
+    type: text            # the tool result (CallToolResult JSON) once the action ran; read back by tasks/get
+  - name: error_json
+    type: text            # the JSON-RPC error when the approved action could not run (tool gone, arguments or authorization no longer valid)
   - name: request_id      # correlation id linking the request + execution ledger entries
   - name: claim_token     # rewritten on every decision claim; see approval/claim (row-lock mutex)

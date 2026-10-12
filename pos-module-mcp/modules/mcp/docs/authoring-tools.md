@@ -257,7 +257,9 @@ curl -s -X POST https://<host>/mcp -H 'Content-Type: application/json' \
 | `requires_approval` | yes | `true` ⇒ (Phase 2) never runs inline; creates a pending approval. |
 | `handler` | yes | Partial path invoked with the validated arguments. |
 | `idempotent` | no | Declares safe retry (Phase 2 idempotency keys). |
-| `output_schema` | no | Advisory; validated at load if present. |
+| `title` | no | Display name shown by clients (`tools/list` `title`). String. |
+| `annotations` | no | MCP behaviour hints served in `tools/list`: `readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`, each boolean; any other key or a non-boolean value makes the manifest invalid. Hints only — the engine enforces nothing from them. |
+| `output_schema` | no | Served as `outputSchema`. The root must be `type: object`. Checked at load in output mode: a field may list several types including `"null"` (`{"type":["string","null"]}`), and the depth limit is `defaults.max_output_schema_depth` (8). Never used to validate results, so keep every result the handler returns conforming — clients may validate `structuredContent` against it. |
 | `audit_fields` | no | Argument keys recorded verbatim in the ledger (must be non-sensitive). |
 | `timeout_ms` | no | Handler budget; defaults from config. |
 | `deprecated` | no | Still callable; flagged with a sunset note in `tools/list`. |

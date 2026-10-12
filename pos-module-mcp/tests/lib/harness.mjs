@@ -40,6 +40,48 @@ export function makeMcp(base) {
   return { MCP, rpc, listNames, callTool, isDenied, isOkResult };
 }
 
+/**
+ * Modern (2026-07-28) MCP client: every request declares its revision in
+ * `params._meta["io.modelcontextprotocol/protocolVersion"]` and carries the standard
+ * headers (MCP-Protocol-Version, Mcp-Method, Mcp-Name), with the Base64 sentinel for a
+ * name that is not a plain header-safe value.
+ *
+ *   send(method, params?, { token, version, capabilities, headers, omitHeaders, omitMeta, id })
+ *     capabilities — the client capabilities declared on this request (default {})
+ *     headers     — extra or overriding headers (to craft a mismatch)
+ *     omitHeaders — header names to leave out (to craft a missing header)
+ *     omitMeta    — leave the version out of `_meta`
+ */
+export const MODERN_VERSION = '2026-07-28';
+export const TASKS_CAPABILITY = { extensions: { 'io.modelcontextprotocol/tasks': {} } };
+export function headerValue(value) {
+  const s = String(value);
+  const safe = /^[\x21-\x7e]([\x20-\x7e]*[\x21-\x7e])?$/.test(s) && !(s.startsWith('=?base64?') && s.endsWith('?='));
+  return safe ? s : `=?base64?${Buffer.from(s, 'utf8').toString('base64')}?=`;
+}
+export function makeModern(base) {
+  const MCP = base.endsWith('/') ? base + 'mcp' : base + '/mcp';
+  let _id = 0;
+  async function send(method, params = {}, opts = {}) {
+    const version = opts.version || MODERN_VERSION;
+    const meta = { 'io.modelcontextprotocol/clientCapabilities': opts.capabilities || {} };
+    if (!opts.omitMeta) meta['io.modelcontextprotocol/protocolVersion'] = version;
+    const body = { jsonrpc: '2.0', id: opts.id ?? ++_id, method, params: { ...params, _meta: meta } };
+    const headers = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': version, 'Mcp-Method': method };
+    const target = method === 'resources/read' ? params.uri
+      : (method === 'tools/call' || method === 'prompts/get') ? params.name
+      : method.startsWith('tasks/') ? params.taskId : undefined;
+    if (target !== undefined) headers['Mcp-Name'] = headerValue(target);
+    if (opts.token) headers['Authorization'] = 'Bearer ' + opts.token;
+    Object.assign(headers, opts.headers || {});
+    for (const h of opts.omitHeaders || []) delete headers[h];
+    const res = await fetch(MCP, { method: 'POST', headers, body: JSON.stringify(body) });
+    const text = await res.text(); let json = null; try { json = JSON.parse(text); } catch {}
+    return { status: res.status, headers: res.headers, json, text };
+  }
+  return { MCP, send };
+}
+
 /** Transient config constant setters (admin GraphQL). */
 export function makeConstants(adm) {
   return {

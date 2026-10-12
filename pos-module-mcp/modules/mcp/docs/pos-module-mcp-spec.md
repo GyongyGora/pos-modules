@@ -640,6 +640,7 @@ Handlers making external calls use configured constants for endpoints. No handle
 | Rate limited | `-32002` | 429 + `Retry-After` | yes |
 | Handler error | `-32003` | 200 (tool error) | yes |
 | Timeout | `-32004` | 200 | yes |
+| Approval expired (Tasks extension `failed` task) | `-32005` | — (inside `tasks/get`) | no |
 | Pending approval | not an error | 200 | yes |
 
 Tool *execution* failures are returned as MCP tool errors (`isError: true` in the result) rather than protocol errors, so the agent can reason about them. Protocol-level errors mean the call was malformed or refused.

@@ -34,7 +34,7 @@ lives here.** On platformOS these are partials under `app/views/partials/mcp/`
 ```
 app/views/partials/mcp/
   registry.liquid                # explicit [{name, path}] list of tools to serve
-  instructions.liquid            # house rules sent to agents on initialize
+  instructions.liquid            # house rules sent on initialize / server/discover
   tools/<name>/manifest.liquid   # a tool's declaration (name, schema, policy, handler)
   tools/<name>/call.liquid       # the tool's handler
   policies/<name>.liquid         # a named authorization policy
@@ -57,7 +57,8 @@ tools in `app/` wrap.
 
 | Path | Purpose |
 |---|---|
-| `POST /mcp` | JSON-RPC 2.0 MCP endpoint (protocol `2025-06-18`) |
+| `POST /mcp` | JSON-RPC 2.0 MCP endpoint — dual-era: `2025-06-18` (`initialize` handshake) and `2026-07-28` (version per request); see `modules/mcp/docs/spec-2026-07-28-gap.md` |
+| `GET` / `DELETE /mcp` | 405 `Allow: POST` (no SSE stream, no sessions) |
 | `GET /mcp-health` | Liveness + readiness probe — `{status, checks:{config,database}}`, 200/503 (public, cheap) |
 | `GET /.well-known/oauth-protected-resource` | OAuth resource metadata (RFC 9728) |
 | `/mcp-tools` | Token console — members with `mcp.tokens.manage` mint/revoke bearer tokens |
@@ -69,10 +70,11 @@ tools in `app/` wrap.
 | `/mcp-admin/eval` (POST) | Operator runs the tool-surface eval |
 | `/mcp-admin/ledger-export.json` (GET) | Operator — paginated JSON ledger export (honors active filters; capped) |
 
-**RPC methods:** `initialize`, `ping`, `tools/list`, `tools/call`, `resources/list`,
-`resources/read`, `resources/templates/list`, `prompts/list`, `prompts/get`,
-`logging/setLevel`. Plus the built-in tool `mcp_approval_status` (poll a pending
-approval).
+**RPC methods:** `tools/list`, `tools/call`, `resources/list`, `resources/read`,
+`resources/templates/list`, `prompts/list`, `prompts/get` in both eras; legacy only:
+`initialize`, `ping`, `logging/setLevel`; modern only: `server/discover`, and the Tasks
+extension (`tasks/get`, `tasks/update`, `tasks/cancel`) for approval-gated calls. Plus the
+built-in tool `mcp_approval_status` (poll a pending approval without the extension).
 
 ---
 
@@ -230,7 +232,8 @@ principal) and `admin_only` (operator allowlist).
 ### Connection instructions
 
 `app/views/partials/mcp/instructions.liquid` returns the house-rules string sent on
-`initialize`. Authored by the app; the engine falls back to a default. Model-read —
+`initialize` and `server/discover`. Clients may skip both, so rules an agent must obey
+also belong in tool descriptions. Authored by the app; the engine falls back to a default. Model-read —
 review as security-relevant.
 
 ---

@@ -31,7 +31,15 @@ method: post
       if claim.claimed
         function res = 'modules/mcp/commands/approval/execute', approval: claim.rec, decided_by: current_profile.user.id
         assign decided_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
-        graphql _ = 'modules/mcp/approvals/update', id: rec.id, status: res.outcome, decided_by: current_profile.user.id, decided_at: decided_at, result_summary: res.summary
+        assign result_json = null
+        unless res.result == blank
+          assign result_json = res.result | json
+        endunless
+        assign error_json = null
+        unless res.error == blank
+          assign error_json = res.error | json
+        endunless
+        graphql _ = 'modules/mcp/approvals/record_outcome', id: rec.id, status: res.outcome, decided_by: current_profile.user.id, decided_at: decided_at, result_summary: res.summary, result_json: result_json, error_json: error_json
       endif
     endif
   endif
