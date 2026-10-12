@@ -99,16 +99,18 @@ export function makeWeb(base) {
   async function post(path, fields) { const r = await fetch(base + path, { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded', Cookie: cookieHeader() }, body: new URLSearchParams(fields).toString() }); applyCookie(r); return r; }
   const formTok = (html) => (html.match(/name="authenticity_token"\s+value="([^"]*)"/) || [])[1];
   const metaTag = (html, name) => (html.match(new RegExp(`name="${name}"[^>]*content="([^"]*)"`)) || [])[1];
-  // Operator login — verifies /mcp-admin is actually reachable (not 403) before returning
-  // success; retries with backoff (a freshly-seeded user can take a beat to authenticate).
+  // Operator login — verifies /mcp-admin actually renders (200, not a 403 page and not the
+  // redirect to sign-in a failed login gets) before returning success; retries with backoff
+  // (a freshly-seeded user can take a beat to authenticate).
   async function operatorLogin({ email, password }) {
     for (let attempt = 0; attempt < 6; attempt++) {
       cookies = {};
       const lp = await (await get('sessions/new')).text();
       const csrf = metaTag(lp, 'csrf-token');
       await post('sessions', { authenticity_token: csrf, email, password });
-      const adminPage = await (await get('mcp-admin')).text();
-      if (!/403|Operators only|name="password"/i.test(adminPage)) return true;
+      const adminRes = await get('mcp-admin');
+      const adminPage = await adminRes.text();
+      if (adminRes.status === 200 && !/403|Operators only|name="password"/i.test(adminPage)) return true;
       await new Promise(r => setTimeout(r, 500 + attempt * 500));
     }
     return false;

@@ -12,13 +12,15 @@
  * Run:   node tests/lib/lint-tools.mjs [--strict] [--json] [--include-vuln]  (also imported by lint-tools.test.mjs)
  *   --strict        warnings also fail the run (default: only errors fail)
  *   --json          machine-readable output
- *   --include-vuln  also lint the vuln_* negative-control fixtures (see below)
+ *   --include-vuln  also lint the deliberately-bad negative-control fixtures (see below)
  * Exit:  0 clean · 1 findings at the failing level · 2 setup error
  *
  * The vuln_* tools are DELIBERATELY-insecure negative controls for the RUNTIME agentic-eval
  * (gated behind MCP_ENABLE_VULN_TOOLS) — they exist to be *detected as vulnerable* at
- * runtime, not to pass a static author-boundary gate. So this linter SKIPS them by default;
- * pass --include-vuln (or lintAll({ includeVuln: true })) to analyze them anyway.
+ * runtime, not to pass a static author-boundary gate. test_poisoned_text is the same kind
+ * of fixture for the runtime lint on schema text (gated behind MCP_ENABLE_TEST_TOOLS). So
+ * this linter SKIPS them by default; pass --include-vuln (or lintAll({ includeVuln: true }))
+ * to analyze them anyway.
  *
  * It is fully static — no instance, no network, no deps. Safe to run in CI on every PR.
  *
@@ -43,9 +45,10 @@ const STRICT = args.includes('--strict');
 const JSON_OUT = args.includes('--json');
 const INCLUDE_VULN = args.includes('--include-vuln');
 
-// vuln_* = deliberately-insecure negative-control fixtures for the runtime agentic-eval;
-// skipped by the static linter unless explicitly included (they are meant to be insecure).
-const isVulnFixture = (name) => /^vuln_/.test(name || '');
+// Deliberately-bad negative-control fixtures (vuln_* for the runtime agentic-eval,
+// test_poisoned_text for the runtime schema-text lint); skipped by the static linter
+// unless explicitly included (they are meant to fail).
+const isVulnFixture = (name) => /^vuln_/.test(name || '') || name === 'test_poisoned_text';
 
 // ---------------------------------------------------------------- findings ----
 const findings = [];
@@ -106,7 +109,7 @@ const SUPPORTED_KEYWORDS = new Set([
   'minLength', 'maxLength', 'pattern', 'format', 'items', 'minItems', 'maxItems',
 ]);
 const VALID_TYPES = new Set(['object', 'string', 'integer', 'number', 'boolean', 'array']);
-const SUPPORTED_FORMATS = new Set(['date-time', 'email', 'uuid']); // the engine only enforces these
+const SUPPORTED_FORMATS = new Set(['date', 'date-time', 'email', 'uuid']); // the engine only enforces these
 const DISPLAY_FIELD = /^(name|title|label|summary|description|short_description|venue|message|body|content|comment|subject|headline|caption|bio|about|note|notes)$/i;
 const SENSITIVE_FIELD = /(password|passwd|secret|token|api_?key|ssn|card|cvv|credit)/i;
 const CATASTROPHIC = [/\+\)\+/, /\*\)\*/, /\+\)\*/, /\*\)\+/, /\)\)\*/, /\)\)\+/, /\(\.\*\)\+/, /\(\.\+\)\+/];
@@ -115,7 +118,7 @@ const CATASTROPHIC = [/\+\)\+/, /\*\)\*/, /\+\)\*/, /\*\)\+/, /\)\)\*/, /\)\)\+/
 // This is what stops the linter from telling you a datetime field "can carry HTML".
 function classifyString(field, node) {
   const f = (field || '').toLowerCase();
-  if (node.format === 'date-time' || /(_at|_date)$/.test(f) || /^(date|datetime|start|end|from|to|when|time|starts|ends|deadline|expires)$/.test(f)) return 'datetime';
+  if (node.format === 'date-time' || node.format === 'date' || /(_at|_date)$/.test(f) || /^(date|datetime|start|end|from|to|when|time|starts|ends|deadline|expires)$/.test(f)) return 'datetime';
   if (node.format === 'email' || /e?mail/.test(f)) return 'email';
   if (node.format === 'uuid' || /(_uuid)$|^uuid$/.test(f)) return 'uuid';
   if (/(url|link|href|website|uri|src|image|photo|avatar|redirect|callback)$|^(url|link|website|redirect)$/.test(f)) return 'url';
@@ -147,6 +150,14 @@ function lintSchemaNode(tool, file, node, path, depth) {
     if (!SUPPORTED_KEYWORDS.has(k)) add('error', tool, file, 'schema-keyword', `${path}: unsupported JSON-Schema keyword "${k}" — the engine excludes the whole manifest at load`);
   }
 
+  // parameter descriptions and titles are model-read text, like the tool description
+  for (const key of ['description', 'title']) {
+    if (typeof node[key] !== 'string') continue;
+    const lc = node[key].toLowerCase();
+    const hits = POISON.filter((p) => lc.includes(p));
+    if (hits.length) add('error', tool, file, 'tool-poisoning', `${path}.${key} contains model-directed / injection text: ${hits.join(', ')}`);
+  }
+
   const t = node.type;
   if (t === undefined) add('error', tool, file, 'schema-type', `${path}: missing "type"`);
   else if (!VALID_TYPES.has(t)) add('error', tool, file, 'schema-type', `${path}: invalid type "${t}"`);
@@ -160,7 +171,7 @@ function lintSchemaNode(tool, file, node, path, depth) {
 
   // ---- format sanity ----
   if (node.format !== undefined && !SUPPORTED_FORMATS.has(node.format)) {
-    add('warn', tool, file, 'format-unsupported', `${path}: format "${node.format}" is NOT enforced by the engine (only date-time/email/uuid are) — add a pattern instead of relying on it`);
+    add('warn', tool, file, 'format-unsupported', `${path}: format "${node.format}" is NOT enforced by the engine (only date/date-time/email/uuid are) — add a pattern instead of relying on it`);
   }
 
   // ---- pattern sanity ----
@@ -194,7 +205,7 @@ function lintSchemaNode(tool, file, node, path, depth) {
     if (!constrained && node.format === undefined) {
       switch (kind) {
         case 'datetime':
-          add('info', tool, file, 'weak-datetime', `${path}: a date/time field with no format or pattern — add "format":"date-time" (the engine validates it) so malformed dates are rejected`); break;
+          add('info', tool, file, 'weak-datetime', `${path}: a date/time field with no format or pattern — add "format":"date" (YYYY-MM-DD) or "format":"date-time" (the engine validates both) so malformed dates are rejected`); break;
         case 'email':
           add('warn', tool, file, 'weak-email', `${path}: email field with no constraint — add "format":"email" (or a pattern)`); break;
         case 'url':

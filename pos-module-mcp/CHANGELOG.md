@@ -30,8 +30,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   including `"null"`, and the depth limit is the new `defaults.max_output_schema_depth`
   (8). The reference tool `search_events` declares all three; the gated fixture
   `test_bad_annotations` proves a malformed hint excludes the tool.
+- **Prompts know the caller.** The app's prompts partial and each prompt template now
+  receive `principal` and `agent` (nil for a request without a bearer), so an app can offer
+  different prompts to different people, for example prompts a person saved for
+  themselves. A prompt the partial does not offer to this caller is unknown to
+  `prompts/get`. A signed-in `prompts/list` answers with `cacheScope: "private"`.
+- **`agent.token_id` for tool handlers.** Handlers get the id of the `mcp_token` that made
+  the call next to `id`, `client_id` and `allowed_tools`. Labels are not unique, so this is
+  the only way to tell two tokens of one person apart. An approved action now also gets
+  the requesting agent's `client_id` and `token_id`: `mcp_pending_approval` gains
+  `requested_by_client_id` and `requested_by_token_id` (blank on approvals made before).
+- **`format: "date"`** in `input_schema`: `YYYY-MM-DD` that is a real calendar day (month
+  1-12, day within the month, Gregorian leap years). `2026-02-31` is rejected; `to_time`
+  is not used because it rolls such dates over silently.
+- **Resources from the app, per caller.** A new Layer-2 hook, the resource provider
+  partial (`resources_partial`, default `mcp/resources`), answers `list`, `templates` and
+  `read` for an authenticated caller and receives `principal` and `agent`, so an app can
+  serve its own data as resources under its own access rules. Its entries are added to
+  `resources/list` (with its own `nextCursor` paging) and `resources/templates/list`;
+  entries without an address or name, or using the reserved `mcp+page:` scheme, are
+  dropped, and only the keys MCP defines are passed on. A `resources/read` of a URI with
+  any scheme other than `mcp+page:` goes to the provider through the same controls as a
+  tool call: auto-suspend, the per-principal rate limit, the `mcp:read` scope and a ledger
+  entry (method `resources/read`, URI hashed). A resource the caller may not read is
+  "Resource not found", the same as a missing one. A provider that raises or returns
+  malformed contents is logged and answered with `-32603`. For a signed-in caller the
+  resource lists and provider reads are cached `private`. Anonymous callers and apps
+  without the partial see only the markdown pages, as before.
+- **The tool-poisoning lint covers all model-read text.** Every `description` and
+  `title` in a tool's `input_schema` and `output_schema`, and the tool `title`, are linted
+  like the tool description when the registry is built (non-fatal; listed in the
+  manifest warnings and in the registry's new `_lint`). The operator eval reports them
+  under `surface/no_poison` and adds `surface/instructions_no_poison` (the connection
+  instructions) and `surface/prompt_no_poison` (each prompt's title, description and
+  argument descriptions). The static linter (`tests/lib/lint-tools.mjs`) also checks
+  parameter descriptions.
+- **Portable conformance suite** (`tests/portable.test.mjs`). Checks the protocol
+  behaviour on any instance with the module — transport, credentials, discovery shapes
+  and the `2026-07-28` rules — without the test harness. It only reads `MCP_CONFIG`,
+  calls no tool with a valid token, creates one user and one token and deletes both, and
+  proves it left no ledger row.
 
 ### Fixed
+
+- **An invalid bearer is answered with 401 on every method.** A request that presents a
+  bearer which does not resolve (unknown, revoked, expired, wrong audience) now gets
+  `401` with `WWW-Authenticate: … error="invalid_token"` on discovery too (`tools/list`,
+  `prompts/list`, `resources/*`, `initialize`, `server/discover`, `ping`), as the MCP
+  authorization spec and RFC 6750 require. Before, `tools/list` answered `200` with an
+  empty list, so a client whose token was revoked saw "no tools" instead of being asked
+  to sign in again. A request without a bearer stays open as before. The token is
+  resolved once in `rpc/dispatch` and passed to the router.
+- **Token labels name one agent.** A manual token's label is its agent id, so two active
+  tokens of one person with the same label acted as one agent; a blank label always
+  became `mcp-client`, which merged every unnamed token. `commands/tokens/mint` now
+  refuses a label the person already uses on an active manual token (ignoring case;
+  revoked and OAuth tokens do not count) and returns `{ error: "label_taken" }`, which
+  `/mcp-tools` shows; a blank label gets a generated one (`mcp-client-` + 6 characters).
+- **Fallback connection instructions** (used when the app has no instructions partial)
+  are short and factual: no "call tools/list", no claim that descriptions are
+  authoritative, no threat. They state that refused calls in a short time suspend the
+  token, and mention documentation resources only when they are exposed.
+- **Console forms check the form token.** The POST pages of `/mcp-tools` (mint, revoke)
+  and `/mcp-admin` (approve, reject, reject-principal, access, token-revoke, eval) refuse
+  a request without a valid `authenticity_token` with `403` and a "This form has expired"
+  page, and change nothing; the OAuth consent decision answers `400` and never redirects.
+  Before, they relied on the platform running such a request without a session.
+- **The token console speaks plainly and links back.** `/mcp-tools` says "access token"
+  and "AI app that supports MCP" instead of "bearer token", "MCP client" and "community",
+  names the field "Name", and has a "Back to the site" link.
 
 - **MCP `2026-07-28` conformance.** Checked against the published schema and transport
   spec; the engine is now dual-era by the spec's rules:

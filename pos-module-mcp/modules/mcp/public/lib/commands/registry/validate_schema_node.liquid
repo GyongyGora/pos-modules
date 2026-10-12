@@ -18,15 +18,20 @@
      nested-quantifier signatures (§16.4).
    - depth is capped (max_schema_depth) to bound validation cost (§10.1).
 
+  Not enforced, reported: every `description` and `title` is model-read text, like the
+  tool description, so each goes through registry/lint_description (§12.3). A hit is
+  returned in `lint` for human attention and never makes the schema invalid.
+
   @param {object}  node  - a JSON-Schema node (hash)
   @param {integer} depth - current nesting depth (start 1)
   @param {integer} max_depth - cap
   @param {string}  path  - dotted location for error messages (e.g. properties.foo)
   @param {boolean} output - true for an output_schema node (default false)
-  @return {object} { valid:boolean, errors:[string] }
+  @return {object} { valid:boolean, errors:[string], lint:[{path, hits:[string]}] }
 {%- endcomment -%}
 {% liquid
   assign errors = []
+  assign lint = []
   assign at = path | default: '(root)'
 
   if depth > max_depth
@@ -35,8 +40,24 @@
     assign out = {}
     assign out['valid'] = false
     assign out['errors'] = errors
+    assign out['lint'] = lint
     return out
   endif
+
+  assign text_keys = 'description,title' | split: ','
+  for text_key in text_keys
+    assign text = node[text_key]
+    if text == blank
+      continue
+    endif
+    function text_lint = 'modules/mcp/commands/registry/lint_description', text: text
+    if text_lint.flagged
+      assign hit = {}
+      assign hit['path'] = at | append: '.' | append: text_key
+      assign hit['hits'] = text_lint.hits
+      assign lint = lint | array_add: hit
+    endif
+  endfor
 
   assign allowed = 'type,description,title,default,properties,required,additionalProperties,enum,minimum,maximum,exclusiveMinimum,exclusiveMaximum,minLength,maxLength,pattern,format,items,minItems,maxItems' | split: ','
   assign keys = node | hash_keys
@@ -121,6 +142,9 @@
             assign errors = errors | array_add: e
           endfor
         endunless
+        for l in cr.lint
+          assign lint = lint | array_add: l
+        endfor
       endfor
     endunless
   endif
@@ -137,6 +161,9 @@
           assign errors = errors | array_add: e
         endfor
       endunless
+      for l in ir.lint
+        assign lint = lint | array_add: l
+      endfor
     endunless
   endif
 
@@ -147,5 +174,6 @@
   endif
   assign out['valid'] = is_valid
   assign out['errors'] = errors
+  assign out['lint'] = lint
   return out
 %}

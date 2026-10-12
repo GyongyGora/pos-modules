@@ -14,6 +14,7 @@
  * Env: MCP_URL, MCP_TOKEN (instance admin api token) — falls back to the repo .pos "ps".
  */
 import { describe, it, beforeAll, afterAll, afterEach, expect } from 'vitest';
+import { createHash } from 'node:crypto';
 import { loadEnv, makeAdmin, pruneRate } from './fixtures.mjs';
 import { makeMcp, makeModern, makeConstants, makeWeb, TASKS_CAPABILITY } from './lib/harness.mjs';
 import { FIXT, applyReset, seededRecordIds } from './seed/seed.mjs';
@@ -363,12 +364,25 @@ describe('coverage · multi-principal governance planes', () => {
     await bad('format email: bad value rejected', { email: 'not-an-email' });
     await bad('format uuid: bad value rejected', { uid: 'nope' });
     await bad('format date-time: bad value rejected', { when: 'yesterday' });
+    ok('format date: a real calendar day accepted (leap day 2024-02-29)', isOkResult(await V({ ...valid, day: '2024-02-29' })));
+    await bad('format date: impossible day rejected (2026-02-31)', { day: '2026-02-31' });
+    await bad('format date: not a leap year rejected (1900-02-29)', { day: '1900-02-29' });
+    await bad('format date: month 13 rejected', { day: '2026-13-01' });
+    await bad('format date: unpadded value rejected', { day: '2026-1-5' });
+    await bad('format date: date-time value rejected', { day: '2026-01-05T10:00:00Z' });
     await bad('array: minItems rejected', { tags: [] });
     await bad('array: maxItems rejected', { tags: ['a', 'b', 'c', 'd'] });
     await bad('array: item type rejected', { tags: [1, 2] });
     await bad('string: minLength rejected', { code: 'a' });
     await bad('string: pattern rejected', { code: 'AB' });
     ok('additionalProperties:false → unknown key rejected', rej(await V({ ...valid, surprise: 1 })));
+  });
+
+  it('Handler identity — the agent carries the calling token (agent.token_id)', async () => {
+    const r = await callTool(mem.rawToken, 'test_echo', { message: 'who am i' });
+    const txt = JSON.stringify(r.json?.result || {});
+    ok('handler gets agent.token_id = the token that made the call', txt.includes(`"agent_token_id":"${mem.tokenId}"`), txt.slice(0, 300));
+    ok('handler gets agent.client_id = the manual token label', txt.includes('"agent_client_id":"fixt-member"'), txt.slice(0, 300));
   });
 
   it('Rate limiting — per-principal isolation (§12.4)', async () => {
@@ -628,6 +642,96 @@ describe('coverage · multi-principal governance planes', () => {
     await unsetConstant('MCP_CONFIG');
   });
 
+  // ==== App resource provider (§13.1): the test provider in app/views/partials/mcp/resources ====
+
+  it('Resources — the app provider serves each caller only their own resources (§13.1)', async () => {
+    const mine = `test-note://${mem.userId}/hello`;
+    const list = (token, cursor) => rpc({ jsonrpc: '2.0', id: 1, method: 'resources/list', params: cursor ? { cursor } : {} }, token);
+    const read = (token, uri) => rpc({ jsonrpc: '2.0', id: 2, method: 'resources/read', params: { uri } }, token);
+    const templates = (token) => rpc({ jsonrpc: '2.0', id: 3, method: 'resources/templates/list', params: {} }, token);
+    // The ledger is append-only, so only rows written after this point count.
+    const readLedger = async () => {
+      const r = await adm.gql(`{ records(per_page: 50, filter: { table: { value: "${T_LEDGER}" } properties: [{ name: "principal_id", value: "${mem.principal}" }, { name: "method", value: "resources/read" }] }, sort: [{ id: { order: DESC } }]) { results { id outcome: property(name: "execution_outcome") sha: property(name: "input_sha256") } } }`);
+      return r?.data?.records?.results || [];
+    };
+    const ledgerStart = Math.max(0, ...(await readLedger()).map(r => Number(r.id)));
+
+    const anon = await list(null);
+    ok('anonymous list → no provider resources', anon.status === 200 && !(anon.json?.result?.resources || []).some(r => r.uri.startsWith('test-note://')), anon.text.slice(0, 160));
+    const anonTemplates = await templates(null);
+    ok('anonymous templates → empty', Array.isArray(anonTemplates.json?.result?.resourceTemplates) && anonTemplates.json.result.resourceTemplates.length === 0);
+
+    const first = await list(mem.rawToken);
+    const firstResources = first.json?.result?.resources || [];
+    const hello = firstResources.find(r => r.uri === mine);
+    ok("signed-in list → the caller's own resource", !!hello && hello.name === 'hello' && hello.title === 'Hello note' && hello.mimeType === 'text/plain', JSON.stringify(firstResources));
+    ok('only the keys MCP defines are listed', !!hello && !('internal' in hello));
+    ok('a provider entry with the reserved mcp+page: scheme is dropped', !firstResources.some(r => r.uri === 'mcp+page:///forged'));
+    ok('a provider entry without a name is dropped', !firstResources.some(r => r.uri.endsWith('/nameless')));
+    ok("the provider's cursor is returned as nextCursor", first.json?.result?.nextCursor === 'page-2', 'nextCursor=' + first.json?.result?.nextCursor);
+    const second = await list(mem.rawToken, 'page-2');
+    ok("nextCursor pages to the provider's next page", (second.json?.result?.resources || []).map(r => r.uri).join() === `test-note://${mem.userId}/second` && second.json?.result?.nextCursor === undefined, second.text.slice(0, 200));
+    const othersList = await list(out.rawToken);
+    ok('another caller lists only their own', !(othersList.json?.result?.resources || []).some(r => r.uri.startsWith(`test-note://${mem.userId}/`)));
+
+    const signedTemplates = await templates(mem.rawToken);
+    ok('signed-in templates → the provider template', (signedTemplates.json?.result?.resourceTemplates || []).some(t => t.uriTemplate === 'test-note://{user_id}/{name}' && t.name === 'test_note'), signedTemplates.text.slice(0, 200));
+
+    const own = await read(mem.rawToken, mine);
+    const text = own.json?.result?.contents?.[0]?.text || '';
+    ok('the owner reads it; the provider got principal and agent', text === `note hello for ${mem.principal} via fixt-member`, own.text.slice(0, 200));
+    const others = await read(out.rawToken, mine);
+    ok('another caller reading it → Resource not found', others.json?.error?.code === -32002 && others.json?.error?.message === 'Resource not found', JSON.stringify(others.json?.error));
+    const anonRead = await read(null, mine);
+    ok('anonymous read → Resource not found', anonRead.json?.error?.code === -32002);
+    const missing = await read(mem.rawToken, `test-note://${mem.userId}/missing`);
+    ok('a missing resource → Resource not found', missing.json?.error?.code === -32002);
+    const boom = await read(mem.rawToken, `test-note://${mem.userId}/boom`);
+    ok('a provider that raises → -32603, nothing of the error leaked', boom.json?.error?.code === -32603 && !/divided|zero|Liquid/i.test(boom.text), boom.text.slice(0, 200));
+    const malformed = await read(mem.rawToken, `test-note://${mem.userId}/malformed`);
+    ok('malformed provider contents → -32603', malformed.json?.error?.code === -32603, malformed.text.slice(0, 200));
+    const innerMissing = await read(mem.rawToken, `test-note://${mem.userId}/inner_missing`);
+    ok('a partial missing INSIDE the provider is a failure (-32603), not "no provider"', innerMissing.json?.error?.code === -32603, innerMissing.text.slice(0, 200));
+
+    await setConstant('MCP_CONFIG', JSON.stringify({ resources_partial: 'mcp/no_such_resources' }));
+    const noProviderList = await list(mem.rawToken);
+    ok('no provider partial → the signed-in list still answers, without provider entries', noProviderList.status === 200 && Array.isArray(noProviderList.json?.result?.resources) && !noProviderList.json.result.resources.some(r => r.uri.startsWith('test-note://')), noProviderList.text.slice(0, 160));
+    const noProviderRead = await read(mem.rawToken, mine);
+    ok('no provider partial → a provider URI is not found', noProviderRead.json?.error?.code === -32002, noProviderRead.text.slice(0, 160));
+    await unsetConstant('MCP_CONFIG');
+
+    const rows = (await readLedger()).filter(r => Number(r.id) > ledgerStart);
+    const mineSha = createHash('sha256').update(mine).digest('hex');
+    ok('a provider read is in the ledger with the URI hashed', rows.some(r => r.outcome === 'success' && r.sha === mineSha), JSON.stringify(rows.slice(0, 4)));
+    ok('a not-found read is in the ledger as invalid', rows.some(r => r.outcome === 'invalid'));
+    ok('a failed provider read is in the ledger as error', rows.some(r => r.outcome === 'error'));
+  });
+
+  it('Resources — modern caching is private for a signed-in caller; reads share the rate limit (§13.1, §12.4)', async () => {
+    const send = modernClient();
+    const mine = `test-note://${mem.userId}/hello`;
+    for (const m of ['resources/list', 'resources/templates/list']) {
+      const r = await send(m, {}, { token: mem.rawToken });
+      ok(`signed-in ${m} → cacheScope private`, r.json?.result?.cacheScope === 'private', `scope=${r.json?.result?.cacheScope}`);
+    }
+    const read = await send('resources/read', { uri: mine }, { token: mem.rawToken });
+    ok('provider read → resultType complete + cacheScope private', read.json?.result?.resultType === 'complete' && read.json?.result?.cacheScope === 'private', read.text.slice(0, 200));
+    const notFound = await send('resources/read', { uri: mine }, { token: out.rawToken });
+    ok('modern not found → -32602', notFound.json?.error?.code === -32602, 'code=' + notFound.json?.error?.code);
+
+    const rateUri = `test-note://${rate.userId}/hello`;
+    await pruneRate(adm, rate.principal);
+    await setConstant('MCP_CONFIG', JSON.stringify({ defaults: { rate_limit_per_min: 2 } }));
+    const reads = [];
+    for (let i = 0; i < 3; i++) reads.push(await rpc({ jsonrpc: '2.0', id: 10 + i, method: 'resources/read', params: { uri: rateUri } }, rate.rawToken));
+    ok('reads within the limit succeed', reads[0].status === 200 && reads[1].status === 200 && !!reads[1].json?.result, reads.map(r => r.status).join(','));
+    ok('the read over the limit → 429 -32002 with Retry-After', reads[2].status === 429 && reads[2].json?.error?.code === -32002 && !!reads[2].headers.get('retry-after'), `status=${reads[2].status}`);
+    const modernOver = await send('resources/read', { uri: rateUri }, { token: rate.rawToken });
+    ok('modern rate limit keeps -32002 (not mapped to not found)', modernOver.status === 429 && modernOver.json?.error?.code === -32002, `status=${modernOver.status} code=${modernOver.json?.error?.code}`);
+    await unsetConstant('MCP_CONFIG');
+    await pruneRate(adm, rate.principal);
+  });
+
   // ==== Tier 3: operator / token WEB CONSOLE flows ===============================
 
   it('Operator console — web authz gating (§5.1)', async () => {
@@ -686,6 +790,119 @@ describe('coverage · multi-principal governance planes', () => {
     memTools = await (await webGet('mcp-tools')).text();
     await webPost('mcp-tools/revoke', { authenticity_token: _formTok(memTools), id: victim?.id });
     ok('owner CAN revoke their own token', (await tokensFor(mem.userId)).find(t => t.id === victim?.id)?.status === 'revoked');
+  });
+
+  it('Token console — a label names one agent, so a label in use is refused', async () => {
+    await purgeUserRecords(mem.userId); // start from the seeded tokens only (web mints accumulate across runs)
+    await sessionLogin(mem);
+    const mint = async (label) => {
+      const page = await (await webGet('mcp-tools')).text();
+      await webPost('mcp-tools/mint', { authenticity_token: _formTok(page), label });
+    };
+    const active = async () => (await tokensFor(mem.userId)).filter(t => t.status === 'active');
+
+    await mint('ci-dup-label');
+    await mint('CI-DUP-LABEL');
+    const shown = await (await webGet('mcp-tools')).text();
+    const dups = (await active()).filter(t => t.label.toLowerCase() === 'ci-dup-label');
+    ok('same label, any case, on an active token → no second token', dups.length === 1, 'active=' + dups.length);
+    ok('the page says the name is in use', /already have an active token named/.test(shown));
+
+    const knownIds = new Set((await active()).map(t => t.id));
+    await mint('');
+    await mint('');
+    const generated = (await active()).filter(t => !knownIds.has(t.id));
+    ok('blank label → a generated label, unique each time', generated.length === 2 && generated.every(t => /^mcp-client-[0-9a-f]{6}$/.test(t.label)) && generated[0].label !== generated[1].label, JSON.stringify(generated.map(t => t.label)));
+
+    for (const t of dups) {
+      const page = await (await webGet('mcp-tools')).text();
+      await webPost('mcp-tools/revoke', { authenticity_token: _formTok(page), id: t.id });
+    }
+    await mint('ci-dup-label');
+    ok('a label is free again once its token is revoked', (await active()).filter(t => t.label === 'ci-dup-label').length === 1);
+    await purgeUserRecords(mem.userId);
+  });
+
+  it('Token console — plain wording and a link back to the site', async () => {
+    await sessionLogin(mem);
+    const page = await (await webGet('mcp-tools')).text();
+    ok('the page links back to the site', /<a href="\/">← Back to the site<\/a>/.test(page));
+    // The page's own wording only: token names in the table are user data.
+    const text = page.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<tbody>[\s\S]*?<\/tbody>/, '').replace(/<[^>]+>/g, ' ');
+    ok('no jargon (bearer token, MCP client, community, mint)', !/bearer token|MCP client|community|\bmint\b/i.test(text), (text.match(/bearer token|MCP client|community|\bmint\b/i) || [])[0]);
+  });
+
+  it('Console forms — a POST without a valid form token is refused and changes nothing (CSRF)', async () => {
+    const FORGED = 'forged-form-token';
+    const expired = async (res) => res.status === 403 && /This form has expired/.test(await res.text());
+
+    await purgeUserRecords(mem.userId);
+    await sessionLogin(mem);
+    const before = await tokensFor(mem.userId);
+    ok('forged token on /mcp-tools/mint → 403 form expired', await expired(await webPost('mcp-tools/mint', { authenticity_token: FORGED, label: 'ci-csrf-mint' })));
+    ok('no token on /mcp-tools/mint → 403 form expired', await expired(await webPost('mcp-tools/mint', { label: 'ci-csrf-mint' })));
+    ok('refused mint → no token created', (await tokensFor(mem.userId)).length === before.length);
+    await sessionLogin(mem);
+    await webPost('mcp-tools/mint', { authenticity_token: _formTok(await (await webGet('mcp-tools')).text()), label: 'ci-csrf-keep' });
+    const kept = (await tokensFor(mem.userId)).find(t => t.label === 'ci-csrf-keep' && t.status === 'active');
+    ok('a valid mint still works', !!kept);
+    ok('forged token on /mcp-tools/revoke → 403 form expired', await expired(await webPost('mcp-tools/revoke', { authenticity_token: FORGED, id: kept?.id })));
+    ok('refused revoke → token still active', (await tokensFor(mem.userId)).find(t => t.id === kept?.id)?.status === 'active');
+
+    await clearPendingFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+    await callTool(mem.rawToken, 'test_approve', { label: 'csrfhold' });
+    const handle = (await pendingRecordsFor(mem.principal))[0]?.handle;
+    ok('one pending action to protect', !!handle);
+    const rolesBefore = await rolesFor(out.userId);
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    const adminPosts = [
+      ['mcp-admin/approve', { handle }],
+      ['mcp-admin/reject', { handle }],
+      ['mcp-admin/reject-principal', { principal_id: mem.principal }],
+      ['mcp-admin/access', { decision: 'make_admin', email: out.email }],
+      ['mcp-admin/token-revoke', { id: kept?.id }],
+      ['mcp-admin/eval', {}],
+    ];
+    for (const [path, fields] of adminPosts) {
+      ok(`forged token on /${path} → 403 form expired`, await expired(await webPost(path, { authenticity_token: FORGED, ...fields })));
+    }
+    ok('refused approve/reject → the action is still pending', (await pendingFor(mem.principal)).length === 1);
+    ok('refused approve → the action never ran', (await notesFor(mem.userId)).filter(x => x.source === 'test_approve').length === 0);
+    ok('refused access change → roles unchanged', JSON.stringify(await rolesFor(out.userId)) === JSON.stringify(rolesBefore), JSON.stringify(await rolesFor(out.userId)));
+    ok('refused operator revoke → token still active', (await tokensFor(mem.userId)).find(t => t.id === kept?.id)?.status === 'active');
+
+    const consent = await webPost('oauth/authorize', { authenticity_token: FORGED, rid: 'forged', decision: 'approve' });
+    ok('forged consent decision → 400, no redirect to the client', consent.status === 400 && !consent.headers.get('location'), 'status=' + consent.status);
+
+    await clearPendingFor(mem.principal);
+    await purgeUserRecords(mem.userId);
+  });
+
+  it('Eval — model-read text in schemas, instructions and prompts is linted (§12.3)', async () => {
+    const runEval = async () => {
+      ok('operator reaches the console (login ok)', await operatorLogin(op));
+      await webPost('mcp-admin/eval', { authenticity_token: _formTok(await (await webGet('mcp-admin')).text()) });
+      const r = await adm.gql(`{ records(per_page: 1, filter: { table: { value: "modules/mcp/mcp_eval_run" } }, sort: [{ id: { order: DESC } }]) { results { failures_json: property(name: "failures_json") } } }`);
+      return JSON.parse(r?.data?.records?.results?.[0]?.failures_json || '[]');
+    };
+
+    ok('a tool with flagged schema text is still served (the lint is not fatal)', (await listNames(mem.rawToken)).includes('test_poisoned_text'));
+    let fails = await runEval();
+    const tool = fails.find(f => f.check === 'no_poison' && f.target === 'test_poisoned_text');
+    ok('eval flags a nested parameter description', /input_schema\.properties\.filters\.properties\.term\.description: [^;]*ignore previous/.test(tool?.detail || ''), tool?.detail);
+    ok('eval flags an output_schema description', /output_schema\.properties\.marker\.description: [^;]*you must/.test(tool?.detail || ''), tool?.detail);
+    ok('eval flags no clean tool', !fails.some(f => f.check === 'no_poison' && f.target !== 'test_poisoned_text'), JSON.stringify(fails.filter(f => f.check === 'no_poison').map(f => f.target)));
+    const prompt = fails.find(f => f.check === 'prompt_no_poison' && f.target === 'test_poisoned_prompt');
+    ok('eval flags a prompt argument description', /arguments\.topic\.description: [^;]*disregard/.test(prompt?.detail || ''), prompt?.detail);
+    ok('eval flags no clean prompt', !fails.some(f => f.check === 'prompt_no_poison' && f.target !== 'test_poisoned_prompt'));
+    ok('clean instructions are not flagged', !fails.some(f => f.check === 'instructions_no_poison'));
+
+    await setConstant('MCP_CONFIG', JSON.stringify({ instructions_partial: 'mcp/test_poisoned_instructions' }));
+    fails = await runEval();
+    const instructions = fails.find(f => f.check === 'instructions_no_poison');
+    ok('eval flags poisoned connection instructions', /ignore previous/.test(instructions?.detail || ''), instructions?.detail);
+    await unsetConstant('MCP_CONFIG');
   });
 
   it('Ledger export — operator JSON (§9.6)', async () => {

@@ -104,6 +104,16 @@ describe('conformance · protocol + governance pipeline', () => {
     ok('no token → WWW-Authenticate', /Bearer resource_metadata=/.test(noTok.headers.get('www-authenticate') || ''));
     const badTok = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x' } } }, { token: 'wrong' });
     ok('bad token → 401 no internals', badTok.status === 401 && badTok.json?.error?.message === 'Invalid token');
+    // A PRESENTED bearer is checked on every method, discovery included: an invalid one is
+    // 401 + error="invalid_token" (MCP authorization; RFC 6750), never an empty anonymous list.
+    for (const m of ['tools/list', 'prompts/list', 'resources/list', 'initialize', 'ping']) {
+      const r = await rpc({ jsonrpc: '2.0', id: 9, method: m, params: {} }, { token: 'wrong' });
+      ok(`bad token on ${m} → 401 invalid_token`, r.status === 401 && /error="invalid_token"/.test(r.headers.get('www-authenticate') || ''), `status=${r.status}`);
+    }
+    const openList = await rpc({ jsonrpc: '2.0', id: 10, method: 'tools/list' });
+    ok('no token on tools/list → still open (200)', openList.status === 200 && Array.isArray(openList.json?.result?.tools));
+    const goodList = await rpc({ jsonrpc: '2.0', id: 11, method: 'tools/list' }, { token: RAW_TOKEN });
+    ok('valid token on tools/list → 200', goodList.status === 200 && Array.isArray(goodList.json?.result?.tools));
     const wk = await fetch(base + '.well-known/oauth-protected-resource').then(r => r.json());
     ok('well-known resource metadata', wk.resource === MCP && Array.isArray(wk.bearer_methods_supported));
   });
@@ -207,6 +217,30 @@ describe('conformance · protocol + governance pipeline', () => {
     ok('prompts/get missing required arg → error', !!missing.json?.error, 'code=' + missing.json?.error?.code);
     const unknown = await rpc({ jsonrpc: '2.0', id: 4, method: 'prompts/get', params: { name: 'no_such_prompt', arguments: {} } });
     ok('prompts/get unknown prompt → error', !!unknown.json?.error);
+
+    // The app's prompts partial and each template receive the caller (principal, agent).
+    ok('anonymous prompts/list → no per-caller prompt', !prompts.some(x => x.name === 'caller_note'));
+    const authedList = await rpc({ jsonrpc: '2.0', id: 5, method: 'prompts/list' }, { token: RAW_TOKEN });
+    ok('signed-in prompts/list → the per-caller prompt is offered', (authedList.json?.result?.prompts || []).some(x => x.name === 'caller_note'));
+    const note = await rpc({ jsonrpc: '2.0', id: 6, method: 'prompts/get', params: { name: 'caller_note', arguments: {} } }, { token: RAW_TOKEN });
+    const noteText = note.json?.result?.messages?.[0]?.content?.text || '';
+    ok('prompts/get passes the caller to the template', noteText.includes(CONF_PRINCIPAL) && noteText.includes('fixt-conformance'), noteText);
+    const anonNote = await rpc({ jsonrpc: '2.0', id: 7, method: 'prompts/get', params: { name: 'caller_note', arguments: {} } });
+    ok('anonymous prompts/get of a per-caller prompt → unknown prompt', anonNote.json?.error?.code === -32602);
+  });
+
+  it('Fallback instructions (§12.3) — factual, no threats, resources only when exposed', async () => {
+    await setConstant('MCP_CONFIG', JSON.stringify({ instructions_partial: 'mcp/no_such_instructions' }));
+    const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    const text = init.json?.result?.instructions || '';
+    ok('fallback instructions are served', text.length > 0, text);
+    ok('fallback says calls act as the connected person', /acts as the person who connected you/.test(text), text);
+    ok('fallback has no threat and no authority claim', !/suspend your access|authoritative|Call tools\/list/i.test(text), text);
+    ok('fallback does not mention resources when none are exposed', !/resources\/list/.test(text), text);
+    await setConstant('MCP_CONFIG', JSON.stringify({ instructions_partial: 'mcp/no_such_instructions', resources: { expose_markdown_pages: true, markdown_page_prefixes: ['docs'] } }));
+    const withDocs = (await rpc({ jsonrpc: '2.0', id: 2, method: 'initialize', params: {} })).json?.result?.instructions || '';
+    ok('fallback mentions documentation when pages are exposed', /resources\/list/.test(withDocs), withDocs);
+    await unsetConstant('MCP_CONFIG');
   });
 
   it('Malformed input (§13.2)', async () => {
@@ -322,6 +356,17 @@ describe('conformance · protocol eras (2025-06-18 legacy, 2026-07-28 modern)', 
     ok('instructions present', typeof r.instructions === 'string' && r.instructions.length > 0);
     ok('ttlMs + cacheScope public', typeof r.ttlMs === 'number' && r.ttlMs >= 0 && r.cacheScope === 'public', `ttlMs=${r.ttlMs} scope=${r.cacheScope}`);
     ok('serverInfo in _meta', typeof r._meta?.['io.modelcontextprotocol/serverInfo']?.name === 'string' && typeof r._meta?.['io.modelcontextprotocol/serverInfo']?.version === 'string');
+  });
+
+  it('modern credentials — an invalid bearer is 401 on discovery; prompts vary by caller', async () => {
+    for (const m of ['server/discover', 'tools/list', 'prompts/list']) {
+      const r = await send(m, {}, { token: 'wrong' });
+      ok(`bad token on ${m} → 401 invalid_token`, r.status === 401 && /error="invalid_token"/.test(r.headers.get('www-authenticate') || ''), `status=${r.status}`);
+    }
+    const anon = await send('prompts/list');
+    ok('anonymous prompts/list → cacheScope public', anon.json?.result?.cacheScope === 'public', `scope=${anon.json?.result?.cacheScope}`);
+    const authed = await send('prompts/list', {}, { token: RAW_TOKEN });
+    ok('signed-in prompts/list → cacheScope private (the list depends on the caller)', authed.json?.result?.cacheScope === 'private', `scope=${authed.json?.result?.cacheScope}`);
   });
 
   it('modern results — resultType on every result, spec cache scopes', async () => {

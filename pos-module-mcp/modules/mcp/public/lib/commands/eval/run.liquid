@@ -2,8 +2,14 @@
   Deterministic eval run (spec §19.3). Measures whether the tool surface holds up as
   it grows — the failure mode that degrades tool selection silently:
     surface/desc_present  — every served tool has a real description (>= 20 chars)
-    surface/no_poison     — no served description trips the tool-poisoning lint
+    surface/no_poison     — no model-read text of a served tool trips the tool-poisoning
+                            lint: its description, its title, and every description and
+                            title in its input and output schemas
     surface/desc_unique   — no two tools share an identical description (ambiguous)
+    surface/instructions_no_poison — the connection instructions pass the same lint
+    surface/prompt_no_poison — each prompt's title, description and argument
+                            descriptions pass it (prompts offered to an anonymous
+                            caller; prompts offered only to signed-in callers are not seen)
     golden/case_tool_exists — each golden case's expected tool is still registered
     golden/case_args_valid  — each golden case's example arguments still validate
                               against that tool's schema (a correct call is well-formed)
@@ -44,9 +50,15 @@
     endunless
     assign checks = checks | array_add: c
 
-    function lint = 'modules/mcp/commands/registry/lint_description', text: t.description
+    # The registry linted every model-read text of the tool when it was built (_lint).
+    assign poison = []
+    for l in t._lint
+      assign joined = l.hits | join: ', '
+      assign entry = l.path | append: ': ' | append: joined
+      assign poison = poison | array_add: entry
+    endfor
     assign clean = true
-    if lint.flagged
+    if poison.size > 0
       assign clean = false
     endif
     assign c2 = {}
@@ -55,8 +67,7 @@
     assign c2['target'] = t.name
     assign c2['passed'] = clean
     unless clean
-      assign hits = lint.hits | join: ', '
-      assign c2['detail'] = hits
+      assign c2['detail'] = poison | join: '; '
     endunless
     assign checks = checks | array_add: c2
 
@@ -81,6 +92,55 @@
     unless uniq
       assign c['detail'] = 'description is identical to another tool'
     endunless
+    assign checks = checks | array_add: c
+  endfor
+
+  # ---- model-read text outside the tools: connection instructions and prompts ----
+  function instructions = 'modules/mcp/queries/instructions'
+  function instructions_lint = 'modules/mcp/commands/registry/lint_description', text: instructions
+  assign c = {}
+  assign c['category'] = 'surface'
+  assign c['check'] = 'instructions_no_poison'
+  assign c['target'] = 'instructions'
+  if instructions_lint.flagged
+    assign c['passed'] = false
+    assign c['detail'] = instructions_lint.hits | join: ', '
+  else
+    assign c['passed'] = true
+  endif
+  assign checks = checks | array_add: c
+
+  function prompt_reg = 'modules/mcp/commands/registry/build_prompts', principal: null, agent: null
+  for p in prompt_reg.prompts
+    assign prompt_texts = {}
+    assign prompt_texts['title'] = p.title
+    assign prompt_texts['description'] = p.description
+    for a in p.arguments
+      assign arg_key = 'arguments.' | append: a.name | append: '.description'
+      assign prompt_texts[arg_key] = a.description
+    endfor
+    assign poison = []
+    for pt in prompt_texts
+      if pt[1] == blank
+        continue
+      endif
+      function prompt_lint = 'modules/mcp/commands/registry/lint_description', text: pt[1]
+      if prompt_lint.flagged
+        assign joined = prompt_lint.hits | join: ', '
+        assign entry = pt[0] | append: ': ' | append: joined
+        assign poison = poison | array_add: entry
+      endif
+    endfor
+    assign c = {}
+    assign c['category'] = 'surface'
+    assign c['check'] = 'prompt_no_poison'
+    assign c['target'] = p.name
+    if poison.size > 0
+      assign c['passed'] = false
+      assign c['detail'] = poison | join: '; '
+    else
+      assign c['passed'] = true
+    endif
     assign checks = checks | array_add: c
   endfor
 

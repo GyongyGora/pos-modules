@@ -14,6 +14,8 @@ query find_by_handle($handle: String!) {
       arguments_json: property(name: "arguments_json")
       input_sha256: property(name: "input_sha256")
       requested_by_agent: property(name: "requested_by_agent")
+      requested_by_client_id: property(name: "requested_by_client_id")
+      requested_by_token_id: property(name: "requested_by_token_id")
       principal_id: property(name: "principal_id")
       authz_policy: property(name: "authz_policy")
       status: property(name: "status")

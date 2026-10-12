@@ -12,9 +12,16 @@
     title       - optional display title
     description - required, model-read
     arguments   - optional array of { name, description?, required? }
-    template    - partial path invoked with `arguments` → a string (one user
-                  message) or a messages array
+    template    - partial path invoked with `arguments`, `principal` and `agent` → a
+                  string (one user message) or a messages array
 
+  The partial receives the caller, `principal` and `agent` (the same objects tool
+  handlers get), or nil for both when the request carried no bearer. It may offer
+  different prompts to different callers, for example prompts a person saved for
+  themselves; prompts/list then answers with cacheScope 'private'.
+
+  @param {object} principal - the caller's principal, or nil when anonymous
+  @param {object} agent     - the caller's agent, or nil when anonymous
   @return {object} { prompts:[...], excluded:[{name,errors}], count }
 {%- endcomment -%}
 {% liquid
@@ -23,7 +30,7 @@
 
   assign raw = null
   try
-    function raw = partial
+    function raw = partial, principal: principal, agent: agent
   catch e
     unless e.message contains "can't find partial"
       log e.message, type: 'mcp.prompts_build_error'

@@ -20,16 +20,18 @@
    - output_schema, when present, is an object schema checked in output mode: a
      field may list several types including "null", and its depth limit is
      max_output_depth.
-   - description lint warnings are attached (non-fatal, §12.3) for human attention.
+   - every model-read text is linted (non-fatal, §12.3) for human attention: the
+     description, the title, and each description and title in input_schema and
+     output_schema. Hits are returned in `lint` and as `warnings` text.
 
   @param {object}  manifest  - the raw manifest hash
   @param {integer} max_depth - schema depth cap (from config.defaults.max_schema_depth)
   @param {integer} max_output_depth - output_schema depth cap (config.defaults.max_output_schema_depth)
-  @return {object} { valid, errors:[string], warnings:[string], name }
+  @return {object} { valid, errors:[string], warnings:[string], lint:[{path, hits:[string]}], name }
 {%- endcomment -%}
 {% liquid
   assign errors = []
-  assign warnings = []
+  assign lint = []
   assign name = manifest.name
 
   # ---- name ----
@@ -56,11 +58,12 @@
   if manifest.description == blank
     assign errors = errors | array_add: 'description: required'
   else
-    function lint = 'modules/mcp/commands/registry/lint_description', text: manifest.description
-    if lint.flagged
-      assign joined = lint.hits | join: ', '
-      assign wmsg = 'description flagged by tool-poisoning lint: ' | append: joined
-      assign warnings = warnings | array_add: wmsg
+    function description_lint = 'modules/mcp/commands/registry/lint_description', text: manifest.description
+    if description_lint.flagged
+      assign hit = {}
+      assign hit['path'] = 'description'
+      assign hit['hits'] = description_lint.hits
+      assign lint = lint | array_add: hit
     endif
   endif
 
@@ -109,9 +112,17 @@
   endunless
   unless manifest.title == blank
     assign tit = manifest.title | type_of | downcase
-    unless tit == 'string'
+    if tit == 'string'
+      function title_lint = 'modules/mcp/commands/registry/lint_description', text: manifest.title
+      if title_lint.flagged
+        assign hit = {}
+        assign hit['path'] = 'title'
+        assign hit['hits'] = title_lint.hits
+        assign lint = lint | array_add: hit
+      endif
+    else
       assign errors = errors | array_add: 'title: must be string'
-    endunless
+    endif
   endunless
   unless manifest.annotations == blank
     assign ann_kind = manifest.annotations | type_of | downcase
@@ -149,6 +160,9 @@
         assign errors = errors | array_add: e
       endfor
     endunless
+    for l in sv.lint
+      assign lint = lint | array_add: l
+    endfor
   endif
 
   # ---- output_schema (optional; validated when present) ----
@@ -164,7 +178,17 @@
         assign errors = errors | array_add: e
       endfor
     endunless
+    for l in ov.lint
+      assign lint = lint | array_add: l
+    endfor
   endunless
+
+  assign warnings = []
+  for l in lint
+    assign joined = l.hits | join: ', '
+    assign wmsg = l.path | append: ' flagged by tool-poisoning lint: ' | append: joined
+    assign warnings = warnings | array_add: wmsg
+  endfor
 
   assign is_valid = false
   if errors.size == 0
@@ -174,6 +198,7 @@
   assign out['valid'] = is_valid
   assign out['errors'] = errors
   assign out['warnings'] = warnings
+  assign out['lint'] = lint
   assign out['name'] = name
   return out
 %}

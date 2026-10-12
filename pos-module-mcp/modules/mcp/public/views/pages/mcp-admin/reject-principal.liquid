@@ -1,6 +1,7 @@
 ---
 slug: mcp-admin/reject-principal
 method: post
+layout: ''
 ---
 {%- comment -%}
   Operator bulk-rejects EVERY pending approval for one principal (spec §9.6, §12.4).
@@ -9,8 +10,15 @@ method: post
   action never runs; the decision is recorded per row. Operator-gated. Bounded to the
   newest 50 pending rows for the principal (the cap keeps a single principal far below
   that; a larger backlog drains over repeated clicks rather than in an unbounded loop).
+  A POST without a valid form token changes nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-admin'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag

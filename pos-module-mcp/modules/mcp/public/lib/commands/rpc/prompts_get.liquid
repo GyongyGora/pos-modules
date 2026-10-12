@@ -7,9 +7,12 @@
   EITHER a plain string (wrapped as a single `user` text message) OR a ready messages
   array. The template is authored code (reviewed); arguments are the agent's own, and
   the server never acts on the rendered prompt — so there is no server-side injection
-  surface here.
+  surface here. The template also receives the caller (`principal`, `agent`, nil when
+  anonymous), and a prompt the prompts partial does not offer to this caller is unknown.
 
-  @param {object} params - MCP params { name, arguments? }
+  @param {object} params    - MCP params { name, arguments? }
+  @param {object} principal - the caller's principal, or nil when anonymous
+  @param {object} agent     - the caller's agent, or nil when anonymous
   @return {object} result { description, messages:[...] } OR { _error:{code,message} }
 {%- endcomment -%}
 {% liquid
@@ -19,7 +22,7 @@
     assign args = {}
   endif
 
-  function reg = 'modules/mcp/commands/registry/build_prompts'
+  function reg = 'modules/mcp/commands/registry/build_prompts', principal: principal, agent: agent
   assign prompt = null
   for p in reg.prompts
     if p.name == name
@@ -60,7 +63,7 @@
   endif
 
   # Render the template. String → one user message; array → used as-is.
-  function rendered = prompt.template, arguments: args
+  function rendered = prompt.template, arguments: args, principal: principal, agent: agent
   assign messages = []
   assign rtype = rendered | type_of | downcase
   if rtype == 'array'

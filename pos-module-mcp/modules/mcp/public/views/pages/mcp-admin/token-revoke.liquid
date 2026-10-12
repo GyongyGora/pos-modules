@@ -1,6 +1,7 @@
 ---
 slug: mcp-admin/token-revoke
 method: post
+layout: ''
 ---
 {%- comment -%}
   Operator revokes a bearer token by id (spec §20). Sets status:revoked — the next
@@ -8,8 +9,15 @@ method: post
   the token owner has on /mcp-tools, but exposed to operators for ANY token (the
   console's kill-switch for a misbehaving agent). Idempotent: revoking an already
   revoked token is a no-op. The token digest is never exposed here — only its id.
+  A POST without a valid form token changes nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-admin'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag

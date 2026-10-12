@@ -28,4 +28,11 @@ describe('tool linter · author-boundary security gate', () => {
   it.skipIf(!STRICT)('no WARNING-level findings (LINT_STRICT)', () => {
     expect(res.warnings, `${res.warnings.length} warning(s):\n${fmt(res.warnings)}`).toHaveLength(0);
   });
+
+  it('parameter descriptions are linted like the tool description (negative control)', () => {
+    const withControls = lintAll({ includeVuln: true });
+    const hit = withControls.errors.find((f) => f.tool === 'test_poisoned_text' && f.check === 'tool-poisoning');
+    expect(hit?.message, fmt(withControls.errors.filter((f) => f.tool === 'test_poisoned_text'))).toMatch(/^input_schema\.filters\.term\.description contains/);
+    expect(res.skippedVuln).toContain('test_poisoned_text');
+  });
 });
