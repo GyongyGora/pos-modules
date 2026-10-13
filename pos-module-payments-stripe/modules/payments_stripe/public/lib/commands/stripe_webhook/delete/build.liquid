@@ -2,6 +2,7 @@
   assign idempotency_key = 20 | random_string
   assign to = "https://api.stripe.com/v1/webhook_endpoints/" | append: gateway_id
 
-  assign object = {"to": to, "request_type": "Delete", "idempotency_key": idempotency_key, "gateway_id": gateway_id}
+  # the generic api call template removes keys from data.payload, so it must be a hash even when empty
+  assign object = {"to": to, "request_type": "Delete", "payload": {}, "idempotency_key": idempotency_key, "gateway_id": gateway_id}
   return object
 %}

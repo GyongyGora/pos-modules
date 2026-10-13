@@ -20,12 +20,8 @@
   assign signed_payload_hmac = signed_payload | compute_hmac: saved_secret
 
   if secret != signed_payload_hmac
-    log 'DEBUG secret not match'
-    log saved_secret, type: "DEBUG saved secret"
-    log signed_payload, type: "DEBUG signed_payload"
-    log signed_payload_hmac, type: "DEBUG signed_payload_hmac"
-    log secret, type: "DEBUG secret"
-    log g, type: 'DEBUG g'
+    # never log the signing secret or the expected signature: either lets anyone forge webhooks
+    log webhook_listen_url, type: "ERROR: modules/payments_stripe webhook signature does not match"
     return false
   else
     return true
