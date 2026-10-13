@@ -8,7 +8,12 @@
  * (fixed migration timestamp + stable key order), so `git diff` stays empty unless the
  * seed actually changed.
  *
- *   node tests/seed/generate_migrations.mjs
+ *   node tests/seed/generate_migrations.mjs           # write the migration
+ *   node tests/seed/generate_migrations.mjs --check   # exit 1 if the committed file differs
+ *
+ * --check compares with the file on disk and writes nothing, so it needs no git: CI runs it
+ * in a container where git does not trust the checkout (safe.directory) and `git diff`
+ * fails with exit 129.
  *
  * The emitted migration is GATED on the instance constant MCP_SEED_TEST_FIXTURES: a
  * plain test-app deploy (constant unset) runs it as a no-op — NO test users are seeded.
@@ -19,7 +24,7 @@
  * (which would corrupt the Liquid template) and fail loudly if the seed ever introduces
  * one — the same footgun class documented across this module.
  */
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { userImports, modelImports } from './seed.mjs';
@@ -81,6 +86,20 @@ const migration = `{% comment %}
 {% log 'migrations/seed_mcp_test_fixtures: skipped (MCP_SEED_TEST_FIXTURES not set)' %}
 {% endif %}
 `;
+
+if (process.argv.includes('--check')) {
+  const committed = existsSync(outPath) ? readFileSync(outPath, 'utf8') : null;
+  if (committed !== migration) {
+    console.error(
+      committed === null
+        ? `seed migration missing: app/migrations/${MIGRATION_NAME} — run: npm run seed:generate`
+        : `seed migration out of date: app/migrations/${MIGRATION_NAME} — run: npm run seed:generate`
+    );
+    process.exit(1);
+  }
+  console.log('seed migration up-to-date ✓');
+  process.exit(0);
+}
 
 writeFileSync(outPath, migration);
 console.log(`wrote ${MIGRATION_NAME} (${migration.length} bytes)`);

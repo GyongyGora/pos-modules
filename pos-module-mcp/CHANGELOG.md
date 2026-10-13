@@ -133,6 +133,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **CI: the static stage no longer fails with exit code 129 in the test container.** The
+  seed-migration check ran `git diff`, but inside the CI container git does not trust the
+  checkout (`safe.directory`), so it printed its usage and reported a stale migration that
+  was not stale. The check is now `node tests/seed/generate_migrations.mjs --check`, which
+  compares the generated text with the committed file, writes nothing and needs no git.
+  `npm ci` also failed in CI: the lock file lacked the peer dependencies `npm ci` requires
+  (`@emnapi/core`, `@emnapi/runtime`, `@emnapi/wasi-threads`). They are now in the lock, and
+  a module `.npmrc` sets `legacy-peer-deps=false` so a lock regenerated on a machine with
+  that user setting keeps them.
 - **An invalid bearer is answered with 401 on every method.** A request that presents a
   bearer which does not resolve (unknown, revoked, expired, wrong audience) now gets
   `401` with `WWW-Authenticate: … error="invalid_token"` on discovery too (`tools/list`,

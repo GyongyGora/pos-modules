@@ -503,7 +503,8 @@ For **deploy-time** seeding, `tests/seed/generate_migrations.mjs` emits a byte-d
 migration (`app/migrations/…_seed_mcp_test_fixtures.liquid`) **gated on the
 `MCP_SEED_TEST_FIXTURES` constant** — a plain deploy leaves it unset (no fixtures land);
 the published module ships zero migrations. Regenerate it only when the seed changes:
-`node tests/seed/generate_migrations.mjs`.
+`node tests/seed/generate_migrations.mjs`. The static gate runs it with `--check`, which fails
+when the committed file differs and writes nothing.
 
 `coverage.mjs` drives its fixture users (operator / member / outsider + dedicated
 rate/abuse/validator/conformance principals) against a set of **gated test tools** registered
