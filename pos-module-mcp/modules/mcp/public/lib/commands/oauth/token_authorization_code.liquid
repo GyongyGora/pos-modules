@@ -49,7 +49,16 @@
     function e = 'modules/mcp/commands/oauth/error', error: 'invalid_grant', error_description: 'Code was issued to another client', http_status: null
     return e
   endif
-  if params.redirect_uri != blank and params.redirect_uri != rec.redirect_uri
+  # OAuth 2.1 §4.1.3: redirect_uri is REQUIRED here when it was part of the
+  # authorization request, and must then match it exactly. A client that relied on its
+  # single registered redirect_uri may omit it, but may not send a different one.
+  assign redirect_mismatch = false
+  if rec.redirect_uri_sent == true or params.redirect_uri != blank
+    if params.redirect_uri != rec.redirect_uri
+      assign redirect_mismatch = true
+    endif
+  endif
+  if redirect_mismatch
     function e = 'modules/mcp/commands/oauth/error', error: 'invalid_grant', error_description: 'redirect_uri mismatch', http_status: null
     return e
   endif

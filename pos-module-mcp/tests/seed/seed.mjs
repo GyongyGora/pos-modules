@@ -58,7 +58,7 @@ const USERS = [
     ] },
 
   { key: 'outsider',  id: U + 3, email: 'mcp-fixt-outsider@test.local',  slug: 'mcp-fixt-outsider',
-    name: 'MCP Fixture Outsider', roles: [], // authenticated but UNAUTHORIZED (no MCP role)
+    name: 'MCP Fixture Outsider', roles: [], // no MCP role: its token is rejected (401 permission_revoked)
     tokens: [{ id: T + 3, raw: 'mcp_fixt_outsider_v1', label: 'fixt-outsider', status: 'active' }] },
 
   // Dedicated users for the stateful planes (each gets suspended/limited in isolation,
@@ -85,7 +85,7 @@ const USERS = [
 
   // Isolated conformance principal (protocol/adversarial suite).
   { key: 'conformance', id: U + 90, email: 'mcp-fixt-conformance@test.local', slug: 'mcp-fixt-conformance',
-    name: 'MCP Fixture Conformance', roles: [],
+    name: 'MCP Fixture Conformance', roles: ['mcp_user'], // a token works only while its user holds MCP access
     tokens: [{ id: T + 90, raw: 'mcp_fixt_conformance_v1', label: 'fixt-conformance', status: 'active' }] },
 ];
 

@@ -87,7 +87,7 @@ describe('conformance · protocol + governance pipeline', () => {
     const ping = await rpc({ jsonrpc: '2.0', id: 2, method: 'ping' });
     ok('ping → 200 empty result', ping.status === 200 && ping.json?.result && Object.keys(ping.json.result).length === 0);
     const unk = await rpc({ jsonrpc: '2.0', id: 3, method: 'no/such' });
-    ok('unknown method → -32601/400', unk.status === 400 && unk.json?.error?.code === -32601);
+    ok('unknown method → -32601 with HTTP 200 (method-level errors are not transport failures)', unk.status === 200 && unk.json?.error?.code === -32601, 'status=' + unk.status);
     const bad = await rpc({ jsonrpc: '2.0', id: 4 });
     ok('missing method → -32600/400', bad.status === 400 && bad.json?.error?.code === -32600);
     const badver = await rpc({ jsonrpc: '1.0', id: 5, method: 'ping' });
@@ -128,16 +128,20 @@ describe('conformance · protocol + governance pipeline', () => {
 
   it('Validation (§10, strict, no coercion)', async () => {
     const T = { token: RAW_TOKEN };
+    // Argument errors are tool execution errors (2025-11-25, SEP-1303): HTTP 200, a
+    // CallToolResult with isError and the errors in its text. search_events declares an
+    // outputSchema, so no structuredContent (an error object would not match it).
+    const invalid = (r, re) => r.status === 200 && r.json?.result?.isError === true && re.test(r.json.result.content?.[0]?.text || '') && r.json.result.structuredContent === undefined;
     const missing = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_events', arguments: { limit: 5 } } }, T);
-    ok('missing required → -32602', missing.json?.error?.code === -32602 && /missing required property/.test(JSON.stringify(missing.json.error.data)));
+    ok('missing required → tool error with validation_errors', invalid(missing, /missing required property/), missing.text.slice(0, 200));
     const coerce = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x', limit: '5' } } }, T);
-    ok('string-for-int rejected (no coercion)', coerce.json?.error?.code === -32602 && /expected integer/.test(JSON.stringify(coerce.json.error.data)));
+    ok('string-for-int rejected (no coercion)', invalid(coerce, /expected integer/));
     const unknown = await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x', bogus: 1 } } }, T);
-    ok('unknown key rejected (additionalProperties false)', unknown.json?.error?.code === -32602 && /unknown property/.test(JSON.stringify(unknown.json.error.data)));
+    ok('unknown key rejected (additionalProperties false)', invalid(unknown, /unknown property/));
     const overmax = await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x', limit: 999 } } }, T);
-    ok('above maximum rejected', overmax.json?.error?.code === -32602 && /above maximum/.test(JSON.stringify(overmax.json.error.data)));
+    ok('above maximum rejected', invalid(overmax, /above maximum/));
     const unknownTool = await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'ghost', arguments: {} } }, T);
-    ok('unknown tool → -32602', unknownTool.json?.error?.code === -32602);
+    ok('unknown tool → -32602 protocol error, HTTP 200', unknownTool.status === 200 && unknownTool.json?.error?.code === -32602, 'status=' + unknownTool.status);
   });
 
   it('Execution end-to-end (§22 proof)', async () => {
@@ -261,11 +265,12 @@ describe('conformance · protocol + governance pipeline', () => {
     const codes = [];
     for (let i = 0; i < 6; i++) {
       const r = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x' } } }, { token: RAW_TOKEN });
-      codes.push(r.status);
+      codes.push(r.json?.error?.code ?? r.status);
     }
-    ok('first 3 pass, then 429', codes.slice(0, 3).every(c => c === 200) && codes.slice(3).some(c => c === 429), codes.join(','));
+    ok('first 3 pass, then -32004', codes.slice(0, 3).every(c => c === 200) && codes.slice(3).some(c => c === -32004), codes.join(','));
     const limited = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'search_events', arguments: { query: 'x' } } }, { token: RAW_TOKEN });
-    ok('429 carries Retry-After', limited.status !== 429 || !!limited.headers.get('retry-after'));
+    ok('rate limit answers HTTP 200 with -32004', limited.status === 200 && limited.json?.error?.code === -32004, `status=${limited.status} code=${limited.json?.error?.code}`);
+    ok('rate limit carries Retry-After (header and error.data)', !!limited.headers.get('retry-after') && Number.isInteger(limited.json?.error?.data?.retryAfter));
     await unsetConstant('MCP_CONFIG');
   });
 
@@ -316,7 +321,7 @@ describe('conformance · protocol eras (2025-06-18 legacy, 2026-07-28 modern)', 
     const ping = await rpc({ jsonrpc: '2.0', id: 6, method: 'ping' });
     ok('legacy ping → empty result', ping.status === 200 && ping.json?.result && Object.keys(ping.json.result).length === 0);
     const disc = await rpc({ jsonrpc: '2.0', id: 7, method: 'server/discover', params: {} });
-    ok('server/discover is not a legacy method → 400 -32601', disc.status === 400 && disc.json?.error?.code === -32601, `status=${disc.status} code=${disc.json?.error?.code}`);
+    ok('server/discover is not a legacy method → 200 -32601', disc.status === 200 && disc.json?.error?.code === -32601, `status=${disc.status} code=${disc.json?.error?.code}`);
     const tasks = await rpc({ jsonrpc: '2.0', id: 8, method: 'tasks/get', params: { taskId: 'x' } });
     ok('tasks/get is not a legacy method → -32601', tasks.json?.error?.code === -32601);
     const rr = await rpc({ jsonrpc: '2.0', id: 9, method: 'resources/read', params: { uri: 'mcp+page:///no-such-page' } });

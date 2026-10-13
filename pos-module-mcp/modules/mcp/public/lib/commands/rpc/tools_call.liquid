@@ -5,7 +5,7 @@
   is registered, an authenticated call resolves to "unknown tool" (-32602) — the
   surface never executes an unvalidated action.
 
-  Ledger policy (refinement of §9.3, see decision-1): a cryptographically
+  Ledger policy (refinement of §9.3, see backlog/decision-1): a cryptographically
   AUTHENTICATED request writes a chained ledger entry for every outcome (including
   future authz denials — accountable identities). A PRE-AUTH failure (missing /
   invalid / expired token — no accountable identity) is sent to the platform log
@@ -19,6 +19,11 @@
   @param {boolean} tasks_extension - the request declared the Tasks extension
                                      (commands/protocol/negotiate); an approval-gated
                                      call then answers with a CreateTaskResult
+  HTTP STATUS. Every JSON-RPC error here answers HTTP 200 except the two the MCP
+  authorization spec defines at the HTTP level: 401 (no/invalid token, with the
+  WWW-Authenticate challenge) and 403 insufficient_scope (step-up). A 2025-06-18 client
+  treats any other non-2xx answer as a transport failure and never sees the typed error.
+
   @return {object} { http_status, headers?, body }
 {%- endcomment -%}
 {% liquid
@@ -47,14 +52,15 @@
   function abuse = 'modules/mcp/commands/limits/enforce_abuse', token_id: auth.token_id, principal_id: auth.principal.id, agent_id: auth.agent.id
   if abuse.suspended
     function body = 'modules/mcp/commands/rpc/error', id: id, code: -32001, message: 'Access suspended'
-    assign out['http_status'] = 403
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endif
 
   # Step 2 (post-auth) — per-principal rate limit (spec §12.4). Bounds blast
   # radius per identity. Rejected calls are ledgered (accountable identity) and
-  # carry Retry-After.
+  # carry Retry-After (header and error.data.retryAfter, in seconds). The code is
+  # -32004, in the implementation-defined range: -32002 is "resource not found".
   function cfg = 'modules/mcp/commands/config'
   assign rl_scope = 'principal:' | append: auth.principal.id
   function rl = 'modules/mcp/commands/limits/check', scope: rl_scope, limit: cfg.defaults.rate_limit_per_min
@@ -68,7 +74,7 @@
     assign rle['delegation_mode'] = auth.delegation_mode
     assign rle['authz_decision'] = 'not_applicable'
     assign rle['execution_outcome'] = 'error'
-    assign rle['error_code'] = -32002
+    assign rle['error_code'] = -32004
     assign rle['request_id'] = '' | uuid
     assign rle['_start_ms'] = start_ms
     function _ = 'modules/mcp/commands/ledger/append', entry: rle
@@ -76,8 +82,12 @@
     assign hdrs = {}
     assign hdrs['Retry-After'] = rl.retry_after | append: ''
     assign out['headers'] = hdrs
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32002, message: 'Rate limit exceeded'
-    assign out['http_status'] = 429
+    assign rl_data = {}
+    assign rl_data['retryAfter'] = rl.retry_after | plus: 0
+    # platformos-check-disable PartialCallArguments
+    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32004, message: 'Rate limit exceeded', data: rl_data
+    # platformos-check-enable PartialCallArguments
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endunless
@@ -116,7 +126,7 @@
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: auth.principal.id
     function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Unknown tool'
-    assign out['http_status'] = 400
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endif
@@ -124,15 +134,12 @@
   assign le['tool_version'] = tool.version
   assign le['authz_policy'] = tool.authorization_policy
 
-  # Step 4b — OAuth scope (decision-4). A mutating tool needs mcp:write; anything
+  # Step 4b — OAuth scope (docs/oauth.md). A mutating tool needs mcp:write; anything
   # else mcp:read. Scope only NARROWS what the named policy allows (step 6 still
   # runs). Manual tokens carry every scope. Insufficient scope is a 403 with an
   # RFC 6750 insufficient_scope challenge so the client can step up (re-authorize
   # with the wider scope) instead of failing opaquely.
-  assign required_scope = 'mcp:read'
-  if tool.mutating
-    assign required_scope = 'mcp:write'
-  endif
+  function required_scope = 'modules/mcp/queries/oauth/required_scope', tool: tool
   unless auth.scopes contains required_scope
     assign le['authz_decision'] = 'deny'
     assign le['authz_reason'] = 'insufficient_scope'
@@ -165,17 +172,13 @@
     assign le['execution_outcome'] = 'invalid'
     assign le['error_code'] = -32602
     function _ = 'modules/mcp/commands/ledger/append', entry: le
-    # Validation errors are argument-shape facts (which key, which constraint) —
-    # safe to return so the agent can self-correct; they carry no server internals.
-    assign edata = {}
-    assign edata['validation_errors'] = val.errors
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: auth.principal.id
-    # `error` declares and emits an optional `data` param (see rpc/error.liquid); the
-    # linter's arg check doesn't detect it. Valid call.
-    # platformos-check-disable PartialCallArguments
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Invalid arguments', data: edata
-    # platformos-check-enable PartialCallArguments
-    assign out['http_status'] = 400
+    # A tool execution error, not a protocol error (MCP 2025-11-25, SEP-1303): the
+    # model sees it and can correct its arguments. Validation errors are argument-
+    # shape facts (which key, which constraint) and carry no server internals.
+    function result = 'modules/mcp/commands/rpc/invalid_arguments_result', errors: val.errors, tool: tool
+    function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endunless
@@ -193,7 +196,7 @@
     # Stable, generic wire message — the specific reason is in the ledger, not the
     # response (§13.2). Denials never leak policy internals.
     function body = 'modules/mcp/commands/rpc/error', id: id, code: -32001, message: 'Forbidden'
-    assign out['http_status'] = 403
+    assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endunless
@@ -266,7 +269,7 @@
     endif
 
     assign store_args = val_args | json
-    function pa = 'modules/mcp/commands/approval/create', tool: tool, arguments_json: store_args, input_sha256: input_sha256, principal: auth.principal, agent: auth.agent, request_id: request_id
+    function pa = 'modules/mcp/commands/approval/create', tool: tool, arguments_json: store_args, input_sha256: input_sha256, principal: auth.principal, agent: auth.agent, token_id: auth.token_id, request_id: request_id
     assign le['execution_outcome'] = 'pending_approval'
     function _ = 'modules/mcp/commands/ledger/append', entry: le
 

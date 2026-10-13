@@ -26,7 +26,8 @@
   @param {object} entry - payload fields (method, tool_name, ..., input_sha256,
                           input_bytes, authz_*, execution_outcome, error_code,
                           duration_ms, subject_*, idempotency_key, request_id,
-                          audit_json). seq/occurred_at/hashes are set here.
+                          audit_json). canonical_version/seq/occurred_at/hashes
+                          are set here.
   @return {object} { seq, entry_hash, prev_entry_hash, occurred_at, id }
 {%- endcomment -%}
 {% liquid
@@ -67,7 +68,11 @@
 
   # Build the working payload = caller's entry + our stamped fields (functional
   # merge, does not mutate the caller's hash).
+  # Hash format of this row (see ledger/canonical). Bump only together with a new
+  # branch in canonical; existing rows keep verifying under their own version.
+  assign current_canonical_version = 1
   assign extra = {}
+  assign extra['canonical_version'] = current_canonical_version
   assign extra['seq'] = next_seq
   assign extra['occurred_at'] = occurred_at
   # Pipeline latency: if the caller stamped `_start_ms` (unix ms), record the elapsed
@@ -101,7 +106,7 @@
     assign v_duration_ms = w.duration_ms | plus: 0
   endunless
 
-  graphql created = 'modules/mcp/ledger/create', table: table, seq: next_seq, occurred_at: occurred_at, method: w.method, tool_name: w.tool_name, tool_version: w.tool_version, client_id: w.client_id, agent_id: w.agent_id, principal_id: w.principal_id, delegation_mode: w.delegation_mode, input_sha256: w.input_sha256, input_bytes: v_input_bytes, authz_policy: w.authz_policy, authz_decision: w.authz_decision, authz_reason: w.authz_reason, execution_outcome: w.execution_outcome, error_code: v_error_code, duration_ms: v_duration_ms, subject_type: w.subject_type, subject_id: w.subject_id, idempotency_key: w.idempotency_key, request_id: w.request_id, audit_json: w.audit_json, prev_entry_hash: prev_hash, entry_hash: entry_hash
+  graphql created = 'modules/mcp/ledger/create', table: table, canonical_version: w.canonical_version, seq: next_seq, occurred_at: occurred_at, method: w.method, tool_name: w.tool_name, tool_version: w.tool_version, client_id: w.client_id, agent_id: w.agent_id, principal_id: w.principal_id, delegation_mode: w.delegation_mode, input_sha256: w.input_sha256, input_bytes: v_input_bytes, authz_policy: w.authz_policy, authz_decision: w.authz_decision, authz_reason: w.authz_reason, execution_outcome: w.execution_outcome, error_code: v_error_code, duration_ms: v_duration_ms, subject_type: w.subject_type, subject_id: w.subject_id, idempotency_key: w.idempotency_key, request_id: w.request_id, audit_json: w.audit_json, prev_entry_hash: prev_hash, entry_hash: entry_hash
   endtransaction
 
   assign out = {}

@@ -106,7 +106,7 @@ export function makeWeb(base) {
     for (let attempt = 0; attempt < 6; attempt++) {
       cookies = {};
       const lp = await (await get('sessions/new')).text();
-      const csrf = metaTag(lp, 'csrf-token');
+      const csrf = metaTag(lp, 'csrf-token') || formTok(lp); // the layout's meta tag, else the form's own token
       await post('sessions', { authenticity_token: csrf, email, password });
       const adminRes = await get('mcp-admin');
       const adminPage = await adminRes.text();
@@ -120,7 +120,7 @@ export function makeWeb(base) {
     for (let attempt = 0; attempt < 4; attempt++) {
       cookies = {};
       const lp = await (await get('sessions/new')).text();
-      const csrf = metaTag(lp, 'csrf-token');
+      const csrf = metaTag(lp, 'csrf-token') || formTok(lp); // the layout's meta tag, else the form's own token
       const res = await post('sessions', { authenticity_token: csrf, email, password });
       if (res.status === 302) return true;
       await new Promise(r => setTimeout(r, 800));

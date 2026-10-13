@@ -18,6 +18,7 @@ properties:
   - name: requested_by_client_id  # the requesting agent's client_id, so the approved action runs as the same agent
   - name: requested_by_token_id   # the mcp_token that requested it (agent.token_id); blank on approvals made before it was stored
   - name: principal_id    # the action executes AS this principal on approval
+  - name: token_id        # mcp_token row that requested it; re-checked (active, allowed_tools, scope) when it runs
   - name: authz_policy
   - name: status          # pending | approved (claimed, executing) | rejected | cancelled | expired | executed | failed
   - name: decided_by      # operator user id

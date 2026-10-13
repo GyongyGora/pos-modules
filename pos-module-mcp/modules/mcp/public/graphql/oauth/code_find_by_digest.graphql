@@ -11,6 +11,7 @@ query code_find_by_digest($code_digest: String!) {
       client_id: property(name: "client_id")
       client_name: property(name: "client_name")
       redirect_uri: property(name: "redirect_uri")
+      redirect_uri_sent: property_boolean(name: "redirect_uri_sent")
       code_challenge: property(name: "code_challenge")
       user_id: property(name: "user_id")
       scope: property(name: "scope")

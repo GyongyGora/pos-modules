@@ -17,6 +17,10 @@
    - pattern is length-capped and rejects classic catastrophic-backtracking
      nested-quantifier signatures (§16.4).
    - depth is capped (max_schema_depth) to bound validation cost (§10.1).
+   - `format` in an INPUT schema must be one validate/json_schema enforces (uuid,
+     email, date-time). Any other value would be silently ignored, so it is rejected;
+     enforcing a new format later then only affects tools that opt in. An output
+     schema is never validated against, so its formats are client hints only.
 
   Not enforced, reported: every `description` and `title` is model-read text, like the
   tool description, so each goes through registry/lint_description (§12.3). A hit is
@@ -69,6 +73,15 @@
   endfor
 
   assign output = output | default: false
+
+  unless output or node.format == blank
+    assign supported_formats = 'uuid,email,date-time' | split: ','
+    unless supported_formats contains node.format
+      assign msg = at | append: ': unsupported format "' | append: node.format | append: '" (supported: uuid, email, date-time)'
+      assign errors = errors | array_add: msg
+    endunless
+  endunless
+
   assign t = node.type
   assign valid_types = 'object,string,integer,number,boolean,array' | split: ','
   assign node_types = []

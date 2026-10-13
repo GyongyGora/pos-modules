@@ -4,8 +4,8 @@ method: get
 format: json
 ---
 {%- comment -%}
-  RFC 8414 Authorization Server Metadata for the built-in AS. 404 when disabled (or
-  when an external issuer is configured — then that issuer serves its own metadata).
+  RFC 8414 Authorization Server Metadata for the built-in AS (docs/oauth.md). 404 when
+  it is disabled (oauth.authorization_server false).
 {%- endcomment -%}
 {%- liquid
   function cfg = 'modules/mcp/commands/config'

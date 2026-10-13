@@ -43,6 +43,12 @@
         break
       endif
       function canonical = 'modules/mcp/commands/ledger/canonical', entry: rec
+      if canonical == blank
+        assign ok = false
+        assign broken_at = rec.seq
+        assign reason = 'unknown canonical_version: this module version cannot verify the entry'
+        break
+      endif
       assign expected = canonical | append: rec.prev_entry_hash | digest: 'sha256'
       if expected != rec.entry_hash
         assign ok = false

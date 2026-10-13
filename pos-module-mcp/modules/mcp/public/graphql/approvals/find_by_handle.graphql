@@ -17,6 +17,7 @@ query find_by_handle($handle: String!) {
       requested_by_client_id: property(name: "requested_by_client_id")
       requested_by_token_id: property(name: "requested_by_token_id")
       principal_id: property(name: "principal_id")
+      token_id: property(name: "token_id")
       authz_policy: property(name: "authz_policy")
       status: property(name: "status")
       decided_by: property(name: "decided_by")

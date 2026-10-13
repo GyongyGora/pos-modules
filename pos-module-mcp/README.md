@@ -61,6 +61,8 @@ tools in `app/` wrap.
 | `GET` / `DELETE /mcp` | 405 `Allow: POST` (no SSE stream, no sessions) |
 | `GET /mcp-health` | Liveness + readiness probe — `{status, checks:{config,database}}`, 200/503 (public, cheap) |
 | `GET /.well-known/oauth-protected-resource` | OAuth resource metadata (RFC 9728) |
+| `GET /.well-known/oauth-authorization-server` | OAuth authorization server metadata (RFC 8414) |
+| `/oauth/authorize`, `POST /oauth/token`, `POST /oauth/register`, `POST /oauth/revoke` | built-in OAuth 2.1 server — see [OAuth](#oauth-authorization-server) |
 | `/mcp-tools` | Token console — members with `mcp.tokens.manage` mint/revoke bearer tokens |
 | `/mcp-admin` | Operator console: ledger, metrics, approvals, access mgmt, registry, eval |
 | `/mcp-admin/{approve,reject}` (POST) | Operator decides a pending tool-call approval |
@@ -92,19 +94,19 @@ every request — no redeploy needed.
 | Key | Default | Controls |
 |---|---|---|
 | `server_name` | `pos-module-mcp` | `serverInfo.name` + the `claude mcp add <name>` alias on `/mcp-tools` |
-| `endpoint_path` | `/mcp` | endpoint path (advertised as the OAuth resource id) |
 | `tools_list_scope` | `open` | `open` advertises every tool to any caller (MCP-default open discovery); `principal` scopes `tools/list` to what the caller may actually call — restricted tools aren't leaked to unauthorized/anonymous callers (least-disclosure). Execution is authorized per-call either way. |
 | `defaults.rate_limit_per_min` | `60` | per-principal fixed-window rate limit |
 | `defaults.max_input_bytes` | `65536` | request body size cap |
 | `defaults.max_schema_depth` | `5` | argument-validation nesting cap |
-| `defaults.timeout_ms` | `5000` | handler time budget |
 | `defaults.idempotency_window_seconds` | `86400` | how long an idempotency key can replay |
 | `defaults.approval_window_seconds` | `604800` | how long a pending approval can be acted on |
 | `defaults.approval_max_pending_per_principal` | `3` | max non-expired pending approvals per principal (queue-flood cap) |
+| `defaults.max_output_schema_depth` | `8` | nesting cap for a tool's declared `output_schema` |
+| `defaults.task_poll_interval_ms` | `30000` | `pollIntervalMs` suggested to Tasks-extension clients |
+| `defaults.abuse_threshold` / `defaults.abuse_window_seconds` | `20` / `300` | violations within the window that auto-suspend a token (`0` disables) |
 | `resources.expose_markdown_pages` | `false` | `.md` resources on/off toggle. Only pages declaring `handler: markdown` in front matter are exposed — a Liquid page is never served as a resource |
 | `resources.markdown_page_prefixes` | `["docs"]` | slug prefixes exposed as resources (allowlist; matched on a `/` boundary, markdown GET pages only) |
-| `ledger.retention_days` | `730` | ledger retention |
-| `oauth.issuer` / `oauth.audience` | `""` / `server_name` | advertised AS + expected audience |
+| `oauth.*` | see [OAuth](#oauth-authorization-server) | built-in authorization server |
 | `registry_partial` / `policy_prefix` / `instructions_partial` / `prompts_partial` / `resources_partial` | `mcp/registry`, `mcp/policies`, `mcp/instructions`, `mcp/prompts`, `mcp/resources` | Layer-2 hook paths |
 
 ### Setting a constant
@@ -255,7 +257,7 @@ review as security-relevant.
 - **`requires_approval: true`** → the tool never runs inline. The call records an
   intent and returns an opaque **handle** + `pending_approval`; an operator approves
   in `/mcp-admin`, and it then executes **as the original principal** (re-validated
-  and re-authorized), with the execution ledger entry linked to the request by
+  and re-authorized; the requesting token must still be active and allowed the tool), with the execution ledger entry linked to the request by
   `request_id`. The agent polls the built-in `mcp_approval_status` tool with the
   handle. This keeps genuinely high-impact actions out of autonomous execution.
   **Queue-flood protection:** a duplicate pending request (same principal + identical
@@ -331,7 +333,10 @@ permission get a 403. The engine checks two permissions:
 
 Map them to roles in your app's override of the user module permissions file,
 `app/modules/user/public/lib/queries/role_permissions/permissions.liquid`. The console
-grants and removes these two roles, so define them:
+grants and removes these two roles, so define them. **This step is required:** without
+it `can_do` logs a warning for the undefined roles and grants nothing, so only
+superadmins can use the consoles, mint tokens or authorize OAuth clients, and members
+the console "grants" access to still get a 403.
 
 ```liquid
 "mcp_user": ["mcp.tokens.manage"],
@@ -343,9 +348,11 @@ grants and removes these two roles, so define them:
 `function _ = 'modules/user/commands/profiles/roles/append', id: profile.id, role: 'mcp_operator'`.
 Operators grant `mcp_user` / `mcp_operator` by email and remove them on the console's
 **Tokens & access** tab. Removing a member's access there also revokes every active
-token they hold, so agents already connected with them are cut off at once. (A role
-removed some other way — e.g. directly on the user-module profile — leaves tokens
-active; revoke those on the same tab.)
+token they hold, so agents already connected with them are cut off at once. A role
+removed some other way (directly on the user-module profile, by another admin tool, by
+deleting the user) also stops the user's tokens: every call re-checks
+`mcp.tokens.manage` and answers `401` without it. Those token rows stay `active`, so
+restoring the role restores them; revoke them on the same tab to end them for good.
 
 The built-in `admin_only` policy applies the same RBAC to bearer calls: it loads the
 principal's profile and checks `mcp.admin` (`modules/mcp/queries/principal/can`, which
@@ -353,11 +360,22 @@ your own policies can call with any permission).
 
 **Tokens.** A bearer is bound to a real pOS user (the principal); only its SHA-256
 digest is stored (raw shown once). Every call is authorized as that user, rate-limited
-per principal, and attested. Revoke on `/mcp-tools` (IDOR-guarded).
+per principal, and attested. Revoke on `/mcp-tools` (IDOR-guarded). Tokens come from
+`/mcp-tools` (manual) or from the built-in OAuth server (below).
 
-> An external-AS / JWT strategy (`jwt_decode` against issuer/JWKS) is scaffolded for
-> instances fronting a real authorization server; the default is instance-issued
-> tokens.
+### OAuth authorization server
+
+MCP clients that implement the MCP authorization spec connect without a hand-minted
+token: on a `401` they discover the instance's OAuth 2.1 authorization server, register
+(Client ID Metadata Document or Dynamic Client Registration), send the user through
+sign-in and a consent page at `/oauth/authorize`, and exchange the code (PKCE `S256`) at
+`/oauth/token`. Access tokens last an hour and are bound to the client, to this
+instance's `/mcp` URL and to a scope (`mcp:read`, plus `mcp:write` for mutating tools);
+refresh tokens rotate and last 30 days. Authorizing a client needs the same
+`mcp.tokens.manage` permission as minting a token. On by default; turn it off with
+`MCP_CONFIG {"oauth":{"authorization_server":false}}`. Endpoints, configuration and
+security notes: [`modules/mcp/docs/oauth.md`](modules/mcp/docs/oauth.md). An external
+authorization server is not supported yet.
 
 ### Operator console (`/mcp-admin`)
 

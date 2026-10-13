@@ -13,7 +13,8 @@
    - input_schema must be an object schema and pass the supported-subset walker
      (unsupported keyword anywhere → invalid).
    - Correct types for mutating/requires_approval/idempotent (boolean),
-     timeout_ms (integer), audit_fields (array), title (string).
+     timeout_ms (integer; reserved — not enforced yet), audit_fields (array),
+     title (string).
    - annotations, when present, hold only the MCP behaviour hints readOnlyHint,
      destructiveHint, idempotentHint and openWorldHint, each boolean. They are hints
      for clients; the engine enforces nothing from them.
@@ -70,6 +71,17 @@
   # ---- governance triad (hard-required) ----
   if manifest.authorization_policy == blank
     assign errors = errors | array_add: 'authorization_policy: required (no implicit allow)'
+  else
+    # Policy names starting with `mcp_` belong to the engine; the only one today is
+    # mcp_authenticated (authorize/evaluate). An unknown `mcp_` name is an error now
+    # rather than a silent shadowing when a later version adds that built-in.
+    assign pol_prefix = manifest.authorization_policy | append: '' | slice: 0, 4
+    if pol_prefix == 'mcp_'
+      assign builtin_policies = 'mcp_authenticated' | split: ','
+      unless builtin_policies contains manifest.authorization_policy
+        assign errors = errors | array_add: 'authorization_policy: the mcp_ prefix is reserved for built-in policies'
+      endunless
+    endif
   endif
   assign mt = manifest.mutating | type_of | downcase
   unless mt == 'boolean'

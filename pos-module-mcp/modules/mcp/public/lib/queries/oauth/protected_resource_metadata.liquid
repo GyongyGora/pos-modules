@@ -3,8 +3,8 @@
   receives a 401 discovers where to obtain a token by reading this document. The
   resource identifier is per-instance (multi-tenancy, §15).
 
-  authorization_servers: an external issuer when MCP_OAUTH_ISSUER is set; otherwise
-  this instance itself when the built-in authorization server is enabled.
+  authorization_servers: this instance itself when the built-in authorization server
+  is enabled; absent otherwise.
 
   @return {object}
 {%- endcomment -%}
@@ -18,9 +18,7 @@
   assign doc['bearer_methods_supported'] = methods
   assign doc['scopes_supported'] = cfg.oauth.scopes_supported
   assign servers = []
-  if cfg.oauth.issuer != blank
-    assign servers = servers | array_add: cfg.oauth.issuer
-  elsif cfg.oauth.builtin
+  if cfg.oauth.builtin
     assign servers = servers | array_add: origin
   endif
   if servers.size > 0

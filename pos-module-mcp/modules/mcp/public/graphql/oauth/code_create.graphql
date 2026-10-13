@@ -3,6 +3,7 @@ mutation code_create(
   $client_id: String!
   $client_name: String!
   $redirect_uri: String!
+  $redirect_uri_sent: Boolean
   $code_challenge: String!
   $user_id: String!
   $scope: String!
@@ -16,6 +17,7 @@ mutation code_create(
       { name: "client_id", value: $client_id }
       { name: "client_name", value: $client_name }
       { name: "redirect_uri", value: $redirect_uri }
+      { name: "redirect_uri_sent", value_boolean: $redirect_uri_sent }
       { name: "code_challenge", value: $code_challenge }
       { name: "user_id", value: $user_id }
       { name: "scope", value: $scope }

@@ -1,5 +1,5 @@
 name: mcp_token
-# MCP bearer tokens (identity source — see backlog/decision-2, decision-4).
+# MCP bearer tokens (identity source — see backlog/decision-2 and docs/oauth.md).
 # Each token authorizes as a REAL platformOS user (user_id = the principal). Two kinds:
 #   manual — minted by the user at /mcp-tools (no expiry, full scopes)
 #   oauth  — issued by the built-in OAuth 2.1 authorization server (/oauth/token):

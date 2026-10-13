@@ -6,6 +6,8 @@ properties:
   - name: client_id
   - name: client_name
   - name: redirect_uri    # exact redirect_uri used on /authorize — must match on /token
+  - name: redirect_uri_sent
+    type: boolean         # the client sent redirect_uri on /authorize, so /token must repeat it
   - name: code_challenge  # PKCE S256 challenge (base64url, no padding)
   - name: user_id         # the user who consented (the principal)
   - name: scope           # granted scope (space-separated)

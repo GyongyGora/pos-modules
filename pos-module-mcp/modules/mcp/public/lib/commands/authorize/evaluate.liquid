@@ -49,6 +49,14 @@
     return result
   endif
 
+  # The `mcp_` prefix is reserved for built-in policies: never resolve it to an app
+  # partial (registry/manifest_schema already rejects such manifests; fail closed here).
+  assign policy_prefix = policy | append: '' | slice: 0, 4
+  if policy_prefix == 'mcp_'
+    assign result['reason'] = 'reserved_policy_name'
+    return result
+  endif
+
   assign policy_path = prefix | append: '/' | append: policy
   assign decision = null
   assign errored = false

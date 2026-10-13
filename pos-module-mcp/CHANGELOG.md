@@ -20,8 +20,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   request-access flow (`POST /mcp-tools/request`). Operators grant roles by email on the
   console. **Upgrading:** define the two roles in your permissions override, then grant
   `mcp_user` / `mcp_operator` to existing members (or rely on superadmin for operators).
+- **BREAKING — a token works only while its user holds MCP access.** Every `/mcp` call
+  re-checks `oauth.required_permission` (`mcp.tokens.manage`) and answers `401`
+  (`permission_revoked`) without it; refresh answers `invalid_grant`. A role removed by
+  any path (profile edit, another admin tool, user deletion) now stops manual and OAuth
+  tokens at once, not only removal on the console.
+- **BREAKING — HTTP status and codes on `/mcp`.** Method-level JSON-RPC errors answer
+  HTTP 200 so 2025-06-18 clients read the typed error instead of failing on the
+  transport. Only `401` (authentication) and `403` `insufficient_scope` (step-up) keep
+  their status, plus malformed requests (400 / 413) and the modern-only transport errors.
+  - Rate limit: `-32004` (was `-32002`, which MCP defines as "resource not found"), HTTP
+    200, `Retry-After` header and `error.data.retryAfter`.
+  - Invalid arguments: a tool execution error (`result.isError: true`, the errors in
+    the text and, for a tool without `output_schema`, in
+    `structuredContent.validation_errors`), not `-32602` (MCP 2025-11-25, SEP-1303), so
+    the model can correct its call. Also for an approved action whose stored arguments
+    no longer validate (a Tasks result, not a task error).
+  - Unknown tool, forbidden, access suspended, idempotency-key reuse (was 409), legacy
+    unknown method, unknown prompt and bad logging level: HTTP 200.
+- **BREAKING — the `mcp_` prefix is reserved.** An app tool named `mcp_*`, or a manifest
+  naming an `mcp_*` policy other than the built-in `mcp_authenticated`, is excluded at
+  load; app policy files named `mcp_*` are never loaded. The tool linter reports both as
+  errors.
+- **BREAKING — unsupported `format` values are rejected.** An input-schema `format`
+  other than `uuid`, `email`, `date` or `date-time` makes the manifest invalid (it was silently
+  not enforced); the linter rule `format-unsupported` is now an error.
+- **Approved actions re-check the requesting token.** `mcp_pending_approval` stores the
+  requester's `token_id`; on approval the token must still be active, allow the tool and,
+  for a mutating tool, carry `mcp:write`, and the user must still hold MCP access.
+  An OAuth grant must also still be renewable and bound to this server. Otherwise the
+  approval fails with "Requester's access was revoked." Approvals queued before this
+  change have no `token_id`; for them only the user's permission is re-checked.
+- **Ledger rows record their hash format.** New `mcp_ledger.canonical_version` (1),
+  included in the hashed payload; `ledger/canonical` picks the field list by version, so
+  a later format change never breaks verification of older rows. Rows written before this
+  change are verified as version 0.
+- **`/oauth/token` requires `redirect_uri` when it was sent to `/oauth/authorize`**
+  (OAuth 2.1 §4.1.3). New `mcp_oauth_code.redirect_uri_sent`.
+
+### Removed
+
+- Config keys that did nothing or misled: `endpoint_path` (the endpoint is always
+  `/mcp`), `oauth.issuer` / `MCP_OAUTH_ISSUER` (an external issuer was advertised but its
+  tokens were rejected; while the constant is still set the built-in authorization
+  server stays off and a `mcp.config_retired_issuer` log entry is written),
+  `oauth.audience` / `MCP_OAUTH_AUDIENCE`, `ledger.retention_days`
+  and `defaults.timeout_ms` (never enforced). The manifest `timeout_ms` field is accepted
+  but reserved; handlers run without a time limit.
 
 ### Added
+
+- **Built-in OAuth 2.1 authorization server.** MCP clients connect without a hand-minted
+  token: RFC 9728 / RFC 8414 metadata, `/oauth/authorize` with sign-in and consent,
+  `/oauth/token` (authorization code + PKCE `S256`, rotating refresh tokens with reuse
+  detection), Client ID Metadata Documents, Dynamic Client Registration and
+  `/oauth/revoke`. Tokens are opaque, bound to the user, client, resource (`/mcp`) and a
+  scope (`mcp:read`, `mcp:write` for mutating tools); a missing scope answers `403`
+  `insufficient_scope`. See `modules/mcp/docs/oauth.md`.
 
 - **Tool `title`, `annotations` and `outputSchema` in `tools/list`.** A manifest may
   declare `title` (string), `annotations` (the four MCP behaviour hints, each boolean;
@@ -99,7 +154,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **The token console speaks plainly and links back.** `/mcp-tools` says "access token"
   and "AI app that supports MCP" instead of "bearer token", "MCP client" and "community",
   names the field "Name", and has a "Back to the site" link.
-
+- **Console "Remove access" confirmation** said the member's tokens stay active; removal
+  revokes them all, and the text now says so.
 - **MCP `2026-07-28` conformance.** Checked against the published schema and transport
   spec; the engine is now dual-era by the spec's rules:
   - Modern requests are recognised by `params._meta["io.modelcontextprotocol/protocolVersion"]`.

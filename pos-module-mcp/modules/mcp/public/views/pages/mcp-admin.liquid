@@ -563,7 +563,7 @@ navigations instead of flashing white (the console is a dark theme). {%- endcomm
             <td class="inline-actions">
               {%- unless is_op -%}<form method="post" action="/mcp-admin/access"><input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}"><input type="hidden" name="decision" value="make_admin"><input type="hidden" name="profile_id" value="{{ m.id }}"><button type="submit" class="btn btn-xs">Make operator</button></form>{%- endunless -%}
               {%- if is_op -%}<form method="post" action="/mcp-admin/access"><input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}"><input type="hidden" name="decision" value="make_user"><input type="hidden" name="profile_id" value="{{ m.id }}"><button type="submit" class="btn btn-xs">Make member</button></form>{%- endif -%}
-              <form method="post" action="/mcp-admin/access" data-confirm="Remove MCP access for {{ m.email }}? Their existing tokens stay active until revoked above." onsubmit="return confirm(this.dataset.confirm)"><input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}"><input type="hidden" name="decision" value="revoke"><input type="hidden" name="profile_id" value="{{ m.id }}"><button type="submit" class="btn btn-danger btn-xs">Remove</button></form>
+              <form method="post" action="/mcp-admin/access" data-confirm="Remove MCP access for {{ m.email }}? Every token they hold is revoked now." onsubmit="return confirm(this.dataset.confirm)"><input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}"><input type="hidden" name="decision" value="revoke"><input type="hidden" name="profile_id" value="{{ m.id }}"><button type="submit" class="btn btn-danger btn-xs">Remove</button></form>
             </td>
           </tr>
         {%- endfor -%}
@@ -690,8 +690,6 @@ navigations instead of flashing white (the console is a dark theme). {%- endcomm
           <tr><td class="muted">approval window</td><td>{{ cfg.defaults.approval_window_seconds }}s</td></tr>
           <tr><td class="muted">max pending approvals / principal</td><td>{{ cfg.defaults.approval_max_pending_per_principal }}</td></tr>
           <tr><td class="muted">max input bytes</td><td>{{ cfg.defaults.max_input_bytes }}</td></tr>
-          <tr><td class="muted">request timeout</td><td>{{ cfg.defaults.timeout_ms }}ms</td></tr>
-          <tr><td class="muted">ledger retention</td><td>{{ cfg.ledger.retention_days }} days</td></tr>
           <tr><td class="muted">markdown resources</td><td>{%- if cfg.resources.expose_markdown_pages -%}on ({{ cfg.resources.markdown_page_prefixes | join: ', ' }}){%- else -%}off{%- endif -%}</td></tr>
         </tbody>
       </table>

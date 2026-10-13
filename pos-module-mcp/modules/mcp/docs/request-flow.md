@@ -89,16 +89,16 @@ flowchart TD
   H -- prompts/list --> H6[rpc/prompts_list → 200]
   H -- logging/setLevel --> H7{valid RFC-5424 level?}
   H7 -- yes --> H7a[200 · empty result no-op]
-  H7 -- no --> H7b[400 · -32602 unknown level]
+  H7 -- no --> H7b[200 · -32602 unknown level]
   H -- resources/read --> H8{provider URI?}
   H8 -- no: mcp+page or bare slug --> H8m{_error?}
   H8m -- yes --> H8a[200 · error body]
   H8m -- no --> H8b[200 · success contents]
   H8 -- yes --> H8p[[resources/read_provided — governed read, ledgered]]
   H -- prompts/get --> H9{_error?}
-  H9 -- yes --> H9a[400 · error body]
+  H9 -- yes --> H9a[200 · error body]
   H9 -- no --> H9b[200 · success messages]
-  H -- unknown --> H10[400 · -32601 Method not found]
+  H -- unknown --> H10[200 legacy / 404 modern · -32601 Method not found]
 ```
 
 Notes on the dispatch branches:
@@ -107,12 +107,12 @@ Notes on the dispatch branches:
 - **Envelope validation.** `jsonrpc`, if present, must be exactly `"2.0"`; a missing `method` is `Invalid Request`. Both are `400 / -32600`.
 - **Notifications** (`notifications/*`) are acknowledged with `202` and **no body** — JSON-RPC notifications expect no response.
 - **`tools/call`** hands off the whole outcome (status/headers/body) to `rpc/tools_call` (section 4).
-- **Open methods** are wrapped in a success envelope and returned `200`. Two of them can carry a structured `_error` (unknown resource / unknown prompt): `resources/read` returns the error at `200`, `prompts/get` at `400`.
+- **Open methods** are wrapped in a success envelope and returned `200`. Two of them can carry a structured `_error` (unknown resource / unknown prompt): both return the error at `200` (a method-level error is not a transport failure). A `resources/read` refusal that carries its own status (rate limit, scope, suspension) keeps it.
 - **`tools/list` scoping.** With `tools_list_scope: 'open'` (default) it lists everything. With `'principal'` an authenticated caller sees only the tools they may call; a caller without a bearer is the `anonymous` scope and is advertised nothing.
 - **Presented credentials are checked on every method.** `rpc/dispatch` resolves a bearer whenever the request carries one (except `tools/call` and `tasks/*`, which authenticate themselves) and passes the identity to the router. A bearer that does not resolve — unknown, revoked, expired, wrong audience — answers `401` with `WWW-Authenticate: … error="invalid_token"` on discovery too, as the MCP authorization spec and RFC 6750 require. A request without a bearer stays open (unless `oauth.challenge_initialize` is on for `initialize` / `server/discover`).
 - **Resources from the app.** For a signed-in caller, `resources/list` and `resources/templates/list` add what the app's resource provider (`resources_partial`, default `mcp/resources`) offers *this* caller — it receives `principal` and `agent` — and are cached `private`. Entries are checked first: no address or name, or the reserved `mcp+page:` scheme, and the entry is dropped. A `resources/read` of a URI with any other scheme than `mcp+page:` goes to `resources/read_provided` (below); a caller without a bearer gets "Resource not found".
-- **`logging/setLevel`** is a deliberate open no-op — but it still validates `level` against the RFC-5424 set; garbage input is `400 / -32602`, never a silent `{}`.
-- **Unknown / not-yet-implemented method** → `400 / -32601 "Method not found"`. The surface never lies about what it implements.
+- **`logging/setLevel`** is a deliberate open no-op — but it still validates `level` against the RFC-5424 set; garbage input is `200 / -32602`, never a silent `{}`.
+- **Unknown / not-yet-implemented method** → `-32601 "Method not found"`, HTTP `200` for legacy requests and `404` for modern (`2026-07-28`) ones. The surface never lies about what it implements.
 
 None of the open-method branches write to the hash-chained ledger — they take no governed action — except a read from the app's resource provider (3b).
 
@@ -140,20 +140,22 @@ flowchart TD
   AU -->|not authenticated| AUx[platform LOG only · 401 + WWW-Authenticate\nNO ledger entry — no accountable identity]
   AU -->|authenticated| AB[Gate 1b · limits/enforce_abuse]
 
-  AB -->|already suspended| ABx[403 · -32001 Access suspended]
+  AB -->|already suspended| ABx[200 · -32001 Access suspended]
   AB -->|ok| RL[Gate 2 · limits/check per-principal rate]
 
-  RL -->|over limit| RLx[LEDGER: error/-32002 + note_violation\nRetry-After · 429 -32002]
+  RL -->|over limit| RLx[LEDGER: error/-32004 + note_violation\nRetry-After · 200 -32004]
   RL -->|ok| H[hash args → input_sha256; build base ledger entry]
 
   H --> RT[Gate 3 · registry/resolve_tool + allowed_tools]
-  RT -->|unknown/excluded/not-allowed| RTx[LEDGER: invalid/-32602 + note_violation\n400 -32602 Unknown tool]
-  RT -->|found| VA[Gate 4 · validate/json_schema STRICT]
+  RT -->|unknown/excluded/not-allowed| RTx[LEDGER: invalid/-32602 + note_violation\n200 -32602 Unknown tool]
+  RT -->|found| SC[Gate 3b · OAuth scope: mcp:write for mutating]
+  SC -->|missing| SCx[LEDGER: deny/-32001\n403 insufficient_scope + WWW-Authenticate]
+  SC -->|ok| VA[Gate 4 · validate/json_schema STRICT]
 
-  VA -->|invalid args| VAx[LEDGER: invalid/-32602 + note_violation\n400 -32602 Invalid arguments + errors]
+  VA -->|invalid args| VAx[LEDGER: invalid/-32602 + note_violation\n200 isError:true + validation_errors]
   VA -->|valid| AZ[Gate 5 · authorize/evaluate named policy]
 
-  AZ -->|deny / no implicit allow| AZx[LEDGER: deny+denied/-32001 + note_violation\n403 -32001 Forbidden]
+  AZ -->|deny / no implicit allow| AZx[LEDGER: deny+denied/-32001 + note_violation\n200 -32001 Forbidden]
   AZ -->|allow| AP{tool.requires_approval?}
 
   AP -->|yes| APG{flood/dup check}
@@ -162,7 +164,7 @@ flowchart TD
   APG -->|ok| APok[approval/create → handle\nLEDGER: pending_approval\n200 isError:false handle+expires_at]
 
   AP -->|no| ID{tool.idempotent & key present?}
-  ID -->|key hit, args differ| IDx[LEDGER: invalid/-32602\n409 key reused w/ diff args]
+  ID -->|key hit, args differ| IDx[LEDGER: invalid/-32602\n200 -32602 key reused w/ diff args]
   ID -->|key hit, args match| IDr[LEDGER: replayed\n200 cached response — no re-exec]
   ID -->|miss or n/a| EX{tool.mutating?}
 
@@ -187,20 +189,24 @@ flowchart TD
 - digest not found → `401`, `unknown_token`
 - token `status != active` (revoked/suspended) → `401`, `token_revoked`
 - token not bound to a user → `401`, `token_unbound`
+- OAuth token expired → `401`, `token_expired`; bound to another resource → `401`, `wrong_audience`
+- the user no longer holds `mcp.tokens.manage` → `401`, `permission_revoked`
 
 **Key policy — pre-auth failures are NOT ledgered.** On any of the above, `tools_call` writes to the **platform log only** (`log auth.reason, type:'mcp.auth_denied'`) and returns the `401`. There is no accountable identity, so anonymous probes can't spam or grow the tamper-evident chain (that would be a DoS / integrity-noise vector). Every gate *after* this point has an authenticated identity and *does* ledger. On success, the token's `last_used_at` is best-effort stamped (throttled to ≤1 write/min/token).
 
-**Gate 1b — Abuse auto-suspend (`limits/enforce_abuse`).** Reads the principal's O(1) windowed violation counter. If it has crossed the threshold, the command **revokes the token** (status → suspended) and writes a `security/suspend` ledger entry, and this call returns `403 / -32001 "Access suspended"`. Every subsequent call then fails Gate 1 as `token_revoked`. This is a real containment control, not a warning — and it never scans the ledger on the hot path (an earlier version did and blew the per-request budget).
+**Gate 1b — Abuse auto-suspend (`limits/enforce_abuse`).** Reads the principal's O(1) windowed violation counter. If it has crossed the threshold, the command **revokes the token** (status → suspended) and writes a `security/suspend` ledger entry, and this call returns `-32001 "Access suspended"` (HTTP 200). Every subsequent call then fails Gate 1 as `token_revoked`. This is a real containment control, not a warning — and it never scans the ledger on the hot path (an earlier version did and blew the per-request budget).
 
-**Gate 2 — Rate limit (`limits/check`, scope `principal:<id>`).** Fixed per-minute window against `cfg.defaults.rate_limit_per_min`. Over the limit: **write a ledger entry** (`execution_outcome: error`, `error_code: -32002`), call `note_violation` (feeding Gate 1b), set `Retry-After`, and return `429 / -32002`. This is the first *authenticated* exit, so it *is* ledgered.
+**Gate 2 — Rate limit (`limits/check`, scope `principal:<id>`).** Fixed per-minute window against `cfg.defaults.rate_limit_per_min`. Over the limit: **write a ledger entry** (`execution_outcome: error`, `error_code: -32004`), call `note_violation` (feeding Gate 1b), and return `-32004 "Rate limit exceeded"` with HTTP 200, the `Retry-After` header and `error.data.retryAfter` (seconds). `-32004` is implementation-defined; `-32002` means "resource not found" in MCP. This is the first *authenticated* exit, so it *is* ledgered.
 
 **Argument hashing.** Past the limits, the arguments are serialized and `input_sha256 = sha256(args_json)` is computed. **Raw arguments are never stored** — only the digest + byte count go into the ledger (plus any handler-declared `audit_json`). A `request_id` (uuid) and the base ledger entry `le` are assembled here and filled in per outcome.
 
-**Gate 3 — Registry resolve (`registry/resolve_tool`).** Looks the tool name up in the built registry, applying the token's `allowed_tools` narrowing (intersect only). A name that is unregistered, excluded (its manifest failed meta-validation at build), or outside this token's `allowed_tools` → **not found** → ledger (`invalid`, `-32602`) + `note_violation` + `400 / -32602 "Unknown tool"`. The surface can never execute an unvalidated action.
+**Gate 3 — Registry resolve (`registry/resolve_tool`).** Looks the tool name up in the built registry, applying the token's `allowed_tools` narrowing (intersect only). A name that is unregistered, excluded (its manifest failed meta-validation at build), or outside this token's `allowed_tools` → **not found** → ledger (`invalid`, `-32602`) + `note_violation` + `-32602 "Unknown tool"` (HTTP 200). The surface can never execute an unvalidated action.
 
-**Gate 4 — Argument validation (`validate/json_schema`, STRICT).** Validates the arguments against the tool's `input_schema`: no type coercion (`"42"` ≠ integer `42`), unknown keys rejected, `additionalProperties` forced false, depth capped at `max_schema_depth`. Invalid → ledger (`invalid`, `-32602`) + `note_violation` + `400 / -32602 "Invalid arguments"` **with `data.validation_errors`** (which key / which constraint — safe for the agent to self-correct, no server internals).
+**Gate 3b — OAuth scope.** A mutating tool needs `mcp:write`, anything else `mcp:read` (manual tokens carry both). Missing → ledger (`deny`, `insufficient_scope`, `-32001`) and `403` with `WWW-Authenticate: … error="insufficient_scope"` so the client can ask the user for the wider scope. Scope only narrows; Gate 5 still runs.
 
-**Gate 5 — Authorization (`authorize/evaluate`).** Evaluates the tool's named policy for the resolved principal (in `on_behalf_of` mode the authoritative subject is the human, never the agent). Returns boolean or `{allow, reason}`; the `reason` is recorded to the ledger regardless. **No implicit allow** — a policy that doesn't say yes is a no. Deny → ledger (`authz_decision: deny`, `execution_outcome: denied`, `-32001`) + `note_violation` + `403 / -32001 "Forbidden"` (generic wire message; the specific reason stays in the ledger). Allow → `authz_decision: allow`, continue.
+**Gate 4 — Argument validation (`validate/json_schema`, STRICT).** Validates the arguments against the tool's `input_schema`: no type coercion (`"42"` ≠ integer `42`), unknown keys rejected, `additionalProperties` forced false, depth capped at `max_schema_depth`. Invalid → ledger (`invalid`, `-32602`) + `note_violation` + a **tool execution error**, not a protocol error (MCP 2025-11-25, SEP-1303): HTTP 200, `result.isError: true`, the errors in the text content and — when the tool declares no `output_schema`, which an error object would not match — in `structuredContent.validation_errors` (which key / which constraint — safe for the agent to self-correct, no server internals).
+
+**Gate 5 — Authorization (`authorize/evaluate`).** Evaluates the tool's named policy for the resolved principal (in `on_behalf_of` mode the authoritative subject is the human, never the agent). Returns boolean or `{allow, reason}`; the `reason` is recorded to the ledger regardless. **No implicit allow** — a policy that doesn't say yes is a no. Deny → ledger (`authz_decision: deny`, `execution_outcome: denied`, `-32001`) + `note_violation` + `-32001 "Forbidden"`, HTTP 200 (generic wire message; the specific reason stays in the ledger). Allow → `authz_decision: allow`, continue.
 
 **Gate 6 — Approval gate (only if `tool.requires_approval`).** A tool marked `requires_approval` **never executes inline.** First a flood-control guard counts this principal's non-expired pending proposals:
 - **exact duplicate** (same `input_sha256` already pending) → `note_violation`, ledger `approval_duplicate`, and a *tool-level* result (`200`, `isError:true`, `status:duplicate`) telling the agent to poll the existing handle. (Tool error, not protocol error — HTTP 200.)
@@ -210,7 +216,7 @@ flowchart TD
 Idempotency does **not** apply on this branch — the handle is the dedup, and there is no result yet. Deferred execution is section 5.
 
 **Gate 7 — Idempotency (only if `tool.idempotent` and a `_meta.idempotencyKey` was supplied).** Runs *after* authorization, so a cached result is never served to an unauthorized caller. Lookup by `(key, principal)`:
-- **hit, but `input_sha256` differs** → same key, different args = client error → ledger (`invalid`, `-32602`) + `409 / -32602 "Idempotency-Key reused with different arguments"`.
+- **hit, but `input_sha256` differs** → same key, different args = client error → ledger (`invalid`, `-32602`) + `-32602 "Idempotency-Key reused with different arguments"` (HTTP 200).
 - **hit, args match** → **replay** the stored result without re-executing → ledger `replayed` → `200` with the cached response.
 - **miss** → mark `idem_store = true` and fall through to execution (the result will be stored).
 
@@ -244,7 +250,8 @@ Idempotency does **not** apply on this branch — the handle is the dedup, and t
 A `pending_approval` from Gate 6 sits until an operator decides in the console (`views/pages/mcp-admin/approve.liquid` → `commands/approval/execute`). Approval is **not** a rubber stamp — `approval/execute` re-enters the pipeline as the **original principal**:
 
 1. re-resolve the tool (it may have been de-registered or changed),
-2. re-validate the stored arguments against the *current* schema,
+1b. re-check the **requesting credential**: the token stored on the approval must still be active, still allow the tool (`allowed_tools`) and, for a mutating tool, still carry `mcp:write`; the user must still hold `mcp.tokens.manage`. Otherwise the approval fails with "Requester's access was revoked." — an operator's approval never revives a revoked identity,
+2. re-validate the stored arguments against the *current* schema (a failure is an `isError` tool result with `validation_errors`, like the inline call),
 3. **re-authorize** against the original principal (rights or policy may have changed since the request),
 4. execute inside a transaction and **attest**, linked to the original request by `request_id`.
 
@@ -258,16 +265,16 @@ Every authenticated ending writes one chained entry (`ledger/append`: stamps `se
 
 | `execution_outcome` | `authz_decision` | error code | HTTP | Where it ended |
 |---|---|---|---|---|
-| `error` (rate) | `not_applicable` | `-32002` | 429 | Gate 2 rate limit |
-| `invalid` | `not_applicable` | `-32602` | 400 | Gate 3 unknown tool **or** Gate 4 invalid args **or** Gate 7 key-reuse (409) |
-| `denied` | `deny` | `-32001` | 403 | Gate 5 authorization |
+| `error` (rate) | `not_applicable` | `-32004` | 200 | Gate 2 rate limit |
+| `invalid` | `not_applicable` | `-32602` | 200 | Gate 3 unknown tool **or** Gate 4 invalid args (`isError` result) **or** Gate 7 key-reuse |
+| `denied` | `deny` | `-32001` | 403 / 200 | Gate 3b insufficient scope (403) **or** Gate 5 authorization (200) |
 | `approval_duplicate` | `allow` | — | 200 | Gate 6 dedup |
 | `approval_throttled` | `allow` | — | 200 | Gate 6 queue full |
 | `pending_approval` | `allow` | — | 200 | Gate 6 queued for operator |
 | `replayed` | `allow` | — | 200 | Gate 7 idempotent replay |
 | `success` | `allow` | — | 200 | Gate 8 executed & committed |
 | `rolled_back` | `allow` | `-32003` | 200* | Gate 8 mutating handler/append failed |
-| `security/suspend` | `deny` | — | 403 | Gate 1b auto-suspend (separate entry) |
+| `security/suspend` | `deny` | — | 200 | Gate 1b auto-suspend (separate entry) |
 
 \* A `rolled_back` mutation still returns the handler's tool-error result (`isError:true`, HTTP 200) — the *protocol* call succeeded; the *action* did not.
 

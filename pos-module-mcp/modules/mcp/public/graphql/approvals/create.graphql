@@ -8,6 +8,7 @@ mutation create(
   $requested_by_client_id: String
   $requested_by_token_id: String
   $principal_id: String!
+  $token_id: String
   $authz_policy: String
   $expires_at: Int!
   $request_id: String
@@ -24,6 +25,7 @@ mutation create(
       { name: "requested_by_client_id", value: $requested_by_client_id }
       { name: "requested_by_token_id", value: $requested_by_token_id }
       { name: "principal_id", value: $principal_id }
+      { name: "token_id", value: $token_id }
       { name: "authz_policy", value: $authz_policy }
       { name: "status", value: "pending" }
       { name: "expires_at", value_int: $expires_at }

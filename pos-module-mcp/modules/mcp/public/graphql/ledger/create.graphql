@@ -1,5 +1,6 @@
 mutation create(
   $table: String!
+  $canonical_version: Int
   $seq: Int
   $occurred_at: String
   $method: String
@@ -28,6 +29,7 @@ mutation create(
   record: record_create(record: {
     table: $table
     properties: [
+      { name: "canonical_version", value_int: $canonical_version }
       { name: "seq", value_int: $seq }
       { name: "occurred_at", value: $occurred_at }
       { name: "method", value: $method }
