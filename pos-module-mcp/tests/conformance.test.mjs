@@ -229,6 +229,7 @@ describe('conformance · protocol + governance pipeline', () => {
     const note = await rpc({ jsonrpc: '2.0', id: 6, method: 'prompts/get', params: { name: 'caller_note', arguments: {} } }, { token: RAW_TOKEN });
     const noteText = note.json?.result?.messages?.[0]?.content?.text || '';
     ok('prompts/get passes the caller to the template', noteText.includes(CONF_PRINCIPAL) && noteText.includes('fixt-conformance'), noteText);
+    ok('prompts/get passes the prompt entry to the template', noteText.includes('This note comes from the prompt entry.'), noteText);
     const anonNote = await rpc({ jsonrpc: '2.0', id: 7, method: 'prompts/get', params: { name: 'caller_note', arguments: {} } });
     ok('anonymous prompts/get of a per-caller prompt → unknown prompt', anonNote.json?.error?.code === -32602);
   });

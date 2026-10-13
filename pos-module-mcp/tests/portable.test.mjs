@@ -9,12 +9,16 @@
  *     defaults.max_input_bytes);
  *   - it calls no tool with a valid token and reads no app resource, so it writes no
  *     ledger row and runs no app code that changes data;
- *   - it creates exactly one platformOS user and one MCP token for that user (random
- *     values, the raw token kept in memory only), and deletes both at the end. The last
- *     test proves the ledger holds no row for that user.
+ *   - it creates exactly one platformOS user, a user-module profile for that user carrying
+ *     one role, and one MCP token (random values, the raw token kept in memory only), and
+ *     deletes all three at the end. The last test proves the ledger holds no row for that
+ *     user. A token works only while its user holds MCP access, so the role must be one
+ *     that grants `mcp.tokens.manage` on the instance: MCP_PORTABLE_ROLE, default
+ *     `mcp_user` (the role the module's docs map to that permission).
  *
  * Run:  MCP_URL=https://<instance>/ MCP_TOKEN=<instance admin API token> npx vitest run tests/portable.test.mjs
- *       Without MCP_URL/MCP_TOKEN it uses the repository .pos "ps" environment.
+ *       Without MCP_URL/MCP_TOKEN it uses the repository .pos "ps" environment. Set
+ *       MCP_PORTABLE_ROLE when the instance grants MCP access through another role.
  * MUST run serially with the other suites (see vitest.config.mjs).
  */
 import { describe, it, beforeAll, afterAll, expect } from 'vitest';
@@ -23,6 +27,8 @@ import { loadEnv, makeAdmin, makeMcp, makeModern, MODERN_VERSION } from './lib/h
 
 const T_TOKEN = 'modules/mcp/mcp_token';
 const T_LEDGER = 'modules/mcp/mcp_ledger';
+const T_PROFILE = 'modules/user/profile';
+const ACCESS_ROLE = process.env.MCP_PORTABLE_ROLE || 'mcp_user';
 
 const { base, admin } = loadEnv();
 const adm = makeAdmin({ base, admin });
@@ -34,6 +40,7 @@ const ok = (name, cond, detail) => expect.soft(!!cond, detail ? `${name} — ${d
 let cfg = {};
 let user = null;   // { userId, principal, tokenId, rawToken }
 let tokenId = null;
+let profileId = null;
 
 const challenge = () => cfg?.oauth?.challenge_initialize === true;
 const principalScoped = () => cfg?.tools_list_scope === 'principal';
@@ -47,12 +54,14 @@ async function createCaller() {
   const userId = created?.data?.user_create?.id;
   if (!userId) throw new Error('user_create failed: ' + JSON.stringify(created?.errors || created));
   user = { userId: String(userId), principal: 'user:' + userId, rawToken: 'mcp_portable_' + randomBytes(24).toString('hex') };
+  profileId = await adm.recordCreate(T_PROFILE, { user_id: user.userId, email, name: 'MCP portable ' + run, roles: [ACCESS_ROLE] });
   const digest = createHash('sha256').update(user.rawToken).digest('hex');
   tokenId = await adm.recordCreate(T_TOKEN, { user_id: user.userId, token_digest: digest, label: 'portable-' + run, status: 'active' });
 }
 
 async function removeCaller() {
   if (tokenId) await adm.recordDelete(T_TOKEN, tokenId);
+  if (profileId) await adm.recordDelete(T_PROFILE, profileId);
   if (user) await adm.gql('mutation($id: ID!){ user_delete(id: $id) { id } }', { id: user.userId });
 }
 
@@ -81,6 +90,8 @@ describe('portable conformance · any instance with the module', () => {
     await removeCaller();
     const t = await adm.gql(`{ records(per_page: 1, filter: { id: { value: ${tokenId} }, table: { value: "${T_TOKEN}" } }) { total_entries } }`);
     expect(t?.data?.records?.total_entries, 'the token row was deleted').toBe(0);
+    const p = await adm.gql(`{ records(per_page: 1, filter: { id: { value: ${profileId} }, table: { value: "${T_PROFILE}" } }) { total_entries } }`);
+    expect(p?.data?.records?.total_entries, 'the profile was deleted').toBe(0);
     const u = await adm.gql(`{ users(per_page: 1, filter: { id: { value: ${user.userId} } }) { total_entries } }`);
     expect(u?.data?.users?.total_entries, 'the user was deleted').toBe(0);
   });
@@ -93,7 +104,7 @@ describe('portable conformance · any instance with the module', () => {
     const ping = await legacy('ping', undefined, user.rawToken, 2);
     ok('ping → 200 empty result', ping.status === 200 && ping.json?.result && Object.keys(ping.json.result).length === 0);
     const unknown = await legacy('no/such-method', {}, undefined, 3);
-    ok('unknown method → 400 -32601', unknown.status === 400 && unknown.json?.error?.code === -32601);
+    ok('unknown method → 200 -32601 (legacy: a method-level error is not a transport failure)', unknown.status === 200 && unknown.json?.error?.code === -32601);
     const noMethod = await mcp.rpc({ jsonrpc: '2.0', id: 4 });
     ok('missing method → 400 -32600', noMethod.status === 400 && noMethod.json?.error?.code === -32600);
     const badVersion = await mcp.rpc({ jsonrpc: '1.0', id: 5, method: 'ping' });

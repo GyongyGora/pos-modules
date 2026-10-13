@@ -8,7 +8,9 @@
   array. The template is authored code (reviewed); arguments are the agent's own, and
   the server never acts on the rendered prompt — so there is no server-side injection
   surface here. The template also receives the caller (`principal`, `agent`, nil when
-  anonymous), and a prompt the prompts partial does not offer to this caller is unknown.
+  anonymous) and `prompt`, the entry the prompts partial returned for this caller with every
+  key it set, so one template can serve many prompts. A prompt the prompts partial does not
+  offer to this caller is unknown.
 
   @param {object} params    - MCP params { name, arguments? }
   @param {object} principal - the caller's principal, or nil when anonymous
@@ -63,7 +65,7 @@
   endif
 
   # Render the template. String → one user message; array → used as-is.
-  function rendered = prompt.template, arguments: args, principal: principal, agent: agent
+  function rendered = prompt.template, arguments: args, principal: principal, agent: agent, prompt: prompt
   assign messages = []
   assign rtype = rendered | type_of | downcase
   if rtype == 'array'

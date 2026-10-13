@@ -711,8 +711,9 @@ describe('coverage · multi-principal governance planes', () => {
     ok("the provider's cursor is returned as nextCursor", first.json?.result?.nextCursor === 'page-2', 'nextCursor=' + first.json?.result?.nextCursor);
     const second = await list(mem.rawToken, 'page-2');
     ok("nextCursor pages to the provider's next page", (second.json?.result?.resources || []).map(r => r.uri).join() === `test-note://${mem.userId}/second` && second.json?.result?.nextCursor === undefined, second.text.slice(0, 200));
-    const othersList = await list(out.rawToken);
-    ok('another caller lists only their own', !(othersList.json?.result?.resources || []).some(r => r.uri.startsWith(`test-note://${mem.userId}/`)));
+    // Another caller who holds MCP access (the outsider holds none, so its token is refused).
+    const othersList = await list(validator.rawToken);
+    ok('another caller lists only their own', othersList.status === 200 && Array.isArray(othersList.json?.result?.resources) && !othersList.json.result.resources.some(r => r.uri.startsWith(`test-note://${mem.userId}/`)), othersList.text.slice(0, 160));
 
     const signedTemplates = await templates(mem.rawToken);
     ok('signed-in templates → the provider template', (signedTemplates.json?.result?.resourceTemplates || []).some(t => t.uriTemplate === 'test-note://{user_id}/{name}' && t.name === 'test_note'), signedTemplates.text.slice(0, 200));
@@ -720,7 +721,7 @@ describe('coverage · multi-principal governance planes', () => {
     const own = await read(mem.rawToken, mine);
     const text = own.json?.result?.contents?.[0]?.text || '';
     ok('the owner reads it; the provider got principal and agent', text === `note hello for ${mem.principal} via fixt-member`, own.text.slice(0, 200));
-    const others = await read(out.rawToken, mine);
+    const others = await read(validator.rawToken, mine);
     ok('another caller reading it → Resource not found', others.json?.error?.code === -32002 && others.json?.error?.message === 'Resource not found', JSON.stringify(others.json?.error));
     const anonRead = await read(null, mine);
     ok('anonymous read → Resource not found', anonRead.json?.error?.code === -32002);
@@ -756,7 +757,7 @@ describe('coverage · multi-principal governance planes', () => {
     }
     const read = await send('resources/read', { uri: mine }, { token: mem.rawToken });
     ok('provider read → resultType complete + cacheScope private', read.json?.result?.resultType === 'complete' && read.json?.result?.cacheScope === 'private', read.text.slice(0, 200));
-    const notFound = await send('resources/read', { uri: mine }, { token: out.rawToken });
+    const notFound = await send('resources/read', { uri: mine }, { token: validator.rawToken });
     ok('modern not found → -32602', notFound.json?.error?.code === -32602, 'code=' + notFound.json?.error?.code);
 
     const rateUri = `test-note://${rate.userId}/hello`;

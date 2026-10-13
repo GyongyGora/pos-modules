@@ -43,8 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   load; app policy files named `mcp_*` are never loaded. The tool linter reports both as
   errors.
 - **BREAKING — unsupported `format` values are rejected.** An input-schema `format`
-  other than `uuid`, `email`, `date` or `date-time` makes the manifest invalid (it was silently
-  not enforced); the linter rule `format-unsupported` is now an error.
+  other than `uuid`, `email`, `date` or `date-time` makes the manifest invalid (it was
+  silently not enforced); the linter rule `format-unsupported` is now an error.
 - **Approved actions re-check the requesting token.** `mcp_pending_approval` stores the
   requester's `token_id`; on approval the token must still be active, allow the tool and,
   for a mutating tool, carry `mcp:write`, and the user must still hold MCP access.
@@ -90,6 +90,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   different prompts to different people, for example prompts a person saved for
   themselves. A prompt the partial does not offer to this caller is unknown to
   `prompts/get`. A signed-in `prompts/list` answers with `cacheScope: "private"`.
+- **Prompt templates get their prompt entry.** `prompts/get` passes the template `prompt`:
+  the entry the prompts partial returned for this caller, with any extra keys it set. One
+  template can then serve many prompts, for example one per text a person saved, by keeping
+  an id in the entry. Templates that do not read `prompt` are unaffected.
 - **`agent.token_id` for tool handlers.** Handlers get the id of the `mcp_token` that made
   the call next to `id`, `client_id` and `allowed_tools`. Labels are not unique, so this is
   the only way to tell two tokens of one person apart. An approved action now also gets
@@ -123,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Portable conformance suite** (`tests/portable.test.mjs`). Checks the protocol
   behaviour on any instance with the module — transport, credentials, discovery shapes
   and the `2026-07-28` rules — without the test harness. It only reads `MCP_CONFIG`,
-  calls no tool with a valid token, creates one user and one token and deletes both, and
+  calls no tool with a valid token, creates one user, a user-module profile with an MCP
+  role (`MCP_PORTABLE_ROLE`, default `mcp_user`) and one token and deletes all three, and
   proves it left no ledger row.
 
 ### Fixed

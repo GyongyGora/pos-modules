@@ -7,6 +7,8 @@
   Receives the caller (`principal`, `agent`; nil for an anonymous request). `caller_note`
   (TEST FIXTURE) is offered only to a signed-in caller and names them, so the suite can
   confirm the engine passes the caller and keeps per-caller prompts from anonymous callers.
+  Its entry also carries an extra key, `note`, which the template repeats, so the suite can
+  confirm the template receives the prompt entry.
   `test_poisoned_prompt` (TEST FIXTURE, only when MCP_ENABLE_TEST_TOOLS is set) carries
   injection text in an argument description: the negative control for the eval's
   prompt lint.
@@ -28,6 +30,7 @@
     assign p2['title'] = 'Note for the signed-in caller'
     assign p2['description'] = 'TEST FIXTURE (not a production prompt): a note that names the signed-in caller.'
     assign p2['template'] = 'mcp/prompts/caller_note'
+    assign p2['note'] = 'This note comes from the prompt entry.'
     assign prompts = prompts | array_add: p2
   endif
 

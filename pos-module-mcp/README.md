@@ -476,8 +476,10 @@ It covers transport and envelope, missing/invalid/valid bearer tokens, the shape
 listed tool, prompt and resource, and the `2026-07-28` rules. It never changes the
 configuration (it reads `MCP_CONFIG` and adapts to `tools_list_scope`,
 `oauth.challenge_initialize` and `defaults.max_input_bytes`), calls no tool with a valid
-token and reads no app resource. It creates one user and one MCP token, deletes both at the
-end, and checks that it wrote no ledger row.
+token and reads no app resource. It creates one user, a user-module profile with one role
+and one MCP token, deletes all three at the end, and checks that it wrote no ledger row.
+The role must grant `mcp.tokens.manage` on that instance: set `MCP_PORTABLE_ROLE` when it
+is not `mcp_user`.
 
 The tool linter is also a standalone, dependency-free CLI (no instance needed):
 

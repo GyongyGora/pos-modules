@@ -12,8 +12,9 @@
     title       - optional display title
     description - required, model-read
     arguments   - optional array of { name, description?, required? }
-    template    - partial path invoked with `arguments`, `principal` and `agent` → a
-                  string (one user message) or a messages array
+    template    - partial path invoked with `arguments`, `principal`, `agent` and `prompt`
+                  (this entry, with any other keys the partial set, so one template can
+                  serve many prompts) → a string (one user message) or a messages array
 
   The partial receives the caller, `principal` and `agent` (the same objects tool
   handlers get), or nil for both when the request carried no bearer. It may offer
