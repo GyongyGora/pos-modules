@@ -2,7 +2,7 @@ mutation create(
   $gateway_id: String!
   $url: String!
   $secret: String!
-  $livemode: String!
+  $livemode: Boolean
   $stripe_account_name: String
   $enabled_events: [String!]
 ) {
@@ -13,7 +13,7 @@ mutation create(
         { name: "gateway_id", value: $gateway_id }
         { name: "url", value: $url }
         { name: "secret", value: $secret }
-        { name: "livemode", value: $livemode }
+        { name: "livemode", value_boolean: $livemode }
         { name: "stripe_account_name", value: $stripe_account_name }
         { name: "enabled_events", value_array: $enabled_events }
       ]

@@ -4,7 +4,12 @@
 {% enddoc %}
 {% liquid
   assign response_status = object.response.status | append: ''
-  assign gateway_object_id = object.response.body | parse_json | hash_dig: 'id'
+  # a gateway can answer with something other than JSON (an HTML error page, an empty body)
+  assign body_start = object.response.body | strip | slice: 0
+  assign gateway_object_id = null
+  if body_start == '{'
+    assign gateway_object_id = object.response.body | parse_json | hash_dig: 'id'
+  endif
   assign object = {
     "id": gateway_request.id,
     "response_body": object.response.body,
