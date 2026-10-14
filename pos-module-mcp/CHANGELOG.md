@@ -141,7 +141,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `npm ci` also failed in CI: the lock file lacked the peer dependencies `npm ci` requires
   (`@emnapi/core`, `@emnapi/runtime`, `@emnapi/wasi-threads`). They are now in the lock, and
   a module `.npmrc` sets `legacy-peer-deps=false` so a lock regenerated on a machine with
-  that user setting keeps them.
+  that user setting keeps them. `tests/ci-bootstrap-operator.mjs` stopped CI with "no
+  platformOS user found": the deploy step's `pos-cli data clean` removes every user, so the
+  operator never exists. It now creates the user with `MCP_OP_PASS` when it is missing.
 - **An invalid bearer is answered with 401 on every method.** A request that presents a
   bearer which does not resolve (unknown, revoked, expired, wrong audience) now gets
   `401` with `WWW-Authenticate: … error="invalid_token"` on discovery too (`tools/list`,
