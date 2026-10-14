@@ -1,13 +1,21 @@
 ---
 slug: mcp-admin/approve
 method: post
+layout: ''
 ---
 {%- comment -%}
   Operator approves a pending action (spec §9.6). Executes it as the ORIGINAL
   principal (never the operator), records the outcome on the approval row, and
-  returns to the console. Operator-gated; ownership of the decision is audited.
+  returns to the console. Operator-gated; ownership of the decision is audited. A POST
+  without a valid form token changes nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-admin'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag

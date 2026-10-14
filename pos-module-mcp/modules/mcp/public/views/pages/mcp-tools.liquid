@@ -42,6 +42,8 @@ layout: ''
   assign rows = toks.records.results
   assign flash = context.session.mcp_flash_token
   session mcp_flash_token = null
+  assign flash_taken = context.session.mcp_flash_label_taken
+  session mcp_flash_label_taken = null
 -%}
 <!doctype html>
 <html lang="en">
@@ -78,6 +80,7 @@ layout: ''
   h1 { font-size: 1.25rem; color: var(--text); margin: 0 0 .5rem; }
   h2 { font-size: 1rem; color: var(--muted); margin: 2rem 0 .5rem; text-transform: uppercase; letter-spacing: .04em; }
   .lead { color: var(--muted); }
+  .back { margin: 0 0 1rem; font-size: .85rem; }
 
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 0; padding: 1rem 1.15rem; margin: 1rem 0; }
   .card.new { border-color: var(--ok); }
@@ -118,40 +121,47 @@ layout: ''
 </head>
 <body>
 <div class="wrap">
-  <h1>Your MCP connection tokens</h1>
-  <p class="lead">Generate a bearer token to connect an MCP client (e.g. Claude Code) to this community as <b>you</b>. Every call it makes is authorized as your identity and recorded.</p>
+  <p class="back"><a href="/">← Back to the site</a></p>
+  <h1>Your access tokens</h1>
+  <p class="lead">An access token connects an AI app that supports MCP, such as Claude Code, to this site. The app then acts as <b>you</b>: it can do only what you are allowed to do, and every call it makes is recorded.</p>
 
   {%- if flash != blank -%}
   <div class="card new">
-    <h2>✓ New token — copy it now, it will not be shown again</h2>
+    <h2>✓ New token — copy it now, it is shown only once</h2>
     <p class="token"><code>{{ flash }}</code></p>
-    <p>Add it to Claude Code:</p>
+    <p>To connect Claude Code, run:</p>
     <pre>claude mcp add --transport http {{ server_name }} {{ endpoint }} --header "Authorization: Bearer {{ flash }}"</pre>
-    <p class="warn">Only the token’s fingerprint is stored — we cannot recover this value. If you lose it, revoke it and mint a new one.</p>
+    <p class="warn">Only a fingerprint of the token is stored, so it cannot be shown again. If you lose it, revoke it and create a new one.</p>
+  </div>
+  {%- endif -%}
+
+  {%- if flash_taken != blank -%}
+  <div class="card" role="alert">
+    <p class="warn">You already have an active token named “{{ flash_taken }}”. Each name identifies one app, so choose another name, or revoke that token first. No token was created.</p>
   </div>
   {%- endif -%}
 
   <div class="card">
     <form method="post" action="/mcp-tools/mint" class="mint-form">
       <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
-      <label>Label <input type="text" name="label" placeholder="my laptop" maxlength="40" class="field"></label>
-      <button type="submit" class="btn">Generate token</button>
+      <label>Name <input type="text" name="label" placeholder="Claude Code on my laptop" maxlength="40" class="field"></label>
+      <button type="submit" class="btn">Create token</button>
     </form>
   </div>
 
-  <h2>Existing tokens</h2>
+  <h2>Your tokens</h2>
   <table>
-    <thead><tr><th>label</th><th>type</th><th>status</th><th>created</th><th></th></tr></thead>
+    <thead><tr><th>name</th><th>connected through</th><th>status</th><th>created</th><th></th></tr></thead>
     <tbody>
     {%- for t in rows -%}
       <tr>
         <td class="{% if t.status != 'active' %}revoked{% endif %}">{{ t.label }}</td>
-        <td>{% if t.kind == 'oauth' %}oauth · {{ t.scope }}{% else %}token{% endif %}</td>
+        <td>{% if t.kind == 'oauth' %}app sign-in · {{ t.scope }}{% else %}access token{% endif %}</td>
         <td>{{ t.status }}</td>
         <td>{{ t.created_at | date: '%Y-%m-%d' }}</td>
         <td>
           {%- if t.status == 'active' -%}
-          <form method="post" action="/mcp-tools/revoke" onsubmit="return confirm('Revoke this token? Clients using it stop working immediately.')">
+          <form method="post" action="/mcp-tools/revoke" onsubmit="return confirm('Revoke this token? Apps using it stop working immediately.')">
             <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
             <input type="hidden" name="id" value="{{ t.id }}">
             <button type="submit" class="btn btn-revoke">Revoke</button>

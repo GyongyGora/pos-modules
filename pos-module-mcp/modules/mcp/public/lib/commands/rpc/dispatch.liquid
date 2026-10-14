@@ -104,15 +104,38 @@
     return out
   endif
 
-  # ---- OAuth connect-time challenge (opt-in: MCP_CONFIG.oauth.challenge_initialize). ----
-  #      Most MCP clients only start the authorization flow when the connection itself
-  #      answers 401, so the call that opens a connection — `initialize` (legacy) or
-  #      `server/discover` (modern) — without a valid bearer gets the RFC 9728 challenge.
+  # ---- Credentials. A request that PRESENTS a bearer is checked on every method, open
+  #      discovery included: an invalid, revoked or expired token answers 401 with the
+  #      WWW-Authenticate challenge (RFC 6750 §3.1; MCP authorization: invalid or expired
+  #      tokens MUST receive HTTP 401), so a client learns to re-authenticate instead of
+  #      seeing an empty tool list. A request WITHOUT a bearer stays open, except the
+  #      opt-in connect-time challenge (MCP_CONFIG.oauth.challenge_initialize): most MCP
+  #      clients only start the authorization flow when the connection itself answers 401,
+  #      so `initialize` (legacy) or `server/discover` (modern) without a valid bearer gets
+  #      the RFC 9728 challenge. tools/call and tasks/* authenticate inside their handlers.
+  #      The identity resolved here is passed to the router so it is looked up once.
+  assign auth_header = headers.HTTP_AUTHORIZATION | default: '' | downcase
+  assign presented = false
+  if auth_header contains 'bearer'
+    assign presented = true
+  endif
+  assign self_authenticating = false
+  if method == 'tools/call' or method == 'tasks/get' or method == 'tasks/update' or method == 'tasks/cancel'
+    assign self_authenticating = true
+  endif
   assign connect_method = false
   if method == 'initialize' or method == 'server/discover'
     assign connect_method = true
   endif
+  assign must_authenticate = false
+  if presented and self_authenticating == false
+    assign must_authenticate = true
+  endif
   if connect_method and cfg.oauth.challenge_initialize == true
+    assign must_authenticate = true
+  endif
+  assign identity = null
+  if must_authenticate
     function ini = 'modules/mcp/commands/identity/resolve_principal', headers: headers
     unless ini.authenticated
       log ini.reason, type: 'mcp.auth_denied'
@@ -124,9 +147,10 @@
       assign out['body'] = body
       return out
     endunless
+    assign identity = ini
   endif
 
-  function routed = 'modules/mcp/commands/rpc/route', method: method, params: params, headers: headers, id: id, proto: proto
+  function routed = 'modules/mcp/commands/rpc/route', method: method, params: params, headers: headers, id: id, proto: proto, identity: identity
 
   # ---- Modern results always state their type (2026-07-28 `Result.resultType`). ----
   if proto.modern

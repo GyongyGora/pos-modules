@@ -1,12 +1,20 @@
 ---
 slug: mcp-admin/reject
 method: post
+layout: ''
 ---
 {%- comment -%}
   Operator rejects a pending action (spec §9.6). The action never runs; the
-  decision is recorded. Operator-gated.
+  decision is recorded. Operator-gated. A POST without a valid form token changes
+  nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-admin'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag

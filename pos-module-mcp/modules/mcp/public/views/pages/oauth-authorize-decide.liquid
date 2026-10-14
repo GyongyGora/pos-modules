@@ -3,10 +3,11 @@ slug: oauth/authorize
 method: post
 ---
 {%- comment -%}
-  Consent decision (POST /oauth/authorize). CSRF: the platform runs a POST without a
-  valid authenticity_token with a NULL session, so a forged submit has no user and no
-  parked request and falls through to the error path. The request being approved is
-  the one parked in the session by the GET (matched by rid) — never form input.
+  Consent decision (POST /oauth/authorize). CSRF: a POST without a valid
+  authenticity_token is refused with the error page and never redirects to the client
+  (the platform would also run it with a NULL session, so it has no user and no parked
+  request). The request being approved is the one parked in the session by the GET
+  (matched by rid) — never form input.
 {%- endcomment -%}
 {%- liquid
   response_headers '{"Cache-Control": "no-store", "Pragma": "no-cache"}'
@@ -19,7 +20,7 @@ method: post
   unless raw_req == blank
     assign req = raw_req | parse_json
   endunless
-  if req == blank or req.rid != context.params.rid or cfg.oauth.builtin != true
+  if context.csrf_request_valid != true or req == blank or req.rid != context.params.rid or cfg.oauth.builtin != true
     response_status 400
     echo 'This authorization request has expired. Return to your MCP client and reconnect.'
   else

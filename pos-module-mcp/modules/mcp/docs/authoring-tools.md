@@ -277,10 +277,13 @@ never declare a constraint the engine does not enforce):
 
 - `type`: `object` | `string` | `integer` | `number` | `boolean` | `array`
 - object: `properties`, `required`, `additionalProperties` (always treated as `false`)
-- string: `minLength`, `maxLength`, `pattern` (bounded — no catastrophic backtracking), `enum`, `format` (`date-time` | `email` | `uuid` — any other value makes the manifest invalid, because the engine would not enforce it; use a `pattern` instead)
+- string: `minLength`, `maxLength`, `pattern` (bounded — no catastrophic backtracking), `enum`, `format` (`date` (a real `YYYY-MM-DD` day) | `date-time` | `email` | `uuid` — any other value makes the manifest invalid, because the engine would not enforce it; use a `pattern` instead)
 - number/integer: `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `enum`
 - array: `items` (single schema), `minItems`, `maxItems`
-- annotations: `description`, `title`, `default`
+- annotations: `description`, `title`, `default`. A `description` or `title` is read by
+  the model like the tool description, so it goes through the same tool-poisoning lint
+  (in `input_schema` and `output_schema`); a hit is a warning, reported by the operator
+  eval, and does not exclude the tool.
 
 Validation is **strict, no coercion**: `"5"` is rejected for an `integer`, a null value
 for a typed field is rejected, unknown keys are rejected. Depth is capped
@@ -297,7 +300,7 @@ The handler receives:
 |---|---|
 | `arguments` | validated + type-correct arguments (a plain hash) |
 | `principal` | `{ id: "user:<n>", user_id }` — the resolved caller |
-| `agent` | `{ id, client_id, allowed_tools }` |
+| `agent` | `{ id, client_id, token_id, allowed_tools }` — `token_id` is the `mcp_token` that made the call (labels are not unique, so it is the only way to tell two tokens of one person apart) |
 | `context_meta` | `{ tool_name, tool_version, request_id }` |
 
 It returns a hash:
@@ -418,12 +421,13 @@ meta-schema can't see (it never has the handler source):
 node tests/lib/lint-tools.mjs                 # errors fail; warnings/infos print
 node tests/lib/lint-tools.mjs --strict        # warnings fail too (recommended in CI)
 node tests/lib/lint-tools.mjs --json          # machine-readable
-node tests/lib/lint-tools.mjs --include-vuln  # also lint the vuln_* negative controls
+node tests/lib/lint-tools.mjs --include-vuln  # also lint the deliberately-bad negative controls
 ```
 
 The `vuln_*` fixtures are deliberately-insecure negative controls for the runtime
-agentic-eval (gated by `MCP_ENABLE_VULN_TOOLS`) — the linter **skips them by default**;
-`--include-vuln` opts them back in.
+agentic-eval (gated by `MCP_ENABLE_VULN_TOOLS`), and `test_poisoned_text` is one for the
+runtime lint on schema text — the linter **skips them by default**; `--include-vuln`
+opts them back in.
 
 It lints **every** tool directory, including unregistered drafts (so you can check a
 scaffolded tool before wiring it up), and exits non-zero on findings — drop it into CI
@@ -450,7 +454,8 @@ What it catches — a sample, not the whole list:
   policy file; `mutating` mislabeled (a handler that mutates but declares
   `mutating: false` — it would run without a transaction); `audit_fields` that look
   like PII or name a non-existent field; a mutating tool with a permissive policy and
-  no approval; tool-poisoning phrases in the description.
+  no approval; tool-poisoning phrases in the description or in any parameter
+  `description` / `title`.
 
 The linter is advisory-but-strict: real vulnerabilities are **errors** (fail the run),
 likely bugs are **warnings**, and correct-by-context nudges are **info**.

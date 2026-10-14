@@ -30,7 +30,7 @@ Agent  ──HTTP POST /mcp (JSON-RPC 2.0, Bearer token)──►  mcp.json.liqu
 
 Two families of methods leave `dispatch`:
 
-- **Open methods** — discovery and plumbing (`initialize`, `server/discover`, `ping`, `tools/list`, `resources/list`, `resources/read`, `resources/templates/list`, `prompts/list`, `prompts/get`, `logging/setLevel`). No Bearer token required; **listing is not executing.** These do *not* write to the hash-chained ledger (they take no action). `tools/list` can optionally resolve identity to *filter* what it advertises, but never blocks.
+- **Open methods** — discovery and plumbing (`initialize`, `server/discover`, `ping`, `tools/list`, `resources/list`, `resources/read`, `resources/templates/list`, `prompts/list`, `prompts/get`, `logging/setLevel`). No Bearer token required; **listing is not executing.** These do *not* write to the hash-chained ledger (they take no action). `tools/list` can optionally resolve identity to *filter* what it advertises, but never blocks. One exception: a `resources/read` of a resource served by the **app's resource provider** returns app data, so it needs a signed-in caller and runs suspension, rate-limit and scope checks and writes a ledger entry (section 3b).
 - **`tools/call`** — the one path that can cause a side effect, and therefore the one path that runs every governance gate and writes a ledger entry for **every** authenticated outcome.
 
 Everywhere below, one rule holds: **fail-closed.** Any check that cannot conclusively say "allow" ends the request as deny / invalid / error — never as an accidental allow.
@@ -85,14 +85,16 @@ flowchart TD
   H3 -- open --> H3a[list every tool → 200]
   H3 -- principal --> H3b[resolve identity fail-soft; filter list → 200]
   H -- resources/list --> H4[rpc/resources_list → 200]
-  H -- resources/templates/list --> H5[empty set → 200]
+  H -- resources/templates/list --> H5[rpc/resources_templates_list → 200]
   H -- prompts/list --> H6[rpc/prompts_list → 200]
   H -- logging/setLevel --> H7{valid RFC-5424 level?}
   H7 -- yes --> H7a[200 · empty result no-op]
   H7 -- no --> H7b[200 · -32602 unknown level]
-  H -- resources/read --> H8{_error?}
-  H8 -- yes --> H8a[200 · error body]
-  H8 -- no --> H8b[200 · success contents]
+  H -- resources/read --> H8{provider URI?}
+  H8 -- no: mcp+page or bare slug --> H8m{_error?}
+  H8m -- yes --> H8a[200 · error body]
+  H8m -- no --> H8b[200 · success contents]
+  H8 -- yes --> H8p[[resources/read_provided — governed read, ledgered]]
   H -- prompts/get --> H9{_error?}
   H9 -- yes --> H9a[200 · error body]
   H9 -- no --> H9b[200 · success messages]
@@ -105,12 +107,25 @@ Notes on the dispatch branches:
 - **Envelope validation.** `jsonrpc`, if present, must be exactly `"2.0"`; a missing `method` is `Invalid Request`. Both are `400 / -32600`.
 - **Notifications** (`notifications/*`) are acknowledged with `202` and **no body** — JSON-RPC notifications expect no response.
 - **`tools/call`** hands off the whole outcome (status/headers/body) to `rpc/tools_call` (section 4).
-- **Open methods** are wrapped in a success envelope and returned `200`. Two of them can carry a structured `_error` (unknown resource / unknown prompt): both return the error at `200` (a method-level error is not a transport failure).
-- **`tools/list` scoping.** With `tools_list_scope: 'open'` (default) it lists everything. With `'principal'` it resolves identity *fail-soft* (`resolve_principal` returns a deny object, never throws): an authenticated caller sees only the tools they may call; an unauthenticated caller resolves to the `anonymous` scope and is advertised nothing. Discovery never returns `401`.
+- **Open methods** are wrapped in a success envelope and returned `200`. Two of them can carry a structured `_error` (unknown resource / unknown prompt): both return the error at `200` (a method-level error is not a transport failure). A `resources/read` refusal that carries its own status (rate limit, scope, suspension) keeps it.
+- **`tools/list` scoping.** With `tools_list_scope: 'open'` (default) it lists everything. With `'principal'` an authenticated caller sees only the tools they may call; a caller without a bearer is the `anonymous` scope and is advertised nothing.
+- **Presented credentials are checked on every method.** `rpc/dispatch` resolves a bearer whenever the request carries one (except `tools/call` and `tasks/*`, which authenticate themselves) and passes the identity to the router. A bearer that does not resolve — unknown, revoked, expired, wrong audience — answers `401` with `WWW-Authenticate: … error="invalid_token"` on discovery too, as the MCP authorization spec and RFC 6750 require. A request without a bearer stays open (unless `oauth.challenge_initialize` is on for `initialize` / `server/discover`).
+- **Resources from the app.** For a signed-in caller, `resources/list` and `resources/templates/list` add what the app's resource provider (`resources_partial`, default `mcp/resources`) offers *this* caller — it receives `principal` and `agent` — and are cached `private`. Entries are checked first: no address or name, or the reserved `mcp+page:` scheme, and the entry is dropped. A `resources/read` of a URI with any other scheme than `mcp+page:` goes to `resources/read_provided` (below); a caller without a bearer gets "Resource not found".
 - **`logging/setLevel`** is a deliberate open no-op — but it still validates `level` against the RFC-5424 set; garbage input is `200 / -32602`, never a silent `{}`.
 - **Unknown / not-yet-implemented method** → `-32601 "Method not found"`, HTTP `200` for legacy requests and `404` for modern (`2026-07-28`) ones. The surface never lies about what it implements.
 
-None of the open-method branches write to the hash-chained ledger — they take no governed action.
+None of the open-method branches write to the hash-chained ledger — they take no governed action — except a read from the app's resource provider (3b).
+
+### 3b. A provider resource read — `commands/resources/read_provided`
+
+A `resources/read` of an app resource returns app data, so it runs a short version of the `tools/call` gates for the signed-in caller (`rpc/dispatch` already resolved the bearer):
+
+1. **Auto-suspend** — `limits/enforce_abuse`; a suspended token gets `403 / -32001 "Access suspended"`.
+2. **Rate limit** — the same per-principal window as `tools/call`; over it → `429 / -32002` with `Retry-After`, ledgered, counted as a violation.
+3. **Scope** — the token needs `mcp:read`; otherwise `403 / -32001 "Insufficient scope"` with an `insufficient_scope` challenge, ledgered.
+4. **Provider read** — `resources/provider` with `operation: read`, `principal` and `agent`. The provider applies the app's access rules and returns nil for anything the caller may not read, so a forbidden resource and a missing one both answer `-32002 "Resource not found"` (`-32602` for a modern request), ledgered as `invalid`. A provider that raises, or whose contents are not `[{ uri, text | blob, mimeType? }]`, is logged and answered `-32603 "Internal error"`, ledgered as `error`. Success is ledgered as `success`.
+
+Ledger entries use `method: resources/read`; the URI is stored only as `input_sha256`.
 
 ---
 
@@ -263,7 +278,7 @@ Every authenticated ending writes one chained entry (`ledger/append`: stamps `se
 
 \* A `rolled_back` mutation still returns the handler's tool-error result (`isError:true`, HTTP 200) — the *protocol* call succeeded; the *action* did not.
 
-**Not in the ledger:** pre-auth failures (bad/missing/revoked/unbound token) — platform log only. And the open methods (`initialize`, `ping`, `tools/list`, `resources/*`, `prompts/*`, `logging/setLevel`) — they take no governed action.
+**Not in the ledger:** pre-auth failures (bad/missing/revoked/unbound token) — platform log only. And the open methods (`initialize`, `ping`, `tools/list`, `resources/*`, `prompts/*`, `logging/setLevel`) — they take no governed action. The one exception is a `resources/read` of an app provider resource, which is ledgered as `method: resources/read` with the outcomes `success`, `invalid` (not found), `denied` (scope), or `error` (rate limit, provider failure) — see 3b.
 
 Only `input_sha256` and the chain hashes are hashed; everything else (tool name, principal, outcome, timings, declared `audit_json`) is plaintext, so the ledger is *readable* — `verify_chain` proves it wasn't altered, and the operator console + metrics read it directly.
 

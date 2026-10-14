@@ -17,13 +17,7 @@ find tests -name '*.mjs' -exec node --check {} \;
 echo "harnesses parse ✓"
 
 # The generated seed migration must be byte-identical to the committed one.
-node tests/seed/generate_migrations.mjs
-if ! git diff --quiet -- app/migrations; then
-  echo "seed migration out of date — run: npm run seed:generate"
-  git --no-pager diff -- app/migrations
-  exit 1
-fi
-echo "seed migration up-to-date ✓"
+node tests/seed/generate_migrations.mjs --check
 
 # Author-boundary security gate for every tool's manifest, handler and query.
 node tests/lib/lint-tools.mjs --strict

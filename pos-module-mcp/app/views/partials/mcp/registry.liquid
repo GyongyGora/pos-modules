@@ -35,11 +35,11 @@
   # served — zero production surface. They are community-free and write only to the
   # host test_note table. They give the coverage suite deterministic surfaces for
   # every governance plane: visibility tiers (public/member/admin), validation/rate
-  # (echo), transaction commit + idempotency (write), rollback (fail), and the
-  # human-in-the-loop gate (approve).
+  # (echo), transaction commit + idempotency (write), rollback (fail), the
+  # human-in-the-loop gate (approve), and the lint on schema text (poisoned_text).
   assign test_gate = context.constants.MCP_ENABLE_TEST_TOOLS | default: ''
   if test_gate == '1' or test_gate == 'true'
-    assign test_names = 'test_public,test_member,test_admin,test_echo,test_write,test_fail,test_approve,test_validate,test_bad_annotations' | split: ','
+    assign test_names = 'test_public,test_member,test_admin,test_echo,test_write,test_fail,test_approve,test_validate,test_bad_annotations,test_poisoned_text' | split: ','
     for tn in test_names
       assign te = {}
       assign te['name'] = tn

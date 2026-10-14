@@ -1,14 +1,22 @@
 ---
 slug: mcp-admin/eval
 method: post
+layout: ''
 ---
 {%- comment -%}
   Operator-triggered eval run (spec §19.3). Runs the deterministic tool-surface +
   golden-case checks, stores an mcp_eval_run record, and returns to the console.
   Operator-gated. Can also be driven by CI (the runner logs in and posts here, then
   reads the result via GraphQL). For scheduled runs, wrap eval/run in a background job.
+  A POST without a valid form token runs nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-admin'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag
