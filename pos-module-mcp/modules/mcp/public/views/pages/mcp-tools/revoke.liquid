@@ -1,13 +1,21 @@
 ---
 slug: mcp-tools/revoke
 method: post
+layout: ''
 ---
 {%- comment -%}
   POST handler — revoke a token. IDOR-guarded: the token is only revoked if it
   belongs to the signed-in user (ownership verified before the update), so one
-  member can never revoke another's token by guessing an id.
+  member can never revoke another's token by guessing an id. A POST without a valid
+  form token changes nothing (403).
 {%- endcomment -%}
 {%- liquid
+  unless context.csrf_request_valid
+    response_status 403
+    render 'modules/mcp/pages/form_expired', return_path: '/mcp-tools'
+    break
+  endunless
+
   function current_profile = 'modules/user/helpers/current_profile'
   # platformos-check-disable UnreachableCode
   # platformos-check-disable DeprecatedTag

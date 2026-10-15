@@ -4,22 +4,52 @@
   ONCE — it is never persisted and cannot be recovered. The caller shows it a
   single time and instructs the user to copy it.
 
+  The label names the agent: a manual token's label is its agent id and client_id
+  (commands/identity/resolve_principal). Two active manual tokens of one person with the
+  same label would therefore act as ONE agent, so a label the person already uses on an
+  active manual token (ignoring case) is refused; revoked tokens and OAuth tokens do not
+  count. A blank label gets a generated unique one ("mcp-client-" + 6 random characters)
+  instead of a shared default.
+
   @param {string} user_id - the pOS user this token acts as (the principal)
-  @param {string} label   - human label (agent/client name)
-  @return {object} { raw, id }
+  @param {string} label   - human label (agent/client name), at most 40 characters
+  @return {object} { raw, id, label } — or { error: 'label_taken', label } when the label is in use
 {%- endcomment -%}
 {% liquid
+  assign safe_label = label | default: '' | strip | truncate: 40, ''
+  if safe_label == blank
+    assign suffix = '' | uuid | replace: '-', '' | slice: 0, 6
+    assign safe_label = 'mcp-client-' | append: suffix
+  else
+    graphql active = 'modules/mcp/tokens/active_for_user', user_id: user_id
+    assign wanted = safe_label | downcase
+    assign label_taken = false
+    for t in active.records.results
+      if t.kind == 'oauth'
+        continue
+      endif
+      assign existing = t.label | default: '' | downcase
+      if existing == wanted
+        assign label_taken = true
+        break
+      endif
+    endfor
+    if label_taken
+      assign taken = {}
+      assign taken['error'] = 'label_taken'
+      assign taken['label'] = safe_label
+      return taken
+    endif
+  endif
+
   assign u1 = '' | uuid | replace: '-', ''
   assign u2 = '' | uuid | replace: '-', ''
   assign raw = 'mcp_' | append: u1 | append: u2
   assign digest = raw | digest: 'sha256'
-  assign safe_label = label | default: 'mcp-client' | strip | truncate: 40, ''
-  if safe_label == blank
-    assign safe_label = 'mcp-client'
-  endif
   graphql r = 'modules/mcp/tokens/create', user_id: user_id, token_digest: digest, label: safe_label
   assign out = {}
   assign out['raw'] = raw
   assign out['id'] = r.record.id
+  assign out['label'] = safe_label
   return out
 %}

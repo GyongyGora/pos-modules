@@ -22,6 +22,9 @@
   @param {object} headers - context.headers
   @param {string} id      - the request id, echoed verbatim
   @param {object} proto   - the result of helpers/protocol/negotiate
+  @param {object} identity - the caller resolved by dispatch (commands/identity/resolve_principal,
+                             authenticated), or nil when the request carried no bearer. A
+                             request whose bearer did not resolve never reaches the router.
   @return {object} { http_status:int, headers?:object, body:object }
 {%- endcomment -%}
 {% liquid
@@ -63,10 +66,10 @@
       function result = 'modules/mcp/commands/rpc/ping'
       assign handled = true
     when 'tools/list'
-      # Discovery stays an OPEN method (never 401). When tools_list_scope is 'principal',
-      # resolve identity fail-soft (resolve_principal returns a deny object, never throws)
-      # and filter the list to what this principal may call; an unauthenticated caller
-      # resolves to 'anonymous' and is advertised nothing. 'open' lists every tool.
+      # Discovery stays OPEN for a caller without a bearer. A presented bearer was already
+      # verified by dispatch (an invalid one answered 401 there). When tools_list_scope is
+      # 'principal', the list is filtered to what this caller may call; a caller without a
+      # bearer is 'anonymous' and is advertised nothing. 'open' lists every tool.
       assign tl_scope = cfg.tools_list_scope | default: 'open'
       # Cache hint (modern only): a principal-scoped list varies by identity, so it is
       # 'private'; an open list is identical for everyone → 'public'.
@@ -79,9 +82,8 @@
         function tools_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'tools', scope: tcs
       endif
       if tl_scope == 'principal'
-        function tl_id = 'modules/mcp/commands/identity/resolve_principal', headers: headers
-        if tl_id.authenticated == true
-          function result = 'modules/mcp/commands/rpc/tools_list', params: params.params, scope: 'principal', principal: tl_id.principal, agent: tl_id.agent, delegation_mode: tl_id.delegation_mode, cache: tools_cache
+        if identity.authenticated == true
+          function result = 'modules/mcp/commands/rpc/tools_list', params: params.params, scope: 'principal', principal: identity.principal, agent: identity.agent, delegation_mode: identity.delegation_mode, cache: tools_cache
         else
           function result = 'modules/mcp/commands/rpc/tools_list', params: params.params, scope: 'anonymous', cache: tools_cache
         endif
@@ -89,28 +91,35 @@
         function result = 'modules/mcp/commands/rpc/tools_list', params: params.params, cache: tools_cache
       endif
       assign handled = true
-    when 'resources/list'
+    when 'resources/list', 'resources/templates/list'
+      # The app's resource provider answers for the caller, so a signed-in caller's lists
+      # may differ per caller: 'private' whenever there is one, 'public' when anonymous.
       assign res_cache = null
       if proto.modern
-        function res_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
+        assign rcs = 'public'
+        if identity.authenticated == true
+          assign rcs = 'private'
+        endif
+        function res_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: rcs
       endif
-      function result = 'modules/mcp/commands/rpc/resources_list', cache: res_cache
-      assign handled = true
-    when 'resources/templates/list'
-      # No parameterized resource templates yet — return an empty set (§13.1).
-      assign result = {"resourceTemplates":[]}
-      if proto.modern
-        function rt_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
-        assign result['ttlMs'] = rt_cache.ttlMs
-        assign result['cacheScope'] = rt_cache.cacheScope
+      if method == 'resources/list'
+        function result = 'modules/mcp/commands/rpc/resources_list', params: params.params, cache: res_cache, principal: identity.principal, agent: identity.agent
+      else
+        function result = 'modules/mcp/commands/rpc/resources_templates_list', cache: res_cache, principal: identity.principal, agent: identity.agent
       endif
       assign handled = true
     when 'prompts/list'
+      # The app's prompts partial receives the caller, so the list may differ per caller:
+      # cache it 'private' whenever there is one, 'public' only for an anonymous request.
       assign pr_cache = null
       if proto.modern
-        function pr_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'prompts', scope: 'public'
+        assign pcs = 'public'
+        if identity.authenticated == true
+          assign pcs = 'private'
+        endif
+        function pr_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'prompts', scope: pcs
       endif
-      function result = 'modules/mcp/commands/rpc/prompts_list', cache: pr_cache
+      function result = 'modules/mcp/commands/rpc/prompts_list', cache: pr_cache, principal: identity.principal, agent: identity.agent
       assign handled = true
     when 'logging/setLevel'
       # Legacy only (2026-07-28 replaced it with a per-request _meta log level). A VALID
@@ -138,20 +147,31 @@
 
   # Methods that return a result OR a structured _error (unknown resource/prompt).
   if method == 'resources/read'
-    function rr = 'modules/mcp/commands/rpc/resources_read', params: params.params
+    function rr = 'modules/mcp/commands/rpc/resources_read', params: params.params, identity: identity
     unless rr._error == blank
-      # 2026-07-28 retired -32002 for an unknown resource; modern clients get -32602.
+      # 2026-07-28 retired -32002 for an unknown resource; modern clients get -32602. A
+      # refusal that carries its own HTTP status (rate limit, scope, suspension) keeps its
+      # code: -32002 is also the rate-limit code.
       assign rr_code = rr._error.code
-      if proto.modern and rr_code == -32002
+      if proto.modern and rr_code == -32002 and rr._error.http_status == blank
         assign rr_code = -32602
       endif
       function body = 'modules/mcp/helpers/rpc/error', id: id, code: rr_code, message: rr._error.message
-      assign out['http_status'] = 200
+      assign out['http_status'] = rr._error.http_status | default: 200
+      unless rr._error.headers == blank
+        assign out['headers'] = rr._error.headers
+      endunless
       assign out['body'] = body
       return out
     endunless
     if proto.modern
-      function rc = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
+      # A provider resource is the caller's own view of app data → 'private'.
+      function provided_uri = 'modules/mcp/queries/resources/provided_uri', uri: params.params.uri
+      assign rr_scope = 'public'
+      if provided_uri
+        assign rr_scope = 'private'
+      endif
+      function rc = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: rr_scope
       assign rr['ttlMs'] = rc.ttlMs
       assign rr['cacheScope'] = rc.cacheScope
     endif
@@ -162,7 +182,7 @@
   endif
 
   if method == 'prompts/get'
-    function pr = 'modules/mcp/commands/rpc/prompts_get', params: params.params
+    function pr = 'modules/mcp/commands/rpc/prompts_get', params: params.params, principal: identity.principal, agent: identity.agent
     unless pr._error == blank
       function body = 'modules/mcp/helpers/rpc/error', id: id, code: pr._error.code, message: pr._error.message
       assign out['http_status'] = 200

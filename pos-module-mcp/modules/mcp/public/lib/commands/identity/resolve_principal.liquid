@@ -36,7 +36,9 @@
   then no external issuer can be configured (helpers/config).
 
   @param {object} headers - context.headers (needs HTTP_AUTHORIZATION)
-  @return {object} success { authenticated:true, principal:{id,user_id}, agent:{id,client_id,registered,allowed_tools?}, delegation_mode:'direct', token_id, token_kind, scopes:[…] }
+  @return {object} success { authenticated:true, principal:{id,user_id}, agent:{id,client_id,token_id,registered,allowed_tools?}, delegation_mode:'direct', token_id, token_kind, scopes:[…] }
+                   agent.token_id is the mcp_token record that made the call: labels are not
+                   unique, so it is the only way a handler can tell two tokens of one person apart.
                    failure  (see identity/deny) { authenticated:false, http_status, error_code, message, reason, www_authenticate? }
 {%- endcomment -%}
 {% liquid
@@ -118,6 +120,7 @@
   # OAuth: the real client_id (CIMD URL or DCR id) — a stable agent identity for the
   # ledger, independent of the human-chosen label.
   assign agent['client_id'] = token.client_id | default: agent_id
+  assign agent['token_id'] = token.id | append: ''
   assign agent['registered'] = true
   assign agent['allowed_tools'] = token.allowed_tools
 

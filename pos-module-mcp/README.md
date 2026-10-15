@@ -107,7 +107,7 @@ every request — no redeploy needed.
 | `resources.expose_markdown_pages` | `false` | `.md` resources on/off toggle. Only pages declaring `handler: markdown` in front matter are exposed — a Liquid page is never served as a resource |
 | `resources.markdown_page_prefixes` | `["docs"]` | slug prefixes exposed as resources (allowlist; matched on a `/` boundary, markdown GET pages only) |
 | `oauth.*` | see [OAuth](#oauth-authorization-server) | built-in authorization server |
-| `registry_partial` / `policy_prefix` / `instructions_partial` / `prompts_partial` | `mcp/registry`, `mcp/policies`, `mcp/instructions`, `mcp/prompts` | Layer-2 hook paths |
+| `registry_partial` / `policy_prefix` / `instructions_partial` / `prompts_partial` / `resources_partial` | `mcp/registry`, `mcp/policies`, `mcp/instructions`, `mcp/prompts`, `mcp/resources` | Layer-2 hook paths |
 
 ### Setting a constant
 
@@ -220,7 +220,7 @@ excluded and logged, never served degraded.
 Supported `input_schema` subset: `type` (object/string/integer/number/boolean/array),
 `required`, `properties`, `additionalProperties` (forced `false`), `enum`,
 `minimum`/`maximum`/`exclusiveMinimum`/`exclusiveMaximum`, `minLength`/`maxLength`/
-`pattern`, `items`/`minItems`/`maxItems`, `format` (date-time/email/uuid). Validation
+`pattern`, `items`/`minItems`/`maxItems`, `format` (date/date-time/email/uuid). Validation
 is strict (no coercion).
 
 ### Authorization policies
@@ -278,6 +278,42 @@ Reusable, parameterized prompt templates the server offers to agents.
 prompt text (one user message) or a messages array. Served via `prompts/list` and
 `prompts/get` (required-argument presence is enforced). Interpolate argument values
 with `append`, not `{{ }}`, to avoid output escaping.
+
+The prompts partial and every template also receive the caller, `principal` and `agent`
+(the same objects tool handlers get), or nil for both when the request has no bearer. An
+app can therefore offer prompts per person, for example ones a person saved for
+themselves; a prompt not offered to this caller is unknown to `prompts/get`, and a
+signed-in `prompts/list` is cached `private`.
+
+---
+
+## Resources (Layer 2)
+
+Two sources serve `resources/*`:
+
+- **Markdown pages** (`mcp+page:///<slug>`), off by default — see `resources.*` in
+  [Configuration](#configuration). Open to any caller.
+- **The app's resource provider**, `app/lib/mcp/resources.liquid`
+  (`resources_partial`), for a signed-in caller only. It receives `operation`, `uri`,
+  `cursor`, `principal` and `agent` and returns:
+
+  | `operation` | Return |
+  |---|---|
+  | `list` | `{ resources: [{ uri, name, title?, description?, mimeType?, size? }], next_cursor? }` |
+  | `templates` | `{ resource_templates: [{ uriTemplate, name, title?, description?, mimeType? }] }` |
+  | `read` | `{ contents: [{ uri, mimeType?, text \| blob }] }`, or nil when the resource does not exist **or the caller may not read it** |
+
+  The provider applies the app's own access rules for `principal`, as a tool handler
+  does; the engine cannot know them. Use your own URI scheme (`vault://…`); `mcp+page:`
+  is reserved, and entries using it or lacking a `uri`/`uriTemplate` or `name` are
+  dropped. `next_cursor` becomes `nextCursor` and comes back as `cursor`.
+
+A `resources/read` of a provider URI runs the same controls as a tool call:
+auto-suspend, the per-principal rate limit, the `mcp:read` scope, and a ledger entry
+(`method: resources/read`, URI hashed). "Not found" and "not allowed" give the same
+answer, so a probe learns nothing. A provider that raises or returns malformed contents
+is logged and answered with a generic `-32603`. For a signed-in caller the lists and
+provider reads are cached `private`.
 
 ---
 
@@ -378,6 +414,12 @@ ledger with security-lens quick filters and a paginated JSON export.
 - **Least leakage** — denials return a stable generic message; specifics go to the
   ledger, not the wire.
 - **Bounded blast radius** — per-principal rate limiting; size and depth caps.
+- **Console forms check the form token** — every POST page of `/mcp-tools` and
+  `/mcp-admin` refuses a request without a valid `authenticity_token` (403, nothing
+  changed), and the OAuth consent decision answers 400 without redirecting.
+- **Model-read text is linted** — tool descriptions and titles, every description and
+  title in the schemas, the connection instructions and the prompts go through the
+  tool-poisoning lint (registry warnings and the operator eval).
 
 **Author responsibility — the engine is not a substitute for a careful tool.** The
 planes above are automatic, but schema validation checks *shape, not meaning* — a
@@ -419,7 +461,25 @@ npx vitest run tests/coverage.test.mjs      # MULTI-principal: tools/list scopin
 npx vitest run tests/eval.test.mjs          # tool-surface eval: description quality, no-poison,
                                             # uniqueness, golden-case tool-exists + args-valid
 npx vitest run tests/lint-tools.test.mjs    # static tool linter (LINT_STRICT=1 fails on warnings)
+npx vitest run tests/portable.test.mjs      # protocol checks that run on ANY instance (below)
 ```
+
+**Against your own application.** `tests/portable.test.mjs` needs only the module, not this
+harness, so it can check a real app's instance:
+
+```bash
+MCP_URL=https://your-instance.example.com/ MCP_TOKEN=<instance admin API token> \
+  npx vitest run tests/portable.test.mjs
+```
+
+It covers transport and envelope, missing/invalid/valid bearer tokens, the shape of every
+listed tool, prompt and resource, and the `2026-07-28` rules. It never changes the
+configuration (it reads `MCP_CONFIG` and adapts to `tools_list_scope`,
+`oauth.challenge_initialize` and `defaults.max_input_bytes`), calls no tool with a valid
+token and reads no app resource. It creates one user, a user-module profile with one role
+and one MCP token, deletes all three at the end, and checks that it wrote no ledger row.
+The role must grant `mcp.tokens.manage` on that instance: set `MCP_PORTABLE_ROLE` when it
+is not `mcp_user`.
 
 The tool linter is also a standalone, dependency-free CLI (no instance needed):
 
@@ -443,7 +503,8 @@ For **deploy-time** seeding, `tests/seed/generate_migrations.mjs` emits a byte-d
 migration (`app/migrations/…_seed_mcp_test_fixtures.liquid`) **gated on the
 `MCP_SEED_TEST_FIXTURES` constant** — a plain deploy leaves it unset (no fixtures land);
 the published module ships zero migrations. Regenerate it only when the seed changes:
-`node tests/seed/generate_migrations.mjs`.
+`node tests/seed/generate_migrations.mjs`. The static gate runs it with `--check`, which fails
+when the committed file differs and writes nothing.
 
 `coverage.mjs` drives its fixture users (operator / member / outsider + dedicated
 rate/abuse/validator/conformance principals) against a set of **gated test tools** registered
@@ -468,13 +529,14 @@ runtime meta-schema can't — GraphQL/partial injection from `arguments`, SSRF v
 external calls, ledger writes from handlers, `records_delete_all`, invalid/ReDoS
 patterns, bound contradictions, `mutating` mislabeling, PII in `audit_fields`, and
 per-field-kind content hardening (a display field is told to reject HTML, a URL field
-is warned about `javascript:` URIs, a date field is told to add `format: date-time`).
+is warned about `javascript:` URIs, a date field is told to add `format: date` or `date-time`).
 Errors fail; `--strict` fails on warnings too. See
 [docs/authoring-tools.md → Lint your tools](./modules/mcp/docs/authoring-tools.md#lint-your-tools).
 
 The **eval harness** (`prompts §19.3`) stores golden cases (`mcp_eval_case`) and run
 results (`mcp_eval_run`) as records; the deterministic checks catch tool-surface
-regressions (missing/duplicate/poisoned descriptions, stale golden cases, malformed
+regressions (missing/duplicate descriptions, poisoned text in a tool's description, title
+or schema, in the connection instructions or in a prompt, stale golden cases, malformed
 golden calls). The module never calls LLMs; the LLM-driven tool-selection eval is a
 documented hook in `eval.mjs`.
 

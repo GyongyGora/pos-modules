@@ -11,7 +11,9 @@
   whose declared name does not match its registration, or that fails validation, is
   EXCLUDED and logged — never served degraded (§8.1). No implicit allow.
 
-  @return {object} { tools:[valid manifest + _warnings], excluded:[{name,errors}], count }
+  @return {object} { tools:[valid manifest + _warnings + _lint], excluded:[{name,errors}], count }
+                   _lint lists the model-read texts the tool-poisoning lint flagged
+                   ([{path, hits}], see registry/manifest_schema); eval/run reports them.
 {%- endcomment -%}
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
@@ -99,6 +101,7 @@
       if v.valid
         assign m = manifest
         assign m['_warnings'] = v.warnings
+        assign m['_lint'] = v.lint
         assign tools = tools | array_add: m
         if v.warnings.size > 0
           assign wj = v.warnings | join: '; '
@@ -132,6 +135,7 @@
   assign builtin['handler'] = 'modules/mcp/commands/builtin/approval_status'
   assign builtin['builtin'] = true
   assign builtin['_warnings'] = []
+  assign builtin['_lint'] = []
   assign tools = tools | array_add: builtin
 
   assign out = {}

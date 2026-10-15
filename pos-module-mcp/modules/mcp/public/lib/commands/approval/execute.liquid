@@ -87,6 +87,8 @@
   assign principal['user_id'] = approval.principal_id | remove_first: 'user:'
   assign agent = {}
   assign agent['id'] = approval.requested_by_agent
+  assign agent['client_id'] = approval.requested_by_client_id | default: approval.requested_by_agent
+  assign agent['token_id'] = approval.requested_by_token_id
 
   # 4. Re-authorize against the original principal (fail-closed).
   function authz = 'modules/mcp/commands/authorize/evaluate', policy: tool.authorization_policy, principal: principal, agent: agent, arguments: args, tool: tool, delegation_mode: 'direct'

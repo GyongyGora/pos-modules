@@ -1,17 +1,36 @@
 {%- comment -%}
-  MCP `resources/read` (spec §3.2, §13.1). Returns the markdown content of a doc
-  page previously listed by resources/list.
+  MCP `resources/read` (spec §3.2, §13.1). Two sources, chosen by the URI
+  (queries/resources/provided_uri):
+  - a URI with a scheme other than `mcp+page:` is the app provider's: read for an
+    authenticated caller through commands/resources/read_provided (suspension, rate
+    limit, scope, ledger, the app's access rules); anonymous → not found;
+  - otherwise it is a markdown doc page previously listed by resources/list.
 
-  SECURITY: the toggle AND the prefix allowlist are RE-CHECKED here — a crafted uri
-  must not read a page outside the configured doc prefixes (never trust the uri to
-  scope access). Only markdown GET pages under an allowed prefix (path boundary)
-  are readable — see queries/resources/page_allowed.
+  SECURITY (markdown pages): the toggle AND the prefix allowlist are RE-CHECKED here —
+  a crafted uri must not read a page outside the configured doc prefixes (never trust
+  the uri to scope access). Only markdown GET pages under an allowed prefix (path
+  boundary) are readable — see queries/resources/page_allowed.
 
-  @param {object} params - MCP params with `uri` = mcp+page:///<slug>
-  @return {object} result { contents:[{uri,mimeType,text}] } OR
-                   { _error:{code,message} } when unavailable/forbidden
+  @param {object} params   - MCP params with `uri` (mcp+page:///<slug> or a provider URI)
+  @param {object} identity - the caller resolved by rpc/dispatch, or nil when anonymous
+  @return {object} result { contents:[{uri,mimeType,text|blob}] } OR
+                   { _error:{code,message,http_status?,headers?} } when unavailable/forbidden
 {%- endcomment -%}
 {% liquid
+  function provided_uri = 'modules/mcp/queries/resources/provided_uri', uri: params.uri
+  if provided_uri
+    if identity.authenticated == true
+      function provided = 'modules/mcp/commands/resources/read_provided', uri: params.uri, identity: identity
+      return provided
+    endif
+    assign err = {}
+    assign err['code'] = -32002
+    assign err['message'] = 'Resource not found'
+    assign out = {}
+    assign out['_error'] = err
+    return out
+  endif
+
   function cfg = 'modules/mcp/helpers/config'
 
   unless cfg.resources.expose_markdown_pages
