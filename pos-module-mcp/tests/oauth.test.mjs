@@ -51,6 +51,13 @@ const REDIRECT_B1 = 'https://client-b.example.test/one';
 const REDIRECT_B2 = 'https://client-b.example.test/two';
 const REDIRECT_C = 'https://client-c.example.test/cb';
 
+// The Client ID Metadata Document the test instance serves itself
+// (app/views/pages/test/mcp-client-metadata.json.liquid); these values match it. The name
+// stays under the 40 characters a grant label keeps (commands/oauth/issue_tokens).
+const CIMD_CLIENT_ID = ORIGIN + '/test/mcp-client-metadata.json';
+const CIMD_REDIRECT = 'https://client-cimd.example.test/cb';
+const CIMD_NAME = 'CIMD "q" &quot;e&quot; &amp; &lt;b&gt;';
+
 // Baseline MCP_CONFIG for the run: the per-IP OAuth limits (60/min token + authorize,
 // 10/min registration) are lifted so this suite's own traffic never trips them; the
 // rate-limit test lowers registration explicitly.
@@ -467,6 +474,28 @@ describe('oauth · built-in OAuth 2.1 authorization server', () => {
     // above came from the guard, not from a blanket CIMD failure.
     const pub = await authorizeGet(anon, { client_id: 'https://client.example.test/oauth/client.json', redirect_uri: 'https://client.example.test/cb' });
     ok('public https URL passes the guard (then fails the fetch)', pub.status === 400 && !pub.location && /Could not fetch the client metadata document/.test(pub.html), `${pub.status} ${pub.html.match(/class="err">([^<]*)/)?.[1]}`);
+  });
+
+  // platformOS parse_json decodes HTML entities unless raw_text: true, so a document whose
+  // client_name held "&quot;" was refused and "&amp;" was shown and stored as "&".
+  it('CIMD — a fetched client metadata document is accepted and its client name kept exactly', async () => {
+    createdClients.add(CIMD_CLIENT_ID);
+    const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const { verifier, challenge } = pkce();
+    const a = await authorizeGet(webMember, { client_id: CIMD_CLIENT_ID, redirect_uri: CIMD_REDIRECT, code_challenge: challenge });
+    ok('consent page 200', a.status === 200 && !!ridOf(a.html), `${a.status} ${a.html.match(/class="err">([^<]*)/)?.[1] || ''}`);
+    const shown = a.html.match(/<h1>Authorize <b>([^<]*)<\/b>/)?.[1];
+    ok('consent page shows the client name exactly', shown === escapeHtml(CIMD_NAME), shown);
+    const d = await decide(webMember, a.html, 'approve');
+    const code = d.loc?.searchParams.get('code');
+    ok('approve → 302 to the document\'s redirect_uri with a code', d.status === 302 && d.location?.startsWith(CIMD_REDIRECT + '?') && !!code, d.location);
+    const t = await token({ grant_type: 'authorization_code', code: code || '', code_verifier: verifier, client_id: CIMD_CLIENT_ID, redirect_uri: CIMD_REDIRECT });
+    ok('token issued', t.status === 200 && /^mcp_at_/.test(t.json?.access_token || ''), t.text.slice(0, 160));
+    const row = t.json?.access_token ? await tokenRowByAccess(t.json.access_token) : null;
+    ok('grant bound to the document URL', row?.client_id === CIMD_CLIENT_ID, row?.client_id);
+    const r = row ? await adm.gql(`{ records(per_page: 1, filter: { id: { value: "${row.id}" } table: { value: "${T_TOKEN}" } }) { results { label: property(name: "label") } } }`) : null;
+    const label = r?.data?.records?.results?.[0]?.label;
+    ok('grant stores the client name exactly', label === CIMD_NAME, label);
   });
 
   // ==== /oauth/token — authorization_code ======================================
