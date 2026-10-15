@@ -13,8 +13,11 @@
   @param {integer} window         - seconds until the entry expires
 {%- endcomment -%}
 {% liquid
-  assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
-  assign exp = now_unix | plus: window
-  graphql _ = 'modules/mcp/idempotency/create', key: key, principal_id: principal_id, tool_name: tool_name, input_sha256: input_sha256, response_json: response_json, expires_at: exp
-  return true
+  function object = 'modules/mcp/commands/idempotency/store/build', key: key, principal_id: principal_id, tool_name: tool_name, input_sha256: input_sha256, response_json: response_json, window: window
+  function object = 'modules/mcp/commands/idempotency/store/check', object: object
+  if object.valid
+    function _ = 'modules/mcp/commands/idempotency/store/execute', object: object
+    return true
+  endif
+  return false
 %}

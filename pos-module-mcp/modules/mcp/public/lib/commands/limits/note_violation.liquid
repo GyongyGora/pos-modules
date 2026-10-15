@@ -8,21 +8,14 @@
   @param {string} principal_id
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/helpers/config'
-  assign win_len = cfg.defaults.abuse_window_seconds | plus: 0
-  if win_len <= 0
+  function object = 'modules/mcp/commands/limits/note_violation/build', principal_id: principal_id
+  # Abuse tracking switched off (window <= 0): nothing to record.
+  unless object.enabled
     return true
-  endif
-  assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
-  assign window = now_unix | divided_by: win_len
-  assign key = 'abuse:' | append: principal_id | append: ':' | append: window
-
-  graphql f = 'modules/mcp/rate/find', key: key
-  assign existing = f.records.results.first
-  if existing
-    graphql _ = 'modules/mcp/rate/increment', id: existing.id
-  else
-    graphql _ = 'modules/mcp/rate/create', key: key
+  endunless
+  function object = 'modules/mcp/commands/limits/note_violation/check', object: object
+  if object.valid
+    function _ = 'modules/mcp/commands/limits/note_violation/execute', object: object
   endif
   return true
 %}

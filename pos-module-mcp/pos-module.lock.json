@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "user": "5.3.2",
     "core": "2.1.11",
+    "user": "5.3.2",
     "common-styling": "1.38.13"
   },
   "devDependencies": {
@@ -16,8 +16,8 @@
     "push_notifications": "2.0.2"
   },
   "registries": {
-    "user": "https://partners.platformos.com",
     "core": "https://partners.platformos.com",
+    "user": "https://partners.platformos.com",
     "common-styling": "https://partners.platformos.com",
     "tests": "https://partners.platformos.com",
     "community": "https://partners.platformos.com",

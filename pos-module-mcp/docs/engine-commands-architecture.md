@@ -6,8 +6,11 @@ Units that persist or act (write the ledger, mint tokens, run handlers, route RP
 methods) are **commands** (`modules/mcp/commands/…`). Commands that take outside input
 follow the platformOS Build/Check/Execute pattern: `<resource>/<action>.liquid` runs
 `<action>/build` (normalize), `<action>/check` (sets `valid` + `errors`) and, only when
-valid, `<action>/execute` — `access/set_role`, `tokens/mint`, `oauth/register`,
-`oauth/revoke`. Units that only read (`registry/{build,build_prompts,load,resolve_tool}`,
+valid, `<action>/execute` — `access/set_role`, `tokens/mint`, `oauth/{register,revoke,issue_code,issue_tokens}`,
+`approval/{create,claim}`, `idempotency/store` and `limits/{check,note_violation}`.
+`ledger/append` is deliberately single-step (attestation is never refused); orchestrators
+that only chain other commands (`rpc/*`, `approval/execute`, `execute/run`, `eval/run`)
+have no write of their own to split. Units that only read (`registry/{build,build_prompts,load,resolve_tool}`,
 `ledger/verify_chain*`, `idempotency/lookup`, `identity/token_still_authorized`,
 `resources/provider`, `observability/metrics`, …) are **queries** (`modules/mcp/queries/…`).
 Pure units — they build an envelope, parse or validate a value, or compute from config,

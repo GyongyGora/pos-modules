@@ -5,23 +5,14 @@
 
   @param {object} req     - the validated request (validate_authorize → req)
   @param {string} user_id - the consenting user (the principal)
-  @return {string} the redirect URL
+  @return {string} the redirect URL, or null when the request is incomplete
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/helpers/config'
-  function origin = 'modules/mcp/queries/origin'
-  function raw = 'modules/mcp/helpers/oauth/random_secret', prefix: 'mcp_ac_'
-  assign code_digest = raw | digest: 'sha256'
-  assign now_s = 'now' | to_time | strftime: '%s' | plus: 0
-  assign expires_at = cfg.oauth.code_ttl_seconds | plus: now_s
-  assign uid = user_id | append: ''
-  graphql _c = 'modules/mcp/oauth/code_create', code_digest: code_digest, client_id: req.client_id, client_name: req.client_name, redirect_uri: req.redirect_uri, redirect_uri_sent: req.redirect_uri_sent, code_challenge: req.code_challenge, user_id: uid, scope: req.scope, resource: req.resource, expires_at: expires_at
-
-  assign p = {
-    "code": raw,
-    "state": req.state,
-    "iss": origin
-  }
-  function url = 'modules/mcp/helpers/oauth/append_params', url: req.redirect_uri, params: p
-  return url
+  function object = 'modules/mcp/commands/oauth/issue_code/build', req: req, user_id: user_id
+  function object = 'modules/mcp/commands/oauth/issue_code/check', object: object
+  if object.valid
+    function url = 'modules/mcp/commands/oauth/issue_code/execute', object: object
+    return url
+  endif
+  return null
 %}

@@ -19,20 +19,16 @@
   @return {object} { claimed:boolean, rec } rec = the row as re-read under the lock
 {%- endcomment -%}
 {% liquid
-  assign out = { "claimed": false }
-  assign token = '' | uuid
-  assign decided_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
+  function object = 'modules/mcp/commands/approval/claim/build', id: id, handle: handle, status: status, decided_by: decided_by, result_summary: result_summary
+  function object = 'modules/mcp/commands/approval/claim/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/approval/claim/execute', object: object
+    return out
+  endif
 
-  transaction timeout: 10
-    graphql _lock = 'modules/mcp/approvals/claim_lock', id: id, token: token
-    graphql f = 'modules/mcp/approvals/find_by_handle', handle: handle
-    assign rec = f.records.results.first
-    if rec and rec.status == 'pending'
-      graphql _u = 'modules/mcp/approvals/update', id: rec.id, status: status, decided_by: decided_by, decided_at: decided_at, result_summary: result_summary
-      assign out['claimed'] = true
-    endif
-  endtransaction
-
-  assign out['rec'] = rec
+  assign out = {
+    "claimed": false,
+    "rec": null
+  }
   return out
 %}

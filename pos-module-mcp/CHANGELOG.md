@@ -26,9 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `observability/metrics` are now `modules/mcp/queries/…`; the pure
   `resources/clean_entries` is now `modules/mcp/helpers/…`. Apps calling any of them as
   `modules/mcp/commands/…` must update the path.
-- **Input-taking commands follow Build/Check/Execute.** `access/set_role`, `tokens/mint`,
-  `oauth/register` and `oauth/revoke` keep their path and return contract, and now run
-  `<action>/build`, `<action>/check` and `<action>/execute` like the other platformOS modules.
+- **Commands that write follow Build/Check/Execute.** `access/set_role`, `tokens/mint`,
+  `oauth/register`, `oauth/revoke`, `oauth/issue_code`, `oauth/issue_tokens`,
+  `approval/create`, `approval/claim`, `idempotency/store`, `limits/check` and
+  `limits/note_violation` keep their path and return contract, and now run
+  `<action>/build`, `<action>/check` and `<action>/execute` like the other platformOS
+  modules. Incomplete input now fails closed (`allowed: false`, `claimed: false`, no row
+  written). `ledger/append` stays single-step on purpose — attestation is never refused —
+  as do the input-less `ledger/mutex` and `maintenance/sweep` and the orchestrators
+  (`rpc/*`, `approval/execute`, `execute/run`, `eval/run`, the OAuth token flows).
   The checks use `modules/core/validations/*` and `register_error`, so `core` (^2.1.9,
   already installed through `user`) is now a declared dependency. `tokens/mint` with a
   blank `user_id` now returns `{ error: 'invalid', errors }` instead of minting an unbound token.

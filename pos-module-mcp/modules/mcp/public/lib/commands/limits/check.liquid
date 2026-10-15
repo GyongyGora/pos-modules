@@ -10,46 +10,22 @@
 
   @param {string}  scope - "principal:<id>" or "client:<id>"
   @param {integer} limit - max requests allowed in the window
-  @return {object} { allowed:boolean, count:int, limit:int, retry_after:int }
+  @return {object} { allowed:boolean, count:int, limit:int, retry_after:int } — a blank scope
+                   or limit fails closed (allowed: false)
 {%- endcomment -%}
 {% liquid
-  assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
-  assign window = now_unix | divided_by: 60
-  assign key = scope | append: ':' | append: window
-
-  graphql fres = 'modules/mcp/rate/find', key: key
-  assign existing = fres.records.results.first
-
-  # property(name:) returns a string — coerce to integer for numeric comparison.
-  assign count = 0
-  if existing
-    graphql ires = 'modules/mcp/rate/increment', id: existing.id
-    assign count = ires.record.count | plus: 0
-  else
-    graphql cres = 'modules/mcp/rate/create', key: key
-    assign count = cres.record.count | plus: 0
-    # First request of this scope in a new window: every 10th minute, also reclaim
-    # closed counter windows + expired idempotency rows (async platform jobs), so the
-    # tables stay bounded without a scheduler. At most once per scope per 10 minutes.
-    assign sweep_slot = window | modulo: 10
-    if sweep_slot == 0
-      function _swept = 'modules/mcp/commands/maintenance/sweep'
-    endif
+  function object = 'modules/mcp/commands/limits/check/build', scope: scope, limit: limit
+  function object = 'modules/mcp/commands/limits/check/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/limits/check/execute', object: object
+    return out
   endif
-
-  assign allowed = true
-  if count > limit
-    assign allowed = false
-  endif
-
-  assign elapsed = now_unix | modulo: 60
-  assign retry_after = 60 | minus: elapsed
 
   assign out = {
-    "allowed": allowed,
-    "count": count,
+    "allowed": false,
+    "count": 0,
     "limit": limit,
-    "retry_after": retry_after
+    "retry_after": object.retry_after
   }
   return out
 %}
