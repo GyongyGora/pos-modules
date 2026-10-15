@@ -49,8 +49,8 @@
   #     (identity/token_still_authorized). Rows queued before token_id was recorded
   #     have no token to re-check; for those only the user's permission is checked.
   if approval.token_id == blank
-    assign perm_principal = {}
-    assign perm_principal['user_id'] = approval.principal_id | remove_first: 'user:'
+    assign perm_principal_user_id = approval.principal_id | remove_first: 'user:'
+    assign perm_principal = { "user_id": perm_principal_user_id }
     function still_allowed = 'modules/mcp/queries/principal/can', principal: perm_principal, do: cfg.oauth.required_permission
     assign cred = {
       "ok": still_allowed,

@@ -28,8 +28,10 @@
     assign ttl = cfg.cache.discover_ttl_ms
   endif
   # platformos-check-enable UnknownProperty
-  assign out = {}
-  assign out['ttlMs'] = ttl | plus: 0
-  assign out['cacheScope'] = scope
+  assign ttl_ms = ttl | plus: 0
+  assign out = {
+    "ttlMs": ttl_ms,
+    "cacheScope": scope
+  }
   return out
 %}

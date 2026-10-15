@@ -19,14 +19,16 @@
     return out
   endif
 
-  assign obj = {}
-  assign obj['uuid'] = '' | uuid
-  assign obj['name'] = arguments.name
-  assign obj['short_description'] = 'Community broadcast'
-  assign obj['description'] = arguments.description
-  assign obj['start_date'] = arguments.start_date
-  assign obj['end_date'] = arguments.start_date
-  assign obj['venue'] = arguments.venue
+  assign obj_uuid = '' | uuid
+  assign obj = {
+    "uuid": obj_uuid,
+    "name": arguments.name,
+    "short_description": "Community broadcast",
+    "description": arguments.description,
+    "start_date": arguments.start_date,
+    "end_date": arguments.start_date,
+    "venue": arguments.venue
+  }
 
   function object = 'modules/community/commands/events/create', object: obj, profile: profile
 

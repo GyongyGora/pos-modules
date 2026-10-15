@@ -57,9 +57,11 @@
     endif
     function text_lint = 'modules/mcp/helpers/registry/lint_description', text: text
     if text_lint.flagged
-      assign hit = {}
-      assign hit['path'] = at | append: '.' | append: text_key
-      assign hit['hits'] = text_lint.hits
+      assign hit_path = at | append: '.' | append: text_key
+      assign hit = {
+        "path": hit_path,
+        "hits": text_lint.hits
+      }
       assign lint = lint | array_add: hit
     endif
   endfor

@@ -69,9 +69,11 @@
       if errors.size == 0
         assign prompts = prompts | array_add: p
       else
-        assign ex = {}
-        assign ex['name'] = p.name | default: '(unnamed)'
-        assign ex['errors'] = errors
+        assign ex_name = p.name | default: '(unnamed)'
+        assign ex = {
+          "name": ex_name,
+          "errors": errors
+        }
         assign excluded = excluded | array_add: ex
         assign ej = errors | join: '; '
         assign _lm = ex.name | append: ': ' | append: ej

@@ -79,11 +79,11 @@
     assign rle['_start_ms'] = start_ms
     function _ = 'modules/mcp/commands/ledger/append', entry: rle
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: auth.principal.id
-    assign hdrs = {}
-    assign hdrs['Retry-After'] = rl.retry_after | append: ''
+    assign hdrs_retry_after = rl.retry_after | append: ''
+    assign hdrs = { "Retry-After": hdrs_retry_after }
     assign out['headers'] = hdrs
-    assign rl_data = {}
-    assign rl_data['retryAfter'] = rl.retry_after | plus: 0
+    assign retry_after_s = rl.retry_after | plus: 0
+    assign rl_data = { "retryAfter": retry_after_s }
     # platformos-check-disable PartialCallArguments
     function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32004, message: 'Rate limit exceeded', data: rl_data
     # platformos-check-enable PartialCallArguments

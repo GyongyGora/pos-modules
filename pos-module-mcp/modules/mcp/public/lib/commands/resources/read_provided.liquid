@@ -53,8 +53,8 @@
     assign le['error_code'] = -32002
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: identity.principal.id
-    assign headers = {}
-    assign headers['Retry-After'] = rate.retry_after | append: ''
+    assign headers_retry_after = rate.retry_after | append: ''
+    assign headers = { "Retry-After": headers_retry_after }
     assign err = {
       "code": -32002,
       "message": "Rate limit exceeded",

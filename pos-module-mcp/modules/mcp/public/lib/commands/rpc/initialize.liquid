@@ -15,8 +15,8 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
 
-  assign result = {}
-  assign result['protocolVersion'] = protocol_version | default: cfg.protocol_version
+  assign protocol_version_out = protocol_version | default: cfg.protocol_version
+  assign result = { "protocolVersion": protocol_version_out }
 
   # listChanged is false (no notifications until streaming lands, spec §16.2/§13.1 Phase 4).
   assign caps = {
@@ -36,8 +36,8 @@
   function instructions = 'modules/mcp/queries/instructions'
   assign result['instructions'] = instructions
 
-  assign rmeta = {}
-  assign rmeta['supportedProtocolVersions'] = supported | default: cfg.supported_protocol_versions
+  assign supported_versions = supported | default: cfg.supported_protocol_versions
+  assign rmeta = { "supportedProtocolVersions": supported_versions }
   assign result['_meta'] = rmeta
 
   return result

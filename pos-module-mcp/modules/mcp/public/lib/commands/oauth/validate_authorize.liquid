@@ -81,13 +81,15 @@
 
   function scope = 'modules/mcp/helpers/oauth/normalize_scope', requested: params.scope
 
-  assign req = {}
-  assign req['rid'] = '' | uuid
-  assign req['client_id'] = client.client_id
-  assign req['client_name'] = client.client_name
-  assign req['client_uri'] = client.client_uri
-  assign req['client_kind'] = client.kind
-  assign req['redirect_uri'] = redirect_uri
+  assign req_rid = '' | uuid
+  assign req = {
+    "rid": req_rid,
+    "client_id": client.client_id,
+    "client_name": client.client_name,
+    "client_uri": client.client_uri,
+    "client_kind": client.kind,
+    "redirect_uri": redirect_uri
+  }
   # Whether the client sent redirect_uri (vs. the single registered default): if it
   # did, /token requires the same value (OAuth 2.1 §4.1.3).
   assign redirect_uri_sent = false

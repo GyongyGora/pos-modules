@@ -41,11 +41,13 @@
         unless allowed
           continue
         endunless
-        assign r = {}
-        assign r['uri'] = 'mcp+page:///' | append: page.slug
-        assign r['name'] = page.slug
+        assign r_uri = 'mcp+page:///' | append: page.slug
         assign title = page.metadata.title | default: page.slug
-        assign r['title'] = title
+        assign r = {
+          "uri": r_uri,
+          "name": page.slug,
+          "title": title
+        }
         assign desc = page.metadata.description | default: ''
         unless desc == blank
           assign r['description'] = desc

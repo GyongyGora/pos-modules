@@ -59,8 +59,8 @@
       endif
 
       if load_error
-        assign ex = {}
-        assign ex['name'] = reg_name | default: '(unnamed)'
+        assign ex_name = reg_name | default: '(unnamed)'
+        assign ex = { "name": ex_name }
         assign errs = []
         assign errs = errs | array_add: load_error
         assign ex['errors'] = errs
@@ -107,9 +107,11 @@
           log _lm, type: 'mcp.registry_lint_warning'
         endif
       else
-        assign ex = {}
-        assign ex['name'] = v.name | default: reg_name | default: '(unnamed)'
-        assign ex['errors'] = v.errors
+        assign ex_name = v.name | default: reg_name | default: '(unnamed)'
+        assign ex = {
+          "name": ex_name,
+          "errors": v.errors
+        }
         assign excluded = excluded | array_add: ex
         assign ej = v.errors | join: '; '
         assign _lm = ex.name | append: ': ' | append: ej

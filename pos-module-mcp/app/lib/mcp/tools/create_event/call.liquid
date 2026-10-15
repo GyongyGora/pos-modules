@@ -28,15 +28,18 @@
 
   # Build the command input object from validated arguments. end_date defaults to
   # start_date (community listings filter end_date >= now); uuid is generated.
-  assign obj = {}
-  assign obj['uuid'] = '' | uuid
-  assign obj['name'] = arguments.name
-  assign obj['short_description'] = arguments.short_description
-  assign obj['description'] = arguments.description
-  assign obj['start_date'] = arguments.start_date
-  assign obj['end_date'] = arguments.end_date | default: arguments.start_date
-  assign obj['venue'] = arguments.venue
-  assign obj['link'] = arguments.link
+  assign obj_uuid = '' | uuid
+  assign obj_end_date = arguments.end_date | default: arguments.start_date
+  assign obj = {
+    "uuid": obj_uuid,
+    "name": arguments.name,
+    "short_description": arguments.short_description,
+    "description": arguments.description,
+    "start_date": arguments.start_date,
+    "end_date": obj_end_date,
+    "venue": arguments.venue,
+    "link": arguments.link
+  }
 
   # Invoke the community command (build → check → execute).
   function object = 'modules/community/commands/events/create', object: obj, profile: profile

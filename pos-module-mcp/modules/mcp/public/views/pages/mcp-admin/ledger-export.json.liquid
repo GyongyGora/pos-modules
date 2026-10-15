@@ -46,9 +46,11 @@ format: json
   endfor
 
   assign nrows = out_rows | size
-  assign payload = {}
-  assign payload['exported_at'] = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
-  assign payload['count'] = nrows
+  assign payload_exported_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
+  assign payload = {
+    "exported_at": payload_exported_at,
+    "count": nrows
+  }
   assign was_capped = false
   if nrows >= export_cap
     assign was_capped = true

@@ -24,28 +24,32 @@
     when 'list'
       assign resources = []
       if cursor == 'page-2'
-        assign second = {}
-        assign second['uri'] = base | append: 'second'
-        assign second['name'] = 'second'
+        assign second_uri = base | append: 'second'
+        assign second = {
+          "uri": second_uri,
+          "name": "second"
+        }
         assign resources = resources | array_add: second
         assign out = { "resources": resources }
         return out
       endif
-      assign hello = {}
-      assign hello['uri'] = base | append: 'hello'
-      assign hello['name'] = 'hello'
-      assign hello['title'] = 'Hello note'
-      assign hello['description'] = 'TEST FIXTURE: a note only its owner can read.'
-      assign hello['mimeType'] = 'text/plain'
-      assign hello['internal'] = 'never listed'
+      assign hello_uri = base | append: 'hello'
+      assign hello = {
+        "uri": hello_uri,
+        "name": "hello",
+        "title": "Hello note",
+        "description": "TEST FIXTURE: a note only its owner can read.",
+        "mimeType": "text/plain",
+        "internal": "never listed"
+      }
       assign resources = resources | array_add: hello
       assign reserved = {
         "uri": "mcp+page:///forged",
         "name": "forged"
       }
       assign resources = resources | array_add: reserved
-      assign nameless = {}
-      assign nameless['uri'] = base | append: 'nameless'
+      assign nameless_uri = base | append: 'nameless'
+      assign nameless = { "uri": nameless_uri }
       assign resources = resources | array_add: nameless
       assign out = {
         "resources": resources,
