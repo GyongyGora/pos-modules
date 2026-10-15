@@ -133,6 +133,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Text with HTML entities no longer breaks tool calls or changes on the way.** platformOS
+  `parse_json` decodes HTML entities before it parses unless `raw_text: true` is passed, so
+  tool arguments containing `&quot;` failed with a Liquid error (HTTP 500) and `&amp;` or
+  `&lt;` reached the handler as `&` or `<`. The same happened to stored arguments of held
+  actions, idempotent replays, task results and errors, the parked OAuth authorization
+  request (a `state` with `&quot;` gave a 500 on consent), client metadata documents, the
+  `MCP_CONFIG` constant and the console's eval results. Every one of these now parses with
+  `raw_text: true`.
+- **The cached tool registry keeps tool text exactly, whichever page filled the cache.**
+  `registry/load` wrote the registry JSON with `echo`, which Liquid HTML-escapes on HTML
+  pages (the console) but not on the JSON endpoint, and both share one cache entry. Read
+  back with the default decoding, a tool title or description containing `&quot;` made
+  `/mcp` answer 500 when the endpoint filled the cache first. The JSON is now written with
+  `print` (never escaped) and parsed with `raw_text: true`; the cache key is now
+  `mcp_registry_v2`, so no entry in the old form is read.
+- Tested in `coverage.test.mjs` (arguments, write, replay, approval, task; the registry
+  filled from each page first, with entities in the `test_echo` fixture's description) and
+  `oauth.test.mjs` (state).
 - **CI: the static stage no longer fails with exit code 129 in the test container.** The
   seed-migration check ran `git diff`, but inside the CI container git does not trust the
   checkout (`safe.directory`), so it printed its usage and reported a stale migration that

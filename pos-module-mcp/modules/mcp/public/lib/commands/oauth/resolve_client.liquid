@@ -53,7 +53,7 @@
 
     assign doc = null
     try
-      assign doc = body | parse_json
+      assign doc = body | parse_json: raw_text: true
     catch err
       assign doc = null
     endtry

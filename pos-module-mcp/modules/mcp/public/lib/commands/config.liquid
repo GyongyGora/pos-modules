@@ -166,7 +166,7 @@
   # top-level merge — otherwise overriding one limit would drop the others.
   assign raw = context.constants.MCP_CONFIG | default: ''
   if raw != blank
-    assign override = raw | parse_json
+    assign override = raw | parse_json: raw_text: true
     unless override == blank
       # `override` is operator-supplied JSON (parse_json) — its keys are dynamic, so
       # the linter's static property check can't see them. Correct at runtime.
