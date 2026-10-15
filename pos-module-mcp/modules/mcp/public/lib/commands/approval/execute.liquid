@@ -69,7 +69,7 @@
     return fail
   endunless
 
-  assign args = approval.arguments_json | parse_json
+  assign args = approval.arguments_json | parse_json: raw_text: true
 
   # 2. Re-validate the persisted arguments against the current schema.
   function val = 'modules/mcp/helpers/validate/json_schema', value: args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'

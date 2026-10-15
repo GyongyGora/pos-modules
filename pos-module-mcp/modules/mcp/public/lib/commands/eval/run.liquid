@@ -170,7 +170,7 @@
     assign checks = checks | array_add: c
 
     if found
-      assign args = kase.expected_args_json | parse_json
+      assign args = kase.expected_args_json | parse_json: raw_text: true
       function val = 'modules/mcp/helpers/validate/json_schema', value: args, schema: found.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
       assign c2 = {}
       assign c2['category'] = 'golden'

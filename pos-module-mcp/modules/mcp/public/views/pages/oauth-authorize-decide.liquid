@@ -18,7 +18,7 @@ method: post
 
   assign req = null
   unless raw_req == blank
-    assign req = raw_req | parse_json
+    assign req = raw_req | parse_json: raw_text: true
   endunless
   if context.csrf_request_valid != true or req == blank or req.rid != context.params.rid or cfg.oauth.builtin != true
     response_status 400

@@ -666,6 +666,73 @@ describe('coverage · multi-principal governance planes', () => {
     await clearPendingFor(mem.principal);
   });
 
+  // platformOS parse_json decodes HTML entities before parsing unless raw_text: true is
+  // passed: stored JSON holding "&quot;" failed to parse and "&amp;" came back as "&".
+  it('Text with HTML entities survives every stored JSON round trip: arguments, replay, approval, task', async () => {
+    const send = modernClient();
+    const TEXT = 'Tom &amp; Jerry say &quot;hi&quot; &lt;b&gt; &#39;q&#39;';
+    const TASK_TEXT = TEXT + ' task';
+    await clearAbuse(mem.principal);
+    await clearPendingFor(mem.principal);
+    await clearIdempotencyFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+
+    const echo = await callTool(mem.rawToken, 'test_echo', { message: TEXT });
+    ok('tools/call arguments reach the handler unchanged', isOkResult(echo) && echo.json?.result?.structuredContent?.echo === TEXT, (echo.text || '').slice(0, 200));
+
+    const key = 'cov-entities-' + mem.userId;
+    const first = await callTool(mem.rawToken, 'test_write', { label: TEXT }, { idempotencyKey: key });
+    const replay = await callTool(mem.rawToken, 'test_write', { label: TEXT }, { idempotencyKey: key });
+    const written = (await notesFor(mem.userId)).filter(x => x.source === 'test_write');
+    ok('the write stores the text unchanged', isOkResult(first) && written.length === 1 && written[0].label === TEXT, JSON.stringify(written));
+    ok('the idempotent replay returns the text unchanged', isOkResult(replay) && replay.json?.result?.structuredContent?.label === TEXT, (replay.text || '').slice(0, 200));
+
+    await callTool(mem.rawToken, 'test_approve', { label: TEXT });
+    const handle = (await pendingRecordsFor(mem.principal))[0]?.handle;
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    ok('operator approves the held action', await decide('approve', handle));
+    const approved = (await notesFor(mem.userId)).filter(x => x.source === 'test_approve');
+    ok('the approved action runs with the text unchanged', approved.length === 1 && approved[0].label === TEXT, JSON.stringify(approved));
+
+    const { taskId } = await createTask(send, TASK_TEXT);
+    ok('operator approves the task', await decide('approve', taskId));
+    const done = (await getTask(send, taskId)).json?.result || {};
+    ok('the task result carries the text unchanged', done.status === 'completed' && done.result?.structuredContent?.label === TASK_TEXT, JSON.stringify(done).slice(0, 240));
+
+    await clearPendingFor(mem.principal);
+    await clearIdempotencyFor(mem.principal);
+    await deleteNotesFor(mem.userId);
+  });
+
+  // The registry is cached as JSON text shared by the JSON endpoint and the HTML console
+  // (its Tools & config tab loads it), and Liquid escapes echo output only on HTML pages.
+  // Each order of first use gets its
+  // own cache entry (a unique MCP_ENABLE_VULN_TOOLS value is part of the key and enables
+  // nothing), and the test_echo description, which holds HTML entities, must come back
+  // exactly either way.
+  it('Registry — tool text with HTML entities is served exactly whichever page filled the cache', async () => {
+    const want = 'Text such as &quot;quotes&quot; &amp; &lt;tags&gt; comes back as sent.';
+    const echoDescription = async () => {
+      const r = await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }, mem.rawToken);
+      return (r.json?.result?.tools || []).find(t => t.name === 'test_echo')?.description || `(status ${r.status}) ${r.text.slice(0, 120)}`;
+    };
+    ok('operator reaches the console (login ok)', await operatorLogin(op));
+    try {
+      await setConstant('MCP_ENABLE_VULN_TOOLS', 'cache-json-first-' + Date.now());
+      const jsonFirst = await echoDescription();
+      ok('/mcp first: the description is exact', jsonFirst.endsWith(want), jsonFirst);
+      ok('the console lists the tools from that cache', (await webGet('mcp-admin?tab=config')).status === 200);
+      ok('/mcp again: still exact', (await echoDescription()).endsWith(want));
+
+      await setConstant('MCP_ENABLE_VULN_TOOLS', 'cache-html-first-' + Date.now());
+      ok('the console fills the cache first', (await webGet('mcp-admin?tab=config')).status === 200);
+      const htmlFirst = await echoDescription();
+      ok('/mcp after the console filled the cache: the description is exact', htmlFirst.endsWith(want), htmlFirst);
+    } finally {
+      await unsetConstant('MCP_ENABLE_VULN_TOOLS');
+    }
+  });
+
   it('Idempotency — window expiry re-executes (§16.3)', async () => {
     await clearAbuse(mem.principal);
     await deleteNotesFor(mem.userId);

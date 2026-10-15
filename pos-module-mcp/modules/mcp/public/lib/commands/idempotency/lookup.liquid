@@ -22,7 +22,7 @@
       assign out['found'] = true
       assign out['tool_name'] = rec.tool_name
       assign out['input_sha256'] = rec.input_sha256
-      assign out['response'] = rec.response_json | parse_json
+      assign out['response'] = rec.response_json | parse_json: raw_text: true
     endif
   endif
   return out

@@ -383,6 +383,17 @@ describe('oauth · built-in OAuth 2.1 authorization server', () => {
     ok('consent POST with a forged authenticity_token issues no code', !/[?&]code=/.test(forged.headers.get('location') || ''), `status=${forged.status} location=${forged.headers.get('location')}`);
   });
 
+  // The parked request is stored as JSON in the session; platformOS parse_json decodes
+  // HTML entities unless raw_text: true, so "&quot;" in state broke the decision page.
+  it('Authorize — a state with HTML entities comes back unchanged', async () => {
+    const state = 'st-&quot;x&quot;-&amp;-&lt;y&gt;-' + newState();
+    const a = await authorizeGet(webMember, { state });
+    ok('consent page 200', a.status === 200 && !!ridOf(a.html), 'status=' + a.status);
+    const d = await decide(webMember, a.html, 'approve');
+    ok('approve → 302 with a code', d.status === 302 && /^mcp_ac_[0-9a-f]{64}$/.test(d.loc?.searchParams.get('code') || ''), `status=${d.status} location=${d.location}`);
+    ok('state echoed exactly', d.loc?.searchParams.get('state') === state, d.loc?.searchParams.get('state'));
+  });
+
   it('Authorize — client / redirect_uri problems render an error page (never redirect)', async () => {
     const unknown = await authorizeGet(webMember, { client_id: 'mcp_client_' + '0'.repeat(32) });
     ok('unknown client_id → 400 page, no Location', unknown.status === 400 && !unknown.location && /Unknown client/.test(unknown.html), 'status=' + unknown.status);

@@ -448,7 +448,7 @@ navigations instead of flashing white (the console is a dark theme). {%- endcomm
         </form>
       </div>
       {%- if latest_eval and latest_eval.failed != '0' and latest_eval.failures_json != blank -%}
-        {%- assign fails = latest_eval.failures_json | parse_json -%}
+        {%- assign fails = latest_eval.failures_json | parse_json: raw_text: true -%}
         <ul class="list txt-bad fs-sm">
           {%- for f in fails -%}
             <li><b>{{ f.check }}</b> · {{ f.target }} — {{ f.detail }}</li>
@@ -456,7 +456,7 @@ navigations instead of flashing white (the console is a dark theme). {%- endcomm
         </ul>
       {%- endif -%}
       {%- if latest_eval and latest_eval.warnings_json != blank and latest_eval.warnings_json != '[]' -%}
-        {%- assign warns = latest_eval.warnings_json | parse_json -%}
+        {%- assign warns = latest_eval.warnings_json | parse_json: raw_text: true -%}
         {%- if warns.size > 0 -%}
         <div class="l txt-warn mt-05">Hygiene ({{ warns.size }} advisory)</div>
         <ul class="list txt-warn fs-sm">

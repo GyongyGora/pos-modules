@@ -16,24 +16,28 @@
   `expire` is a defensive TTL only (deploy + gate-key are the real invalidators).
 
   Cached as a JSON string (the {% cache %} block stores rendered text) and parsed
-  back — a byte round-trip of the built hash. No caller changes.
+  back — a byte round-trip of the built hash. No caller changes. The JSON is written
+  with `print`, never `echo`: echo output is HTML-escaped on HTML pages (the console)
+  but not on the JSON endpoint, and both share this cache. `print` writes it unescaped
+  everywhere, and parse_json: raw_text: true reads it back exactly (by default
+  parse_json decodes HTML entities, which corrupts text such as "&quot;").
 
   @return {object} { tools, excluded, count } — see registry/build
 {%- endcomment -%}
 {%- liquid
   assign test_gate = context.constants.MCP_ENABLE_TEST_TOOLS | default: ''
   assign vuln_gate = context.constants.MCP_ENABLE_VULN_TOOLS | default: ''
-  assign ckey = 'mcp_registry_v1|' | append: test_gate | append: '|' | append: vuln_gate
+  assign ckey = 'mcp_registry_v2|' | append: test_gate | append: '|' | append: vuln_gate
 -%}
 {%- capture reg_json -%}
   {%- cache ckey, expire: 300 -%}
     {%- liquid
       function built = 'modules/mcp/commands/registry/build'
-      echo built | json
+      print built | json
     -%}
   {%- endcache -%}
 {%- endcapture -%}
 {%- liquid
-  assign reg = reg_json | parse_json
+  assign reg = reg_json | parse_json: raw_text: true
   return reg
 -%}

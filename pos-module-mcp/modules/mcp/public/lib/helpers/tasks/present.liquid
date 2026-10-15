@@ -45,7 +45,7 @@
       assign status = 'completed'
       assign message = rec.result_summary | default: 'Executed'
       if rec.result_json != blank
-        assign result = rec.result_json | parse_json
+        assign result = rec.result_json | parse_json: raw_text: true
       else
         assign legacy_item = {}
         assign legacy_item['type'] = 'text'
@@ -60,11 +60,11 @@
       assign message = rec.result_summary | default: 'The action failed.'
       if rec.result_json != blank
         assign status = 'completed'
-        assign result = rec.result_json | parse_json
+        assign result = rec.result_json | parse_json: raw_text: true
       else
         assign status = 'failed'
         if rec.error_json != blank
-          assign error = rec.error_json | parse_json
+          assign error = rec.error_json | parse_json: raw_text: true
         else
           assign error = {}
           assign error['code'] = -32603
