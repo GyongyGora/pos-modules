@@ -12,16 +12,18 @@
   @return {object} { jsonrpc: "2.0", id, error: { code, message, data? } }
 {% enddoc %}
 {% liquid
-  assign e = {}
-  assign e['code'] = code
-  assign e['message'] = message
+  assign e = {
+    "code": code,
+    "message": message
+  }
   unless data == blank
     assign e['data'] = data
   endunless
 
-  assign r = {}
-  assign r['jsonrpc'] = '2.0'
-  assign r['id'] = id
-  assign r['error'] = e
+  assign r = {
+    "jsonrpc": "2.0",
+    "id": id,
+    "error": e
+  }
   return r
 %}

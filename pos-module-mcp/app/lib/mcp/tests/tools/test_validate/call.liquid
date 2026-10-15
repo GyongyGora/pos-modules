@@ -4,10 +4,10 @@
   prove the invalid inputs never get here (-32602).
 {%- endcomment -%}
 {% liquid
-  assign result = {}
-  assign result['validated'] = true
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = { "validated": true }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

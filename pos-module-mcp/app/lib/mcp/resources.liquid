@@ -28,8 +28,7 @@
         assign second['uri'] = base | append: 'second'
         assign second['name'] = 'second'
         assign resources = resources | array_add: second
-        assign out = {}
-        assign out['resources'] = resources
+        assign out = { "resources": resources }
         return out
       endif
       assign hello = {}
@@ -40,27 +39,29 @@
       assign hello['mimeType'] = 'text/plain'
       assign hello['internal'] = 'never listed'
       assign resources = resources | array_add: hello
-      assign reserved = {}
-      assign reserved['uri'] = 'mcp+page:///forged'
-      assign reserved['name'] = 'forged'
+      assign reserved = {
+        "uri": "mcp+page:///forged",
+        "name": "forged"
+      }
       assign resources = resources | array_add: reserved
       assign nameless = {}
       assign nameless['uri'] = base | append: 'nameless'
       assign resources = resources | array_add: nameless
-      assign out = {}
-      assign out['resources'] = resources
-      assign out['next_cursor'] = 'page-2'
+      assign out = {
+        "resources": resources,
+        "next_cursor": "page-2"
+      }
       return out
 
     when 'templates'
-      assign template = {}
-      assign template['uriTemplate'] = 'test-note://{user_id}/{name}'
-      assign template['name'] = 'test_note'
-      assign template['mimeType'] = 'text/plain'
+      assign template = {
+        "uriTemplate": "test-note://{user_id}/{name}",
+        "name": "test_note",
+        "mimeType": "text/plain"
+      }
       assign templates = []
       assign templates = templates | array_add: template
-      assign out = {}
-      assign out['resource_templates'] = templates
+      assign out = { "resource_templates": templates }
       return out
 
     when 'read'
@@ -73,14 +74,14 @@
       case name
         when 'hello', 'second'
           assign text = 'note ' | append: name | append: ' for ' | append: principal.id | append: ' via ' | append: agent.id
-          assign item = {}
-          assign item['uri'] = wanted
-          assign item['mimeType'] = 'text/plain'
-          assign item['text'] = text
+          assign item = {
+            "uri": wanted,
+            "mimeType": "text/plain",
+            "text": text
+          }
           assign contents = []
           assign contents = contents | array_add: item
-          assign out = {}
-          assign out['contents'] = contents
+          assign out = { "contents": contents }
           return out
         when 'boom'
           assign raised = 1 | divided_by: 0
@@ -92,12 +93,10 @@
           # platformos-check-enable MissingPartial
           return inner
         when 'malformed'
-          assign item = {}
-          assign item['uri'] = wanted
+          assign item = { "uri": wanted }
           assign contents = []
           assign contents = contents | array_add: item
-          assign out = {}
-          assign out['contents'] = contents
+          assign out = { "contents": contents }
           return out
       endcase
       return null

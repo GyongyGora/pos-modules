@@ -71,8 +71,7 @@
       # --- Identity guard: a manifest may not claim a name other than the one it
       #     was registered under (prevents a moved/edited file shadowing another). ---
       if reg_name != blank and manifest.name != reg_name
-        assign ex = {}
-        assign ex['name'] = reg_name
+        assign ex = { "name": reg_name }
         assign errs = []
         assign gmsg = 'manifest name "' | append: manifest.name | append: '" does not match registered name "' | append: reg_name | append: '"'
         assign errs = errs | array_add: gmsg
@@ -85,8 +84,7 @@
       # --- Reserved-prefix guard: the app cannot claim a built-in tool name. ---
       assign name_prefix = manifest.name | append: '' | slice: 0, 4
       if name_prefix == reserved_prefix
-        assign ex = {}
-        assign ex['name'] = manifest.name
+        assign ex = { "name": manifest.name }
         assign errs = []
         assign rmsg = 'tool name "' | append: manifest.name | append: '" uses the mcp_ prefix, which is reserved for built-in engine tools'
         assign errs = errs | array_add: rmsg
@@ -124,23 +122,25 @@
   # handlers are module commands; they use the mcp_authenticated built-in policy and
   # self-scope. App manifests claiming these names are excluded above (reserved_names),
   # so a built-in can never be shadowed.
-  assign builtin = {}
-  assign builtin['name'] = 'mcp_approval_status'
-  assign builtin['version'] = '1.0.0'
-  assign builtin['description'] = 'Check the status of an action you requested that required operator approval. Pass the handle you were given. Returns pending, executed, rejected, or expired.'
-  assign builtin['input_schema'] = {"type":"object","additionalProperties":false,"required":["handle"],"properties":{"handle":{"type":"string","minLength":1,"maxLength":100,"description":"the approval handle returned when a tool required approval"}}}
-  assign builtin['mutating'] = false
-  assign builtin['authorization_policy'] = 'mcp_authenticated'
-  assign builtin['requires_approval'] = false
+  assign builtin = {
+    "name": "mcp_approval_status",
+    "version": "1.0.0",
+    "description": "Check the status of an action you requested that required operator approval. Pass the handle you were given. Returns pending, executed, rejected, or expired.",
+    "input_schema": {"type":"object","additionalProperties":false,"required":["handle"],"properties":{"handle":{"type":"string","minLength":1,"maxLength":100,"description":"the approval handle returned when a tool required approval"}}},
+    "mutating": false,
+    "authorization_policy": "mcp_authenticated",
+    "requires_approval": false
+  }
   assign builtin['handler'] = 'modules/mcp/commands/builtin/approval_status'
   assign builtin['builtin'] = true
   assign builtin['_warnings'] = []
   assign builtin['_lint'] = []
   assign tools = tools | array_add: builtin
 
-  assign out = {}
-  assign out['tools'] = tools
-  assign out['excluded'] = excluded
+  assign out = {
+    "tools": tools,
+    "excluded": excluded
+  }
   assign out['count'] = tools | size
   return out
 %}

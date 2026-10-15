@@ -11,12 +11,12 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
   function origin = 'modules/mcp/queries/origin'
-  assign doc = {}
-  assign doc['resource'] = cfg.resource_identifier
-  assign doc['resource_name'] = cfg.server_name
-  assign methods = ["header"]
-  assign doc['bearer_methods_supported'] = methods
-  assign doc['scopes_supported'] = cfg.oauth.scopes_supported
+  assign doc = {
+    "resource": cfg.resource_identifier,
+    "resource_name": cfg.server_name,
+    "bearer_methods_supported": ["header"],
+    "scopes_supported": cfg.oauth.scopes_supported
+  }
   assign servers = []
   if cfg.oauth.builtin
     assign servers = servers | array_add: origin

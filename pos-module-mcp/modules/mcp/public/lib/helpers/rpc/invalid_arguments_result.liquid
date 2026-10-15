@@ -15,18 +15,19 @@
 {% liquid
   assign joined = errors | join: '; '
   assign text = 'Invalid arguments: ' | append: joined
-  assign item = {}
-  assign item['type'] = 'text'
-  assign item['text'] = text
+  assign item = {
+    "type": "text",
+    "text": text
+  }
   assign content = []
   assign content = content | array_add: item
 
-  assign sc = {}
-  assign sc['validation_errors'] = errors
+  assign sc = { "validation_errors": errors }
 
-  assign result = {}
-  assign result['content'] = content
-  assign result['isError'] = true
+  assign result = {
+    "content": content,
+    "isError": true
+  }
   if tool.output_schema == blank
     assign result['structuredContent'] = sc
   endif

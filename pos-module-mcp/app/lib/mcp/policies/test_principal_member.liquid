@@ -11,8 +11,7 @@
 {%- endcomment -%}
 {% liquid
   function allow = 'modules/mcp/queries/principal/can', principal: principal, do: 'mcp.tokens.manage'
-  assign r = {}
-  assign r['allow'] = allow
+  assign r = { "allow": allow }
   if allow
     assign r['reason'] = 'member'
   else

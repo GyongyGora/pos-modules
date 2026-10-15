@@ -13,8 +13,7 @@
   @return {object} { authenticated:false, http_status, error_code, message, reason, www_authenticate? }
 {%- endcomment -%}
 {% liquid
-  assign f = {}
-  assign f['authenticated'] = false
+  assign f = { "authenticated": false }
   assign f['http_status'] = http_status | default: 401
   assign f['error_code'] = error_code | default: -32001
   assign f['message'] = message | default: 'Unauthorized'

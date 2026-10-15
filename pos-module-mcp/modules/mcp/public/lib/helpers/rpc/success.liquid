@@ -6,9 +6,10 @@
   @return {object} { jsonrpc: "2.0", id, result }
 {%- endcomment -%}
 {% liquid
-  assign r = {}
-  assign r['jsonrpc'] = '2.0'
-  assign r['id'] = id
-  assign r['result'] = result
+  assign r = {
+    "jsonrpc": "2.0",
+    "id": id,
+    "result": result
+  }
   return r
 %}

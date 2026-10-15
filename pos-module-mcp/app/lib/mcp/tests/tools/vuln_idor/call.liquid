@@ -6,13 +6,15 @@
   graphql g = 'mcp/vuln_notes_by_user', user_id: arguments.user_id
   assign rows = g.records.results
 
-  assign result = {}
-  assign result['requested_user_id'] = arguments.user_id
-  assign result['caller'] = principal.id
-  assign result['notes'] = rows
+  assign result = {
+    "requested_user_id": arguments.user_id,
+    "caller": principal.id,
+    "notes": rows
+  }
 
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

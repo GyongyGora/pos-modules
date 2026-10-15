@@ -8,8 +8,7 @@
   @return {object} { http_status, body }
 {%- endcomment -%}
 {% liquid
-  assign body = {}
-  assign body['error'] = error
+  assign body = { "error": error }
   unless error_description == blank
     assign body['error_description'] = error_description
   endunless
@@ -17,8 +16,9 @@
   if error == 'invalid_client' and http_status == blank
     assign st = 401
   endif
-  assign out = {}
-  assign out['http_status'] = st
-  assign out['body'] = body
+  assign out = {
+    "http_status": st,
+    "body": body
+  }
   return out
 %}

@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Input-taking commands follow Build/Check/Execute.** `access/set_role`, `tokens/mint`,
   `oauth/register` and `oauth/revoke` keep their path and return contract, and now run
   `<action>/build`, `<action>/check` and `<action>/execute` like the other platformOS modules.
+  The checks use `modules/core/validations/*` and `register_error`, so `core` (^2.1.9,
+  already installed through `user`) is now a declared dependency. `tokens/mint` with a
+  blank `user_id` now returns `{ error: 'invalid', errors }` instead of minting an unbound token.
 - **Module layout.** Docs moved from `modules/mcp/docs/` (shipped with the module) to
   `docs/`, with the architecture decision records in `docs/decisions/`. App test
   fixtures (`test_*` / `vuln_*` tools, the poisoned prompt and instructions) moved to

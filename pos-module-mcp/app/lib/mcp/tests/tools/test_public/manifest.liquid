@@ -7,16 +7,16 @@
   pair proves an idempotency key is bound to its tool, not just its arguments.
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = 'test_public'
-  assign m['version'] = '1.0.0'
-  assign m['description'] = 'TEST FIXTURE (not a production tool): public-tier visibility probe; returns a constant marker.'
-  assign schema = {"type":"object","additionalProperties":false,"properties":{}}
-  assign m['input_schema'] = schema
-  assign m['mutating'] = false
-  assign m['authorization_policy'] = 'public_read'
-  assign m['requires_approval'] = false
-  assign m['idempotent'] = true
-  assign m['handler'] = 'mcp/tests/tools/test_public/call'
+  assign m = {
+    "name": "test_public",
+    "version": "1.0.0",
+    "description": "TEST FIXTURE (not a production tool): public-tier visibility probe; returns a constant marker.",
+    "input_schema": {"type":"object","additionalProperties":false,"properties":{}},
+    "mutating": false,
+    "authorization_policy": "public_read",
+    "requires_approval": false,
+    "idempotent": true,
+    "handler": "mcp/tests/tools/test_public/call"
+  }
   return m
 %}

@@ -40,9 +40,10 @@
   # Fail-safe: a thrown or malformed handler result → generic tool error.
   if threw or hres == blank
     assign content = []
-    assign item = {}
-    assign item['type'] = 'text'
-    assign item['text'] = 'The tool failed to complete.'
+    assign item = {
+      "type": "text",
+      "text": "The tool failed to complete."
+    }
     assign content = content | array_add: item
     assign out['outcome'] = 'error'
     assign out['isError'] = true
@@ -58,9 +59,10 @@
       assign emsg = hres.error.message | default: emsg
     endunless
     assign content = []
-    assign item = {}
-    assign item['type'] = 'text'
-    assign item['text'] = emsg
+    assign item = {
+      "type": "text",
+      "text": emsg
+    }
     assign content = content | array_add: item
     assign out['outcome'] = 'error'
     assign out['isError'] = true
@@ -70,8 +72,7 @@
     # structuredContent so the agent can self-correct — same courtesy as the schema-
     # validation path. `fields` must be safe data (field name → message), no internals.
     unless hres.error.fields == blank
-      assign structured = {}
-      assign structured['errors'] = hres.error.fields
+      assign structured = { "errors": hres.error.fields }
       assign out['structured'] = structured
     endunless
     return out
@@ -84,8 +85,7 @@
     assign structured = {}
   endif
   assign content = []
-  assign item = {}
-  assign item['type'] = 'text'
+  assign item = { "type": "text" }
   assign item['text'] = structured | json
   assign content = content | array_add: item
 

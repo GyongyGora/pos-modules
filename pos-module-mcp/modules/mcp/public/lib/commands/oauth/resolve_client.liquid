@@ -16,9 +16,10 @@
 {%- endcomment -%}
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
-  assign out = {}
-  assign out['found'] = false
-  assign out['client_id'] = client_id
+  assign out = {
+    "found": false,
+    "client_id": client_id
+  }
   if client_id == blank or client_id.size > 2048
     assign out['error_description'] = 'Missing or invalid client_id'
     return out

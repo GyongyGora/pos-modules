@@ -5,8 +5,8 @@
   @param {object} object - built by tokens/mint/build
 {%- endcomment -%}
 {% liquid
-  assign valid = true
-  assign errors = {}
+  assign c = { "errors": {}, "valid": true }
+  function c = 'modules/core/validations/presence', c: c, object: object, field_name: 'user_id'
   unless object.generated_label
     graphql active = 'modules/mcp/tokens/active_for_user', user_id: object.user_id
     assign wanted = object.label | downcase
@@ -16,14 +16,13 @@
       endif
       assign existing = t.label | default: '' | downcase
       if existing == wanted
-        assign valid = false
-        assign errors['label'] = ["label_taken"]
+        function c = 'modules/core/helpers/register_error', contract: c, field_name: 'label', message: 'label_taken'
         break
       endif
     endfor
   endunless
 
-  assign object['valid'] = valid
-  assign object['errors'] = errors
+  assign object.valid = c.valid
+  assign object.errors = c.errors
   return object
 %}

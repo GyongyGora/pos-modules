@@ -8,11 +8,13 @@
   for row in r.items.results
     assign items = items | array_add: row
   endfor
-  assign result = {}
-  assign result['count'] = r.items.total_entries
-  assign result['items'] = items
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = {
+    "count": r.items.total_entries,
+    "items": items
+  }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

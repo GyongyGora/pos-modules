@@ -6,9 +6,10 @@
   @param {object} params - context.params (parsed JSON body)
 {%- endcomment -%}
 {% liquid
-  assign object = {}
-  assign object['redirect_uris'] = params.redirect_uris
-  assign object['grant_types'] = params.grant_types
+  assign object = {
+    "redirect_uris": params.redirect_uris,
+    "grant_types": params.grant_types
+  }
 
   assign name = params.client_name | default: 'MCP client' | append: '' | strip | strip_html | truncate: 60, ''
   if name == blank

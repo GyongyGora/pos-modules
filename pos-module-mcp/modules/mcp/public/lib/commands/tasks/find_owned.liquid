@@ -15,18 +15,20 @@
 
   function idr = 'modules/mcp/commands/identity/resolve_principal', headers: headers
   unless idr.authenticated == true
-    assign e = {}
-    assign e['code'] = -32001
-    assign e['message'] = 'Authentication required'
+    assign e = {
+      "code": -32001,
+      "message": "Authentication required"
+    }
     assign out['_error'] = e
     return out
   endunless
 
   assign task_id = params.taskId
   if task_id == blank
-    assign e = {}
-    assign e['code'] = -32602
-    assign e['message'] = 'Invalid params: taskId is required'
+    assign e = {
+      "code": -32602,
+      "message": "Invalid params: taskId is required"
+    }
     assign out['_error'] = e
     return out
   endif
@@ -34,9 +36,10 @@
   graphql r = 'modules/mcp/approvals/find_by_handle', handle: task_id
   assign rec = r.records.results.first
   if rec == blank or rec.principal_id != idr.principal.id
-    assign e = {}
-    assign e['code'] = -32602
-    assign e['message'] = 'Task not found'
+    assign e = {
+      "code": -32602,
+      "message": "Task not found"
+    }
     assign out['_error'] = e
     return out
   endif

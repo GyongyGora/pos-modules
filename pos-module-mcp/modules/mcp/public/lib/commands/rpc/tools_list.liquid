@@ -83,8 +83,7 @@
   assign emitted = 0
   for m in visible
     if idx >= offset and emitted < page_size
-      assign t = {}
-      assign t['name'] = m.name
+      assign t = { "name": m.name }
       unless m.title == blank
         assign t['title'] = m.title
       endunless
@@ -101,8 +100,7 @@
       unless m.annotations == blank
         assign t['annotations'] = m.annotations
       endunless
-      assign meta = {}
-      assign meta['version'] = m.version
+      assign meta = { "version": m.version }
       assign is_dep = false
       if m.deprecated == true
         assign is_dep = true
@@ -115,8 +113,7 @@
     assign idx = idx | plus: 1
   endfor
 
-  assign result = {}
-  assign result['tools'] = tools_out
+  assign result = { "tools": tools_out }
   assign next_offset = offset | plus: page_size
   if next_offset < total
     assign nc = 'offset:' | append: next_offset | base64_encode

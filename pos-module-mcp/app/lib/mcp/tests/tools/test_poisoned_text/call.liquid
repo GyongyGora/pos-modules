@@ -2,10 +2,10 @@
   Handler — test_poisoned_text (TEST FIXTURE). Read-only; returns a constant marker.
 {%- endcomment -%}
 {% liquid
-  assign result = {}
-  assign result['marker'] = 'test_poisoned_text'
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = { "marker": "test_poisoned_text" }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

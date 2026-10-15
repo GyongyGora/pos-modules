@@ -11,8 +11,9 @@
   arguments, tool, delegation_mode.
 {%- endcomment -%}
 {% liquid
-  assign r = {}
-  assign r['allow'] = true
-  assign r['reason'] = 'public_read'
+  assign r = {
+    "allow": true,
+    "reason": "public_read"
+  }
   return r
 %}

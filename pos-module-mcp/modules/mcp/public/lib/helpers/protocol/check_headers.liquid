@@ -77,9 +77,10 @@
     return null
   endif
 
-  assign out = {}
-  assign out['http_status'] = 400
-  assign out['code'] = -32020
+  assign out = {
+    "http_status": 400,
+    "code": -32020
+  }
   assign out['message'] = 'Header mismatch: ' | append: problem
   return out
 %}

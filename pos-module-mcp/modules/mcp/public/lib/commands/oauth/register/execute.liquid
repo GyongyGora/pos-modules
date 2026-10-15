@@ -11,10 +11,11 @@
   assign issued_at = 'now' | to_time | strftime: '%s' | plus: 0
   assign grants = 'authorization_code,refresh_token' | split: ','
   assign rtypes = 'code' | split: ','
-  assign body = {}
-  assign body['client_id'] = client_id
-  assign body['client_id_issued_at'] = issued_at
-  assign body['client_name'] = object.client_name
+  assign body = {
+    "client_id": client_id,
+    "client_id_issued_at": issued_at,
+    "client_name": object.client_name
+  }
   unless object.client_uri == blank
     assign body['client_uri'] = object.client_uri
   endunless
@@ -23,8 +24,9 @@
   assign body['response_types'] = rtypes
   assign body['token_endpoint_auth_method'] = 'none'
   assign body['scope'] = cfg.oauth.scopes_supported | join: ' '
-  assign out = {}
-  assign out['http_status'] = 201
-  assign out['body'] = body
+  assign out = {
+    "http_status": 201,
+    "body": body
+  }
   return out
 %}

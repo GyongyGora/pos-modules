@@ -24,9 +24,10 @@ method: post
     response_status 400
     echo 'This authorization request has expired. Return to your MCP client and reconnect.'
   else
-    assign p = {}
-    assign p['state'] = req.state
-    assign p['iss'] = origin
+    assign p = {
+      "state": req.state,
+      "iss": origin
+    }
 
     function current_profile = 'modules/user/helpers/current_profile'
     assign allowed = false

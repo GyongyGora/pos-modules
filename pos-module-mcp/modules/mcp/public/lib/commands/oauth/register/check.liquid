@@ -42,15 +42,12 @@
     endfor
   endif
 
-  assign valid = true
-  assign errors = {}
+  assign c = { "errors": {}, "valid": true }
   if oauth_error
-    assign valid = false
-    assign base_errors = [] | array_add: oauth_error.error
-    assign errors['base'] = base_errors
+    function c = 'modules/core/helpers/register_error', contract: c, field_name: 'base', message: oauth_error.error
   endif
-  assign object['oauth_error'] = oauth_error
-  assign object['valid'] = valid
-  assign object['errors'] = errors
+  assign object.oauth_error = oauth_error
+  assign object.valid = c.valid
+  assign object.errors = c.errors
   return object
 %}

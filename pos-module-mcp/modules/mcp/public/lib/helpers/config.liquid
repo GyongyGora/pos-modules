@@ -49,11 +49,12 @@
   # TTL; resources track page content → shorter. cacheScope is 'public' (same for every
   # caller) or 'private' (varies by identity: principal-scoped tools/list).
   # Tunable via MCP_CONFIG.cache.
-  assign cache = {}
-  assign cache['tools_ttl_ms'] = 300000
-  assign cache['prompts_ttl_ms'] = 300000
-  assign cache['resources_ttl_ms'] = 60000
-  assign cache['discover_ttl_ms'] = 300000
+  assign cache = {
+    "tools_ttl_ms": 300000,
+    "prompts_ttl_ms": 300000,
+    "resources_ttl_ms": 60000,
+    "discover_ttl_ms": 300000
+  }
   assign c['cache'] = cache
   # Server display name — reported as serverInfo.name on `initialize` and `server/discover` AND used as
   # the suggested `claude mcp add <name>` client alias on /mcp-tools. Override per
@@ -89,9 +90,10 @@
   # policy on every tools/list, so it is off by default.
   assign c['tools_list_scope'] = 'open'
 
-  assign d = {}
-  assign d['max_input_bytes'] = 65536
-  assign d['max_schema_depth'] = 5
+  assign d = {
+    "max_input_bytes": 65536,
+    "max_schema_depth": 5
+  }
   # Depth cap for a tool's output_schema (declared for clients, never used to validate
   # input), which describes nested results such as lists of objects with lists.
   assign d['max_output_schema_depth'] = 8
@@ -118,10 +120,10 @@
   # Zero-config .md resources (spec §3.2, §17.1). OFF by default — an operator
   # turns it on via MCP_CONFIG and names the slug prefixes to expose (allowlist),
   # so no page is agent-readable unless explicitly opted in.
-  assign r = {}
-  assign r['expose_markdown_pages'] = false
-  assign default_prefixes = ["docs"]
-  assign r['markdown_page_prefixes'] = default_prefixes
+  assign r = {
+    "expose_markdown_pages": false,
+    "markdown_page_prefixes": ["docs"]
+  }
   assign c['resources'] = r
 
   # OAuth (spec §9.5, RFC 9728). The instance is BOTH the protected resource and — via

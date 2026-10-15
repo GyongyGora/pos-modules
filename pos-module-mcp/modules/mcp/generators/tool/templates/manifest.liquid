@@ -5,18 +5,19 @@
   human sets a named policy — it can never reach an agent unreviewed.
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = '<%= toolName %>'
-  assign m['version'] = '0.1.0'
-  assign m['description'] = 'TODO: describe precisely what this tool does, its limits, and what it does NOT do. Model-read, reviewed as security-relevant.'
-  assign schema = <%- inputSchemaJson %>
-  assign m['input_schema'] = schema
-  assign m['mutating'] = <%= mutating %>
-  # TODO(REQUIRED): set a named authorization policy — app/lib/mcp/policies/<name>.
+  # TODO(REQUIRED): set a named authorization_policy — app/lib/mcp/policies/<name>.
   #   Left EMPTY on purpose: empty fails the meta-schema, so this DRAFT is EXCLUDED
   #   from the registry until you complete it (no implicit allow).
-  assign m['authorization_policy'] = ''
-  assign m['requires_approval'] = false   # TODO: true for high-impact / irreversible actions
-  assign m['handler'] = 'mcp/tools/<%= toolName %>/call'
+  # TODO: set requires_approval to true for high-impact / irreversible actions.
+  assign m = {
+    "name": "<%= toolName %>",
+    "version": "0.1.0",
+    "description": "TODO: describe precisely what this tool does, its limits, and what it does NOT do. Model-read, reviewed as security-relevant.",
+    "input_schema": <%- inputSchemaJson %>,
+    "mutating": <%= mutating %>,
+    "authorization_policy": "",
+    "requires_approval": false,
+    "handler": "mcp/tools/<%= toolName %>/call"
+  }
   return m
 %}

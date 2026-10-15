@@ -80,9 +80,10 @@
     endfor
   endif
 
-  assign out = {}
-  assign out['prompts'] = prompts
-  assign out['excluded'] = excluded
+  assign out = {
+    "prompts": prompts,
+    "excluded": excluded
+  }
   assign out['count'] = prompts | size
   return out
 %}

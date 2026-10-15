@@ -61,9 +61,10 @@
   else
     function description_lint = 'modules/mcp/helpers/registry/lint_description', text: manifest.description
     if description_lint.flagged
-      assign hit = {}
-      assign hit['path'] = 'description'
-      assign hit['hits'] = description_lint.hits
+      assign hit = {
+        "path": "description",
+        "hits": description_lint.hits
+      }
       assign lint = lint | array_add: hit
     endif
   endif
@@ -127,9 +128,10 @@
     if tit == 'string'
       function title_lint = 'modules/mcp/helpers/registry/lint_description', text: manifest.title
       if title_lint.flagged
-        assign hit = {}
-        assign hit['path'] = 'title'
-        assign hit['hits'] = title_lint.hits
+        assign hit = {
+          "path": "title",
+          "hits": title_lint.hits
+        }
         assign lint = lint | array_add: hit
       endif
     else
@@ -206,11 +208,12 @@
   if errors.size == 0
     assign is_valid = true
   endif
-  assign out = {}
-  assign out['valid'] = is_valid
-  assign out['errors'] = errors
-  assign out['warnings'] = warnings
-  assign out['lint'] = lint
-  assign out['name'] = name
+  assign out = {
+    "valid": is_valid,
+    "errors": errors,
+    "warnings": warnings,
+    "lint": lint,
+    "name": name
+  }
   return out
 %}

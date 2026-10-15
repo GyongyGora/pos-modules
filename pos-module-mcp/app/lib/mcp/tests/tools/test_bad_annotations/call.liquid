@@ -3,10 +3,10 @@
   so the engine excludes the tool before any call can resolve it.
 {%- endcomment -%}
 {% liquid
-  assign result = {}
-  assign result['reached'] = true
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = { "reached": true }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

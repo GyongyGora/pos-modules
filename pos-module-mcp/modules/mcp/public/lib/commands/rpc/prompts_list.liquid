@@ -14,8 +14,7 @@
   function reg = 'modules/mcp/queries/registry/build_prompts', principal: principal, agent: agent
   assign out_prompts = []
   for p in reg.prompts
-    assign item = {}
-    assign item['name'] = p.name
+    assign item = { "name": p.name }
     unless p.title == blank
       assign item['title'] = p.title
     endunless
@@ -23,8 +22,7 @@
     unless p.arguments == blank
       assign args_out = []
       for a in p.arguments
-        assign ao = {}
-        assign ao['name'] = a.name
+        assign ao = { "name": a.name }
         unless a.description == blank
           assign ao['description'] = a.description
         endunless
@@ -40,8 +38,7 @@
     assign out_prompts = out_prompts | array_add: item
   endfor
 
-  assign result = {}
-  assign result['prompts'] = out_prompts
+  assign result = { "prompts": out_prompts }
   # Client-side cache hint (2026-07-28 only; dispatch passes it or nil).
   unless cache == blank
     assign result['ttlMs'] = cache.ttlMs

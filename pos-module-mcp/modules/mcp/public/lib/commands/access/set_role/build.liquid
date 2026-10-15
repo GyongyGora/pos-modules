@@ -3,8 +3,9 @@
   @param {string} [role] - mcp_user | mcp_operator | blank to remove access
 {% enddoc %}
 {% liquid
-  assign object = {}
-  assign object['profile_id'] = profile_id
-  assign object['role'] = role
+  assign object = {
+    "profile_id": profile_id,
+    "role": role
+  }
   return object
 %}

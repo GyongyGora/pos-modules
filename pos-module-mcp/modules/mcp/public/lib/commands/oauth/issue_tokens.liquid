@@ -23,11 +23,12 @@
   assign refresh_digest = refresh | digest: 'sha256'
   graphql _t = 'modules/mcp/tokens/create_oauth', user_id: user_id, token_digest: token_digest, refresh_digest: refresh_digest, label: label, client_id: client_id, scope: scope, resource: resource, expires_at: expires_at, refresh_expires_at: refresh_expires_at
 
-  assign body = {}
-  assign body['access_token'] = access
-  assign body['token_type'] = 'Bearer'
-  assign body['expires_in'] = ttl
-  assign body['refresh_token'] = refresh
-  assign body['scope'] = scope
+  assign body = {
+    "access_token": access,
+    "token_type": "Bearer",
+    "expires_in": ttl,
+    "refresh_token": refresh,
+    "scope": scope
+  }
   return body
 %}

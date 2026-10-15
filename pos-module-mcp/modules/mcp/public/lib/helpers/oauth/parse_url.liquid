@@ -9,8 +9,7 @@
                    when absent.
 {%- endcomment -%}
 {% liquid
-  assign out = {}
-  assign out['valid'] = false
+  assign out = { "valid": false }
   assign s = url | default: '' | append: ''
   if s == blank or s.size > 2048
     return out

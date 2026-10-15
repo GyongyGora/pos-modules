@@ -74,9 +74,32 @@ function stripComments(src) {
 // single hash via `assign m['key'] = <value>`; we extract scalars + the
 // input_schema JSON literal. Unparseable fields → recorded as undefined (checks that
 // need them emit an info rather than a false positive).
+// Entries of multi-line hash literals:  assign X = {\n  "key": value,\n  ...\n}
+// → [{ name: 'X', key, raw }] where raw is the Liquid value text (comma stripped).
+function literalEntries(code) {
+  const out = [];
+  for (const blk of code.matchAll(/assign\s+(\w+)\s*=\s*\{\s*\n([\s\S]*?)\n\s*\}/g)) {
+    for (const line of blk[2].split('\n')) {
+      const e = line.match(/^\s*"([A-Za-z0-9_]+)"\s*:\s*(.+?),?\s*$/);
+      if (e) out.push({ name: blk[1], key: e[1], raw: e[2] });
+    }
+  }
+  return out;
+}
+
 function parseManifest(src) {
   const m = {};
   const code = stripComments(src);
+  // hash-literal form: assign m = { "key": value, ... }
+  for (const { key, raw } of literalEntries(code)) {
+    if (m[key] !== undefined) continue;
+    if (/^"[^"]*"$/.test(raw)) m[key] = raw.slice(1, -1);
+    else if (raw === 'true' || raw === 'false') m[key] = raw === 'true';
+    else if (/^-?\d+$/.test(raw)) m[key] = Number(raw);
+    else if (key === 'input_schema' && raw.startsWith('{')) {
+      try { const obj = JSON.parse(raw); if (obj && (obj.type === 'object' || obj.properties)) m.input_schema = obj; } catch { /* reviewed below */ }
+    }
+  }
   // string scalars: assign X['key'] = 'value'
   for (const mt of code.matchAll(/(?:hash_)?assign\s+\w+\['([a-z_]+)'\]\s*=\s*'([^']*)'/g)) {
     if (m[mt[1]] === undefined) m[mt[1]] = mt[2];
@@ -398,6 +421,11 @@ function parseRegistry() {
   const names = {}, paths = {};
   for (const mt of code.matchAll(/(?:hash_)?assign\s+(\w+)\['name'\]\s*=\s*'([^']+)'/g)) names[mt[1]] = mt[2];
   for (const mt of code.matchAll(/(?:hash_)?assign\s+(\w+)\['path'\]\s*=\s*'([^']+)'/g)) paths[mt[1]] = mt[2];
+  for (const { name, key, raw } of literalEntries(code)) {
+    const str = raw.match(/^"([^"]+)"$/);
+    if (str && key === 'name') names[name] = str[1];
+    if (str && key === 'path') paths[name] = str[1];
+  }
   const entries = [];
   for (const v of Object.keys(names)) {
     if (!paths[v]) { add('error', names[v], rel(REGISTRY), 'registry-entry', `registry entry "${names[v]}" has no path`); continue; }

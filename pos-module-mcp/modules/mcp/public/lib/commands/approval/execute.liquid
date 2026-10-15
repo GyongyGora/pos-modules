@@ -30,15 +30,15 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
 
-  assign fail = {}
-  assign fail['ok'] = false
+  assign fail = { "ok": false }
 
   # 1. Tool must still exist and be valid.
   function tool = 'modules/mcp/queries/registry/resolve_tool', name: approval.tool_name, allowed_tools: null
   if tool == blank
-    assign err = {}
-    assign err['code'] = -32602
-    assign err['message'] = 'Unknown tool'
+    assign err = {
+      "code": -32602,
+      "message": "Unknown tool"
+    }
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Tool no longer available.'
     assign fail['error'] = err
@@ -52,17 +52,19 @@
     assign perm_principal = {}
     assign perm_principal['user_id'] = approval.principal_id | remove_first: 'user:'
     function still_allowed = 'modules/mcp/queries/principal/can', principal: perm_principal, do: cfg.oauth.required_permission
-    assign cred = {}
-    assign cred['ok'] = still_allowed
-    assign cred['reason'] = 'permission_revoked'
+    assign cred = {
+      "ok": still_allowed,
+      "reason": "permission_revoked"
+    }
   else
     function cred = 'modules/mcp/queries/identity/token_still_authorized', token_id: approval.token_id, principal_id: approval.principal_id, tool: tool
   endif
   unless cred.ok
     log cred.reason, type: 'mcp.approval_requester_revoked'
-    assign err = {}
-    assign err['code'] = -32001
-    assign err['message'] = 'Forbidden'
+    assign err = {
+      "code": -32001,
+      "message": "Forbidden"
+    }
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = "Requester's access was revoked."
     assign fail['error'] = err
@@ -82,20 +84,19 @@
   endunless
 
   # 3. Reconstruct the ORIGINAL principal/agent (never the operator's).
-  assign principal = {}
-  assign principal['id'] = approval.principal_id
+  assign principal = { "id": approval.principal_id }
   assign principal['user_id'] = approval.principal_id | remove_first: 'user:'
-  assign agent = {}
-  assign agent['id'] = approval.requested_by_agent
+  assign agent = { "id": approval.requested_by_agent }
   assign agent['client_id'] = approval.requested_by_client_id | default: approval.requested_by_agent
   assign agent['token_id'] = approval.requested_by_token_id
 
   # 4. Re-authorize against the original principal (fail-closed).
   function authz = 'modules/mcp/commands/authorize/evaluate', policy: tool.authorization_policy, principal: principal, agent: agent, arguments: args, tool: tool, delegation_mode: 'direct'
   unless authz.allow
-    assign err = {}
-    assign err['code'] = -32001
-    assign err['message'] = 'Forbidden'
+    assign err = {
+      "code": -32001,
+      "message": "Forbidden"
+    }
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Authorization denied at execution time.'
     assign fail['error'] = err
@@ -103,23 +104,25 @@
   endunless
 
   # 5. Attestation for the deferred execution, linked to the request by request_id.
-  assign le = {}
-  assign le['method'] = 'tools/call'
-  assign le['tool_name'] = tool.name
-  assign le['tool_version'] = tool.version
-  assign le['principal_id'] = approval.principal_id
-  assign le['agent_id'] = approval.requested_by_agent
-  assign le['delegation_mode'] = 'direct'
-  assign le['input_sha256'] = approval.input_sha256
-  assign le['authz_policy'] = tool.authorization_policy
-  assign le['authz_decision'] = 'allow'
+  assign le = {
+    "method": "tools/call",
+    "tool_name": tool.name,
+    "tool_version": tool.version,
+    "principal_id": approval.principal_id,
+    "agent_id": approval.requested_by_agent,
+    "delegation_mode": "direct",
+    "input_sha256": approval.input_sha256,
+    "authz_policy": tool.authorization_policy,
+    "authz_decision": "allow"
+  }
   assign le['authz_reason'] = 'approved_by:' | append: decided_by
   assign le['request_id'] = approval.request_id
 
-  assign context_meta = {}
-  assign context_meta['tool_name'] = tool.name
-  assign context_meta['tool_version'] = tool.version
-  assign context_meta['request_id'] = approval.request_id
+  assign context_meta = {
+    "tool_name": tool.name,
+    "tool_version": tool.version,
+    "request_id": approval.request_id
+  }
 
   # 6. Execute inside a transaction, attest inside it; roll back on failure.
   assign committed = false
@@ -160,13 +163,15 @@
     # a handler success whose attestation failed is reported as rolled back.
     if exec.outcome == 'success'
       assign rb_content = []
-      assign rb_item = {}
-      assign rb_item['type'] = 'text'
-      assign rb_item['text'] = 'The action failed and was rolled back; no changes were saved.'
+      assign rb_item = {
+        "type": "text",
+        "text": "The action failed and was rolled back; no changes were saved."
+      }
       assign rb_content = rb_content | array_add: rb_item
-      assign failed_result = {}
-      assign failed_result['content'] = rb_content
-      assign failed_result['isError'] = true
+      assign failed_result = {
+        "content": rb_content,
+        "isError": true
+      }
     else
       function failed_result = 'modules/mcp/helpers/execute/result_of', exec: exec
     endif
@@ -177,10 +182,11 @@
   endunless
 
   function result = 'modules/mcp/helpers/execute/result_of', exec: exec
-  assign out = {}
-  assign out['ok'] = true
-  assign out['outcome'] = 'executed'
-  assign out['result'] = result
+  assign out = {
+    "ok": true,
+    "outcome": "executed",
+    "result": result
+  }
   assign summary = 'Executed'
   unless exec.subject_id == blank
     assign summary = 'Executed — created ' | append: exec.subject_type | append: ' ' | append: exec.subject_id

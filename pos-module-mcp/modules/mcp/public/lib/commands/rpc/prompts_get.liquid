@@ -34,11 +34,11 @@
   endfor
 
   if prompt == blank
-    assign err = {}
-    assign err['code'] = -32602
-    assign err['message'] = 'Unknown prompt'
-    assign out = {}
-    assign out['_error'] = err
+    assign err = {
+      "code": -32602,
+      "message": "Unknown prompt"
+    }
+    assign out = { "_error": err }
     return out
   endif
 
@@ -56,11 +56,9 @@
   endunless
   if missing.size > 0
     assign mj = missing | join: ', '
-    assign err = {}
-    assign err['code'] = -32602
+    assign err = { "code": -32602 }
     assign err['message'] = 'Missing required arguments: ' | append: mj
-    assign out = {}
-    assign out['_error'] = err
+    assign out = { "_error": err }
     return out
   endif
 
@@ -71,17 +69,16 @@
   if rtype == 'array'
     assign messages = rendered
   else
-    assign msg = {}
-    assign msg['role'] = 'user'
-    assign content = {}
-    assign content['type'] = 'text'
+    assign msg = { "role": "user" }
+    assign content = { "type": "text" }
     assign content['text'] = rendered | append: ''
     assign msg['content'] = content
     assign messages = messages | array_add: msg
   endif
 
-  assign result = {}
-  assign result['description'] = prompt.description
-  assign result['messages'] = messages
+  assign result = {
+    "description": prompt.description,
+    "messages": messages
+  }
   return result
 %}

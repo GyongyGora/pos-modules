@@ -18,9 +18,10 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
   assign threshold = cfg.defaults.abuse_threshold | plus: 0
-  assign out = {}
-  assign out['suspended'] = false
-  assign out['count'] = 0
+  assign out = {
+    "suspended": false,
+    "count": 0
+  }
   if threshold <= 0
     return out
   endif
@@ -42,14 +43,15 @@
     unless token_id == blank
       graphql _ = 'modules/mcp/tokens/suspend', id: token_id
     endunless
-    assign le = {}
-    assign le['method'] = 'security/suspend'
-    assign le['principal_id'] = principal_id
-    assign le['agent_id'] = agent_id
-    assign le['authz_decision'] = 'deny'
-    assign le['authz_reason'] = 'abuse_threshold_exceeded'
-    assign le['execution_outcome'] = 'suspended'
-    assign le['error_code'] = -32001
+    assign le = {
+      "method": "security/suspend",
+      "principal_id": principal_id,
+      "agent_id": agent_id,
+      "authz_decision": "deny",
+      "authz_reason": "abuse_threshold_exceeded",
+      "execution_outcome": "suspended",
+      "error_code": -32001
+    }
     assign le['request_id'] = '' | uuid
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     assign out['suspended'] = true

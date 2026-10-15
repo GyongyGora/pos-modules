@@ -6,16 +6,16 @@
   should flag this FAILED (missing input validation / output encoding).
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = 'vuln_xss'
-  assign m['version'] = '1.0.0'
-  assign m['description'] = 'NEGATIVE CONTROL (insecure): stores a label with NO angle-bracket filtering (stored XSS).'
-  assign schema = {"type":"object","additionalProperties":false,"required":["label"],"properties":{"label":{"type":"string","minLength":1,"maxLength":200}}}
-  assign m['input_schema'] = schema
-  assign m['mutating'] = true
-  assign m['authorization_policy'] = 'test_principal_member'
-  assign m['requires_approval'] = false
-  assign m['idempotent'] = false
-  assign m['handler'] = 'mcp/tests/tools/vuln_xss/call'
+  assign m = {
+    "name": "vuln_xss",
+    "version": "1.0.0",
+    "description": "NEGATIVE CONTROL (insecure): stores a label with NO angle-bracket filtering (stored XSS).",
+    "input_schema": {"type":"object","additionalProperties":false,"required":["label"],"properties":{"label":{"type":"string","minLength":1,"maxLength":200}}},
+    "mutating": true,
+    "authorization_policy": "test_principal_member",
+    "requires_approval": false,
+    "idempotent": false,
+    "handler": "mcp/tests/tools/vuln_xss/call"
+  }
   return m
 %}

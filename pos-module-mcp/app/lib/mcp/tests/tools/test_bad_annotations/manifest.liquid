@@ -5,18 +5,17 @@
   exclude this tool from tools/list rather than serve a wrong hint.
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = 'test_bad_annotations'
-  assign m['version'] = '1.0.0'
-  assign m['description'] = 'TEST FIXTURE (not a production tool): declares a malformed annotation and must never be served.'
-  assign schema = {"type":"object","additionalProperties":false,"properties":{}}
-  assign m['input_schema'] = schema
-  assign hints = {"readOnlyHint":"yes"}
-  assign m['annotations'] = hints
-  assign m['mutating'] = false
-  assign m['authorization_policy'] = 'public_read'
-  assign m['requires_approval'] = false
-  assign m['idempotent'] = true
-  assign m['handler'] = 'mcp/tests/tools/test_bad_annotations/call'
+  assign m = {
+    "name": "test_bad_annotations",
+    "version": "1.0.0",
+    "description": "TEST FIXTURE (not a production tool): declares a malformed annotation and must never be served.",
+    "input_schema": {"type":"object","additionalProperties":false,"properties":{}},
+    "annotations": {"readOnlyHint":"yes"},
+    "mutating": false,
+    "authorization_policy": "public_read",
+    "requires_approval": false,
+    "idempotent": true,
+    "handler": "mcp/tests/tools/test_bad_annotations/call"
+  }
   return m
 %}

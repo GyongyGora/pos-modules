@@ -14,8 +14,7 @@
   graphql r = 'modules/mcp/idempotency/find', key: key, principal_id: principal_id, tool_name: tool_name
   assign rec = r.records.results.first
 
-  assign out = {}
-  assign out['found'] = false
+  assign out = { "found": false }
   if rec
     assign exp = rec.expires_at | plus: 0
     if exp > now_unix

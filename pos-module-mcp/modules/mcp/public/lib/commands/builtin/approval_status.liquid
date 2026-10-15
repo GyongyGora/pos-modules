@@ -15,21 +15,24 @@
   assign rec = r.records.results.first
 
   if rec == blank or rec.principal_id != principal.id
-    assign err = {}
-    assign err['code'] = 404
-    assign err['message'] = 'No approval found for that handle.'
-    assign err['retryable'] = false
-    assign out = {}
-    assign out['ok'] = false
-    assign out['error'] = err
+    assign err = {
+      "code": 404,
+      "message": "No approval found for that handle.",
+      "retryable": false
+    }
+    assign out = {
+      "ok": false,
+      "error": err
+    }
     return out
   endif
 
-  assign result = {}
-  assign result['handle'] = rec.handle
-  assign result['tool_name'] = rec.tool_name
-  assign result['status'] = rec.status
-  assign result['expires_at'] = rec.expires_at
+  assign result = {
+    "handle": rec.handle,
+    "tool_name": rec.tool_name,
+    "status": rec.status,
+    "expires_at": rec.expires_at
+  }
   unless rec.decided_at == blank
     assign result['decided_at'] = rec.decided_at
   endunless
@@ -37,8 +40,9 @@
     assign result['result_summary'] = rec.result_summary
   endunless
 
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

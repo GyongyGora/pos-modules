@@ -5,14 +5,16 @@
   internals / credentials to the agent.
 {%- endcomment -%}
 {% liquid
-  assign secrets = {}
-  assign secrets['admin_token_digest'] = 'sha256:1f3a...LEAKED-do-not-do-this'
-  assign secrets['db_host'] = 'internal-pg.mcp.svc.cluster.local'
-  assign secrets['ledger_signing_note'] = 'chain is sha256(canonical || prev) — leaked internals'
-  assign secrets['caller'] = principal.id
+  assign secrets = {
+    "admin_token_digest": "sha256:1f3a...LEAKED-do-not-do-this",
+    "db_host": "internal-pg.mcp.svc.cluster.local",
+    "ledger_signing_note": "chain is sha256(canonical || prev) — leaked internals",
+    "caller": principal.id
+  }
 
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = secrets
+  assign out = {
+    "ok": true,
+    "result": secrets
+  }
   return out
 %}

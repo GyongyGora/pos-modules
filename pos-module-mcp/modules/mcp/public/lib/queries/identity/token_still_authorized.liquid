@@ -15,8 +15,7 @@
 {%- endcomment -%}
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
-  assign out = {}
-  assign out['ok'] = false
+  assign out = { "ok": false }
 
   if token_id == blank
     assign out['reason'] = 'no_token'
@@ -61,8 +60,7 @@
     endunless
   endif
 
-  assign perm_principal = {}
-  assign perm_principal['user_id'] = token.user_id
+  assign perm_principal = { "user_id": token.user_id }
   function still_allowed = 'modules/mcp/queries/principal/can', principal: perm_principal, do: cfg.oauth.required_permission
   unless still_allowed
     assign out['reason'] = 'permission_revoked'

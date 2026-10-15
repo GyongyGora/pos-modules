@@ -15,11 +15,12 @@
 {%- endcomment -%}
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
-  assign out = {}
-  assign out['ok'] = false
-  assign out['redirectable'] = false
-  assign out['error'] = 'invalid_request'
-  assign out['state'] = params.state
+  assign out = {
+    "ok": false,
+    "redirectable": false,
+    "error": "invalid_request",
+    "state": params.state
+  }
 
   unless cfg.oauth.builtin
     assign out['error_description'] = 'The authorization server is disabled'

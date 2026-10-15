@@ -9,8 +9,7 @@ method: get
   405 for clients of earlier revisions.
 {%- endcomment -%}
 {%- liquid
-  assign allow = {}
-  assign allow['Allow'] = 'POST'
+  assign allow = { "Allow": "POST" }
   assign allow_json = allow | json
   response_headers allow_json
   response_status 405

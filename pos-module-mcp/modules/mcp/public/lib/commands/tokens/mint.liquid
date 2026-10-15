@@ -13,7 +13,8 @@
 
   @param {string} user_id - the pOS user this token acts as (the principal)
   @param {string} label   - human label (agent/client name), at most 40 characters
-  @return {object} { raw, id, label } — or { error: 'label_taken', label } when the label is in use
+  @return {object} { raw, id, label } — or { error: 'label_taken', label } when the label is in use,
+                   or { error: 'invalid', errors } when user_id is missing
 {%- endcomment -%}
 {% liquid
   function object = 'modules/mcp/commands/tokens/mint/build', user_id: user_id, label: label
@@ -23,8 +24,13 @@
     return out
   endif
 
-  assign taken = {}
-  assign taken['error'] = 'label_taken'
-  assign taken['label'] = object.label
-  return taken
+  assign failed = {}
+  if object.errors.label
+    assign failed['error'] = 'label_taken'
+    assign failed['label'] = object.label
+  else
+    assign failed['error'] = 'invalid'
+    assign failed['errors'] = object.errors
+  endif
+  return failed
 %}

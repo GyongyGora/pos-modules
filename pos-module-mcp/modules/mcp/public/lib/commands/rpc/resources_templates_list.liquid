@@ -19,8 +19,7 @@
     endunless
   endunless
 
-  assign result = {}
-  assign result['resourceTemplates'] = templates
+  assign result = { "resourceTemplates": templates }
   unless cache == blank
     assign result['ttlMs'] = cache.ttlMs
     assign result['cacheScope'] = cache.cacheScope

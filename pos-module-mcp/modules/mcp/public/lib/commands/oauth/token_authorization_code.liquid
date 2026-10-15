@@ -77,8 +77,9 @@
   endunless
 
   function body = 'modules/mcp/commands/oauth/issue_tokens', user_id: rec.user_id, client_id: rec.client_id, client_name: rec.client_name, scope: rec.scope, resource: rec.resource
-  assign out = {}
-  assign out['http_status'] = 200
-  assign out['body'] = body
+  assign out = {
+    "http_status": 200,
+    "body": body
+  }
   return out
 %}

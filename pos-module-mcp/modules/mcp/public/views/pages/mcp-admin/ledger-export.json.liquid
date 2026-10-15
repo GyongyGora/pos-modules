@@ -54,12 +54,13 @@ format: json
     assign was_capped = true
   endif
   assign payload['capped'] = was_capped
-  assign filt = {}
-  assign filt['tool_name'] = context.params.tool_name
-  assign filt['principal_id'] = context.params.principal_id
-  assign filt['client_id'] = context.params.client_id
-  assign filt['authz_decision'] = context.params.authz_decision
-  assign filt['execution_outcome'] = context.params.execution_outcome
+  assign filt = {
+    "tool_name": context.params.tool_name,
+    "principal_id": context.params.principal_id,
+    "client_id": context.params.client_id,
+    "authz_decision": context.params.authz_decision,
+    "execution_outcome": context.params.execution_outcome
+  }
   assign payload['filter'] = filt
   assign payload['rows'] = out_rows
   echo payload | json

@@ -5,16 +5,16 @@
   coverage suite asserts it is visible/callable by operator ONLY.
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = 'test_admin'
-  assign m['version'] = '1.0.0'
-  assign m['description'] = 'TEST FIXTURE (not a production tool): admin-tier visibility probe; returns a constant marker.'
-  assign schema = {"type":"object","additionalProperties":false,"properties":{}}
-  assign m['input_schema'] = schema
-  assign m['mutating'] = false
-  assign m['authorization_policy'] = 'admin_only'
-  assign m['requires_approval'] = false
-  assign m['idempotent'] = false
-  assign m['handler'] = 'mcp/tests/tools/test_admin/call'
+  assign m = {
+    "name": "test_admin",
+    "version": "1.0.0",
+    "description": "TEST FIXTURE (not a production tool): admin-tier visibility probe; returns a constant marker.",
+    "input_schema": {"type":"object","additionalProperties":false,"properties":{}},
+    "mutating": false,
+    "authorization_policy": "admin_only",
+    "requires_approval": false,
+    "idempotent": false,
+    "handler": "mcp/tests/tools/test_admin/call"
+  }
   return m
 %}

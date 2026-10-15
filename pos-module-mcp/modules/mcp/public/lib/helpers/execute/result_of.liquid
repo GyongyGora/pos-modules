@@ -7,9 +7,10 @@
   @return {object} { content, isError, structuredContent? }
 {%- endcomment -%}
 {% liquid
-  assign result = {}
-  assign result['content'] = exec.content
-  assign result['isError'] = exec.isError
+  assign result = {
+    "content": exec.content,
+    "isError": exec.isError
+  }
   unless exec.structured == blank
     assign result['structuredContent'] = exec.structured
   endunless

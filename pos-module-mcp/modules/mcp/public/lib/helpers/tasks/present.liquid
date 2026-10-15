@@ -23,9 +23,10 @@
   assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
   assign expires_at = rec.expires_at | plus: 0
 
-  assign expired_error = {}
-  assign expired_error['code'] = -32005
-  assign expired_error['message'] = 'Approval expired: no operator decided before the deadline'
+  assign expired_error = {
+    "code": -32005,
+    "message": "Approval expired: no operator decided before the deadline"
+  }
 
   assign status = 'working'
   assign message = 'Waiting for an operator to approve or reject this action.'
@@ -47,14 +48,16 @@
       if rec.result_json != blank
         assign result = rec.result_json | parse_json: raw_text: true
       else
-        assign legacy_item = {}
-        assign legacy_item['type'] = 'text'
-        assign legacy_item['text'] = message
+        assign legacy_item = {
+          "type": "text",
+          "text": message
+        }
         assign legacy_content = []
         assign legacy_content = legacy_content | array_add: legacy_item
-        assign result = {}
-        assign result['content'] = legacy_content
-        assign result['isError'] = false
+        assign result = {
+          "content": legacy_content,
+          "isError": false
+        }
       endif
     when 'failed'
       assign message = rec.result_summary | default: 'The action failed.'
@@ -66,9 +69,10 @@
         if rec.error_json != blank
           assign error = rec.error_json | parse_json: raw_text: true
         else
-          assign error = {}
-          assign error['code'] = -32603
-          assign error['message'] = message
+          assign error = {
+            "code": -32603,
+            "message": message
+          }
         endif
       endif
     when 'rejected'
@@ -83,16 +87,15 @@
       assign error = expired_error
   endcase
 
-  assign approval_meta = {}
-  assign approval_meta['tool'] = rec.tool_name
+  assign approval_meta = { "tool": rec.tool_name }
   assign approval_meta['expiresAt'] = expires_at | to_time | strftime: '%Y-%m-%dT%H:%M:%S%:z'
-  assign task_meta = {}
-  assign task_meta['com.platformos.mcp/approval'] = approval_meta
+  assign task_meta = { "com.platformos.mcp/approval": approval_meta }
 
-  assign task = {}
-  assign task['taskId'] = rec.handle
-  assign task['status'] = status
-  assign task['statusMessage'] = message
+  assign task = {
+    "taskId": rec.handle,
+    "status": status,
+    "statusMessage": message
+  }
   assign task['createdAt'] = rec.created_at | to_time | strftime: '%Y-%m-%dT%H:%M:%S%:z'
   assign task['lastUpdatedAt'] = rec.updated_at | to_time | strftime: '%Y-%m-%dT%H:%M:%S%:z'
   assign task['ttlMs'] = null

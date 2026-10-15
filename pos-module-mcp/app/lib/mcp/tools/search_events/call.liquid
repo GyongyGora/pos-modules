@@ -23,23 +23,26 @@
 
   assign events = []
   for r in rows
-    assign e = {}
-    assign e['id'] = r.id
-    assign e['name'] = r.name
-    assign e['summary'] = r.short_description
-    assign e['start_date'] = r.start_date
-    assign e['venue'] = r.venue
-    assign e['link'] = r.link
+    assign e = {
+      "id": r.id,
+      "name": r.name,
+      "summary": r.short_description,
+      "start_date": r.start_date,
+      "venue": r.venue,
+      "link": r.link
+    }
     assign events = events | array_add: e
   endfor
 
-  assign result = {}
-  assign result['query'] = keyword
-  assign result['count'] = res.events.total_entries
-  assign result['events'] = events
+  assign result = {
+    "query": keyword,
+    "count": res.events.total_entries,
+    "events": events
+  }
 
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

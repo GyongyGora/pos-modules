@@ -138,22 +138,23 @@
     function chain = 'modules/mcp/queries/ledger/verify_chain'
   endif
 
-  assign out = {}
-  assign out['total'] = total
-  assign out['by_outcome'] = by_outcome
-  assign out['by_tool'] = by_tool
-  assign out['by_decision'] = by_decision
-  assign out['denials'] = denials
-  assign out['denial_rate'] = denial_rate
-  assign out['blocked'] = blocked
-  assign out['blocked_rate'] = blocked_rate
-  assign out['suspends'] = suspends
-  assign out['rollbacks'] = rollbacks
-  assign out['rollback_rate'] = rollback_rate
-  assign out['pending_approvals'] = pending_approvals
-  assign out['schema_rejections'] = schema_rejections
-  assign out['rate_limited'] = rate_limited
-  assign out['chain'] = chain
-  assign out['latency'] = latency
+  assign out = {
+    "total": total,
+    "by_outcome": by_outcome,
+    "by_tool": by_tool,
+    "by_decision": by_decision,
+    "denials": denials,
+    "denial_rate": denial_rate,
+    "blocked": blocked,
+    "blocked_rate": blocked_rate,
+    "suspends": suspends,
+    "rollbacks": rollbacks,
+    "rollback_rate": rollback_rate,
+    "pending_approvals": pending_approvals,
+    "schema_rejections": schema_rejections,
+    "rate_limited": rate_limited,
+    "chain": chain,
+    "latency": latency
+  }
   return out
 %}

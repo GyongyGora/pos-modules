@@ -140,8 +140,7 @@
     unless ini.authenticated
       log ini.reason, type: 'mcp.auth_denied'
       function body = 'modules/mcp/helpers/rpc/error', id: id, code: ini.error_code, message: ini.message
-      assign hdrs = {}
-      assign hdrs['WWW-Authenticate'] = ini.www_authenticate
+      assign hdrs = { "WWW-Authenticate": ini.www_authenticate }
       assign out['headers'] = hdrs
       assign out['http_status'] = ini.http_status
       assign out['body'] = body

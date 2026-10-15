@@ -19,8 +19,7 @@
   @return {object} { claimed:boolean, rec } rec = the row as re-read under the lock
 {%- endcomment -%}
 {% liquid
-  assign out = {}
-  assign out['claimed'] = false
+  assign out = { "claimed": false }
   assign token = '' | uuid
   assign decided_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
 

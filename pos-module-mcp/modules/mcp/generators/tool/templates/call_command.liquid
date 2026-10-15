@@ -36,30 +36,33 @@
   # 4) Interpret the {valid, errors} contract → the handler return contract (§7.3).
   unless res.valid
     assign msg = 'The action could not be completed.'
-    assign err = {}
-    assign err['code'] = 422
-    assign err['message'] = msg
-    assign err['retryable'] = false
+    assign err = {
+      "code": 422,
+      "message": msg,
+      "retryable": false
+    }
     # The command's field errors are safe to surface so the agent can self-correct:
     unless res.errors == blank
       assign err['fields'] = res.errors
     endunless
-    assign out = {}
-    assign out['ok'] = false
-    assign out['error'] = err
+    assign out = {
+      "ok": false,
+      "error": err
+    }
     return out
   endunless
 
   # Success — surface the created record. Adjust the fields to what the command returns.
-  assign result = {}
-  assign result['id'] = res.id
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = { "id": res.id }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   unless res.id == blank
-    assign subject = {}
-    assign subject['type'] = 'record'
-    assign subject['id'] = res.id
+    assign subject = {
+      "type": "record",
+      "id": res.id
+    }
     assign out['subject'] = subject
   endunless
   return out

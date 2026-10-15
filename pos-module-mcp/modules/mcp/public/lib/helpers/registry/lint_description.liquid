@@ -48,8 +48,9 @@
   if hits.size > 0
     assign flagged = true
   endif
-  assign out = {}
-  assign out['flagged'] = flagged
-  assign out['hits'] = hits
+  assign out = {
+    "flagged": flagged,
+    "hits": hits
+  }
   return out
 %}

@@ -29,9 +29,10 @@
   function cfg = 'modules/mcp/helpers/config'
   assign prefix = cfg.policy_prefix | default: 'mcp/policies'
 
-  assign result = {}
-  assign result['policy'] = policy
-  assign result['allow'] = false
+  assign result = {
+    "policy": policy,
+    "allow": false
+  }
 
   # A tool with no policy never reaches here (registry rejects it, §12.2). Guard
   # anyway — fail closed.

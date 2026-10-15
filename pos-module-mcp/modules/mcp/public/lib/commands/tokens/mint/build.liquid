@@ -6,9 +6,10 @@
   @param {string} label
 {%- endcomment -%}
 {% liquid
-  assign object = {}
-  assign object['user_id'] = user_id
-  assign object['generated_label'] = false
+  assign object = {
+    "user_id": user_id,
+    "generated_label": false
+  }
   assign safe_label = label | default: '' | strip | truncate: 40, ''
   if safe_label == blank
     assign suffix = '' | uuid | replace: '-', '' | slice: 0, 6

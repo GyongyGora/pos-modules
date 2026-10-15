@@ -19,12 +19,13 @@ layout: ''
   The page is never cacheable and never frameable (consent click-jacking).
 {%- endcomment -%}
 {%- liquid
-  assign sec = {}
-  assign sec['Cache-Control'] = 'no-store'
-  assign sec['Pragma'] = 'no-cache'
-  assign sec['X-Frame-Options'] = 'DENY'
-  assign sec['Content-Security-Policy'] = "frame-ancestors 'none'"
-  assign sec['Referrer-Policy'] = 'no-referrer'
+  assign sec = {
+    "Cache-Control": "no-store",
+    "Pragma": "no-cache",
+    "X-Frame-Options": "DENY",
+    "Content-Security-Policy": "frame-ancestors 'none'",
+    "Referrer-Policy": "no-referrer"
+  }
   assign sec_json = sec | json
   response_headers sec_json
   function cfg = 'modules/mcp/helpers/config'
@@ -39,10 +40,11 @@ layout: ''
   if rl.allowed
     function v = 'modules/mcp/commands/oauth/validate_authorize', params: context.params
   else
-    assign v = {}
-    assign v['ok'] = false
-    assign v['redirectable'] = false
-    assign v['error_description'] = 'Too many authorization requests — try again in a minute'
+    assign v = {
+      "ok": false,
+      "redirectable": false,
+      "error_description": "Too many authorization requests — try again in a minute"
+    }
   endif
   if v.ok
     function current_profile = 'modules/user/helpers/current_profile'
@@ -61,22 +63,24 @@ layout: ''
         assign scopes = req.scope | split: ' '
         assign view = 'consent'
       else
-        assign p = {}
-        assign p['error'] = 'access_denied'
-        assign p['error_description'] = 'The user is not allowed to authorize MCP clients'
-        assign p['state'] = v.req.state
-        assign p['iss'] = origin
+        assign p = {
+          "error": "access_denied",
+          "error_description": "The user is not allowed to authorize MCP clients",
+          "state": v.req.state,
+          "iss": origin
+        }
         function url = 'modules/mcp/helpers/oauth/append_params', url: v.req.redirect_uri, params: p
         redirect_to url
         assign view = 'none'
       endif
     endif
   elsif v.redirectable
-    assign p = {}
-    assign p['error'] = v.error
-    assign p['error_description'] = v.error_description
-    assign p['state'] = v.state
-    assign p['iss'] = origin
+    assign p = {
+      "error": v.error,
+      "error_description": v.error_description,
+      "state": v.state,
+      "iss": origin
+    }
     function url = 'modules/mcp/helpers/oauth/append_params', url: v.redirect_uri, params: p
     redirect_to url
     assign view = 'none'

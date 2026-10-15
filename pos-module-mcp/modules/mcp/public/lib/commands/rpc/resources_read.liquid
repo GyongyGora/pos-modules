@@ -23,22 +23,22 @@
       function provided = 'modules/mcp/commands/resources/read_provided', uri: params.uri, identity: identity
       return provided
     endif
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Resource not found'
-    assign out = {}
-    assign out['_error'] = err
+    assign err = {
+      "code": -32002,
+      "message": "Resource not found"
+    }
+    assign out = { "_error": err }
     return out
   endif
 
   function cfg = 'modules/mcp/helpers/config'
 
   unless cfg.resources.expose_markdown_pages
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Resource not found'
-    assign out = {}
-    assign out['_error'] = err
+    assign err = {
+      "code": -32002,
+      "message": "Resource not found"
+    }
+    assign out = { "_error": err }
     return out
   endunless
 
@@ -52,11 +52,11 @@
   # same predicate resources/list applies: markdown + GET + prefix on a path boundary.
   function allowed = 'modules/mcp/queries/resources/page_allowed', page: page, prefixes: cfg.resources.markdown_page_prefixes
   unless allowed
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Resource not found'
-    assign out = {}
-    assign out['_error'] = err
+    assign err = {
+      "code": -32002,
+      "message": "Resource not found"
+    }
+    assign out = { "_error": err }
     return out
   endunless
 
@@ -69,22 +69,22 @@
   # needed here. A doc page with empty source is not a valid markdown resource.
   assign text = page.content | strip
   if text == blank
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Resource not found'
-    assign out = {}
-    assign out['_error'] = err
+    assign err = {
+      "code": -32002,
+      "message": "Resource not found"
+    }
+    assign out = { "_error": err }
     return out
   endif
 
   assign content = []
-  assign item = {}
-  assign item['uri'] = uri
-  assign item['mimeType'] = 'text/markdown'
-  assign item['text'] = text
+  assign item = {
+    "uri": uri,
+    "mimeType": "text/markdown",
+    "text": text
+  }
   assign content = content | array_add: item
 
-  assign result = {}
-  assign result['contents'] = content
+  assign result = { "contents": content }
   return result
 %}

@@ -17,8 +17,9 @@
     graphql _ = 'modules/mcp/tokens/revoke', id: row.id
   endif
 
-  assign out = {}
-  assign out['http_status'] = 200
-  assign out['body'] = {}
+  assign out = {
+    "http_status": 200,
+    "body": {}
+  }
   return out
 %}

@@ -51,8 +51,7 @@
           assign r['description'] = desc
         endunless
         assign r['mimeType'] = 'text/markdown'
-        assign meta = {}
-        assign meta['updated_at'] = page.content_updated_at
+        assign meta = { "updated_at": page.content_updated_at }
         assign meta['public_url'] = origin | append: '/' | append: page.slug
         assign r['_meta'] = meta
         assign resources = resources | array_add: r
@@ -75,8 +74,7 @@
     endunless
   endunless
 
-  assign result = {}
-  assign result['resources'] = resources
+  assign result = { "resources": resources }
   unless next_cursor == blank
     assign result['nextCursor'] = next_cursor
   endunless

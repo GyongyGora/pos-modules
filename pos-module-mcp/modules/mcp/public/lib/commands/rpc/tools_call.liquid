@@ -38,8 +38,7 @@
     function body = 'modules/mcp/helpers/rpc/error', id: id, code: auth.error_code, message: auth.message
     assign out['http_status'] = auth.http_status
     unless auth.www_authenticate == blank
-      assign hdrs = {}
-      assign hdrs['WWW-Authenticate'] = auth.www_authenticate
+      assign hdrs = { "WWW-Authenticate": auth.www_authenticate }
       assign out['headers'] = hdrs
     endunless
     assign out['body'] = body
@@ -65,16 +64,17 @@
   assign rl_scope = 'principal:' | append: auth.principal.id
   function rl = 'modules/mcp/commands/limits/check', scope: rl_scope, limit: cfg.defaults.rate_limit_per_min
   unless rl.allowed
-    assign rle = {}
-    assign rle['method'] = 'tools/call'
-    assign rle['tool_name'] = params.params.name
-    assign rle['client_id'] = auth.agent.client_id
-    assign rle['agent_id'] = auth.agent.id
-    assign rle['principal_id'] = auth.principal.id
-    assign rle['delegation_mode'] = auth.delegation_mode
-    assign rle['authz_decision'] = 'not_applicable'
-    assign rle['execution_outcome'] = 'error'
-    assign rle['error_code'] = -32004
+    assign rle = {
+      "method": "tools/call",
+      "tool_name": params.params.name,
+      "client_id": auth.agent.client_id,
+      "agent_id": auth.agent.id,
+      "principal_id": auth.principal.id,
+      "delegation_mode": auth.delegation_mode,
+      "authz_decision": "not_applicable",
+      "execution_outcome": "error",
+      "error_code": -32004
+    }
     assign rle['request_id'] = '' | uuid
     assign rle['_start_ms'] = start_ms
     function _ = 'modules/mcp/commands/ledger/append', entry: rle
@@ -104,17 +104,18 @@
   assign request_id = '' | uuid
 
   # Base ledger entry for this authenticated call (fields filled per outcome).
-  assign le = {}
-  assign le['method'] = 'tools/call'
-  assign le['tool_name'] = tool_name
-  assign le['client_id'] = auth.agent.client_id
-  assign le['agent_id'] = auth.agent.id
-  assign le['principal_id'] = auth.principal.id
-  assign le['delegation_mode'] = auth.delegation_mode
-  assign le['input_sha256'] = input_sha256
-  assign le['input_bytes'] = input_bytes
-  assign le['request_id'] = request_id
-  assign le['_start_ms'] = start_ms
+  assign le = {
+    "method": "tools/call",
+    "tool_name": tool_name,
+    "client_id": auth.agent.client_id,
+    "agent_id": auth.agent.id,
+    "principal_id": auth.principal.id,
+    "delegation_mode": auth.delegation_mode,
+    "input_sha256": input_sha256,
+    "input_bytes": input_bytes,
+    "request_id": request_id,
+    "_start_ms": start_ms
+  }
 
   # Step 4 — resolve the tool from the registry (explicit registration + valid
   # manifest + per-token allowed_tools narrowing). Unregistered → unknown tool.
@@ -148,8 +149,7 @@
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     function origin = 'modules/mcp/queries/origin'
     assign wa = 'Bearer resource_metadata="' | append: origin | append: '/.well-known/oauth-protected-resource", realm="mcp", error="insufficient_scope", scope="' | append: cfg.oauth.default_scope | append: '"'
-    assign hdrs = {}
-    assign hdrs['WWW-Authenticate'] = wa
+    assign hdrs = { "WWW-Authenticate": wa }
     assign out['headers'] = hdrs
     function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32001, message: 'Insufficient scope'
     assign out['http_status'] = 403
@@ -250,16 +250,19 @@
         function _ = 'modules/mcp/commands/ledger/append', entry: le
 
         assign content = []
-        assign item = {}
-        assign item['type'] = 'text'
-        assign item['text'] = reject_msg
+        assign item = {
+          "type": "text",
+          "text": reject_msg
+        }
         assign content = content | array_add: item
-        assign result = {}
-        assign result['content'] = content
-        assign result['isError'] = true
-        assign sc = {}
-        assign sc['status'] = reject_status
-        assign sc['pending_count'] = live_pending
+        assign result = {
+          "content": content,
+          "isError": true
+        }
+        assign sc = {
+          "status": reject_status,
+          "pending_count": live_pending
+        }
         assign result['structuredContent'] = sc
         function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
         assign out['http_status'] = 200
@@ -287,17 +290,20 @@
     endif
 
     assign content = []
-    assign item = {}
-    assign item['type'] = 'text'
-    assign item['text'] = 'This action requires operator approval and has NOT run. Poll mcp_approval_status with the handle to check its status.'
+    assign item = {
+      "type": "text",
+      "text": "This action requires operator approval and has NOT run. Poll mcp_approval_status with the handle to check its status."
+    }
     assign content = content | array_add: item
-    assign result = {}
-    assign result['content'] = content
-    assign result['isError'] = false
-    assign sc = {}
-    assign sc['status'] = 'pending_approval'
-    assign sc['handle'] = pa.handle
-    assign sc['expires_at'] = pa.expires_at
+    assign result = {
+      "content": content,
+      "isError": false
+    }
+    assign sc = {
+      "status": "pending_approval",
+      "handle": pa.handle,
+      "expires_at": pa.expires_at
+    }
     assign result['structuredContent'] = sc
     function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
     assign out['http_status'] = 200
@@ -327,10 +333,11 @@
 
   # Step 8 — execute the tool handler (§7.3). context_meta gives the handler its
   # call identity without exposing engine internals.
-  assign context_meta = {}
-  assign context_meta['tool_name'] = tool_name
-  assign context_meta['tool_version'] = tool.version
-  assign context_meta['request_id'] = request_id
+  assign context_meta = {
+    "tool_name": tool_name,
+    "tool_version": tool.version,
+    "request_id": request_id
+  }
 
   if tool.mutating
     # Step 8+9, MUTATING (§11.1, §4.3): handler + attestation share ONE transaction.
@@ -412,13 +419,15 @@
       # as done). A handler business error keeps its own message.
       if exec.outcome == 'success'
         assign rb_content = []
-        assign rb_item = {}
-        assign rb_item['type'] = 'text'
-        assign rb_item['text'] = 'The action failed and was rolled back; no changes were saved.'
+        assign rb_item = {
+          "type": "text",
+          "text": "The action failed and was rolled back; no changes were saved."
+        }
         assign rb_content = rb_content | array_add: rb_item
-        assign rb_result = {}
-        assign rb_result['content'] = rb_content
-        assign rb_result['isError'] = true
+        assign rb_result = {
+          "content": rb_content,
+          "isError": true
+        }
         function body = 'modules/mcp/helpers/rpc/success', id: id, result: rb_result
         assign out['http_status'] = 200
         assign out['body'] = body

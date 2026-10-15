@@ -101,9 +101,10 @@
   # Stable principal id namespaced by kind so ledger subjects never collide.
   assign principal_id = 'user:' | append: token.user_id
 
-  assign principal = {}
-  assign principal['id'] = principal_id
-  assign principal['user_id'] = token.user_id
+  assign principal = {
+    "id": principal_id,
+    "user_id": token.user_id
+  }
 
   # The user must still hold MCP access (one profile lookup per authenticated call).
   function still_allowed = 'modules/mcp/queries/principal/can', principal: principal, do: cfg.oauth.required_permission
@@ -115,8 +116,7 @@
   # v1: the agent is the same user acting directly. Label identifies the bearer.
   assign agent_id = token.label | default: principal_id
 
-  assign agent = {}
-  assign agent['id'] = agent_id
+  assign agent = { "id": agent_id }
   # OAuth: the real client_id (CIMD URL or DCR id) — a stable agent identity for the
   # ledger, independent of the human-chosen label.
   assign agent['client_id'] = token.client_id | default: agent_id
@@ -144,12 +144,13 @@
     graphql _touch = 'modules/mcp/tokens/touch', id: token.id, last_used_at: _now_iso
   endif
 
-  assign ok = {}
-  assign ok['authenticated'] = true
-  assign ok['principal'] = principal
-  assign ok['agent'] = agent
-  assign ok['delegation_mode'] = 'direct'
-  assign ok['token_id'] = token.id
+  assign ok = {
+    "authenticated": true,
+    "principal": principal,
+    "agent": agent,
+    "delegation_mode": "direct",
+    "token_id": token.id
+  }
   assign ok['token_kind'] = token.kind | default: 'manual'
   assign ok['scopes'] = scopes
   return ok

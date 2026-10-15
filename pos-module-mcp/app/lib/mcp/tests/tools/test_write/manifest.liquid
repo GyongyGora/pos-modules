@@ -6,16 +6,16 @@
   attestation of a successful mutation.
 {%- endcomment -%}
 {% liquid
-  assign m = {}
-  assign m['name'] = 'test_write'
-  assign m['version'] = '1.0.0'
-  assign m['description'] = 'TEST FIXTURE (not a production tool): writes a test_note row owned by the caller.'
-  assign schema = {"type":"object","additionalProperties":false,"required":["label"],"properties":{"label":{"type":"string","minLength":1,"maxLength":100,"pattern":"^[^<>]*$","description":"label stored on the row"}}}
-  assign m['input_schema'] = schema
-  assign m['mutating'] = true
-  assign m['authorization_policy'] = 'test_principal_member'
-  assign m['requires_approval'] = false
-  assign m['idempotent'] = true
-  assign m['handler'] = 'mcp/tests/tools/test_write/call'
+  assign m = {
+    "name": "test_write",
+    "version": "1.0.0",
+    "description": "TEST FIXTURE (not a production tool): writes a test_note row owned by the caller.",
+    "input_schema": {"type":"object","additionalProperties":false,"required":["label"],"properties":{"label":{"type":"string","minLength":1,"maxLength":100,"pattern":"^[^<>]*$","description":"label stored on the row"}}},
+    "mutating": true,
+    "authorization_policy": "test_principal_member",
+    "requires_approval": false,
+    "idempotent": true,
+    "handler": "mcp/tests/tools/test_write/call"
+  }
   return m
 %}

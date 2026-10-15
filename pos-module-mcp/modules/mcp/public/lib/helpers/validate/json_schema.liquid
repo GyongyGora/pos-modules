@@ -30,9 +30,10 @@
   if depth > max_depth
     assign msg = at | append: ': exceeds max nesting depth'
     assign errors = errors | array_add: msg
-    assign out = {}
-    assign out['valid'] = false
-    assign out['errors'] = errors
+    assign out = {
+      "valid": false,
+      "errors": errors
+    }
     return out
   endif
 
@@ -40,9 +41,10 @@
   if vt == 'null'
     assign msg = at | append: ': must be ' | append: t | append: ', got null'
     assign errors = errors | array_add: msg
-    assign out = {}
-    assign out['valid'] = false
-    assign out['errors'] = errors
+    assign out = {
+      "valid": false,
+      "errors": errors
+    }
     return out
   endif
 
@@ -85,9 +87,10 @@
   unless type_ok
     assign msg = at | append: ': expected ' | append: t | append: ', got ' | append: vt
     assign errors = errors | array_add: msg
-    assign out = {}
-    assign out['valid'] = false
-    assign out['errors'] = errors
+    assign out = {
+      "valid": false,
+      "errors": errors
+    }
     return out
   endunless
 
@@ -280,8 +283,9 @@
   if errors.size == 0
     assign is_valid = true
   endif
-  assign out = {}
-  assign out['valid'] = is_valid
-  assign out['errors'] = errors
+  assign out = {
+    "valid": is_valid,
+    "errors": errors
+  }
   return out
 %}

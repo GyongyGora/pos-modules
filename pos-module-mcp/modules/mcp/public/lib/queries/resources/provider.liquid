@@ -30,9 +30,10 @@
   function cfg = 'modules/mcp/helpers/config'
   assign partial = cfg.resources_partial | default: 'mcp/resources'
 
-  assign out = {}
-  assign out['available'] = true
-  assign out['failed'] = false
+  assign out = {
+    "available": true,
+    "failed": false
+  }
   assign value = null
   assign absent_message = 'find partial "' | append: partial | append: '"'
   try

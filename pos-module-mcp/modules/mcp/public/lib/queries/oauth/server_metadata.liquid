@@ -8,8 +8,7 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
   function origin = 'modules/mcp/queries/origin'
-  assign doc = {}
-  assign doc['issuer'] = origin
+  assign doc = { "issuer": origin }
   assign doc['authorization_endpoint'] = origin | append: '/oauth/authorize'
   assign doc['token_endpoint'] = origin | append: '/oauth/token'
   assign doc['revocation_endpoint'] = origin | append: '/oauth/revoke'

@@ -23,21 +23,23 @@
 
   function abuse = 'modules/mcp/commands/limits/enforce_abuse', token_id: identity.token_id, principal_id: identity.principal.id, agent_id: identity.agent.id
   if abuse.suspended
-    assign err = {}
-    assign err['code'] = -32001
-    assign err['message'] = 'Access suspended'
-    assign err['http_status'] = 403
+    assign err = {
+      "code": -32001,
+      "message": "Access suspended",
+      "http_status": 403
+    }
     assign out['_error'] = err
     return out
   endif
 
   assign uri_text = uri | append: ''
-  assign le = {}
-  assign le['method'] = 'resources/read'
-  assign le['client_id'] = identity.agent.client_id
-  assign le['agent_id'] = identity.agent.id
-  assign le['principal_id'] = identity.principal.id
-  assign le['delegation_mode'] = identity.delegation_mode
+  assign le = {
+    "method": "resources/read",
+    "client_id": identity.agent.client_id,
+    "agent_id": identity.agent.id,
+    "principal_id": identity.principal.id,
+    "delegation_mode": identity.delegation_mode
+  }
   assign le['input_sha256'] = uri_text | digest: 'sha256'
   assign le['input_bytes'] = uri_text | size
   assign le['request_id'] = '' | uuid
@@ -53,11 +55,12 @@
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: identity.principal.id
     assign headers = {}
     assign headers['Retry-After'] = rate.retry_after | append: ''
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Rate limit exceeded'
-    assign err['http_status'] = 429
-    assign err['headers'] = headers
+    assign err = {
+      "code": -32002,
+      "message": "Rate limit exceeded",
+      "http_status": 429,
+      "headers": headers
+    }
     assign out['_error'] = err
     return out
   endunless
@@ -70,13 +73,13 @@
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     function origin = 'modules/mcp/queries/origin'
     assign challenge = 'Bearer resource_metadata="' | append: origin | append: '/.well-known/oauth-protected-resource", realm="mcp", error="insufficient_scope", scope="' | append: cfg.oauth.default_scope | append: '"'
-    assign headers = {}
-    assign headers['WWW-Authenticate'] = challenge
-    assign err = {}
-    assign err['code'] = -32001
-    assign err['message'] = 'Insufficient scope'
-    assign err['http_status'] = 403
-    assign err['headers'] = headers
+    assign headers = { "WWW-Authenticate": challenge }
+    assign err = {
+      "code": -32001,
+      "message": "Insufficient scope",
+      "http_status": 403,
+      "headers": headers
+    }
     assign out['_error'] = err
     return out
   endunless
@@ -102,8 +105,7 @@
           assign malformed = true
           break
         endif
-        assign item = {}
-        assign item['uri'] = raw.uri
+        assign item = { "uri": raw.uri }
         if text_kind == 'string'
           assign item['text'] = raw.text
         elsif blob_kind == 'string'
@@ -128,9 +130,10 @@
     assign le['execution_outcome'] = 'error'
     assign le['error_code'] = -32603
     function _ = 'modules/mcp/commands/ledger/append', entry: le
-    assign err = {}
-    assign err['code'] = -32603
-    assign err['message'] = 'Internal error'
+    assign err = {
+      "code": -32603,
+      "message": "Internal error"
+    }
     assign out['_error'] = err
     return out
   endif
@@ -139,16 +142,16 @@
     assign le['execution_outcome'] = 'invalid'
     assign le['error_code'] = -32002
     function _ = 'modules/mcp/commands/ledger/append', entry: le
-    assign err = {}
-    assign err['code'] = -32002
-    assign err['message'] = 'Resource not found'
+    assign err = {
+      "code": -32002,
+      "message": "Resource not found"
+    }
     assign out['_error'] = err
     return out
   endif
 
   assign le['execution_outcome'] = 'success'
   function _ = 'modules/mcp/commands/ledger/append', entry: le
-  assign result = {}
-  assign result['contents'] = contents
+  assign result = { "contents": contents }
   return result
 %}

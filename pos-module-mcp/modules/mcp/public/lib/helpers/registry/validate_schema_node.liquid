@@ -41,10 +41,11 @@
   if depth > max_depth
     assign msg = at | append: ': schema nesting exceeds max depth'
     assign errors = errors | array_add: msg
-    assign out = {}
-    assign out['valid'] = false
-    assign out['errors'] = errors
-    assign out['lint'] = lint
+    assign out = {
+      "valid": false,
+      "errors": errors,
+      "lint": lint
+    }
     return out
   endif
 

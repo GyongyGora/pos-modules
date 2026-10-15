@@ -10,8 +10,7 @@
 {%- endcomment -%}
 {% liquid
   function is_admin = 'modules/mcp/queries/principal/can', principal: principal, do: 'mcp.admin'
-  assign r = {}
-  assign r['allow'] = is_admin
+  assign r = { "allow": is_admin }
   if is_admin
     assign r['reason'] = 'admin'
   else

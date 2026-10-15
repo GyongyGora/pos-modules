@@ -49,8 +49,7 @@
 
   # The user must still hold MCP access (same rule as identity/resolve_principal), so
   # a removed role is not renewed for the refresh token's 30 days.
-  assign grant_principal = {}
-  assign grant_principal['user_id'] = g.user_id
+  assign grant_principal = { "user_id": g.user_id }
   function still_allowed = 'modules/mcp/queries/principal/can', principal: grant_principal, do: cfg.oauth.required_permission
   unless still_allowed
     function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_grant', error_description: 'The user no longer has MCP access', http_status: null
@@ -81,14 +80,16 @@
     return e
   endunless
 
-  assign body = {}
-  assign body['access_token'] = access
-  assign body['token_type'] = 'Bearer'
-  assign body['expires_in'] = ttl
-  assign body['refresh_token'] = refresh
-  assign body['scope'] = g.scope
-  assign out = {}
-  assign out['http_status'] = 200
-  assign out['body'] = body
+  assign body = {
+    "access_token": access,
+    "token_type": "Bearer",
+    "expires_in": ttl,
+    "refresh_token": refresh,
+    "scope": g.scope
+  }
+  assign out = {
+    "http_status": 200,
+    "body": body
+  }
   return out
 %}

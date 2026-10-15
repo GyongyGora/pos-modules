@@ -68,10 +68,11 @@
     endif
   endfor
 
-  assign out = {}
-  assign out['ok'] = ok
-  assign out['count'] = count
-  assign out['broken_at'] = broken_at
-  assign out['reason'] = reason
+  assign out = {
+    "ok": ok,
+    "count": count,
+    "broken_at": broken_at,
+    "reason": reason
+  }
   return out
 %}

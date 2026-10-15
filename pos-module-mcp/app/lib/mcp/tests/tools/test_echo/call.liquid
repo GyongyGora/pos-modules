@@ -5,13 +5,15 @@
   handler can tell which token made the call.
 {%- endcomment -%}
 {% liquid
-  assign result = {}
-  assign result['echo'] = arguments.message
-  assign result['principal'] = principal.id
-  assign result['agent_client_id'] = agent.client_id
-  assign result['agent_token_id'] = agent.token_id
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
+  assign result = {
+    "echo": arguments.message,
+    "principal": principal.id,
+    "agent_client_id": agent.client_id,
+    "agent_token_id": agent.token_id
+  }
+  assign out = {
+    "ok": true,
+    "result": result
+  }
   return out
 %}

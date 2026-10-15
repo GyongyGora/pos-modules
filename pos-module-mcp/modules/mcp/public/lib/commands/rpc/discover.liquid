@@ -13,16 +13,15 @@
 {% liquid
   function cfg = 'modules/mcp/helpers/config'
 
-  assign result = {}
-  assign result['supportedVersions'] = cfg.modern_protocol_versions
+  assign result = { "supportedVersions": cfg.modern_protocol_versions }
 
   # listChanged is false (no notifications until streaming lands, spec §16.2/§13.1 Phase 4).
-  assign caps = {}
-  assign caps['tools'] = {"listChanged":false}
-  assign caps['resources'] = {"listChanged":false,"subscribe":false}
-  assign caps['prompts'] = {"listChanged":false}
-  assign extensions = {}
-  assign extensions['io.modelcontextprotocol/tasks'] = {}
+  assign caps = {
+    "tools": {"listChanged":false},
+    "resources": {"listChanged":false,"subscribe":false},
+    "prompts": {"listChanged":false}
+  }
+  assign extensions = { "io.modelcontextprotocol/tasks": {} }
   assign caps['extensions'] = extensions
   assign result['capabilities'] = caps
 
@@ -33,11 +32,11 @@
   assign result['ttlMs'] = hint.ttlMs
   assign result['cacheScope'] = hint.cacheScope
 
-  assign info = {}
-  assign info['name'] = cfg.server_name
-  assign info['version'] = cfg.server_version
-  assign rmeta = {}
-  assign rmeta['io.modelcontextprotocol/serverInfo'] = info
+  assign info = {
+    "name": cfg.server_name,
+    "version": cfg.server_version
+  }
+  assign rmeta = { "io.modelcontextprotocol/serverInfo": info }
   assign result['_meta'] = rmeta
 
   return result

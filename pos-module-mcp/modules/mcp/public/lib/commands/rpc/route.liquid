@@ -202,12 +202,9 @@
   if proto.modern
     if method == 'tasks/get' or method == 'tasks/update' or method == 'tasks/cancel'
       unless proto.tasks_extension
-        assign required_extensions = {}
-        assign required_extensions['io.modelcontextprotocol/tasks'] = {}
-        assign required_capabilities = {}
-        assign required_capabilities['extensions'] = required_extensions
-        assign missing_data = {}
-        assign missing_data['requiredCapabilities'] = required_capabilities
+        assign required_extensions = { "io.modelcontextprotocol/tasks": {} }
+        assign required_capabilities = { "extensions": required_extensions }
+        assign missing_data = { "requiredCapabilities": required_capabilities }
         function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32021, message: 'Missing required client capability', data: missing_data
         assign out['http_status'] = 400
         assign out['body'] = body

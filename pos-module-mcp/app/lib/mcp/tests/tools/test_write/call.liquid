@@ -8,18 +8,21 @@
   graphql g = 'mcp/test_note_create', user_id: uid, label: arguments.label, source: 'test_write'
   assign nid = g.record_create.id
 
-  assign result = {}
-  assign result['id'] = nid
-  assign result['label'] = arguments.label
-  assign result['owner'] = principal.id
+  assign result = {
+    "id": nid,
+    "label": arguments.label,
+    "owner": principal.id
+  }
 
-  assign subject = {}
-  assign subject['type'] = 'record'
-  assign subject['id'] = nid
+  assign subject = {
+    "type": "record",
+    "id": nid
+  }
 
-  assign out = {}
-  assign out['ok'] = true
-  assign out['result'] = result
-  assign out['subject'] = subject
+  assign out = {
+    "ok": true,
+    "result": result,
+    "subject": subject
+  }
   return out
 %}

@@ -77,26 +77,30 @@
     assign era = 'modern'
     assign requested = body_version
     if header_version == blank
-      assign error = {}
-      assign error['http_status'] = 400
-      assign error['code'] = -32020
-      assign error['message'] = 'Header mismatch: the MCP-Protocol-Version header is required'
+      assign error = {
+        "http_status": 400,
+        "code": -32020,
+        "message": "Header mismatch: the MCP-Protocol-Version header is required"
+      }
     elsif header_version != body_version
-      assign error = {}
-      assign error['http_status'] = 400
-      assign error['code'] = -32020
-      assign error['message'] = 'Header mismatch: MCP-Protocol-Version header does not match the request protocol version'
+      assign error = {
+        "http_status": 400,
+        "code": -32020,
+        "message": "Header mismatch: MCP-Protocol-Version header does not match the request protocol version"
+      }
     elsif modern_versions contains body_version
       assign version = body_version
     else
-      assign data = {}
-      assign data['supported'] = modern_versions
-      assign data['requested'] = body_version
-      assign error = {}
-      assign error['http_status'] = 400
-      assign error['code'] = -32022
-      assign error['message'] = 'Unsupported protocol version'
-      assign error['data'] = data
+      assign data = {
+        "supported": modern_versions,
+        "requested": body_version
+      }
+      assign error = {
+        "http_status": 400,
+        "code": -32022,
+        "message": "Unsupported protocol version",
+        "data": data
+      }
     endif
 
   elsif header_version != blank
@@ -105,19 +109,22 @@
       assign version = header_version
     elsif modern_versions contains header_version
       assign era = 'modern'
-      assign error = {}
-      assign error['http_status'] = 400
-      assign error['code'] = -32020
-      assign error['message'] = 'Header mismatch: the request _meta has no io.modelcontextprotocol/protocolVersion'
+      assign error = {
+        "http_status": 400,
+        "code": -32020,
+        "message": "Header mismatch: the request _meta has no io.modelcontextprotocol/protocolVersion"
+      }
     else
-      assign data = {}
-      assign data['supported'] = legacy_versions
-      assign data['requested'] = header_version
-      assign error = {}
-      assign error['http_status'] = 400
-      assign error['code'] = -32022
-      assign error['message'] = 'Unsupported protocol version'
-      assign error['data'] = data
+      assign data = {
+        "supported": legacy_versions,
+        "requested": header_version
+      }
+      assign error = {
+        "http_status": 400,
+        "code": -32022,
+        "message": "Unsupported protocol version",
+        "data": data
+      }
     endif
   endif
 
@@ -139,13 +146,14 @@
     endunless
   endif
 
-  assign out = {}
-  assign out['version'] = version
-  assign out['era'] = era
-  assign out['modern'] = modern
-  assign out['tasks_extension'] = tasks_extension
-  assign out['requested'] = requested
-  assign out['supported'] = supported
-  assign out['error'] = error
+  assign out = {
+    "version": version,
+    "era": era,
+    "modern": modern,
+    "tasks_extension": tasks_extension,
+    "requested": requested,
+    "supported": supported,
+    "error": error
+  }
   return out
 %}
