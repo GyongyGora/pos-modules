@@ -939,7 +939,7 @@ describe('coverage · multi-principal governance planes', () => {
     ok('eval flags no clean prompt', !fails.some(f => f.check === 'prompt_no_poison' && f.target !== 'test_poisoned_prompt'));
     ok('clean instructions are not flagged', !fails.some(f => f.check === 'instructions_no_poison'));
 
-    await setConstant('MCP_CONFIG', JSON.stringify({ instructions_partial: 'mcp/test_poisoned_instructions' }));
+    await setConstant('MCP_CONFIG', JSON.stringify({ instructions_partial: 'mcp/tests/poisoned_instructions' }));
     fails = await runEval();
     const instructions = fails.find(f => f.check === 'instructions_no_poison');
     ok('eval flags poisoned connection instructions', /ignore previous/.test(instructions?.detail || ''), instructions?.detail);

@@ -12,8 +12,8 @@ and durable records. This module assembles those primitives into an MCP surface.
 It is **not** a way to expose GraphQL to an LLM — that is the anti-pattern it
 exists to prevent.
 
-Full design: [`pos-module-mcp-spec.md`](./modules/mcp/docs/pos-module-mcp-spec.md). Tool-authoring
-deep dive: [`docs/authoring-tools.md`](./modules/mcp/docs/authoring-tools.md).
+Full design: [`pos-module-mcp-spec.md`](./docs/pos-module-mcp-spec.md). Tool-authoring
+deep dive: [`docs/authoring-tools.md`](./docs/authoring-tools.md).
 
 ---
 
@@ -57,7 +57,7 @@ tools in `app/` wrap.
 
 | Path | Purpose |
 |---|---|
-| `POST /mcp` | JSON-RPC 2.0 MCP endpoint — dual-era: `2025-06-18` (`initialize` handshake) and `2026-07-28` (version per request); see `modules/mcp/docs/spec-2026-07-28-gap.md` |
+| `POST /mcp` | JSON-RPC 2.0 MCP endpoint — dual-era: `2025-06-18` (`initialize` handshake) and `2026-07-28` (version per request); see `docs/spec-2026-07-28-gap.md` |
 | `GET` / `DELETE /mcp` | 405 `Allow: POST` (no SSE stream, no sessions) |
 | `GET /mcp-health` | Liveness + readiness probe — `{status, checks:{config,database}}`, 200/503 (public, cheap) |
 | `GET /.well-known/oauth-protected-resource` | OAuth resource metadata (RFC 9728) |
@@ -129,7 +129,7 @@ Example — brand the server, raise the limit, expose docs, in one object:
 
 ## Authoring a tool (Layer 2)
 
-> **Full guide + platformOS gotchas:** [`docs/authoring-tools.md`](./modules/mcp/docs/authoring-tools.md).
+> **Full guide + platformOS gotchas:** [`docs/authoring-tools.md`](./docs/authoring-tools.md).
 
 ### Scaffold a draft (fastest start)
 
@@ -374,7 +374,7 @@ instance's `/mcp` URL and to a scope (`mcp:read`, plus `mcp:write` for mutating 
 refresh tokens rotate and last 30 days. Authorizing a client needs the same
 `mcp.tokens.manage` permission as minting a token. On by default; turn it off with
 `MCP_CONFIG {"oauth":{"authorization_server":false}}`. Endpoints, configuration and
-security notes: [`modules/mcp/docs/oauth.md`](modules/mcp/docs/oauth.md). An external
+security notes: [`docs/oauth.md`](./docs/oauth.md). An external
 authorization server is not supported yet.
 
 ### Operator console (`/mcp-admin`)
@@ -429,7 +429,7 @@ variables** (never string-concatenation). Raw table-write tools bypass your app'
 moderation/defaults/relationships — prefer **command mode**. And "authorized" is not
 "safe to publish" — content-creating tools should be moderated (`status: pending`) or
 gated (`requires_approval: true`). See **[docs/authoring-tools.md → Security
-boundaries](./modules/mcp/docs/authoring-tools.md#security-boundaries--what-the-engine-does-not-do-for-you)**
+boundaries](./docs/authoring-tools.md#security-boundaries--what-the-engine-does-not-do-for-you)**
 for the full list.
 
 ---
@@ -531,7 +531,7 @@ patterns, bound contradictions, `mutating` mislabeling, PII in `audit_fields`, a
 per-field-kind content hardening (a display field is told to reject HTML, a URL field
 is warned about `javascript:` URIs, a date field is told to add `format: date` or `date-time`).
 Errors fail; `--strict` fails on warnings too. See
-[docs/authoring-tools.md → Lint your tools](./modules/mcp/docs/authoring-tools.md#lint-your-tools).
+[docs/authoring-tools.md → Lint your tools](./docs/authoring-tools.md#lint-your-tools).
 
 The **eval harness** (`prompts §19.3`) stores golden cases (`mcp_eval_case`) and run
 results (`mcp_eval_run`) as records; the deterministic checks catch tool-surface

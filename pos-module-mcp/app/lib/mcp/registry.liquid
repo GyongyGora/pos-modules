@@ -43,7 +43,7 @@
     for tn in test_names
       assign te = {}
       assign te['name'] = tn
-      assign tp = 'mcp/tools/' | append: tn
+      assign tp = 'mcp/tests/tools/' | append: tn
       assign te['path'] = tp
       assign tools = tools | array_add: te
     endfor
@@ -61,7 +61,7 @@
     for vn in vuln_names
       assign ve = {}
       assign ve['name'] = vn
-      assign vp = 'mcp/tools/' | append: vn
+      assign vp = 'mcp/tests/tools/' | append: vn
       assign ve['path'] = vp
       assign tools = tools | array_add: ve
     endfor

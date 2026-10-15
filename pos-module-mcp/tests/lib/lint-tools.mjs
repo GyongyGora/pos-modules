@@ -35,7 +35,8 @@ import { dirname, resolve, join } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const APP = join(ROOT, 'app');
-const TOOLS_DIR = join(APP, 'lib/mcp/tools');
+// Real tools, plus the gated test / negative-control fixtures kept apart under tests/.
+const TOOLS_DIRS = [join(APP, 'lib/mcp/tools'), join(APP, 'lib/mcp/tests/tools')];
 const POLICIES_DIR = join(APP, 'lib/mcp/policies');
 // Built-in policies (authorize/evaluate). Every other `mcp_` policy name is reserved.
 const BUILTIN_POLICIES = ['mcp_authenticated'];
@@ -460,9 +461,9 @@ export function lintAll({ includeVuln = false } = {}) {
     lintTool(name, dir, { registered: true });
   }
   // 2) every tool dir on disk that ISN'T registered — draft/orphan; still deep-lint it
-  if (existsSync(TOOLS_DIR)) {
-    for (const d of readdirSync(TOOLS_DIR)) {
-      const full = join(TOOLS_DIR, d);
+  for (const toolsDir of TOOLS_DIRS.filter((d) => existsSync(d))) {
+    for (const d of readdirSync(toolsDir)) {
+      const full = join(toolsDir, d);
       if (statSync(full).isDirectory() && !seen.has(full)) {
         if (skip(d)) { skippedVuln.push(d); continue; }
         lintTool(d, full, { registered: false });
