@@ -11,7 +11,7 @@
                    ttlMs, cacheScope, _meta["io.modelcontextprotocol/serverInfo"] }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
 
   assign result = {}
   assign result['supportedVersions'] = cfg.modern_protocol_versions
@@ -29,7 +29,7 @@
   function instructions = 'modules/mcp/queries/instructions'
   assign result['instructions'] = instructions
 
-  function hint = 'modules/mcp/commands/protocol/cache_hint', kind: 'discover', scope: 'public'
+  function hint = 'modules/mcp/helpers/protocol/cache_hint', kind: 'discover', scope: 'public'
   assign result['ttlMs'] = hint.ttlMs
   assign result['cacheScope'] = hint.cacheScope
 

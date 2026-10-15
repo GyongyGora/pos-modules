@@ -11,7 +11,7 @@
   if redirect_uri == blank
     return false
   endif
-  function valid = 'modules/mcp/commands/oauth/redirect_uri_valid', uri: redirect_uri
+  function valid = 'modules/mcp/helpers/oauth/redirect_uri_valid', uri: redirect_uri
   unless valid
     return false
   endunless
@@ -19,12 +19,12 @@
     return true
   endif
 
-  function p = 'modules/mcp/commands/oauth/parse_url', url: redirect_uri
+  function p = 'modules/mcp/helpers/oauth/parse_url', url: redirect_uri
   unless p.scheme == 'http' and p.is_loopback
     return false
   endunless
   for r in registered
-    function q = 'modules/mcp/commands/oauth/parse_url', url: r
+    function q = 'modules/mcp/helpers/oauth/parse_url', url: r
     if q.valid and q.scheme == 'http' and q.is_loopback and q.host == p.host and q.path == p.path and q.query == p.query
       return true
     endif

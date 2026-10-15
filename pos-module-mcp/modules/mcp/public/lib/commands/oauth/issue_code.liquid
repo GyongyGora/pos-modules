@@ -8,9 +8,9 @@
   @return {string} the redirect URL
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   function origin = 'modules/mcp/queries/origin'
-  function raw = 'modules/mcp/commands/oauth/random_secret', prefix: 'mcp_ac_'
+  function raw = 'modules/mcp/helpers/oauth/random_secret', prefix: 'mcp_ac_'
   assign code_digest = raw | digest: 'sha256'
   assign now_s = 'now' | to_time | strftime: '%s' | plus: 0
   assign expires_at = cfg.oauth.code_ttl_seconds | plus: now_s
@@ -21,6 +21,6 @@
   assign p['code'] = raw
   assign p['state'] = req.state
   assign p['iss'] = origin
-  function url = 'modules/mcp/commands/oauth/append_params', url: req.redirect_uri, params: p
+  function url = 'modules/mcp/helpers/oauth/append_params', url: req.redirect_uri, params: p
   return url
 %}

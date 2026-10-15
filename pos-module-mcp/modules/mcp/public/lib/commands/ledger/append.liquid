@@ -88,7 +88,7 @@
   endunless
   assign w = entry | hash_merge: extra
 
-  function canonical = 'modules/mcp/commands/ledger/canonical', entry: w
+  function canonical = 'modules/mcp/helpers/ledger/canonical', entry: w
   assign entry_hash = canonical | append: prev_hash | digest: 'sha256'
 
   # Coerce nullable integer fields (graphql_argument_type_mismatch_mode: error —

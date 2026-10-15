@@ -8,7 +8,7 @@ format: json
   limited (unauthenticated endpoint that writes a row).
 {%- endcomment -%}
 {%- liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   function hdrs = 'modules/mcp/queries/oauth/endpoint_headers', cacheable: false
   response_headers hdrs
   assign rl_scope = 'oauth_register_ip:' | append: context.visitor.ip
@@ -16,7 +16,7 @@ format: json
   if rl.allowed
     function out = 'modules/mcp/commands/oauth/register', params: context.params
   else
-    function out = 'modules/mcp/commands/oauth/error', error: 'slow_down', error_description: 'Too many registrations', http_status: 429
+    function out = 'modules/mcp/helpers/oauth/error', error: 'slow_down', error_description: 'Too many registrations', http_status: 429
   endif
   response_status out.http_status
   echo out.body

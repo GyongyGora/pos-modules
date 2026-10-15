@@ -13,7 +13,7 @@
   @return {object} { protocolVersion, capabilities, serverInfo, instructions, _meta }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
 
   assign result = {}
   assign result['protocolVersion'] = protocol_version | default: cfg.protocol_version

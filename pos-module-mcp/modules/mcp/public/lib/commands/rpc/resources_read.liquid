@@ -12,7 +12,7 @@
                    { _error:{code,message} } when unavailable/forbidden
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
 
   unless cfg.resources.expose_markdown_pages
     assign err = {}

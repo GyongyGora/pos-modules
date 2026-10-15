@@ -15,7 +15,7 @@
                      redirect_uris, error_description }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign out = {}
   assign out['found'] = false
   assign out['client_id'] = client_id
@@ -29,7 +29,7 @@
       assign out['error_description'] = 'Client ID Metadata Documents are not enabled'
       return out
     endunless
-    function safe = 'modules/mcp/commands/oauth/public_https_url', url: client_id
+    function safe = 'modules/mcp/helpers/oauth/public_https_url', url: client_id
     unless safe
       assign out['error_description'] = 'client_id URL is not an acceptable https URL'
       return out
@@ -78,7 +78,7 @@
       return out
     endif
 
-    function host = 'modules/mcp/commands/oauth/parse_url', url: client_id
+    function host = 'modules/mcp/helpers/oauth/parse_url', url: client_id
     assign out['kind'] = 'cimd'
     assign out['client_name'] = client_name | default: host.host | append: '' | strip | truncate: 60, ''
     assign out['client_uri'] = client_uri | default: ''

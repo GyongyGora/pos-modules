@@ -10,16 +10,16 @@ format: json
   context.params. Per-IP rate limited. Responses are never cacheable (RFC 6749 §5.1).
 {%- endcomment -%}
 {%- liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   function hdrs = 'modules/mcp/queries/oauth/endpoint_headers', cacheable: false
   response_headers hdrs
 
   assign rl_scope = 'oauth_token_ip:' | append: context.visitor.ip
   function rl = 'modules/mcp/commands/limits/check', scope: rl_scope, limit: cfg.oauth.token_rate_limit_per_min
   if cfg.oauth.builtin != true
-    function out = 'modules/mcp/commands/oauth/error', error: 'invalid_request', error_description: 'The authorization server is disabled', http_status: 404
+    function out = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'The authorization server is disabled', http_status: 404
   elsif rl.allowed != true
-    function out = 'modules/mcp/commands/oauth/error', error: 'slow_down', error_description: 'Too many requests', http_status: 429
+    function out = 'modules/mcp/helpers/oauth/error', error: 'slow_down', error_description: 'Too many requests', http_status: 429
   else
     case context.params.grant_type
       when 'authorization_code'
@@ -27,7 +27,7 @@ format: json
       when 'refresh_token'
         function out = 'modules/mcp/commands/oauth/token_refresh', params: context.params
       else
-        function out = 'modules/mcp/commands/oauth/error', error: 'unsupported_grant_type', error_description: 'grant_type must be authorization_code or refresh_token', http_status: null
+        function out = 'modules/mcp/helpers/oauth/error', error: 'unsupported_grant_type', error_description: 'grant_type must be authorization_code or refresh_token', http_status: null
     endcase
   endif
   response_status out.http_status

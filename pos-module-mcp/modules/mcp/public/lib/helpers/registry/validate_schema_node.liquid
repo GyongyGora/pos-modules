@@ -128,7 +128,7 @@
         assign child = props[pk]
         assign child_path = at | append: '.properties.' | append: pk
         assign next_depth = depth | plus: 1
-        function cr = 'modules/mcp/commands/registry/validate_schema_node', node: child, depth: next_depth, max_depth: max_depth, path: child_path, output: output
+        function cr = 'modules/mcp/helpers/registry/validate_schema_node', node: child, depth: next_depth, max_depth: max_depth, path: child_path, output: output
         unless cr.valid
           for e in cr.errors
             assign errors = errors | array_add: e
@@ -144,7 +144,7 @@
     unless items == blank
       assign child_path = at | append: '.items'
       assign next_depth = depth | plus: 1
-      function ir = 'modules/mcp/commands/registry/validate_schema_node', node: items, depth: next_depth, max_depth: max_depth, path: child_path, output: output
+      function ir = 'modules/mcp/helpers/registry/validate_schema_node', node: items, depth: next_depth, max_depth: max_depth, path: child_path, output: output
       unless ir.valid
         for e in ir.errors
           assign errors = errors | array_add: e

@@ -28,7 +28,7 @@
   @return {object} { ok, outcome: 'executed'|'failed', summary, result?, error? }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
 
   assign fail = {}
   assign fail['ok'] = false
@@ -72,9 +72,9 @@
   assign args = approval.arguments_json | parse_json
 
   # 2. Re-validate the persisted arguments against the current schema.
-  function val = 'modules/mcp/commands/validate/json_schema', value: args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
+  function val = 'modules/mcp/helpers/validate/json_schema', value: args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
   unless val.valid
-    function invalid_result = 'modules/mcp/commands/rpc/invalid_arguments_result', errors: val.errors, tool: tool
+    function invalid_result = 'modules/mcp/helpers/rpc/invalid_arguments_result', errors: val.errors, tool: tool
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Arguments no longer valid.'
     assign fail['result'] = invalid_result
@@ -166,7 +166,7 @@
       assign failed_result['content'] = rb_content
       assign failed_result['isError'] = true
     else
-      function failed_result = 'modules/mcp/commands/execute/result_of', exec: exec
+      function failed_result = 'modules/mcp/helpers/execute/result_of', exec: exec
     endif
     assign fail['outcome'] = 'failed'
     assign fail['summary'] = 'Execution failed and was rolled back.'
@@ -174,7 +174,7 @@
     return fail
   endunless
 
-  function result = 'modules/mcp/commands/execute/result_of', exec: exec
+  function result = 'modules/mcp/helpers/execute/result_of', exec: exec
   assign out = {}
   assign out['ok'] = true
   assign out['outcome'] = 'executed'

@@ -11,9 +11,9 @@
   @return {object} token response body
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
-  function access = 'modules/mcp/commands/oauth/random_secret', prefix: 'mcp_at_'
-  function refresh = 'modules/mcp/commands/oauth/random_secret', prefix: 'mcp_rt_'
+  function cfg = 'modules/mcp/helpers/config'
+  function access = 'modules/mcp/helpers/oauth/random_secret', prefix: 'mcp_at_'
+  function refresh = 'modules/mcp/helpers/oauth/random_secret', prefix: 'mcp_rt_'
   assign now_s = 'now' | to_time | strftime: '%s' | plus: 0
   assign ttl = cfg.oauth.access_token_ttl_seconds | plus: 0
   assign expires_at = now_s | plus: ttl

@@ -17,7 +17,7 @@
   @param {object}  headers         - context.headers
   @param {*}       id              - JSON-RPC request id
   @param {boolean} tasks_extension - the request declared the Tasks extension
-                                     (commands/protocol/negotiate); an approval-gated
+                                     (helpers/protocol/negotiate); an approval-gated
                                      call then answers with a CreateTaskResult
   HTTP STATUS. Every JSON-RPC error here answers HTTP 200 except the two the MCP
   authorization spec defines at the HTTP level: 401 (no/invalid token, with the
@@ -35,7 +35,7 @@
 
   unless auth.authenticated
     log auth.reason, type: 'mcp.auth_denied'
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: auth.error_code, message: auth.message
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: auth.error_code, message: auth.message
     assign out['http_status'] = auth.http_status
     unless auth.www_authenticate == blank
       assign hdrs = {}
@@ -51,7 +51,7 @@
   # suspended (revoked) and this call is rejected; subsequent calls fail auth.
   function abuse = 'modules/mcp/commands/limits/enforce_abuse', token_id: auth.token_id, principal_id: auth.principal.id, agent_id: auth.agent.id
   if abuse.suspended
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32001, message: 'Access suspended'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32001, message: 'Access suspended'
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -61,7 +61,7 @@
   # radius per identity. Rejected calls are ledgered (accountable identity) and
   # carry Retry-After (header and error.data.retryAfter, in seconds). The code is
   # -32004, in the implementation-defined range: -32002 is "resource not found".
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign rl_scope = 'principal:' | append: auth.principal.id
   function rl = 'modules/mcp/commands/limits/check', scope: rl_scope, limit: cfg.defaults.rate_limit_per_min
   unless rl.allowed
@@ -85,7 +85,7 @@
     assign rl_data = {}
     assign rl_data['retryAfter'] = rl.retry_after | plus: 0
     # platformos-check-disable PartialCallArguments
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32004, message: 'Rate limit exceeded', data: rl_data
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32004, message: 'Rate limit exceeded', data: rl_data
     # platformos-check-enable PartialCallArguments
     assign out['http_status'] = 200
     assign out['body'] = body
@@ -125,7 +125,7 @@
     assign le['error_code'] = -32602
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: auth.principal.id
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Unknown tool'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32602, message: 'Unknown tool'
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -151,7 +151,7 @@
     assign hdrs = {}
     assign hdrs['WWW-Authenticate'] = wa
     assign out['headers'] = hdrs
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32001, message: 'Insufficient scope'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32001, message: 'Insufficient scope'
     assign out['http_status'] = 403
     assign out['body'] = body
     return out
@@ -166,7 +166,7 @@
   unless args == blank
     assign val_args = args_json | parse_json
   endunless
-  function val = 'modules/mcp/commands/validate/json_schema', value: val_args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
+  function val = 'modules/mcp/helpers/validate/json_schema', value: val_args, schema: tool.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
   unless val.valid
     assign le['authz_decision'] = 'not_applicable'
     assign le['execution_outcome'] = 'invalid'
@@ -176,8 +176,8 @@
     # A tool execution error, not a protocol error (MCP 2025-11-25, SEP-1303): the
     # model sees it and can correct its arguments. Validation errors are argument-
     # shape facts (which key, which constraint) and carry no server internals.
-    function result = 'modules/mcp/commands/rpc/invalid_arguments_result', errors: val.errors, tool: tool
-    function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+    function result = 'modules/mcp/helpers/rpc/invalid_arguments_result', errors: val.errors, tool: tool
+    function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -195,7 +195,7 @@
     function _ = 'modules/mcp/commands/limits/note_violation', principal_id: auth.principal.id
     # Stable, generic wire message — the specific reason is in the ledger, not the
     # response (§13.2). Denials never leak policy internals.
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32001, message: 'Forbidden'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32001, message: 'Forbidden'
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -261,7 +261,7 @@
         assign sc['status'] = reject_status
         assign sc['pending_count'] = live_pending
         assign result['structuredContent'] = sc
-        function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+        function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
         assign out['http_status'] = 200
         assign out['body'] = body
         return out
@@ -278,9 +278,9 @@
     # resolves it — the extension requires the task to be durable before answering.
     if tasks_extension
       graphql created = 'modules/mcp/approvals/find_by_handle', handle: pa.handle
-      function task = 'modules/mcp/commands/tasks/present', rec: created.records.results.first
+      function task = 'modules/mcp/helpers/tasks/present', rec: created.records.results.first
       assign task['resultType'] = 'task'
-      function body = 'modules/mcp/commands/rpc/success', id: id, result: task
+      function body = 'modules/mcp/helpers/rpc/success', id: id, result: task
       assign out['http_status'] = 200
       assign out['body'] = body
       return out
@@ -299,7 +299,7 @@
     assign sc['handle'] = pa.handle
     assign sc['expires_at'] = pa.expires_at
     assign result['structuredContent'] = sc
-    function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+    function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -376,7 +376,7 @@
             # mutation and its replay record are atomic: a mutation can never commit
             # without its replay record, and a rolled-back call leaves none.
             if idem_store
-              function sres = 'modules/mcp/commands/execute/result_of', exec: exec
+              function sres = 'modules/mcp/helpers/execute/result_of', exec: exec
               assign rj = sres | json
               function _ = 'modules/mcp/commands/idempotency/store', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name, input_sha256: input_sha256, response_json: rj, window: cfg.defaults.idempotency_window_seconds
             endif
@@ -419,7 +419,7 @@
         assign rb_result = {}
         assign rb_result['content'] = rb_content
         assign rb_result['isError'] = true
-        function body = 'modules/mcp/commands/rpc/success', id: id, result: rb_result
+        function body = 'modules/mcp/helpers/rpc/success', id: id, result: rb_result
         assign out['http_status'] = 200
         assign out['body'] = body
         return out
@@ -435,7 +435,7 @@
     endunless
     function _ = 'modules/mcp/commands/ledger/append', entry: le
     if idem_store and exec.outcome == 'success'
-      function sres = 'modules/mcp/commands/execute/result_of', exec: exec
+      function sres = 'modules/mcp/helpers/execute/result_of', exec: exec
       assign rj = sres | json
       function _ = 'modules/mcp/commands/idempotency/store', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name, input_sha256: input_sha256, response_json: rj, window: cfg.defaults.idempotency_window_seconds
     endif
@@ -443,8 +443,8 @@
 
   # Step 10 — respond. Handler business errors are MCP tool errors (isError), not
   # protocol errors, so a successful protocol call carries HTTP 200 either way.
-  function result = 'modules/mcp/commands/execute/result_of', exec: exec
-  function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+  function result = 'modules/mcp/helpers/execute/result_of', exec: exec
+  function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
   assign out['http_status'] = 200
   assign out['body'] = body
   return out

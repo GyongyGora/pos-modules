@@ -14,7 +14,7 @@
                    redirect_uri, state, code_challenge, scope, resource }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign out = {}
   assign out['ok'] = false
   assign out['redirectable'] = false
@@ -38,7 +38,7 @@
   if redirect_uri == blank and client.redirect_uris.size == 1
     assign redirect_uri = client.redirect_uris.first
   endif
-  function allowed = 'modules/mcp/commands/oauth/redirect_uri_allowed', redirect_uri: redirect_uri, registered: client.redirect_uris
+  function allowed = 'modules/mcp/helpers/oauth/redirect_uri_allowed', redirect_uri: redirect_uri, registered: client.redirect_uris
   unless allowed
     assign out['error_description'] = 'redirect_uri is not registered for this client'
     return out
@@ -78,7 +78,7 @@
     return out
   endif
 
-  function scope = 'modules/mcp/commands/oauth/normalize_scope', requested: params.scope
+  function scope = 'modules/mcp/helpers/oauth/normalize_scope', requested: params.scope
 
   assign req = {}
   assign req['rid'] = '' | uuid

@@ -15,7 +15,7 @@
   @return {object} { ttlMs, cacheScope }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign kind = kind | default: 'tools'
   assign scope = scope | default: 'public'
   # platformos-check-disable UnknownProperty

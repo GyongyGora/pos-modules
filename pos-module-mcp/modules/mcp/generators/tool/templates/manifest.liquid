@@ -12,7 +12,7 @@
   assign schema = <%- inputSchemaJson %>
   assign m['input_schema'] = schema
   assign m['mutating'] = <%= mutating %>
-  # TODO(REQUIRED): set a named authorization policy — app/views/partials/mcp/policies/<name>.
+  # TODO(REQUIRED): set a named authorization policy — app/lib/mcp/policies/<name>.
   #   Left EMPTY on purpose: empty fails the meta-schema, so this DRAFT is EXCLUDED
   #   from the registry until you complete it (no implicit allow).
   assign m['authorization_policy'] = ''

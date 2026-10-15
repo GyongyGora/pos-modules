@@ -13,7 +13,7 @@
   assign out['body'] = {}
   assign t = params.token | default: '' | append: ''
   if t == blank
-    function e = 'modules/mcp/commands/oauth/error', error: 'invalid_request', error_description: 'token is required', http_status: null
+    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'token is required', http_status: null
     return e
   endif
   assign d = t | digest: 'sha256'

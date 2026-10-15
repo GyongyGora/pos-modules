@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **App-side MCP files moved from `app/views/partials/mcp/` to `app/lib/mcp/`.** Tools,
+  policies, the registry, prompts and instructions are logic, not views. Logical paths
+  (`mcp/registry`, `mcp/tools/<name>/call`, `mcp/policies/<name>`, …) are unchanged, so
+  existing apps keep working; the `tool` generator now writes to `app/lib/mcp/tools/`.
+- **Pure engine units moved from `lib/commands/` to `lib/helpers/`.** 24 side-effect-free
+  partials (`config`, `rpc/{error,success,invalid_arguments_result}`, `identity/deny`,
+  `execute/result_of`, `ledger/canonical`, `protocol/*`, `tasks/present`,
+  `validate/json_schema`, `registry/{manifest_schema,validate_schema_node,lint_description}`,
+  `oauth/{append_params,error,parse_url,pkce_verify,random_secret,normalize_scope,public_https_url,redirect_uri_valid,redirect_uri_allowed}`)
+  are now `modules/mcp/helpers/…`. Apps calling any of them as `modules/mcp/commands/…`
+  must update the path.
 - **BREAKING — accounts and access use the user module's RBAC.** The consoles resolve the
   signed-in user with `modules/user/helpers/current_profile` and gate pages with
   `can_do_or_unauthorized` (anonymous visitors are redirected to sign-in and returned).

@@ -15,7 +15,7 @@
   @return {object} { handle, expires_at }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
   assign expires_at = now_unix | plus: cfg.defaults.approval_window_seconds
 

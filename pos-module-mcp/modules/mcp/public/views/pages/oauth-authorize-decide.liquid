@@ -10,7 +10,7 @@ method: post
 {%- endcomment -%}
 {%- liquid
   response_headers '{"Cache-Control": "no-store", "Pragma": "no-cache"}'
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   function origin = 'modules/mcp/queries/origin'
   assign raw_req = context.session.mcp_oauth_req
   session mcp_oauth_req = null
@@ -38,7 +38,7 @@ method: post
     else
       assign p['error'] = 'access_denied'
       assign p['error_description'] = 'The user denied the request'
-      function url = 'modules/mcp/commands/oauth/append_params', url: req.redirect_uri, params: p
+      function url = 'modules/mcp/helpers/oauth/append_params', url: req.redirect_uri, params: p
     endif
     redirect_to url
   endif

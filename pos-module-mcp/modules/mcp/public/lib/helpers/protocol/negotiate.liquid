@@ -38,7 +38,7 @@
                    `modern` is true only for an accepted modern request.
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign default_version = cfg.protocol_version
   assign supported = cfg.supported_protocol_versions
   assign modern_versions = cfg.modern_protocol_versions

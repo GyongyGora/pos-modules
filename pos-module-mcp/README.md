@@ -28,11 +28,11 @@ scaffolder.
 
 **Layer 2 — the app's tools.** Unique per instance. The app declares its own tools,
 authorization policies, prompts, and connection instructions. **All business meaning
-lives here.** On platformOS these are partials under `app/views/partials/mcp/`
+lives here.** On platformOS these are lib partials under `app/lib/mcp/`
 (referenced by the logical namespace `mcp/…`):
 
 ```
-app/views/partials/mcp/
+app/lib/mcp/
   registry.liquid                # explicit [{name, path}] list of tools to serve
   instructions.liquid            # house rules sent on initialize / server/discover
   tools/<name>/manifest.liquid   # a tool's declaration (name, schema, policy, handler)
@@ -83,7 +83,7 @@ built-in tool `mcp_approval_status` (poll a pending approval without the extensi
 ## Configuration
 
 Two-part: **defaults** in code at
-[`public/lib/commands/config.liquid`](./modules/mcp/public/lib/commands/config.liquid) (travel
+[`public/lib/helpers/config.liquid`](./modules/mcp/public/lib/helpers/config.liquid) (travel
 with the module), and **per-instance overrides** in a single platformOS constant
 **`MCP_CONFIG`** (a JSON object, shallow-merged over the defaults with nested merge
 for `defaults`/`resources`). Values live in the encrypted constant store, read on
@@ -181,7 +181,7 @@ prompt every platformOS generator uses.)
 
 ### By hand
 
-1. `app/views/partials/mcp/tools/<name>/manifest.liquid` returning the manifest:
+1. `app/lib/mcp/tools/<name>/manifest.liquid` returning the manifest:
 
    ```liquid
    {% liquid
@@ -204,7 +204,7 @@ prompt every platformOS generator uses.)
    arguments as typed GraphQL variables (never string-interpolate), never fetch an
    agent-supplied URL, never write the ledger directly.
 
-3. Register in `app/views/partials/mcp/registry.liquid`:
+3. Register in `app/lib/mcp/registry.liquid`:
 
    ```liquid
    assign e = {}
@@ -225,7 +225,7 @@ is strict (no coercion).
 
 ### Authorization policies
 
-`app/views/partials/mcp/policies/<name>.liquid` returns `true`/`false` or
+`app/lib/mcp/policies/<name>.liquid` returns `true`/`false` or
 `{ allow, reason }`; receives `principal`, `agent`, `arguments`, `tool`,
 `delegation_mode`; evaluated against the **principal**; **fail-closed** (missing/
 erroring/malformed → deny). Ships `public_read` (explicit allow for any authenticated
@@ -233,7 +233,7 @@ principal) and `admin_only` (operator allowlist).
 
 ### Connection instructions
 
-`app/views/partials/mcp/instructions.liquid` returns the house-rules string sent on
+`app/lib/mcp/instructions.liquid` returns the house-rules string sent on
 `initialize` and `server/discover`. Clients may skip both, so rules an agent must obey
 also belong in tool descriptions. Authored by the app; the engine falls back to a default. Model-read —
 review as security-relevant.
@@ -272,9 +272,9 @@ review as security-relevant.
 ## Prompts (Layer 2)
 
 Reusable, parameterized prompt templates the server offers to agents.
-`app/views/partials/mcp/prompts.liquid` returns
+`app/lib/mcp/prompts.liquid` returns
 `[{ name, title?, description, arguments, template }]`; each `template` is a partial
-(`app/views/partials/mcp/prompts/<name>.liquid`) that receives `arguments` and returns
+(`app/lib/mcp/prompts/<name>.liquid`) that receives `arguments` and returns
 prompt text (one user message) or a messages array. Served via `prompts/list` and
 `prompts/get` (required-argument presence is enforced). Interpolate argument values
 with `append`, not `{{ }}`, to avoid output escaping.
@@ -456,7 +456,7 @@ table. In the monorepo CI (`.github/workflows/tests.yml`, module key `mcp`) the 
 ephemeral instance reserved from the CI pool.
 
 The test **`app/` is a minimal MCP harness**, not a full community app: it holds only the
-Layer-2 tools (`app/views/partials/mcp/`), their queries (`app/graphql/mcp/`), the
+Layer-2 tools (`app/lib/mcp/`), their queries (`app/graphql/mcp/`), the
 `test_note` table, the seed migration, and `config`/`user.yml`. The community domain the
 demo tools wrap comes from the `community`/`components` modules, installed from the
 marketplace (`pos-cli modules install --dev`, gitignored); base `user` provides login.

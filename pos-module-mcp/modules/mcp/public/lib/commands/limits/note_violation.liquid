@@ -8,7 +8,7 @@
   @param {string} principal_id
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign win_len = cfg.defaults.abuse_window_seconds | plus: 0
   if win_len <= 0
     return true

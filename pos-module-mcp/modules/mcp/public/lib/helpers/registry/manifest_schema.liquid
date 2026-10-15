@@ -57,7 +57,7 @@
   if manifest.description == blank
     assign errors = errors | array_add: 'description: required'
   else
-    function lint = 'modules/mcp/commands/registry/lint_description', text: manifest.description
+    function lint = 'modules/mcp/helpers/registry/lint_description', text: manifest.description
     if lint.flagged
       assign joined = lint.hits | join: ', '
       assign wmsg = 'description flagged by tool-poisoning lint: ' | append: joined
@@ -155,7 +155,7 @@
     if isch.type != 'object'
       assign errors = errors | array_add: 'input_schema: root type must be "object"'
     endif
-    function sv = 'modules/mcp/commands/registry/validate_schema_node', node: isch, depth: 1, max_depth: max_depth, path: 'input_schema'
+    function sv = 'modules/mcp/helpers/registry/validate_schema_node', node: isch, depth: 1, max_depth: max_depth, path: 'input_schema'
     unless sv.valid
       for e in sv.errors
         assign errors = errors | array_add: e
@@ -170,7 +170,7 @@
       assign errors = errors | array_add: 'output_schema: root type must be "object"'
     endif
     assign output_depth = max_output_depth | default: max_depth
-    function ov = 'modules/mcp/commands/registry/validate_schema_node', node: osch, depth: 1, max_depth: output_depth, path: 'output_schema', output: true
+    function ov = 'modules/mcp/helpers/registry/validate_schema_node', node: osch, depth: 1, max_depth: output_depth, path: 'output_schema', output: true
     unless ov.valid
       for e in ov.errors
         assign errors = errors | array_add: e

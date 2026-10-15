@@ -415,7 +415,7 @@ describe('oauth · built-in OAuth 2.1 authorization server', () => {
   });
 
   // ==== CIMD SSRF guard =========================================================
-  // commands/oauth/public_https_url has no HTTP endpoint of its own; it guards the
+  // helpers/oauth/public_https_url has no HTTP endpoint of its own; it guards the
   // outbound fetch of a Client ID Metadata Document, so it is exercised through
   // /oauth/authorize with URL client_ids: a refused URL renders the non-redirectable
   // "not an acceptable https URL" page WITHOUT any fetch. (A `pos-cli liquid-exec`

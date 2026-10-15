@@ -5,7 +5,7 @@
 
   @param {object} params  - { taskId }
   @param {object} headers - context.headers (bearer identity)
-  @return {object} the task (commands/tasks/present) | { _error:{code,message} }
+  @return {object} the task (helpers/tasks/present) | { _error:{code,message} }
 {%- endcomment -%}
 {% liquid
   function found = 'modules/mcp/commands/tasks/find_owned', params: params, headers: headers
@@ -13,6 +13,6 @@
     return found
   endunless
 
-  function task = 'modules/mcp/commands/tasks/present', rec: found.rec
+  function task = 'modules/mcp/helpers/tasks/present', rec: found.rec
   return task
 %}

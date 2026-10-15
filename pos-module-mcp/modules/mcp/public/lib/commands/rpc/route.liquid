@@ -21,11 +21,11 @@
   @param {object} params  - context.params (the whole parsed JSON-RPC request)
   @param {object} headers - context.headers
   @param {string} id      - the request id, echoed verbatim
-  @param {object} proto   - the result of commands/protocol/negotiate
+  @param {object} proto   - the result of helpers/protocol/negotiate
   @return {object} { http_status:int, headers?:object, body:object }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign out = {}
 
   assign not_found_status = 200
@@ -33,7 +33,7 @@
     assign not_found_status = 404
     assign modern_methods = 'server/discover,tools/list,tools/call,resources/list,resources/templates/list,resources/read,prompts/list,prompts/get,tasks/get,tasks/update,tasks/cancel' | split: ','
     unless modern_methods contains method
-      function body = 'modules/mcp/commands/rpc/error', id: id, code: -32601, message: 'Method not found'
+      function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32601, message: 'Method not found'
       assign out['http_status'] = not_found_status
       assign out['body'] = body
       return out
@@ -76,7 +76,7 @@
         if tl_scope == 'principal'
           assign tcs = 'private'
         endif
-        function tools_cache = 'modules/mcp/commands/protocol/cache_hint', kind: 'tools', scope: tcs
+        function tools_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'tools', scope: tcs
       endif
       if tl_scope == 'principal'
         function tl_id = 'modules/mcp/commands/identity/resolve_principal', headers: headers
@@ -92,7 +92,7 @@
     when 'resources/list'
       assign res_cache = null
       if proto.modern
-        function res_cache = 'modules/mcp/commands/protocol/cache_hint', kind: 'resources', scope: 'public'
+        function res_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
       endif
       function result = 'modules/mcp/commands/rpc/resources_list', cache: res_cache
       assign handled = true
@@ -100,7 +100,7 @@
       # No parameterized resource templates yet — return an empty set (§13.1).
       assign result = {"resourceTemplates":[]}
       if proto.modern
-        function rt_cache = 'modules/mcp/commands/protocol/cache_hint', kind: 'resources', scope: 'public'
+        function rt_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
         assign result['ttlMs'] = rt_cache.ttlMs
         assign result['cacheScope'] = rt_cache.cacheScope
       endif
@@ -108,7 +108,7 @@
     when 'prompts/list'
       assign pr_cache = null
       if proto.modern
-        function pr_cache = 'modules/mcp/commands/protocol/cache_hint', kind: 'prompts', scope: 'public'
+        function pr_cache = 'modules/mcp/helpers/protocol/cache_hint', kind: 'prompts', scope: 'public'
       endif
       function result = 'modules/mcp/commands/rpc/prompts_list', cache: pr_cache
       assign handled = true
@@ -129,7 +129,7 @@
         assign result = {}
         assign handled = true
       else
-        function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Invalid params: unknown logging level'
+        function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32602, message: 'Invalid params: unknown logging level'
         assign out['http_status'] = 200
         assign out['body'] = body
         return out
@@ -145,17 +145,17 @@
       if proto.modern and rr_code == -32002
         assign rr_code = -32602
       endif
-      function body = 'modules/mcp/commands/rpc/error', id: id, code: rr_code, message: rr._error.message
+      function body = 'modules/mcp/helpers/rpc/error', id: id, code: rr_code, message: rr._error.message
       assign out['http_status'] = 200
       assign out['body'] = body
       return out
     endunless
     if proto.modern
-      function rc = 'modules/mcp/commands/protocol/cache_hint', kind: 'resources', scope: 'public'
+      function rc = 'modules/mcp/helpers/protocol/cache_hint', kind: 'resources', scope: 'public'
       assign rr['ttlMs'] = rc.ttlMs
       assign rr['cacheScope'] = rc.cacheScope
     endif
-    function body = 'modules/mcp/commands/rpc/success', id: id, result: rr
+    function body = 'modules/mcp/helpers/rpc/success', id: id, result: rr
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -164,12 +164,12 @@
   if method == 'prompts/get'
     function pr = 'modules/mcp/commands/rpc/prompts_get', params: params.params
     unless pr._error == blank
-      function body = 'modules/mcp/commands/rpc/error', id: id, code: pr._error.code, message: pr._error.message
+      function body = 'modules/mcp/helpers/rpc/error', id: id, code: pr._error.code, message: pr._error.message
       assign out['http_status'] = 200
       assign out['body'] = body
       return out
     endunless
-    function body = 'modules/mcp/commands/rpc/success', id: id, result: pr
+    function body = 'modules/mcp/helpers/rpc/success', id: id, result: pr
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
@@ -188,7 +188,7 @@
         assign required_capabilities['extensions'] = required_extensions
         assign missing_data = {}
         assign missing_data['requiredCapabilities'] = required_capabilities
-        function body = 'modules/mcp/commands/rpc/error', id: id, code: -32021, message: 'Missing required client capability', data: missing_data
+        function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32021, message: 'Missing required client capability', data: missing_data
         assign out['http_status'] = 400
         assign out['body'] = body
         return out
@@ -207,12 +207,12 @@
         if tr._error.code == -32001
           assign est = 401
         endif
-        function body = 'modules/mcp/commands/rpc/error', id: id, code: tr._error.code, message: tr._error.message
+        function body = 'modules/mcp/helpers/rpc/error', id: id, code: tr._error.code, message: tr._error.message
         assign out['http_status'] = est
         assign out['body'] = body
         return out
       endunless
-      function body = 'modules/mcp/commands/rpc/success', id: id, result: tr
+      function body = 'modules/mcp/helpers/rpc/success', id: id, result: tr
       assign out['http_status'] = 200
       assign out['body'] = body
       return out
@@ -220,14 +220,14 @@
   endif
 
   if handled
-    function body = 'modules/mcp/commands/rpc/success', id: id, result: result
+    function body = 'modules/mcp/helpers/rpc/success', id: id, result: result
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endif
 
   # ---- Unknown / not-yet-implemented method (§13.2). ----
-  function body = 'modules/mcp/commands/rpc/error', id: id, code: -32601, message: 'Method not found'
+  function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32601, message: 'Method not found'
   assign out['http_status'] = not_found_status
   assign out['body'] = body
   return out

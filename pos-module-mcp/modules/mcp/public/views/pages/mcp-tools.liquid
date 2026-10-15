@@ -36,7 +36,7 @@ layout: ''
   # Client-side connection alias for `claude mcp add`. Defaults to the configured
   # server_name (MCP_CONFIG.server_name, default 'pos-module-mcp') so operators can
   # brand it; falls back to the host if that is somehow blank.
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign server_name = cfg.server_name | default: host
   graphql toks = 'modules/mcp/tokens/for_user', user_id: uid
   assign rows = toks.records.results

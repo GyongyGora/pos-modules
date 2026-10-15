@@ -16,7 +16,7 @@
   @return {object} { suspended:boolean, count:int }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign threshold = cfg.defaults.abuse_threshold | plus: 0
   assign out = {}
   assign out['suspended'] = false

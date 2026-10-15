@@ -19,7 +19,7 @@
   @return {object} Task + status-specific `result` / `error`
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
   assign expires_at = rec.expires_at | plus: 0
 

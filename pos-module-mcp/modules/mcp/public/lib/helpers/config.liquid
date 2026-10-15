@@ -34,7 +34,7 @@
   endunless
 
   assign c = {}
-  # MCP protocol revisions (spec §13.1/§18.7; see commands/protocol/negotiate).
+  # MCP protocol revisions (spec §13.1/§18.7; see helpers/protocol/negotiate).
   # `protocol_version` is the DEFAULT legacy revision: a version-less request and an
   # `initialize` asking for an unknown revision get it, so existing clients are
   # unchanged. `supported_protocol_versions` is every revision the server implements
@@ -61,16 +61,16 @@
   assign c['server_name'] = 'pos-module-mcp'
   assign c['server_version'] = '0.1.0'
   # App-provided registry partial (Layer-2 tool declarations, spec §8.2). An app
-  # partial at app/views/partials/mcp/registry.liquid returning [{manifest},...].
+  # partial at app/lib/mcp/registry.liquid returning [{manifest},...].
   assign c['registry_partial'] = 'mcp/registry'
   # App-provided authorization policy partials (spec §12.2). A tool's named policy
-  # resolves to <policy_prefix>/<name> = app/views/partials/mcp/policies/<name>.liquid.
+  # resolves to <policy_prefix>/<name> = app/lib/mcp/policies/<name>.liquid.
   assign c['policy_prefix'] = 'mcp/policies'
   # App-provided connection instructions partial — the house rules / persona sent
-  # to the agent on `initialize` and `server/discover`. app/views/partials/mcp/instructions.liquid
+  # to the agent on `initialize` and `server/discover`. app/lib/mcp/instructions.liquid
   # returning a string. Falls back to a built-in default when absent.
   assign c['instructions_partial'] = 'mcp/instructions'
-  # App-provided prompt registry (§13.1 prompts). app/views/partials/mcp/prompts.liquid
+  # App-provided prompt registry (§13.1 prompts). app/lib/mcp/prompts.liquid
   # returning [{name, description, arguments, template}]. Empty/absent = no prompts.
   assign c['prompts_partial'] = 'mcp/prompts'
   # tools/list visibility (spec §14.2). 'open' (default) advertises every registered

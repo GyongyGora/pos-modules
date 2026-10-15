@@ -17,14 +17,14 @@
     assign entry['execution_outcome'] = 'invalid'
     assign entry['error_code'] = -32602
     function _ = 'modules/mcp/commands/ledger/append', entry: entry
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32602, message: 'Idempotency-Key reused with different arguments'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32602, message: 'Idempotency-Key reused with different arguments'
     assign out['http_status'] = 200
     assign out['body'] = body
     return out
   endif
   assign entry['execution_outcome'] = 'replayed'
   function _ = 'modules/mcp/commands/ledger/append', entry: entry
-  function body = 'modules/mcp/commands/rpc/success', id: id, result: hit.response
+  function body = 'modules/mcp/helpers/rpc/success', id: id, result: hit.response
   assign out['http_status'] = 200
   assign out['body'] = body
   return out

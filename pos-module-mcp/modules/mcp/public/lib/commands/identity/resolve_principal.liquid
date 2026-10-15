@@ -33,7 +33,7 @@
 
   A future external-AS/JWT strategy (jwt_decode, verified working) can be
   dispatched here by token shape; v1 does not depend on it (backlog/decision-2). Until
-  then no external issuer can be configured (commands/config).
+  then no external issuer can be configured (helpers/config).
 
   @param {object} headers - context.headers (needs HTTP_AUTHORIZATION)
   @return {object} success { authenticated:true, principal:{id,user_id}, agent:{id,client_id,registered,allowed_tools?}, delegation_mode:'direct', token_id, token_kind, scopes:[…] }
@@ -41,7 +41,7 @@
 {%- endcomment -%}
 {% liquid
   function origin = 'modules/mcp/queries/origin'
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign rm_url = origin | append: '/.well-known/oauth-protected-resource'
   # resource_metadata stays the FIRST parameter (clients and the conformance suite
   # match on it); realm + scope tell the client what to request (RFC 6750 §3).
@@ -51,12 +51,12 @@
 
   assign auth_header = headers.HTTP_AUTHORIZATION | default: ''
   unless auth_header contains 'Bearer '
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Authorization required', reason: 'missing_token', www_authenticate: wa_missing
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Authorization required', reason: 'missing_token', www_authenticate: wa_missing
     return f
   endunless
   assign raw = auth_header | remove_first: 'Bearer' | strip
   if raw == blank
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Authorization required', reason: 'empty_token', www_authenticate: wa_missing
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Authorization required', reason: 'empty_token', www_authenticate: wa_missing
     return f
   endif
 
@@ -65,15 +65,15 @@
   assign token = tres.records.results.first
 
   if token == blank
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'unknown_token', www_authenticate: wa_invalid
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'unknown_token', www_authenticate: wa_invalid
     return f
   endif
   unless token.status == 'active'
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_revoked', www_authenticate: wa_invalid
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_revoked', www_authenticate: wa_invalid
     return f
   endunless
   if token.user_id == blank
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_unbound', www_authenticate: wa_invalid
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_unbound', www_authenticate: wa_invalid
     return f
   endif
 
@@ -84,13 +84,13 @@
     assign now_s = 'now' | to_time | strftime: '%s' | plus: 0
     assign exp = token.expires_at | plus: 0
     if exp <= now_s
-      function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_expired', www_authenticate: wa_invalid
+      function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'token_expired', www_authenticate: wa_invalid
       return f
     endif
     assign bound = token.resource | default: '' | replace_regex: '/+\z', ''
     assign mine = cfg.resource_identifier | replace_regex: '/+\z', ''
     if bound != mine
-      function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'wrong_audience', www_authenticate: wa_invalid
+      function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'wrong_audience', www_authenticate: wa_invalid
       return f
     endif
     assign scopes = token.scope | default: '' | split: ' '
@@ -106,7 +106,7 @@
   # The user must still hold MCP access (one profile lookup per authenticated call).
   function still_allowed = 'modules/mcp/queries/principal/can', principal: principal, do: cfg.oauth.required_permission
   unless still_allowed
-    function f = 'modules/mcp/commands/identity/deny', http_status: 401, message: 'Invalid token', reason: 'permission_revoked', www_authenticate: wa_invalid
+    function f = 'modules/mcp/helpers/identity/deny', http_status: 401, message: 'Invalid token', reason: 'permission_revoked', www_authenticate: wa_invalid
     return f
   endunless
 

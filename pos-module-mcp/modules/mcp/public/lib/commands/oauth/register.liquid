@@ -13,24 +13,24 @@
   @return {object} { http_status, body }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   unless cfg.oauth.builtin and cfg.oauth.dynamic_client_registration
-    function e = 'modules/mcp/commands/oauth/error', error: 'invalid_request', error_description: 'Dynamic client registration is disabled', http_status: 404
+    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'Dynamic client registration is disabled', http_status: 404
     return e
   endunless
 
   assign uris = params.redirect_uris
   assign uris_type = uris | type_of | downcase
   if uris_type != 'array' or uris.size == 0 or uris.size > 10
-    function e = 'modules/mcp/commands/oauth/error', error: 'invalid_redirect_uri', error_description: 'redirect_uris must be a non-empty array (max 10)', http_status: null
+    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_redirect_uri', error_description: 'redirect_uris must be a non-empty array (max 10)', http_status: null
     return e
   endif
   assign clean = []
   for u in uris
     assign s = u | append: ''
-    function ok = 'modules/mcp/commands/oauth/redirect_uri_valid', uri: s
+    function ok = 'modules/mcp/helpers/oauth/redirect_uri_valid', uri: s
     unless ok
-      function e = 'modules/mcp/commands/oauth/error', error: 'invalid_redirect_uri', error_description: 'Redirect URIs must be https, http on a loopback host, or a private-use app scheme, without a fragment', http_status: null
+      function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_redirect_uri', error_description: 'Redirect URIs must be https, http on a loopback host, or a private-use app scheme, without a fragment', http_status: null
       return e
     endunless
     assign clean = clean | array_add: s
@@ -38,7 +38,7 @@
 
   for gt in params.grant_types
     unless gt == 'authorization_code' or gt == 'refresh_token'
-      function e = 'modules/mcp/commands/oauth/error', error: 'invalid_client_metadata', error_description: 'Only authorization_code and refresh_token grants are supported', http_status: null
+      function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_client_metadata', error_description: 'Only authorization_code and refresh_token grants are supported', http_status: null
       return e
     endunless
   endfor
@@ -49,7 +49,7 @@
   endif
   assign client_uri = ''
   unless params.client_uri == blank
-    function cu = 'modules/mcp/commands/oauth/parse_url', url: params.client_uri
+    function cu = 'modules/mcp/helpers/oauth/parse_url', url: params.client_uri
     if cu.valid and cu.scheme == 'https'
       assign client_uri = params.client_uri | append: ''
     endif

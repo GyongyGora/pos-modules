@@ -14,7 +14,7 @@
   @return {object} { tools:[valid manifest + _warnings], excluded:[{name,errors}], count }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign partial = cfg.registry_partial | default: 'mcp/registry'
 
   assign entries = null
@@ -95,7 +95,7 @@
       endif
 
       # --- Meta-schema validation. ---
-      function v = 'modules/mcp/commands/registry/manifest_schema', manifest: manifest, max_depth: cfg.defaults.max_schema_depth, max_output_depth: cfg.defaults.max_output_schema_depth
+      function v = 'modules/mcp/helpers/registry/manifest_schema', manifest: manifest, max_depth: cfg.defaults.max_schema_depth, max_output_depth: cfg.defaults.max_output_schema_depth
       if v.valid
         assign m = manifest
         assign m['_warnings'] = v.warnings

@@ -11,7 +11,7 @@
   @return {boolean} true
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign now_unix = 'now' | to_time | strftime: '%s' | plus: 0
   assign keep_s = cfg.defaults.abuse_window_seconds | plus: 0 | times: 2
   if keep_s < 3600

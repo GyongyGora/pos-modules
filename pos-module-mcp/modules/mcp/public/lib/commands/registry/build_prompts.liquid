@@ -18,7 +18,7 @@
   @return {object} { prompts:[...], excluded:[{name,errors}], count }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign partial = cfg.prompts_partial | default: 'mcp/prompts'
 
   assign raw = null

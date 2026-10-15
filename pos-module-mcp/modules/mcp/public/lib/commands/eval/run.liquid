@@ -17,7 +17,7 @@
   @return {object} { run_id, total, passed, failed, failures:[{category,check,target,detail}] }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign run_id = '' | uuid | prepend: 'mcp_run_'
   assign occurred_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
 
@@ -44,7 +44,7 @@
     endunless
     assign checks = checks | array_add: c
 
-    function lint = 'modules/mcp/commands/registry/lint_description', text: t.description
+    function lint = 'modules/mcp/helpers/registry/lint_description', text: t.description
     assign clean = true
     if lint.flagged
       assign clean = false
@@ -111,7 +111,7 @@
 
     if found
       assign args = kase.expected_args_json | parse_json
-      function val = 'modules/mcp/commands/validate/json_schema', value: args, schema: found.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
+      function val = 'modules/mcp/helpers/validate/json_schema', value: args, schema: found.input_schema, depth: 1, max_depth: cfg.defaults.max_schema_depth, path: 'arguments'
       assign c2 = {}
       assign c2['category'] = 'golden'
       assign c2['check'] = 'case_args_valid'

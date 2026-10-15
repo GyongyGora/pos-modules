@@ -4,12 +4,12 @@
   era, routes the method (commands/rpc/route) and returns a transport-agnostic
   outcome the page turns into an HTTP response.
 
-  PROTOCOL ERAS (commands/protocol/negotiate). The server is dual-era:
+  PROTOCOL ERAS (helpers/protocol/negotiate). The server is dual-era:
   - LEGACY (2025-06-18): `initialize` handshake; requests carry at most the
     MCP-Protocol-Version header. A version-less request is legacy, so existing clients
     are unchanged. 2025-06-18 removed JSON-RPC batching: one request object per POST.
   - MODERN (2026-07-28): every request carries its revision in `_meta`, mirrored in
-    headers. The standard request headers are validated (commands/protocol/check_headers),
+    headers. The standard request headers are validated (helpers/protocol/check_headers),
     every result carries `resultType`, and a method the revision does not define
     answers 404.
 
@@ -24,7 +24,7 @@
                    body is a JSON-RPC envelope (or omitted for notifications).
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
 
   assign id = params.id
   assign out = {}
@@ -32,7 +32,7 @@
   # ---- Transport size cap (spec §12.4). Reject before doing any real work. ----
   assign input_bytes = params | json | size
   if input_bytes > cfg.defaults.max_input_bytes
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32600, message: 'Request too large'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32600, message: 'Request too large'
     assign out['http_status'] = 413
     assign out['body'] = body
     return out
@@ -40,16 +40,16 @@
 
   # ---- Envelope validation (§13.2). jsonrpc must be exactly "2.0" when present. ----
   if params.jsonrpc != blank and params.jsonrpc != '2.0'
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32600, message: 'Invalid Request'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32600, message: 'Invalid Request'
     assign out['http_status'] = 400
     assign out['body'] = body
     return out
   endif
 
   # ---- Protocol era + revision. A refused version is answered before routing. ----
-  function proto = 'modules/mcp/commands/protocol/negotiate', params: params, headers: headers
+  function proto = 'modules/mcp/helpers/protocol/negotiate', params: params, headers: headers
   unless proto.error == blank
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: proto.error.code, message: proto.error.message, data: proto.error.data
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: proto.error.code, message: proto.error.message, data: proto.error.data
     assign out['http_status'] = proto.error.http_status
     assign out['body'] = body
     return out
@@ -57,9 +57,9 @@
 
   assign method = params.method
   if proto.modern
-    function header_error = 'modules/mcp/commands/protocol/check_headers', params: params, headers: headers
+    function header_error = 'modules/mcp/helpers/protocol/check_headers', params: params, headers: headers
     unless header_error == blank
-      function body = 'modules/mcp/commands/rpc/error', id: id, code: header_error.code, message: header_error.message
+      function body = 'modules/mcp/helpers/rpc/error', id: id, code: header_error.code, message: header_error.message
       assign out['http_status'] = header_error.http_status
       assign out['body'] = body
       return out
@@ -72,7 +72,7 @@
       if method == blank
         assign method = hdr_method
       elsif method != hdr_method
-        function body = 'modules/mcp/commands/rpc/error', id: id, code: -32600, message: 'Invalid Request: Mcp-Method header disagrees with request method'
+        function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32600, message: 'Invalid Request: Mcp-Method header disagrees with request method'
         assign out['http_status'] = 400
         assign out['body'] = body
         return out
@@ -82,7 +82,7 @@
     assign inner_name = params.params.name
     if hdr_name != blank and inner_name != blank and hdr_name != inner_name
       if method == 'tools/call' or method == 'prompts/get'
-        function body = 'modules/mcp/commands/rpc/error', id: id, code: -32600, message: 'Invalid Request: Mcp-Name header disagrees with target name'
+        function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32600, message: 'Invalid Request: Mcp-Name header disagrees with target name'
         assign out['http_status'] = 400
         assign out['body'] = body
         return out
@@ -92,7 +92,7 @@
 
   # A missing method (neither body nor header) is Invalid Request.
   if method == blank
-    function body = 'modules/mcp/commands/rpc/error', id: id, code: -32600, message: 'Invalid Request'
+    function body = 'modules/mcp/helpers/rpc/error', id: id, code: -32600, message: 'Invalid Request'
     assign out['http_status'] = 400
     assign out['body'] = body
     return out
@@ -116,7 +116,7 @@
     function ini = 'modules/mcp/commands/identity/resolve_principal', headers: headers
     unless ini.authenticated
       log ini.reason, type: 'mcp.auth_denied'
-      function body = 'modules/mcp/commands/rpc/error', id: id, code: ini.error_code, message: ini.message
+      function body = 'modules/mcp/helpers/rpc/error', id: id, code: ini.error_code, message: ini.message
       assign hdrs = {}
       assign hdrs['WWW-Authenticate'] = ini.www_authenticate
       assign out['headers'] = hdrs

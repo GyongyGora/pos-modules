@@ -33,12 +33,12 @@ import { dirname, resolve, join } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const APP = join(ROOT, 'app');
-const TOOLS_DIR = join(APP, 'views/partials/mcp/tools');
-const POLICIES_DIR = join(APP, 'views/partials/mcp/policies');
+const TOOLS_DIR = join(APP, 'lib/mcp/tools');
+const POLICIES_DIR = join(APP, 'lib/mcp/policies');
 // Built-in policies (authorize/evaluate). Every other `mcp_` policy name is reserved.
 const BUILTIN_POLICIES = ['mcp_authenticated'];
 const GRAPHQL_DIR = join(APP, 'graphql/mcp');
-const REGISTRY = join(APP, 'views/partials/mcp/registry.liquid');
+const REGISTRY = join(APP, 'lib/mcp/registry.liquid');
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
@@ -381,7 +381,7 @@ function lintGraphql(tool, name) {
 // ------------------------------------------------------------ registry ----
 function parseRegistry() {
   const src = read(REGISTRY);
-  if (src === null) { add('error', '(registry)', rel(REGISTRY), 'registry-missing', 'app/views/partials/mcp/registry.liquid not found'); return []; }
+  if (src === null) { add('error', '(registry)', rel(REGISTRY), 'registry-missing', 'app/lib/mcp/registry.liquid not found'); return []; }
   const code = stripComments(src);
   const names = {}, paths = {};
   for (const mt of code.matchAll(/(?:hash_)?assign\s+(\w+)\['name'\]\s*=\s*'([^']+)'/g)) names[mt[1]] = mt[2];
@@ -408,7 +408,7 @@ function lintTool(name, dir, { registered }) {
 
   const toolLogical = `mcp/tools/${m.name || name}`;
   const handlerLogical = m.handler || `${toolLogical}/call`;
-  const handlerFile = join(APP, 'views/partials', handlerLogical) + '.liquid';
+  const handlerFile = join(APP, 'lib', handlerLogical) + '.liquid';
   const h = lintHandler(name, handlerFile, m);
 
   let anyGraphqlMutates = false;
@@ -443,7 +443,7 @@ export function lintAll({ includeVuln = false } = {}) {
 
   // 1) every registered tool (authoritative name)
   for (const { name, path } of entries) {
-    const dir = join(APP, 'views/partials', path);
+    const dir = join(APP, 'lib', path);
     seen.add(dir); // mark seen either way so the drafts pass never re-lints it
     if (skip(name)) { skippedVuln.push(name); continue; }
     lintTool(name, dir, { registered: true });

@@ -135,7 +135,7 @@ export default class extends Generator {
 
   writing() {
     const name = this.props.toolName;
-    const dir = `app/views/partials/mcp/tools/${name}`;
+    const dir = `app/lib/mcp/tools/${name}`;
     try {
       this.fs.copyTpl(this.templatePath('manifest.liquid'), this.destinationPath(`${dir}/manifest.liquid`), this.props);
       if (this.props.op === 'create') {
@@ -157,8 +157,8 @@ export default class extends Generator {
   end() {
     const n = this.props.toolName;
     console.log(`\nDRAFT MCP tool "${n}" scaffolded (${this.props.op}). It is NOT served until reviewed:`);
-    console.log(`  app/views/partials/mcp/tools/${n}/manifest.liquid`);
-    console.log(`  app/views/partials/mcp/tools/${n}/call.liquid`);
+    console.log(`  app/lib/mcp/tools/${n}/manifest.liquid`);
+    console.log(`  app/lib/mcp/tools/${n}/call.liquid`);
     if (this.props.op !== 'command') {
       console.log(`  app/graphql/mcp/${n}.graphql`);
     }
@@ -175,9 +175,9 @@ export default class extends Generator {
     console.log(`  4. Decide requires_approval.`);
     if (this.props.op === 'command') {
       console.log(`  5. In call.liquid: map args→object keys, pass the command's identity param, confirm success fields.`);
-      console.log(`  6. Add it to app/views/partials/mcp/registry.liquid, then deploy.`);
+      console.log(`  6. Add it to app/lib/mcp/registry.liquid, then deploy.`);
     } else {
-      console.log(`  5. Add it to app/views/partials/mcp/registry.liquid, then deploy.`);
+      console.log(`  5. Add it to app/lib/mcp/registry.liquid, then deploy.`);
     }
   }
 }

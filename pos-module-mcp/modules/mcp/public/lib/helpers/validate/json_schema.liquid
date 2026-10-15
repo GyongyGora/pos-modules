@@ -193,7 +193,7 @@
         for el in value
           assign el_path = at | append: '[' | append: i | append: ']'
           assign nd = depth | plus: 1
-          function er = 'modules/mcp/commands/validate/json_schema', value: el, schema: schema.items, depth: nd, max_depth: max_depth, path: el_path
+          function er = 'modules/mcp/helpers/validate/json_schema', value: el, schema: schema.items, depth: nd, max_depth: max_depth, path: el_path
           unless er.valid
             for e in er.errors
               assign errors = errors | array_add: e
@@ -234,7 +234,7 @@
             assign child_schema = props[pk]
             assign child_path = at | append: '.' | append: pk
             assign nd = depth | plus: 1
-            function cr = 'modules/mcp/commands/validate/json_schema', value: child, schema: child_schema, depth: nd, max_depth: max_depth, path: child_path
+            function cr = 'modules/mcp/helpers/validate/json_schema', value: child, schema: child_schema, depth: nd, max_depth: max_depth, path: child_path
             unless cr.valid
               for e in cr.errors
                 assign errors = errors | array_add: e

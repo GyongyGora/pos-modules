@@ -13,7 +13,7 @@
   @return {object} { resources:[{uri,name,description,mimeType,_meta}] }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign resources = []
 
   if cfg.resources.expose_markdown_pages

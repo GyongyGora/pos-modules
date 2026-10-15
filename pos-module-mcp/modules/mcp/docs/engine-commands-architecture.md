@@ -1,10 +1,19 @@
 # Engine Command Architecture
 
-**Path:** `modules/mcp/public/lib/commands/`
+**Path:** `modules/mcp/public/lib/commands/` and `modules/mcp/public/lib/helpers/`
+
+Units that persist or act (write the ledger, mint tokens, run handlers, route RPC
+methods) are **commands** (`modules/mcp/commands/…`). Pure units — they build an
+envelope, parse or validate a value, or compute from config, with no reads or writes —
+are **helpers** (`modules/mcp/helpers/…`): `config`, `rpc/{error,success,invalid_arguments_result}`,
+`identity/deny`, `execute/result_of`, `ledger/canonical`, `protocol/*`, `tasks/present`,
+`validate/json_schema`, `registry/{manifest_schema,validate_schema_node,lint_description}`
+and the pure `oauth/*` utilities. The tables below name each unit by its path relative
+to whichever of the two it lives in.
 
 This document explains every command in the MCP engine — what it does and *why it exists*. These commands are **Layer 1: the governance engine** — the reusable, app-independent machinery that turns a platformOS instance into a *governed* MCP server. They are Liquid partials invoked as `function`/`graphql` steps; each one is a single, testable unit with a documented `@param`/`@return` contract.
 
-> **Layer 1 vs Layer 2.** The commands here are the engine. The *tools* an app actually exposes (its business actions) live in Layer 2 (`app/views/partials/mcp/`). The engine never knows what a tool does — it only guarantees that *whatever* the tool does, it happens under identity, validation, authorization, limits, approval, and attestation. That separation is the whole design: an app author writes a tool; the engine makes it safe.
+> **Layer 1 vs Layer 2.** The commands here are the engine. The *tools* an app actually exposes (its business actions) live in Layer 2 (`app/lib/mcp/`). The engine never knows what a tool does — it only guarantees that *whatever* the tool does, it happens under identity, validation, authorization, limits, approval, and attestation. That separation is the whole design: an app author writes a tool; the engine makes it safe.
 
 ---
 

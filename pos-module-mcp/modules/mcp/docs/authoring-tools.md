@@ -21,11 +21,12 @@ does the work.
 
 ## Mental model
 
-Where files live (physical → logical). platformOS only resolves partials under
-`views/partials`, so tools live there and are referenced by the `mcp/…` namespace:
+Where files live (physical → logical). Tools are logic, not views, so they live under
+`app/lib` (which platformOS resolves like `views/partials`) and are referenced by the
+`mcp/…` namespace:
 
 ```
-app/views/partials/mcp/
+app/lib/mcp/
   registry.liquid                    →  mcp/registry            (explicit tool list)
   tools/<name>/manifest.liquid       →  mcp/tools/<name>/manifest   THE TOOL
   tools/<name>/call.liquid           →  mcp/tools/<name>/call       THE TOOL (handler)
@@ -34,7 +35,7 @@ app/graphql/mcp/<name>.graphql       →  mcp/<name>              (a handler's O
 ```
 
 > **A tool never lives in `app/graphql/mcp/`.** A tool is exactly its two files under
-> `app/views/partials/mcp/tools/<name>/` (manifest + handler). `app/graphql/mcp/` holds
+> `app/lib/mcp/tools/<name>/` (manifest + handler). `app/graphql/mcp/` holds
 > the query/mutation a *handler executes*, and it exists only when the handler runs its
 > **own bespoke** query — i.e. `--op read`/`create`. A handler that wraps an app command
 > (`--op command`) or reuses an existing query (e.g.
@@ -58,7 +59,7 @@ schema-valid. It can trust its inputs.
 
 ## Anatomy of a tool
 
-A tool is **two files** (`app/views/partials/mcp/tools/<name>/`) plus a policy and one
+A tool is **two files** (`app/lib/mcp/tools/<name>/`) plus a policy and one
 registration line:
 
 1. **manifest** — declares the tool: name, version, description, `input_schema`,
@@ -174,7 +175,7 @@ query search_events($keyword: String!, $limit: Int!) {
 Arguments arrive as **typed GraphQL variables** — never build the query string by
 concatenation. This is the injection boundary.
 
-### 2. The manifest — `app/views/partials/mcp/tools/search_events/manifest.liquid`
+### 2. The manifest — `app/lib/mcp/tools/search_events/manifest.liquid`
 
 ```liquid
 {% liquid
@@ -193,7 +194,7 @@ concatenation. This is the injection boundary.
 %}
 ```
 
-### 3. The handler — `app/views/partials/mcp/tools/search_events/call.liquid`
+### 3. The handler — `app/lib/mcp/tools/search_events/call.liquid`
 
 ```liquid
 {% liquid
@@ -225,7 +226,7 @@ concatenation. This is the injection boundary.
 %}
 ```
 
-### 4. Register it — `app/views/partials/mcp/registry.liquid`
+### 4. Register it — `app/lib/mcp/registry.liquid`
 
 ```liquid
 assign e1 = {}
@@ -327,7 +328,7 @@ It returns a hash:
 
 ## Authorization policies
 
-`app/views/partials/mcp/policies/<name>.liquid`, referenced by `authorization_policy`.
+`app/lib/mcp/policies/<name>.liquid`, referenced by `authorization_policy`.
 Receives `principal`, `agent`, `arguments`, `tool`, `delegation_mode`; returns a
 boolean or `{ allow, reason }`. Evaluated against the **principal**.
 
@@ -401,8 +402,8 @@ These cost real debugging time; internalize them.
 - **No runtime filesystem.** The engine cannot scan for tools — that is why the
   explicit `registry` partial exists. A dropped tool directory does nothing until
   registered.
-- **Partials live under `views/partials`.** `app/mcp/tools/...` is silently dropped by
-  deploy. Use `app/views/partials/mcp/tools/...`, referenced as `mcp/tools/...`.
+- **Tools live under `app/lib`.** `app/mcp/tools/...` is silently dropped by deploy.
+  Use `app/lib/mcp/tools/...`, referenced as `mcp/tools/...`.
 - **HTML pages escape `echo`.** On the operator pages, structural HTML must be literal
   template; values through `{{ }}` are escaped (that is the correct XSS defense).
 

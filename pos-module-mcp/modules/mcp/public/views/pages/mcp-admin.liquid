@@ -120,7 +120,7 @@ layout: ''
   endif
 
   if active_tab == 'tokens'
-    function cfg = 'modules/mcp/commands/config'
+    function cfg = 'modules/mcp/helpers/config'
     graphql members_res = 'modules/mcp/access/members', per_page: 200
     assign members = members_res.records.results
     graphql tokens_res = 'modules/mcp/tokens/list_all', per_page: 200
@@ -155,7 +155,7 @@ layout: ''
   endif
 
   if active_tab == 'config'
-    function cfg = 'modules/mcp/commands/config'
+    function cfg = 'modules/mcp/helpers/config'
     function registry = 'modules/mcp/commands/registry/load'
   endif
 

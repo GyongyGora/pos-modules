@@ -26,7 +26,7 @@
   @return {object} { allow:boolean, reason:string, policy:string }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/commands/config'
+  function cfg = 'modules/mcp/helpers/config'
   assign prefix = cfg.policy_prefix | default: 'mcp/policies'
 
   assign result = {}

@@ -42,7 +42,7 @@
         assign reason = 'linkage break: prev_entry_hash does not match preceding entry'
         break
       endif
-      function canonical = 'modules/mcp/commands/ledger/canonical', entry: rec
+      function canonical = 'modules/mcp/helpers/ledger/canonical', entry: rec
       if canonical == blank
         assign ok = false
         assign broken_at = rec.seq
