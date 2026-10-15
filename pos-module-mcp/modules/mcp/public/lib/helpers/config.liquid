@@ -75,7 +75,7 @@
   assign c['prompts_partial'] = 'mcp/prompts'
   # App-provided resource provider (§13.1 resources). app/lib/mcp/resources.liquid
   # answering list / templates / read for an AUTHENTICATED caller, who is passed in so
-  # the app applies its own access rules (commands/resources/provider). Absent = only
+  # the app applies its own access rules (queries/resources/provider). Absent = only
   # the opt-in markdown pages below.
   assign c['resources_partial'] = 'mcp/resources'
   # tools/list visibility (spec §14.2). 'open' (default) advertises every registered

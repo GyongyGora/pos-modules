@@ -2,7 +2,7 @@
   MCP `prompts/list` (spec §13.1). Returns the registered prompts in the MCP wire
   shape: name, optional title, description, and the declared arguments
   ({ name, description?, required? }). Open discovery, like tools/list. The caller is
-  passed to the app's prompts partial (commands/registry/build_prompts).
+  passed to the app's prompts partial (queries/registry/build_prompts).
 
   @param {object} params    - MCP params (pagination could be added; small sets for now)
   @param {object} cache     - 2026-07-28 cache hint, or nil
@@ -11,7 +11,7 @@
   @return {object} { prompts:[{name,title?,description,arguments?}] }
 {%- endcomment -%}
 {% liquid
-  function reg = 'modules/mcp/commands/registry/build_prompts', principal: principal, agent: agent
+  function reg = 'modules/mcp/queries/registry/build_prompts', principal: principal, agent: agent
   assign out_prompts = []
   for p in reg.prompts
     assign item = {}

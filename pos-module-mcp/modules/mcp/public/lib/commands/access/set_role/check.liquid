@@ -1,0 +1,19 @@
+{% doc %}
+  @param {object} object - built by access/set_role/build
+{% enddoc %}
+{% liquid
+  assign valid = true
+  assign errors = {}
+  if object.profile_id == blank
+    assign valid = false
+    assign errors['profile_id'] = ["required"]
+  endif
+  unless object.role == blank or object.role == 'mcp_user' or object.role == 'mcp_operator'
+    assign valid = false
+    assign errors['role'] = ["invalid"]
+  endunless
+
+  assign object['valid'] = valid
+  assign object['errors'] = errors
+  return object
+%}

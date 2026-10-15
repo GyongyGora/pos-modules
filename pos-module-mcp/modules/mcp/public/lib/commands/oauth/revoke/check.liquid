@@ -1,0 +1,15 @@
+{%- comment -%}
+  @param {object} object - built by oauth/revoke/build
+{%- endcomment -%}
+{% liquid
+  assign valid = true
+  assign errors = {}
+  if object.token == blank
+    assign valid = false
+    assign errors['token'] = ["required"]
+  endif
+
+  assign object['valid'] = valid
+  assign object['errors'] = errors
+  return object
+%}

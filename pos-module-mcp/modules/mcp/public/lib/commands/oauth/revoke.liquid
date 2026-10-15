@@ -8,23 +8,13 @@
   @return {object} { http_status, body }
 {%- endcomment -%}
 {% liquid
-  assign out = {}
-  assign out['http_status'] = 200
-  assign out['body'] = {}
-  assign t = params.token | default: '' | append: ''
-  if t == blank
-    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'token is required', http_status: null
-    return e
+  function object = 'modules/mcp/commands/oauth/revoke/build', params: params
+  function object = 'modules/mcp/commands/oauth/revoke/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/oauth/revoke/execute', object: object
+    return out
   endif
-  assign d = t | digest: 'sha256'
-  graphql a = 'modules/mcp/tokens/find_by_digest', token_digest: d
-  assign row = a.records.results.first
-  if row == blank
-    graphql r = 'modules/mcp/tokens/find_by_refresh_digest', digest: d
-    assign row = r.records.results.first
-  endif
-  if row and row.kind == 'oauth' and row.client_id == params.client_id and row.status == 'active'
-    graphql _ = 'modules/mcp/tokens/revoke', id: row.id
-  endif
-  return out
+
+  function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'token is required', http_status: null
+  return e
 %}

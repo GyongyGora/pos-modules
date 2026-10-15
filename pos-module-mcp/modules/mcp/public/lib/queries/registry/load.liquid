@@ -32,7 +32,7 @@
 {%- capture reg_json -%}
   {%- cache ckey, expire: 300 -%}
     {%- liquid
-      function built = 'modules/mcp/commands/registry/build'
+      function built = 'modules/mcp/queries/registry/build'
       print built | json
     -%}
   {%- endcache -%}

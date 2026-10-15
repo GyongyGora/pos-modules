@@ -13,27 +13,13 @@
   @param {string} [role] - mcp_user | mcp_operator | blank to remove access
 {% enddoc %}
 {% liquid
+  function object = 'modules/mcp/commands/access/set_role/build', profile_id: profile_id, role: role
+  function object = 'modules/mcp/commands/access/set_role/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/access/set_role/execute', object: object
+    return out
+  endif
+
   assign out = { "ok": false }
-  if profile_id == blank
-    return out
-  endif
-  unless role == blank or role == 'mcp_user' or role == 'mcp_operator'
-    return out
-  endunless
-
-  function _ = 'modules/user/commands/profiles/roles/remove', id: profile_id, role: 'mcp_user'
-  function _ = 'modules/user/commands/profiles/roles/remove', id: profile_id, role: 'mcp_operator'
-  if role != blank
-    function _ = 'modules/user/commands/profiles/roles/append', id: profile_id, role: role
-  else
-    function profile = 'modules/user/queries/profiles/find', id: profile_id, user_id: null, uuid: null, first_name: null, last_name: null
-    assign uid = profile.user_id | append: ''
-    unless uid == blank
-      graphql revoked = 'modules/mcp/tokens/revoke_for_user', user_id: uid
-      assign out['tokens_revoked'] = revoked.tokens.count
-    endunless
-  endif
-
-  assign out['ok'] = true
   return out
 %}

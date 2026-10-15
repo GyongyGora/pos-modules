@@ -1,6 +1,6 @@
 {%- comment -%}
   Layer-2 resource provider (app-owned; spec §13.1 resources), called by the engine
-  (commands/resources/provider) for an AUTHENTICATED caller with `operation`, `uri`,
+  (queries/resources/provider) for an AUTHENTICATED caller with `operation`, `uri`,
   `cursor`, `principal` and `agent`.
 
   TEST FIXTURE: serves only when the MCP_ENABLE_TEST_TOOLS constant is set, so a normal

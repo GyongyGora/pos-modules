@@ -1,0 +1,9 @@
+{%- comment -%}
+  @param {object} params - context.params (token, token_type_hint, client_id)
+{%- endcomment -%}
+{% liquid
+  assign object = {}
+  assign object['token'] = params.token | default: '' | append: ''
+  assign object['client_id'] = params.client_id
+  return object
+%}

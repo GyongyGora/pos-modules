@@ -27,7 +27,7 @@
   assign run_id = '' | uuid | prepend: 'mcp_run_'
   assign occurred_at = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%SZ'
 
-  function reg = 'modules/mcp/commands/registry/load'
+  function reg = 'modules/mcp/queries/registry/load'
   assign tools = reg.tools
 
   assign checks = []
@@ -110,7 +110,7 @@
   endif
   assign checks = checks | array_add: c
 
-  function prompt_reg = 'modules/mcp/commands/registry/build_prompts', principal: null, agent: null
+  function prompt_reg = 'modules/mcp/queries/registry/build_prompts', principal: null, agent: null
   for p in prompt_reg.prompts
     assign prompt_texts = {}
     assign prompt_texts['title'] = p.title

@@ -34,7 +34,7 @@
   assign fail['ok'] = false
 
   # 1. Tool must still exist and be valid.
-  function tool = 'modules/mcp/commands/registry/resolve_tool', name: approval.tool_name, allowed_tools: null
+  function tool = 'modules/mcp/queries/registry/resolve_tool', name: approval.tool_name, allowed_tools: null
   if tool == blank
     assign err = {}
     assign err['code'] = -32602
@@ -56,7 +56,7 @@
     assign cred['ok'] = still_allowed
     assign cred['reason'] = 'permission_revoked'
   else
-    function cred = 'modules/mcp/commands/identity/token_still_authorized', token_id: approval.token_id, principal_id: approval.principal_id, tool: tool
+    function cred = 'modules/mcp/queries/identity/token_still_authorized', token_id: approval.token_id, principal_id: approval.principal_id, tool: tool
   endif
   unless cred.ok
     log cred.reason, type: 'mcp.approval_requester_revoked'

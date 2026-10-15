@@ -13,69 +13,13 @@
   @return {object} { http_status, body }
 {%- endcomment -%}
 {% liquid
-  function cfg = 'modules/mcp/helpers/config'
-  unless cfg.oauth.builtin and cfg.oauth.dynamic_client_registration
-    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_request', error_description: 'Dynamic client registration is disabled', http_status: 404
-    return e
-  endunless
-
-  assign uris = params.redirect_uris
-  assign uris_type = uris | type_of | downcase
-  if uris_type != 'array' or uris.size == 0 or uris.size > 10
-    function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_redirect_uri', error_description: 'redirect_uris must be a non-empty array (max 10)', http_status: null
-    return e
+  function object = 'modules/mcp/commands/oauth/register/build', params: params
+  function object = 'modules/mcp/commands/oauth/register/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/oauth/register/execute', object: object
+    return out
   endif
-  assign clean = []
-  for u in uris
-    assign s = u | append: ''
-    function ok = 'modules/mcp/helpers/oauth/redirect_uri_valid', uri: s
-    unless ok
-      function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_redirect_uri', error_description: 'Redirect URIs must be https, http on a loopback host, or a private-use app scheme, without a fragment', http_status: null
-      return e
-    endunless
-    assign clean = clean | array_add: s
-  endfor
 
-  for gt in params.grant_types
-    unless gt == 'authorization_code' or gt == 'refresh_token'
-      function e = 'modules/mcp/helpers/oauth/error', error: 'invalid_client_metadata', error_description: 'Only authorization_code and refresh_token grants are supported', http_status: null
-      return e
-    endunless
-  endfor
-
-  assign name = params.client_name | default: 'MCP client' | append: '' | strip | strip_html | truncate: 60, ''
-  if name == blank
-    assign name = 'MCP client'
-  endif
-  assign client_uri = ''
-  unless params.client_uri == blank
-    function cu = 'modules/mcp/helpers/oauth/parse_url', url: params.client_uri
-    if cu.valid and cu.scheme == 'https'
-      assign client_uri = params.client_uri | append: ''
-    endif
-  endunless
-
-  assign hex = '' | uuid | replace: '-', ''
-  assign client_id = 'mcp_client_' | append: hex
-  graphql r = 'modules/mcp/oauth/client_create', client_id: client_id, client_name: name, client_uri: client_uri, redirect_uris: clean
-
-  assign issued_at = 'now' | to_time | strftime: '%s' | plus: 0
-  assign grants = 'authorization_code,refresh_token' | split: ','
-  assign rtypes = 'code' | split: ','
-  assign body = {}
-  assign body['client_id'] = client_id
-  assign body['client_id_issued_at'] = issued_at
-  assign body['client_name'] = name
-  unless client_uri == blank
-    assign body['client_uri'] = client_uri
-  endunless
-  assign body['redirect_uris'] = clean
-  assign body['grant_types'] = grants
-  assign body['response_types'] = rtypes
-  assign body['token_endpoint_auth_method'] = 'none'
-  assign body['scope'] = cfg.oauth.scopes_supported | join: ' '
-  assign out = {}
-  assign out['http_status'] = 201
-  assign out['body'] = body
-  return out
+  function e = 'modules/mcp/helpers/oauth/error', error: object.oauth_error.error, error_description: object.oauth_error.error_description, http_status: object.oauth_error.http_status
+  return e
 %}

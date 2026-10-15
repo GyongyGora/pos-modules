@@ -20,6 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `oauth/{append_params,error,parse_url,pkce_verify,random_secret,normalize_scope,public_https_url,redirect_uri_valid,redirect_uri_allowed}`)
   are now `modules/mcp/helpers/…`. Apps calling any of them as `modules/mcp/commands/…`
   must update the path.
+- **Read-only engine units moved from `lib/commands/` to `lib/queries/`.**
+  `registry/{build,build_prompts,load,resolve_tool}`, `ledger/{verify_chain,verify_chain_recent}`,
+  `idempotency/lookup`, `identity/token_still_authorized`, `resources/provider` and
+  `observability/metrics` are now `modules/mcp/queries/…`; the pure
+  `resources/clean_entries` is now `modules/mcp/helpers/…`. Apps calling any of them as
+  `modules/mcp/commands/…` must update the path.
+- **Input-taking commands follow Build/Check/Execute.** `access/set_role`, `tokens/mint`,
+  `oauth/register` and `oauth/revoke` keep their path and return contract, and now run
+  `<action>/build`, `<action>/check` and `<action>/execute` like the other platformOS modules.
+- **Module layout.** Docs moved from `modules/mcp/docs/` (shipped with the module) to
+  `docs/`, with the architecture decision records in `docs/decisions/`. App test
+  fixtures (`test_*` / `vuln_*` tools, the poisoned prompt and instructions) moved to
+  `app/lib/mcp/tests/`. The `test_principal_admin` policy duplicated `admin_only` and was
+  removed.
 - **BREAKING — accounts and access use the user module's RBAC.** The consoles resolve the
   signed-in user with `modules/user/helpers/current_profile` and gate pages with
   `can_do_or_unauthorized` (anonymous visitors are redirected to sign-in and returned).

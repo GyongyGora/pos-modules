@@ -98,18 +98,18 @@ layout: ''
   #      yields it; elsewhere do the cheap bounded check alone (NO count scan). ----
   if active_tab == 'overview'
     if full_verify
-      function m = 'modules/mcp/commands/observability/metrics'
+      function m = 'modules/mcp/queries/observability/metrics'
     else
-      function m = 'modules/mcp/commands/observability/metrics', chain_tail: 200
+      function m = 'modules/mcp/queries/observability/metrics', chain_tail: 200
     endif
     assign chain = m.chain
     graphql eval_res = 'modules/mcp/eval/runs_latest', per_page: 1
     assign latest_eval = eval_res.records.results.first
   else
     if full_verify
-      function chain = 'modules/mcp/commands/ledger/verify_chain'
+      function chain = 'modules/mcp/queries/ledger/verify_chain'
     else
-      function chain = 'modules/mcp/commands/ledger/verify_chain_recent', limit: 200
+      function chain = 'modules/mcp/queries/ledger/verify_chain_recent', limit: 200
     endif
   endif
 
@@ -156,7 +156,7 @@ layout: ''
 
   if active_tab == 'config'
     function cfg = 'modules/mcp/helpers/config'
-    function registry = 'modules/mcp/commands/registry/load'
+    function registry = 'modules/mcp/queries/registry/load'
   endif
 
   if active_tab == 'approvals'

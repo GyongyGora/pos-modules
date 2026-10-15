@@ -39,7 +39,7 @@ Everywhere below, one rule holds: **fail-closed.** Any check that cannot conclus
 
 ## 1. Before the request: how the agent got a token
 
-The agent is not anonymous. A human first signs in to the instance (existing user/OAuth login), opens `/mcp-tools`, and mints a Bearer via `commands/tokens/mint`. That command:
+The agent is not anonymous. A human first signs in to the instance (existing user/OAuth login), opens `/mcp-tools`, and mints a Bearer via `commands/tokens/mint` (build → check → execute). That command:
 
 - generates a random raw token,
 - stores **only its `sha256` digest**, bound to the human's `user_id` (+ an optional `label` and `allowed_tools` scope),

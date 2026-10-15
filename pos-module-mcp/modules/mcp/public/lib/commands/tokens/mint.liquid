@@ -16,40 +16,15 @@
   @return {object} { raw, id, label } — or { error: 'label_taken', label } when the label is in use
 {%- endcomment -%}
 {% liquid
-  assign safe_label = label | default: '' | strip | truncate: 40, ''
-  if safe_label == blank
-    assign suffix = '' | uuid | replace: '-', '' | slice: 0, 6
-    assign safe_label = 'mcp-client-' | append: suffix
-  else
-    graphql active = 'modules/mcp/tokens/active_for_user', user_id: user_id
-    assign wanted = safe_label | downcase
-    assign label_taken = false
-    for t in active.records.results
-      if t.kind == 'oauth'
-        continue
-      endif
-      assign existing = t.label | default: '' | downcase
-      if existing == wanted
-        assign label_taken = true
-        break
-      endif
-    endfor
-    if label_taken
-      assign taken = {}
-      assign taken['error'] = 'label_taken'
-      assign taken['label'] = safe_label
-      return taken
-    endif
+  function object = 'modules/mcp/commands/tokens/mint/build', user_id: user_id, label: label
+  function object = 'modules/mcp/commands/tokens/mint/check', object: object
+  if object.valid
+    function out = 'modules/mcp/commands/tokens/mint/execute', object: object
+    return out
   endif
 
-  assign u1 = '' | uuid | replace: '-', ''
-  assign u2 = '' | uuid | replace: '-', ''
-  assign raw = 'mcp_' | append: u1 | append: u2
-  assign digest = raw | digest: 'sha256'
-  graphql r = 'modules/mcp/tokens/create', user_id: user_id, token_digest: digest, label: safe_label
-  assign out = {}
-  assign out['raw'] = raw
-  assign out['id'] = r.record.id
-  assign out['label'] = safe_label
-  return out
+  assign taken = {}
+  assign taken['error'] = 'label_taken'
+  assign taken['label'] = object.label
+  return taken
 %}

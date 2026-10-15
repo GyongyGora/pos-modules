@@ -118,7 +118,7 @@
 
   # Step 4 — resolve the tool from the registry (explicit registration + valid
   # manifest + per-token allowed_tools narrowing). Unregistered → unknown tool.
-  function tool = 'modules/mcp/commands/registry/resolve_tool', name: tool_name, allowed_tools: auth.agent.allowed_tools
+  function tool = 'modules/mcp/queries/registry/resolve_tool', name: tool_name, allowed_tools: auth.agent.allowed_tools
   if tool == blank
     assign le['authz_decision'] = 'not_applicable'
     assign le['execution_outcome'] = 'invalid'
@@ -316,7 +316,7 @@
   assign le['idempotency_key'] = idem_key
   assign idem_store = false
   if tool.idempotent and idem_key != blank
-    function hit = 'modules/mcp/commands/idempotency/lookup', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name
+    function hit = 'modules/mcp/queries/idempotency/lookup', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name
     if hit.found
       # Same arguments → replay without re-executing; different arguments → 409.
       function out = 'modules/mcp/commands/idempotency/replay', hit: hit, input_sha256: input_sha256, entry: le, id: id
@@ -352,7 +352,7 @@
       # just the ledger append.
       if idem_store
         function _locked = 'modules/mcp/commands/ledger/mutex'
-        function hit2 = 'modules/mcp/commands/idempotency/lookup', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name
+        function hit2 = 'modules/mcp/queries/idempotency/lookup', key: idem_key, principal_id: auth.principal.id, tool_name: tool_name
         if hit2.found
           assign raced = hit2
         endif

@@ -24,7 +24,7 @@
     assign args = {}
   endif
 
-  function reg = 'modules/mcp/commands/registry/build_prompts', principal: principal, agent: agent
+  function reg = 'modules/mcp/queries/registry/build_prompts', principal: principal, agent: agent
   assign prompt = null
   for p in reg.prompts
     if p.name == name

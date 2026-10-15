@@ -8,10 +8,10 @@
      page is agent-visible unless the operator opts in. Freshness-stamped via
      content_updated_at. The engine's own pages (mcp, well-known) never match the doc
      prefixes, so they are never exposed. Listed on the first page only.
-  2. The app's resource provider (commands/resources/provider), for an AUTHENTICATED
+  2. The app's resource provider (queries/resources/provider), for an AUTHENTICATED
      caller only: the provider lists what this caller may read, and may page through
      its own opaque `next_cursor`, returned as `nextCursor` and passed back as `cursor`.
-     Its entries are checked (commands/resources/clean_entries) before they are listed.
+     Its entries are checked (helpers/resources/clean_entries) before they are listed.
 
   Open discovery like tools/list: a caller without a bearer gets the markdown pages.
 
@@ -62,9 +62,9 @@
 
   assign next_cursor = null
   unless principal == blank
-    function provided = 'modules/mcp/commands/resources/provider', operation: 'list', uri: null, cursor: cursor, principal: principal, agent: agent
+    function provided = 'modules/mcp/queries/resources/provider', operation: 'list', uri: null, cursor: cursor, principal: principal, agent: agent
     unless provided.failed or provided.value == blank
-      function listed = 'modules/mcp/commands/resources/clean_entries', entries: provided.value.resources, kind: 'resource'
+      function listed = 'modules/mcp/helpers/resources/clean_entries', entries: provided.value.resources, kind: 'resource'
       for r in listed
         assign resources = resources | array_add: r
       endfor

@@ -1,0 +1,16 @@
+{%- comment -%}
+  @param {object} object - validated by tokens/mint/check
+  @return {object} { raw, id, label }
+{%- endcomment -%}
+{% liquid
+  assign u1 = '' | uuid | replace: '-', ''
+  assign u2 = '' | uuid | replace: '-', ''
+  assign raw = 'mcp_' | append: u1 | append: u2
+  assign digest = raw | digest: 'sha256'
+  graphql r = 'modules/mcp/tokens/create', user_id: object.user_id, token_digest: digest, label: object.label
+  assign out = {}
+  assign out['raw'] = raw
+  assign out['id'] = r.record.id
+  assign out['label'] = object.label
+  return out
+%}

@@ -36,7 +36,7 @@
 {%- endcomment -%}
 {% liquid
   assign page_size = 50
-  function reg = 'modules/mcp/commands/registry/load'
+  function reg = 'modules/mcp/queries/registry/load'
   assign all = reg.tools
 
   # ---- Visibility scope (§14.2). Build the visible set, then paginate it. --------

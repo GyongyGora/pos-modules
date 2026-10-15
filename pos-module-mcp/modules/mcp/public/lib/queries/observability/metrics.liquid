@@ -59,7 +59,7 @@
   # from the (cached) registry. Historical calls to tools no longer registered are not
   # attributed — the registered set is what an operator manages.
   assign by_tool = {}
-  function reg = 'modules/mcp/commands/registry/load'
+  function reg = 'modules/mcp/queries/registry/load'
   assign tool_names = '' | split: ','
   for t in reg.tools
     assign tool_names = tool_names | array_add: t.name
@@ -133,9 +133,9 @@
   #    bounded recent-window check (the console uses it for a cheap per-load status). ──
   assign chain_tail = chain_tail | default: 0 | plus: 0
   if chain_tail > 0
-    function chain = 'modules/mcp/commands/ledger/verify_chain_recent', limit: chain_tail
+    function chain = 'modules/mcp/queries/ledger/verify_chain_recent', limit: chain_tail
   else
-    function chain = 'modules/mcp/commands/ledger/verify_chain'
+    function chain = 'modules/mcp/queries/ledger/verify_chain'
   endif
 
   assign out = {}
