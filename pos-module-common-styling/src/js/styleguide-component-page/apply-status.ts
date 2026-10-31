@@ -591,6 +591,33 @@ import { getActivePreviewStage, getPreviewButtons, getPreviewLinks, previewStage
       dropdown_buttonStage.dataset.status = status;
     }
   }
+  /* number selector — the real partial on the stage; hover / focus are simulated with debug
+     classes, filled / disabled / display only are real (value, disabled, readonly). After each
+     change the component's own module (pos-number-selector.js, registered under the input id)
+     syncs the stepper buttons and the filled class. */
+  export function applyStatus_numberSelector(status: string): void {
+    var nsStage = getActivePreviewStage();
+    if (nsStage) {
+      nsStage.querySelectorAll<HTMLElement>('.pos-number-selector').forEach(function (el) {
+        var input = el.querySelector<HTMLInputElement>('.pos-number-selector-input');
+        el.classList.remove('pos-debug-number-selector-hover', 'pos-debug-number-selector-focus');
+        if (!input) return;
+        input.disabled = false;
+        input.removeAttribute('readonly');
+        input.value = input.dataset.start || input.defaultValue;
+        switch (status) {
+          case 'hover': el.classList.add('pos-debug-number-selector-hover'); break;
+          case 'focus': el.classList.add('pos-debug-number-selector-focus'); break;
+          case 'filled': input.value = String(Number(input.defaultValue) + 1); break;
+          case 'disabled': input.disabled = true; break;
+          case 'display-only': input.setAttribute('readonly', ''); break;
+        }
+        var nsModule = window.pos && window.pos.modules && window.pos.modules.active && window.pos.modules.active[input.id];
+        if (nsModule && nsModule.update) nsModule.update();
+      });
+      nsStage.dataset.status = status;
+    }
+  }
   export var STATUS_HANDLERS: Record<string, (status: string) => void> = {
     'toast': applyStatus_toast,
     'dialog': applyStatus_dialog,
@@ -615,4 +642,5 @@ import { getActivePreviewStage, getPreviewButtons, getPreviewLinks, previewStage
     'breadcrumb': applyStatus_breadcrumb,
     'slider': applyStatus_slider,
     'dropdown-button': applyStatus_dropdownButton,
+    'number-selector': applyStatus_numberSelector,
   };

@@ -1078,4 +1078,39 @@
         ],
       },
     },
+    "number-selector": {
+      name: "Number selector",
+      controls: ["state","form-intent"],
+      states: ["normal","hover","focus","filled","disabled","display-only"],
+      tokens: [],
+      usage: {
+        useWhen: [
+          "Choosing a small whole number where stepping by one is common — a quantity, a number of guests, a count of items.",
+          "The value has a sensible starting point and clear limits (<code>min</code> / <code>max</code>).",
+          "Add <code>readonly</code> to show the value as <strong>display only</strong> — transparent background, the stepper buttons stay in place but are inactive.",
+        ],
+        avoidWhen: [
+          "The range is large or the value is rarely changed by small steps (a year, a price) — use a text input with <code>inputmode=\"numeric\"</code> instead.",
+          "The value is picked from a continuous range where the exact number matters less — use a <code>slider</code> instead.",
+          "The user picks one of a few named options — use a <code>select</code>, radio buttons or a segmented button instead.",
+        ],
+        do: [
+          "Always associate a visible <code>&lt;label&gt;</code> with the input via matching <code>for</code> and <code>id</code>, and pass the same label to the partial so the buttons are named after it (\"Decrease quantity\").",
+          "Set <code>min</code>, <code>max</code> and <code>step</code> — the stepper button at a limit turns inactive automatically.",
+          "Give a sensible starting <code>value</code>; the field turns bold (filled) once the value differs from it.",
+          "For errors pass <code>intent: 'error'</code> (sets <code>aria-invalid=\"true\"</code>) + <code>.pos-form-error</code>, for success <code>intent: 'success'</code> (<code>aria-invalid=\"false\"</code>) + <code>.pos-form-success</code>, the same frames as the text input.",
+        ],
+        dont: [
+          "Use a placeholder instead of a starting value — the field always shows a number; an emptied field returns to its starting value when it loses focus.",
+          "Make the stepper buttons focusable separately — the arrow keys on the number do the same, one Tab stop per field like every other input.",
+          "Style the component outside the <code>.pos-form</code> wrapper.",
+        ],
+        accessibility: [
+          "The number is a native <code>&lt;input type=\"number\"&gt;</code> (a spin button): <kbd>↑</kbd> / <kbd>↓</kbd> step the value, typing works, screen readers announce the value.",
+          "The stepper buttons have <code>tabindex=\"-1\"</code> and <code>aria-controls</code> pointing at the input; their accessible names include the field label.",
+          "After a button press the new value is announced through a polite live region inside the component.",
+          "Error and success messages should be linked via <code>aria-describedby</code>; required fields use the <code>required</code> attribute.",
+        ],
+      },
+    },
   };

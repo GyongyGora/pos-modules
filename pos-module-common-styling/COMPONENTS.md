@@ -45,6 +45,7 @@ Every component of the design system with its files and docs link. Paths are rel
 | Toast (legacy) | `toast` | Auto-dismissing notification (`window.pos.modules.toast`). | done | `style/pos-toast.css` (+ `js/pos-toast.js`) | `tokens/components/toast.json` | `#comp-section-toast` |
 | Toggle button | `toggle-btn` | Standalone on / off switch. | done | `style/pos-toggle-btn.css` | `tokens/components/toggle-btn.json` | `#comp-section-toggle-btn` |
 | Tooltip | `tooltip` | Text (`data-tooltip`) or icon-text tooltip. | done | `style/pos-tooltip.css` | `tokens/components/tooltip.json` | `#comp-section-tooltip` |
+| Number selector | `number-selector` | Number field with minus / plus stepper buttons, on the input field tokens. | new | `style/pos-number-selector.css` (+ `js/pos-number-selector.js`, partial `forms/number-selector`) | `tokens/components/number-selector.json` | `#comp-section-number-selector` |
 
 ## Foundation stylesheets (no spec)
 

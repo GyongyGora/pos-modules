@@ -324,6 +324,180 @@
   .draft-btn[aria-current="true"] { background: var(--pos-color-interactive); color: var(--pos-color-content-inverted-text); }
   .draft-btn .draft-sub { display: block; font-size: 0.6875rem; font-weight: 400; opacity: 0.75; margin-top: 1px; }
 
+  /* ── Number selector draft (2026-10-16) ─────────────────────────────────────────────
+     A number field with decrease / increase stepper buttons in one frame. Built on the input
+     field tokens and the exact state rules of .pos-form-input (style/pos-forms.css), so it
+     reads as the same family as text input / select / password:
+       hover   = hover frame + 1px inset ring + hover background
+       focus   = active frame + inset ring + active background, 2px focus ring outside
+       normal / hover / focus = the starting value in that state's input text color
+       filled  = a changed value: prominent text, weight 600 (same literal 600 as text input)
+       disabled = disabled frame / text, not-allowed cursor over the whole field (RULES.md 4.12)
+       display only = transparent background, frame color, regular text
+     The stepper buttons follow the password-toggle pattern: interactive graphic color, a color
+     change only on hover (no background), interactive-disabled when the field is disabled.
+     Colors read var(--preview-*, var(--pos-*)) so the preview theme switch reaches them. */
+  .pos-number-selector {
+    display: inline-flex;
+    align-items: stretch;
+    height: var(--pos-height-input);
+    box-sizing: border-box;
+
+    border: var(--pos-border-input) solid var(--preview-input-frame, var(--pos-color-input-frame));
+    border-radius: var(--pos-radius-input);
+    background-color: var(--preview-input-background, var(--pos-color-input-background));
+    color: var(--preview-input-text, var(--pos-color-input-text));
+
+    transition-property: border-color, background-color, color, box-shadow;
+    transition-duration: .1s;
+    transition-timing-function: linear;
+  }
+
+  .pos-number-selector-input {
+    all: unset;
+    box-sizing: border-box;
+    inline-size: calc(var(--pos-height-input) * 2.5);
+    padding-inline: var(--pos-padding-input);
+
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  /* the native spinner arrows are replaced by the two stepper buttons */
+  .pos-number-selector-input::-webkit-inner-spin-button,
+  .pos-number-selector-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* an empty field's placeholder reads like the text input's: pos-reset.css unsets
+     ::placeholder, so it inherits the field's input text color (passes 4.5:1) */
+  .pos-number-selector-input::placeholder {
+    color: inherit;
+    opacity: 1;
+  }
+
+  .pos-number-selector-btn {
+    all: unset;
+    box-sizing: border-box;
+    inline-size: var(--pos-height-input);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-inline-start: var(--pos-border-input) solid var(--preview-input-frame, var(--pos-color-input-frame));
+    color: var(--preview-interactive, var(--pos-color-interactive));
+    cursor: pointer;
+
+    transition-property: border-color, color;
+    transition-duration: .1s;
+    transition-timing-function: linear;
+  }
+
+  .pos-number-selector-btn svg {
+    width: var(--pos-size-icon-m);
+    height: var(--pos-size-icon-m);
+    display: block;
+  }
+
+  /* hover — skips a disabled or display-only field (RULES.md 4.12), and a focused one */
+  .pos-number-selector:hover:where(:not(:has(:disabled, [readonly]), :focus-within)),
+  .pos-number-selector.pos-debug-number-selector-hover {
+    border-color: var(--preview-input-hover-frame, var(--pos-color-input-hover-frame));
+    box-shadow: inset 0 0 0 1px var(--preview-input-hover-frame, var(--pos-color-input-hover-frame));
+    background-color: var(--preview-input-hover-background, var(--pos-color-input-hover-background));
+    color: var(--preview-input-hover-text, var(--pos-color-input-hover-text));
+  }
+
+  .pos-number-selector:hover:where(:not(:has(:disabled, [readonly]), :focus-within)) .pos-number-selector-btn,
+  .pos-number-selector.pos-debug-number-selector-hover .pos-number-selector-btn {
+    border-inline-start-color: var(--preview-input-hover-frame, var(--pos-color-input-hover-frame));
+  }
+
+  .pos-number-selector-btn:hover:where(:not(:disabled)),
+  .pos-number-selector-btn.pos-debug-number-selector-btn-hover {
+    color: var(--preview-interactive-hover, var(--pos-color-interactive-hover));
+  }
+
+  /* focus — the field is focused when its input (or a stepper button) has focus */
+  .pos-number-selector:focus-within:where(:not(:has([readonly]))),
+  .pos-number-selector.pos-debug-number-selector-focus {
+    border-color: var(--preview-input-active-frame, var(--pos-color-input-active-frame));
+    box-shadow: inset 0 0 0 1px var(--preview-input-active-frame, var(--pos-color-input-active-frame));
+    background-color: var(--preview-input-active-background, var(--pos-color-input-active-background));
+    color: var(--preview-input-active-text, var(--pos-color-input-active-text));
+  }
+
+  .pos-number-selector:focus-within:where(:not(:has([readonly]))) .pos-number-selector-btn,
+  .pos-number-selector.pos-debug-number-selector-focus .pos-number-selector-btn {
+    border-inline-start-color: var(--preview-input-active-frame, var(--pos-color-input-active-frame));
+  }
+
+  /* focus ring around the whole field when the number is focused (in the real DS gated by
+     html[data-keyboard-nav], like every text input); a focused stepper button gets its own
+     ring inside the frame */
+  .pos-number-selector:has(.pos-number-selector-input:focus-visible),
+  .pos-number-selector.pos-debug-number-selector-focus {
+    outline: 2px solid var(--preview-focused, var(--pos-color-focused));
+    outline-offset: 2px;
+  }
+
+  .pos-number-selector-btn:focus-visible {
+    outline: 2px solid var(--preview-focused, var(--pos-color-focused));
+    outline-offset: -2px;
+  }
+
+  /* filled — the value was changed from its starting value (the field always shows a number,
+     so "has a value" can't be the signal like in text input); the class is set by JS on input */
+  .pos-number-selector--filled .pos-number-selector-input:not(:disabled):not([readonly]) {
+    color: var(--preview-content-text-prominent, var(--pos-color-content-text-prominent));
+    font-weight: 600;
+  }
+
+  /* disabled — not-allowed cursor over the whole field, no hover (RULES.md 4.12) */
+  .pos-number-selector:has(.pos-number-selector-input:disabled) {
+    border-color: var(--preview-input-disabled-frame, var(--pos-color-input-disabled-frame));
+    background-color: var(--preview-input-background, var(--pos-color-input-background));
+    color: var(--preview-input-disabled-text, var(--pos-color-input-disabled-text));
+    cursor: not-allowed;
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input:disabled) * {
+    cursor: not-allowed;
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input:disabled) .pos-number-selector-input::placeholder {
+    color: var(--preview-input-disabled-text, var(--pos-color-input-disabled-text));
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input:disabled) .pos-number-selector-btn {
+    border-inline-start-color: var(--preview-input-disabled-frame, var(--pos-color-input-disabled-frame));
+    color: var(--preview-interactive-disabled, var(--pos-color-interactive-disabled));
+  }
+
+  /* display only — the value is shown, not edited: transparent field, frame color, regular
+     text; the steppers stay in place (the field keeps its size) but are inert */
+  .pos-number-selector:has(.pos-number-selector-input[readonly]) {
+    border-color: var(--preview-frame, var(--pos-color-frame));
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--preview-content-text, var(--pos-color-content-text));
+  }
+
+  .pos-number-selector-input[readonly] {
+    font-weight: 400;
+    cursor: text;
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input[readonly]) .pos-number-selector-btn {
+    border-inline-start-color: var(--preview-frame, var(--pos-color-frame));
+    color: var(--preview-interactive-disabled, var(--pos-color-interactive-disabled));
+  }
+
   @media (max-width: 680px) {
     .wizard { flex-direction: column; }
     .drafts-sidebar { width: auto; border-left: none; border-top: 1px solid var(--pos-color-frame); }
@@ -382,7 +556,88 @@
   // from the loaded DS CSS (see getTokenValue), never hand-typed, so it can't
   // drift from what's actually on screen in the current theme.
   // Figma source: node 8293:129201 (pOS Core — components).
+  // ── number selector draft helpers ──
+  // Same markup for every state; the state demo classes (pos-debug-*) only stand in for a real
+  // :hover / :focus-within, like the docs site's own state toggles do.
+  // inline copies of icon.liquid's 'subtract-bold' (Tabler minus) and 'plus' — the wizard has no
+  // Liquid; the real partial renders them with render 'modules/common-styling/icon'
+  var NS_MINUS = '<svg viewBox="2 2 20 20" aria-hidden="true" focusable="false" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0" /></svg>';
+  var NS_PLUS = '<svg viewBox="2 2 20 20" aria-hidden="true" focusable="false" style="fill:none;overflow:visible" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>';
+  function nsHtml(o) {
+    var inert = o.disabled || o.readonly ? ' disabled' : '';
+    return '<div class="pos-number-selector' + (o.field ? ' ' + o.field : '') + '">' +
+      '<input type="number" class="pos-number-selector-input" inputmode="numeric" min="0" max="99" step="1" aria-label="Quantity"' +
+        (o.placeholder ? ' placeholder="0"' : ' value="' + o.value + '"') + (o.start != null ? ' data-start="' + o.start + '"' : '') +
+        (o.disabled ? ' disabled' : '') + (o.readonly ? ' readonly' : '') + '>' +
+      '<button type="button" class="pos-number-selector-btn" data-ns-step="-1" aria-label="Decrease"' + inert + '>' + NS_MINUS + '</button>' +
+      '<button type="button" class="pos-number-selector-btn' + (o.plusHover ? ' pos-debug-number-selector-btn-hover' : '') + '" data-ns-step="1" aria-label="Increase"' + inert + '>' + NS_PLUS + '</button>' +
+      '</div>';
+  }
+  var NS_LAYOUT = [
+    ['Layout', '--pos-radius-input', false],
+    ['Layout', '--pos-height-input (field height = stepper button width)', false],
+    ['Layout', '--pos-padding-input', false],
+    ['Layout', '--pos-border-input (frame + dividers)', false],
+    ['Layout', '--pos-size-icon-m (minus / plus icon)', false],
+  ];
+  var NS_TOKENS = {
+    normal: [
+      ['Color', '--pos-color-input-background', true],
+      ['Color', '--pos-color-input-frame (frame + dividers)', true],
+      ['Color', '--pos-color-input-text (value)', true],
+      ['Color', '--pos-color-interactive (minus / plus)', true],
+    ].concat(NS_LAYOUT),
+    hover: [
+      ['Color', '--pos-color-input-hover-background', true],
+      ['Color', '--pos-color-input-hover-frame (frame, 1px inset ring, dividers)', true],
+      ['Color', '--pos-color-input-hover-text (value)', true],
+      ['Color', '--pos-color-interactive (minus / plus)', true],
+      ['Color', '--pos-color-interactive-hover (hovered button)', true],
+    ].concat(NS_LAYOUT),
+    focus: [
+      ['Color', '--pos-color-input-active-background', true],
+      ['Color', '--pos-color-input-active-frame (frame, 1px inset ring, dividers)', true],
+      ['Color', '--pos-color-input-active-text (value)', true],
+      ['Color', '--pos-color-interactive (minus / plus)', true],
+      ['Focus indicator', '--pos-color-focused', true],
+    ].concat(NS_LAYOUT),
+    filled: [
+      ['Color', '--pos-color-input-background', true],
+      ['Color', '--pos-color-input-frame (frame + dividers)', true],
+      ['Color', '--pos-color-content-text-prominent (changed value, weight 600)', true],
+      ['Color', '--pos-color-interactive (minus / plus)', true],
+    ].concat(NS_LAYOUT),
+    disabled: [
+      ['Color', '--pos-color-input-background', true],
+      ['Color', '--pos-color-input-disabled-frame (frame + dividers)', true],
+      ['Color', '--pos-color-input-disabled-text (value)', true],
+      ['Color', '--pos-color-interactive-disabled (minus / plus)', true],
+    ].concat(NS_LAYOUT),
+    displayOnly: [
+      ['Color', '--pos-color-frame (frame + dividers; background transparent)', true],
+      ['Color', '--pos-color-content-text (value, regular weight)', true],
+      ['Color', '--pos-color-interactive-disabled (minus / plus, inert)', true],
+    ].concat(NS_LAYOUT),
+  };
+
   var drafts = [
+    {
+      key: 'number-selector',
+      name: 'Number selector',
+      // No Figma source — built from a reference image (number + minus + plus in one frame) and
+      // the direction "use the input field tokens, look like the other input components" —
+      // 2026-10-16. Real <input type="number"> (typing, arrow keys and screen readers work out of
+      // the box) with two real <button>s; the native spinner is hidden. One variant, six states.
+      sourceUrl: null,
+      variants: [
+        { label: 'Normal', html: nsHtml({ value: 5 }), tokens: NS_TOKENS.normal },
+        { label: 'Hover', html: nsHtml({ value: 5, field: 'pos-debug-number-selector-hover', plusHover: true }), tokens: NS_TOKENS.hover },
+        { label: 'Focus', html: nsHtml({ value: 5, field: 'pos-debug-number-selector-focus' }), tokens: NS_TOKENS.focus },
+        { label: 'Filled', html: nsHtml({ value: 6, start: 5, field: 'pos-number-selector--filled' }), tokens: NS_TOKENS.filled },
+        { label: 'Disabled', html: nsHtml({ value: 5, disabled: true }), tokens: NS_TOKENS.disabled },
+        { label: 'Display only', html: nsHtml({ value: 5, readonly: true }), tokens: NS_TOKENS.displayOnly },
+      ],
+    },
     {
       key: 'slider',
       name: 'Slider',
@@ -424,6 +679,25 @@
   // name as the primary label (the CSS name stays
   // available as a hover tooltip for whoever implements the real CSS afterward).
   var FIGMA_NAMES = {
+    // number selector draft (2026-10-16) — names from text-input.json / css-to-figma.json; the
+    // input placeholder / height / padding / border tokens have no Figma mapping, so they show
+    // by CSS name (RULES §6.4)
+    '--pos-color-input-background': 'Input field Bg Normal',
+    '--pos-color-input-text': 'Input Field Text Normal',
+    '--pos-color-input-hover-text': 'Input Field Text Hover, Active',
+    '--pos-color-input-active-text': 'Input Field Text Hover, Active',
+    '--pos-color-input-frame': 'Input field Frame Normal',
+    '--pos-color-input-hover-background': 'Input field Bg Hover, Active',
+    '--pos-color-input-hover-frame': 'Input field Frame Hover, Active',
+    '--pos-color-input-active-background': 'Input field Bg Hover, Active',
+    '--pos-color-input-active-frame': 'Input field Frame Hover, Active',
+    '--pos-color-input-disabled-text': 'Input Field Text Disabled',
+    '--pos-color-input-disabled-frame': 'Input field Frame Disabled',
+    '--pos-color-content-text': 'General elements-theme/Normal - text',
+    '--pos-color-content-text-prominent': 'General elements-theme/Prominent - text',
+    '--pos-color-interactive-hover': 'General elements-theme/Graphic Interactive Hover',
+    '--pos-color-interactive-disabled': 'General elements-theme/Graphic Interactive Disabled',
+    '--pos-radius-input': 'Input corner',
     '--pos-color-important': 'Utility/Important Normal',
     '--pos-color-content-background': 'Backgrounds/Content Background',
     '--pos-color-content-inverted-text': 'General elements-theme/Inverted - text',
@@ -561,6 +835,24 @@
     '--preview-content-icon-interactive': '--pos-color-content-icon-interactive',
     '--preview-content-icon': '--pos-color-content-icon',
     '--preview-inverted-icon': '--pos-color-content-inverted-icon',
+    // Number selector tokens — 2026-10-16
+    '--preview-input-background': '--pos-color-input-background',
+    '--preview-input-text': '--pos-color-input-text',
+    '--preview-input-frame': '--pos-color-input-frame',
+      '--preview-input-hover-background': '--pos-color-input-hover-background',
+    '--preview-input-hover-text': '--pos-color-input-hover-text',
+    '--preview-input-hover-frame': '--pos-color-input-hover-frame',
+    '--preview-input-active-background': '--pos-color-input-active-background',
+    '--preview-input-active-text': '--pos-color-input-active-text',
+    '--preview-input-active-frame': '--pos-color-input-active-frame',
+    '--preview-input-disabled-text': '--pos-color-input-disabled-text',
+    '--preview-input-disabled-frame': '--pos-color-input-disabled-frame',
+    '--preview-content-text': '--pos-color-content-text',
+    '--preview-content-text-prominent': '--pos-color-content-text-prominent',
+    '--preview-interactive': '--pos-color-interactive',
+    '--preview-interactive-hover': '--pos-color-interactive-hover',
+    '--preview-interactive-disabled': '--pos-color-interactive-disabled',
+    '--preview-focused': '--pos-color-focused',
   };
 
   var themeToggle = document.getElementById('wizard-theme-toggle');
@@ -632,6 +924,22 @@
     var stop = function () { field.classList.remove('is-dragging'); window.removeEventListener('pointerup', stop); window.removeEventListener('pointercancel', stop); };
     window.addEventListener('pointerup', stop);
     window.addEventListener('pointercancel', stop);
+  });
+
+  // ── number selector draft: the stepper buttons really step the value (stepUp/stepDown keep
+  // min / max / step), the input fires its real input event; inert buttons do nothing. ──
+  variantList.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-ns-step]');
+    if (!btn || btn.disabled) return;
+    var input = btn.closest('.pos-number-selector').querySelector('.pos-number-selector-input');
+    if (input.disabled || input.readOnly) return;
+    if (btn.dataset.nsStep === '1') input.stepUp(); else input.stepDown();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  variantList.addEventListener('input', function (e) {
+    var input = e.target.closest('.pos-number-selector-input');
+    if (!input) return;
+    input.closest('.pos-number-selector').classList.toggle('pos-number-selector--filled', input.value !== '' && input.value !== (input.dataset.start || input.defaultValue));
   });
 }());
 </script>

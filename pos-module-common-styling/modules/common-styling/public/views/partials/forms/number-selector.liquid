@@ -1,0 +1,59 @@
+{% comment %}
+
+  number selector — a number field with decrease / increase stepper buttons in one frame
+  (style/pos-number-selector.css, js/pos-number-selector.js — init.liquid starts it)
+
+  arguments:
+    id - input id, the <label for> points at it (string, required)
+    label - the field label, used in the buttons' names: "Decrease <label>" (string, required)
+    name - form input name (string)
+    value - starting value (number, default: min or 0)
+    min - lowest value (number, default: 0)
+    max - highest value (number, optional)
+    step - step size (number, default: 1)
+    class - class list added to the container (string)
+    disabled - disables the field and both buttons (bool)
+    readonly - display only: the value is shown, not edited (bool)
+    required - the field is required (bool)
+    intent - 'error' or 'success': sets aria-invalid true / false (string, optional)
+    describedby - id(s) of the helper / error / success message (string, optional)
+
+{% endcomment %}
+{% liquid
+  assign min = min | default: 0
+  assign step = step | default: 1
+  if value == blank
+    assign value = min
+  endif
+  assign inert = false
+  if disabled or readonly
+    assign inert = true
+  endif
+  assign decrease_label = 'modules/common-styling/number_selector.decrease' | t: label: label
+  assign increase_label = 'modules/common-styling/number_selector.increase' | t: label: label
+%}
+<div class="pos-number-selector {{ class }}">
+  <input
+    type="number"
+    class="pos-number-selector-input"
+    id="{{ id }}"
+    {% if name %}name="{{ name }}"{% endif %}
+    value="{{ value }}"
+    min="{{ min }}"
+    {% if max != blank %}max="{{ max }}"{% endif %}
+    step="{{ step }}"
+    inputmode="numeric"
+    {% if disabled %}disabled{% endif %}
+    {% if readonly %}readonly{% endif %}
+    {% if required %}required{% endif %}
+    {% if intent == 'error' %}aria-invalid="true"{% elsif intent == 'success' %}aria-invalid="false"{% endif %}
+    {% if describedby %}aria-describedby="{{ describedby }}"{% endif %}
+  >
+  <button type="button" class="pos-number-selector-btn" data-pos-number-selector-step="-1" tabindex="-1" aria-controls="{{ id }}" aria-label="{{ decrease_label }}" {% if inert %}disabled{% endif %}>
+    {% render 'modules/common-styling/icon', icon: 'subtract-bold', aria_hidden: true %}
+  </button>
+  <button type="button" class="pos-number-selector-btn" data-pos-number-selector-step="1" tabindex="-1" aria-controls="{{ id }}" aria-label="{{ increase_label }}" {% if inert %}disabled{% endif %}>
+    {% render 'modules/common-styling/icon', icon: 'plus', aria_hidden: true %}
+  </button>
+  <span class="pos-label pos-number-selector-status" aria-live="polite"></span>
+</div>

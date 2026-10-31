@@ -545,6 +545,39 @@ console.log(greet('World'));&lt;/code&gt;
 
 
         <!-- ══════════════════════════════════════════════════════════
+             NUMBER SELECTOR SECTION
+             ══════════════════════════════════════════════════════════ -->
+        <section class="comp-doc-section" data-comp-key="number-selector" id="comp-section-number-selector">
+
+          <header class="comp-doc-section-header">
+            <h4 class="pos-heading-4">Number selector</h4>
+          </header>
+
+          <!-- the real partial (forms/number-selector) — responds to the State and Intent toggles;
+               pos-number-selector.js (started by init) does the stepping, limits and filled state -->
+          <div class="comp-preview-stage" id="comp-number-selector-preview" data-status="normal">
+            <form class="pos-form pos-form-simple" action="#" novalidate>
+              <fieldset>
+                <label for="comp-number-selector-field"><strong>Quantity</strong></label>
+                {% render 'modules/common-styling/forms/number-selector', id: 'comp-number-selector-field', name: 'quantity', label: 'quantity', value: 5, min: 0, max: 99, describedby: 'comp-number-selector-error comp-number-selector-success' %}
+                <p class="pos-form-error" id="comp-number-selector-error" hidden>
+                  {% render 'modules/common-styling/icon', icon: 'warning', aria_hidden: true %}
+                  Choose a number between 0 and 99
+                </p>
+                <p class="pos-form-success" id="comp-number-selector-success" hidden>
+                  {% render 'modules/common-styling/icon', icon: 'check-circle', aria_hidden: true %}
+                  Available
+                </p>
+              </fieldset>
+            </form>
+          </div><!-- /.comp-preview-stage -->
+
+          <pre class="pos-code pos-code--block pos-code--light pos-code--small comp-preview-code" id="comp-preview-code-number-selector"><code class="language-html"></code></pre>
+
+        </section><!-- /#comp-section-number-selector -->
+
+
+        <!-- ══════════════════════════════════════════════════════════
              PASSWORD INPUT SECTION
              ══════════════════════════════════════════════════════════ -->
         <section class="comp-doc-section" data-comp-key="password" id="comp-section-password">
@@ -3205,6 +3238,7 @@ console.log(greet('World'));&lt;/code&gt;
 {% render 'modules/common-styling/style-guide/spec-toggle-btn' %}
 {% render 'modules/common-styling/style-guide/spec-table' %}
 {% render 'modules/common-styling/style-guide/spec-pagination' %}
+{% render 'modules/common-styling/style-guide/spec-number-selector' %}
 {% render 'modules/common-styling/style-guide/spec-dropdown-button' %}
 {% render 'modules/common-styling/style-guide/spec-slider' %}
 {% render 'modules/common-styling/style-guide/spec-badge' %}

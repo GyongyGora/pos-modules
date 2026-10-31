@@ -201,6 +201,28 @@ import { renderTokenPanel } from './token-panel.js';
       tryRefreshInspect();
     }
 
+    /* reset number selector — starting value, no intent, no messages */
+    if (key === 'number-selector') {
+      var nsStageReset = document.getElementById('comp-number-selector-preview');
+      if (nsStageReset) {
+        nsStageReset.querySelectorAll<HTMLInputElement>('.pos-number-selector-input').forEach(function (inp) {
+          inp.disabled = false;
+          inp.removeAttribute('readonly');
+          inp.removeAttribute('aria-invalid');
+          inp.value = inp.defaultValue;
+          var nsResetModule = window.pos && window.pos.modules && window.pos.modules.active && window.pos.modules.active[inp.id];
+          if (nsResetModule && nsResetModule.update) nsResetModule.update();
+        });
+        nsStageReset.querySelectorAll<HTMLElement>('.pos-number-selector').forEach(function (el) {
+          el.classList.remove('pos-debug-number-selector-hover', 'pos-debug-number-selector-focus');
+        });
+        ['comp-number-selector-error', 'comp-number-selector-success'].forEach(function (id) {
+          var msg = document.getElementById(id);
+          if (msg) msg.hidden = true;
+        });
+      }
+    }
+
     /* reset text input */
     if (key === 'text-input') {
       var tiStageReset = document.getElementById('comp-text-input-preview');
@@ -273,7 +295,7 @@ import { renderTokenPanel } from './token-panel.js';
     }
 
     /* reset form-intent control to Normal for all form components */
-    if (['text-input', 'textarea', 'select'].indexOf(key) !== -1) {
+    if (['text-input', 'textarea', 'select', 'number-selector'].indexOf(key) !== -1) {
       if (formIntentList) {
         setActiveToggle(formIntentList, 'data-form-intent-btn', 'normal', 'pos-tile-btn--selected');
       }

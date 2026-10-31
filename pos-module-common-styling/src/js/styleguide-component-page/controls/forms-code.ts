@@ -21,11 +21,13 @@ import { tryRefreshInspect } from '../core/refresh-inspect.js';
       setActiveToggle(formIntentList, 'data-form-intent-btn', intent, 'pos-tile-btn--selected');
       var stage = getActivePreviewStage();
       if (!stage) return;
-      var prefixMap: Record<string, string> = { 'text-input': 'comp-text-input', textarea: 'comp-textarea', select: 'comp-select' };
+      var prefixMap: Record<string, string> = { 'text-input': 'comp-text-input', textarea: 'comp-textarea', select: 'comp-select', 'number-selector': 'comp-number-selector' };
       var prefix = prefixMap[state.comp];
       var inputs = state.comp === 'select'
         ? stage.querySelectorAll<HTMLElement>('select')
-        : stage.querySelectorAll<HTMLElement>('.pos-form-input:not(select)');
+        : state.comp === 'number-selector'
+          ? stage.querySelectorAll<HTMLElement>('.pos-number-selector-input')
+          : stage.querySelectorAll<HTMLElement>('.pos-form-input:not(select)');
       inputs.forEach(function (inp) {
         inp.removeAttribute('aria-invalid');
         if (intent === 'error')   inp.setAttribute('aria-invalid', 'true');

@@ -1,0 +1,239 @@
+/*
+  number selector
+
+  A number field with decrease / increase stepper buttons in one frame, for small whole-number
+  values such as a quantity. Built on the input field tokens and the same state rules as the text
+  input (pos-forms.css), so it reads as the same family as text input / select / password:
+    normal / hover / focus = the starting value in that state's input text color
+    hover    = hover frame + 1px inset ring + hover background
+    focus    = active frame + inset ring + active background, 2px focus ring outside
+    filled   = the value differs from its starting value: prominent text, weight 600 (the same
+               literal 600 the text input uses — there is no semibold token)
+    disabled = disabled frame / text, not-allowed cursor over the whole field (RULES.md 4.12)
+    display only (readonly) = transparent background, frame color, regular text, buttons inert
+    error / success = aria-invalid on the input, important / confirmation frame + inset ring
+  The stepper buttons follow the password-toggle pattern: interactive graphic color, a color
+  change only on hover, interactive-disabled when inactive (field disabled / display only, or the
+  value at its min / max). They are tabindex="-1": the arrow keys on the number do the same.
+  Behavior (stepping, limits, filled, live announcement): js/pos-number-selector.js.
+  The pos-debug-* classes only simulate :hover / :focus for the docs site's state toggles.
+*/
+
+
+
+@layer common-styling {
+
+  /* fieldset layout — same column layout and label offset as the other fields (pos-forms.css) */
+  .pos-form-simple fieldset:has(label + .pos-number-selector) {
+    display: flex;
+    flex-direction: column;
+    gap: .2em;
+  }
+
+  .pos-form-simple fieldset:has(label + .pos-number-selector) label {
+    margin-inline-start: -.1ex;
+    margin-block-end: .1em;
+  }
+
+
+  /* field
+  ============================================================================ */
+  .pos-number-selector {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: stretch;
+    height: var(--pos-height-input);
+    position: relative;
+    box-sizing: border-box;
+
+    border: var(--pos-border-input) solid var(--pos-color-input-frame);
+    border-radius: var(--pos-radius-input);
+    background-color: var(--pos-color-input-background);
+    color: var(--pos-color-input-text);
+
+    transition-property: border-color, background-color, color, box-shadow;
+    transition-duration: .1s;
+    transition-timing-function: linear;
+  }
+
+    .pos-number-selector * {
+      box-sizing: border-box;
+    }
+
+  .pos-number-selector-input {
+    all: unset;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    inline-size: calc(var(--pos-height-input) * 2.5);
+    padding-inline: var(--pos-padding-input);
+
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  /* the native spinner arrows are replaced by the two stepper buttons */
+  .pos-number-selector-input::-webkit-inner-spin-button,
+  .pos-number-selector-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* an emptied field (before it returns to its starting value on blur) — same as the text input:
+     pos-reset.css unsets ::placeholder, so it keeps the field's text color */
+  .pos-number-selector-input::placeholder {
+    color: inherit;
+    opacity: 1;
+  }
+
+  /* the live region that announces the value after a button press — read, never shown */
+  .pos-number-selector .pos-label {
+    position: absolute;
+    inset-inline-start: -200vw;
+  }
+
+
+  /* stepper buttons
+  ============================================================================ */
+  .pos-number-selector-btn {
+    all: unset;
+    inline-size: var(--pos-height-input);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-inline-start: var(--pos-border-input) solid var(--pos-color-input-frame);
+    color: var(--pos-color-interactive);
+    cursor: pointer;
+
+    transition-property: border-color, color;
+    transition-duration: .1s;
+    transition-timing-function: linear;
+  }
+
+    .pos-number-selector-btn svg {
+      width: var(--pos-size-icon-m);
+      height: var(--pos-size-icon-m);
+      display: block;
+    }
+
+  .pos-number-selector-btn:hover:where(:not(:disabled)) {
+    color: var(--pos-color-interactive-hover);
+  }
+
+  /* inactive button — field disabled or display only, or the value at its min / max: keeps its
+     pointer events so the not-allowed cursor shows (RULES.md 4.12) */
+  .pos-number-selector-btn:disabled {
+    color: var(--pos-color-interactive-disabled);
+    cursor: not-allowed;
+  }
+
+    .pos-number-selector-btn:disabled * {
+      cursor: not-allowed;
+    }
+
+
+  /* hover — skips a disabled, display-only or focused field (RULES.md 4.12); the :where() keeps
+     the specificity low so the error / success frame below still wins
+  ============================================================================ */
+  .pos-number-selector:hover:where(:not(:has(.pos-number-selector-input:disabled, .pos-number-selector-input[readonly]), :focus-within)),
+  .pos-number-selector.pos-debug-number-selector-hover {
+    border-color: var(--pos-color-input-hover-frame);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-hover-frame);
+    background-color: var(--pos-color-input-hover-background);
+    color: var(--pos-color-input-hover-text);
+  }
+
+  .pos-number-selector:hover:where(:not(:has(.pos-number-selector-input:disabled, .pos-number-selector-input[readonly], .pos-number-selector-input[aria-invalid]), :focus-within)) .pos-number-selector-btn,
+  .pos-number-selector.pos-debug-number-selector-hover:where(:not(:has([aria-invalid]))) .pos-number-selector-btn {
+    border-inline-start-color: var(--pos-color-input-hover-frame);
+  }
+
+
+  /* focus — the field is focused while its number has focus
+  ============================================================================ */
+  .pos-number-selector:focus-within:where(:not(:has(.pos-number-selector-input[readonly]))),
+  .pos-number-selector.pos-debug-number-selector-focus {
+    border-color: var(--pos-color-input-active-frame);
+    box-shadow: inset 0 0 0 1px var(--pos-color-input-active-frame);
+    background-color: var(--pos-color-input-active-background);
+    color: var(--pos-color-input-active-text);
+  }
+
+  .pos-number-selector:focus-within:where(:not(:has(.pos-number-selector-input[readonly], .pos-number-selector-input[aria-invalid]))) .pos-number-selector-btn,
+  .pos-number-selector.pos-debug-number-selector-focus:where(:not(:has([aria-invalid]))) .pos-number-selector-btn {
+    border-inline-start-color: var(--pos-color-input-active-frame);
+  }
+
+  /* the focus ring is reserved for real keyboard navigation (html[data-keyboard-nav], set by
+     pos-keyboard-nav.js), the same as every text input; the docs debug class shows it always */
+  html[data-keyboard-nav] .pos-number-selector:has(.pos-number-selector-input:focus-visible),
+  .pos-number-selector.pos-debug-number-selector-focus {
+    outline: 2px solid var(--pos-color-focused);
+    outline-offset: 2px;
+  }
+
+
+  /* filled — the value differs from its starting value (pos-number-selector.js sets the class)
+  ============================================================================ */
+  .pos-number-selector--filled .pos-number-selector-input:not(:disabled):not([readonly]) {
+    color: var(--pos-color-content-text-prominent);
+    font-weight: 600;
+  }
+
+
+  /* disabled — not-allowed cursor over the whole field, no hover (RULES.md 4.12)
+  ============================================================================ */
+  .pos-number-selector:has(.pos-number-selector-input:disabled) {
+    border-color: var(--pos-color-input-disabled-frame);
+    background-color: var(--pos-color-input-background);
+    color: var(--pos-color-input-disabled-text);
+    cursor: not-allowed;
+  }
+
+    .pos-number-selector:has(.pos-number-selector-input:disabled) * {
+      cursor: not-allowed;
+    }
+
+  .pos-number-selector:has(.pos-number-selector-input:disabled) .pos-number-selector-btn {
+    border-inline-start-color: var(--pos-color-input-disabled-frame);
+  }
+
+
+  /* display only (readonly) — the value is shown, not edited; the steppers stay in place so the
+     field keeps its size, but are disabled
+  ============================================================================ */
+  .pos-number-selector:has(.pos-number-selector-input[readonly]) {
+    border-color: var(--pos-color-frame);
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--pos-color-content-text);
+  }
+
+  .pos-number-selector-input[readonly] {
+    font-weight: 400;
+    cursor: text;
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input[readonly]) .pos-number-selector-btn {
+    border-inline-start-color: var(--pos-color-frame);
+  }
+
+
+  /* error / success intent — after disabled and display only, like the text input, so the frame
+     stays red / green in every state
+  ============================================================================ */
+  .pos-number-selector:has(.pos-number-selector-input[aria-invalid="true"]) {
+    border-color: var(--pos-color-important);
+    box-shadow: inset 0 0 0 1px var(--pos-color-important);
+  }
+
+  .pos-number-selector:has(.pos-number-selector-input[aria-invalid="false"]) {
+    border-color: var(--pos-color-confirmation);
+    box-shadow: inset 0 0 0 1px var(--pos-color-confirmation);
+  }
+
+}

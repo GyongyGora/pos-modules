@@ -899,6 +899,38 @@
         "min_width_px": 160
       }
     },
+    "number-selector": {
+      "class": "pos-number-selector + pos-number-selector-input + pos-number-selector-btn",
+      "element": "div > input[type=number] + button × 2",
+      "figma": null,
+      "states": [
+        "normal",
+        "hover",
+        "focus",
+        "filled",
+        "disabled",
+        "display-only"
+      ],
+      "intents": [
+        "error",
+        "success"
+      ],
+      "interactive": true,
+      "status": "new",
+      "css": "style/pos-number-selector.css",
+      "js": "js/pos-number-selector.js (loaded by init when a .pos-number-selector is on the page)",
+      "partial": "forms/number-selector (render 'modules/common-styling/forms/number-selector', id:, label:, value:, min:, max:)",
+      "detail": "components/number-selector.json",
+      "when": "Choosing a small whole number stepped by one (a quantity, guests); not for large ranges (text input) or approximate values (slider).",
+      "markup": "<label for=\"qty\"><strong>Quantity</strong></label>{% render 'modules/common-styling/forms/number-selector', id: 'qty', label: 'quantity', value: 1, min: 0, max: 99 %}",
+      "constraints": {
+        "label": "required (label for + label param for the button names)",
+        "tab_stops": 1,
+        "steppers": "tabindex=-1; ArrowUp/ArrowDown on the input",
+        "filled": "value differs from the starting value",
+        "wrapper": ".pos-form .pos-form-simple fieldset"
+      }
+    },
     "checkbox": {
       "class": "pos-form-checkbox",
       "element": "input[type=checkbox] + label",

@@ -13,6 +13,7 @@ All notable changes to the common-styling design system (`style/`, `tokens/`, `/
 
 ### Added
 
+- Number selector (`pos-number-selector`, partial `forms/number-selector`, `js/pos-number-selector.js`): a number field with minus / plus stepper buttons on the input field tokens — the text input's states and error / success intents, one Tab stop (arrow keys step), the button at min / max turns inactive, the value turns bold once it differs from its starting value.
 - Token layers: `style/pos-primitives.css` (raw palette) → `style/pos-config.css` (semantic tokens, light / dark / high contrast) → component CSS. New palette: auto-generated 10-step OKLCH scales `--pos-primitive-color-{brand-primary,brand-supplementary,red,yellow,green}-{100…1000}` — every step has the same contrast target on every scale.
 - `tokens/`: `ds-index.json` (complete catalog — every component spec and component CSS has an entry, `when` + `render` per entry, `aliases`, `deprecated` list), `token-map.json`, `css-to-figma.json`, `icon-registry.json`, `themes.json` and one usage spec per component in `tokens/components/*.json`.
 - New components (one CSS file each in `style/`):

@@ -17,7 +17,8 @@
           "purpose": "add / create a new item",
           "usedFor": [
             "add button",
-            "create new record"
+            "create new record",
+            "Number selector increase button"
           ],
           "tabler": "plus",
           "inAll": true
@@ -167,7 +168,9 @@
         {
           "name": "subtract-bold",
           "purpose": "remove / decrement (bold minus glyph)",
-          "usedFor": [],
+          "usedFor": [
+            "Number selector decrease button"
+          ],
           "tabler": "minus"
         },
         {
@@ -469,7 +472,9 @@
         {
           "name": "module-tree-2",
           "purpose": "hierarchical module structure",
-          "usedFor": ["Breadcrumb component overview tile"],
+          "usedFor": [
+            "Breadcrumb component overview tile"
+          ],
           "tabler": "sitemap"
         },
         {

@@ -6,6 +6,9 @@ en:
     medium: Fair password
     strong: Strong password
     toggle_visibility: Toggle password visibility
+  number_selector:
+    decrease: Decrease %{label}
+    increase: Increase %{label}
   form:
     select: Select
     type_to_filter: Type to filter the list

@@ -43,6 +43,7 @@
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-behaviors.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-feature-card.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-card.css' | asset_url }}">
+<link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-number-selector.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-dropdown-button.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-slider.css' | asset_url }}">
 <link rel="stylesheet" href="{{ 'modules/common-styling/style/pos-badge.css' | asset_url }}">
@@ -108,6 +109,16 @@
       import('{{ 'modules/common-styling/js/pos-slider.js' | asset_url }}').then(() => {
         document.querySelectorAll('.pos-slider-field').forEach((element, index) => {
           window.pos.modules.active[element.id || `pos-slider-${index}`] = new window.pos.modules.slider(element);
+        });
+      });
+    }
+
+    /* number selector: stepper buttons, limits, filled state (keyed by the input's id) */
+    if (document.querySelector('.pos-number-selector')) {
+      import('{{ 'modules/common-styling/js/pos-number-selector.js' | asset_url }}').then(() => {
+        document.querySelectorAll('.pos-number-selector').forEach((element, index) => {
+          const input = element.querySelector('.pos-number-selector-input');
+          window.pos.modules.active[(input && input.id) || `pos-number-selector-${index}`] = new window.pos.modules.numberSelector(element);
         });
       });
     }

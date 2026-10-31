@@ -97,6 +97,7 @@ In high contrast the gradients are flat: gradient 1 = the black page background 
 | `link` | Link, Anchor | `pos-link` | markup | `link.json` |
 | `markdown` | Markdown, MarkdownEditor, RichTextEditor | `pos-markdown` | partial | `markdown.json` |
 | `multiselect` | Multiselect, Combobox, MultiSelect | `pos-form-multiselect` | partial | `multiselect.json` |
+| `number-selector` | NumberInput, NumberField, Stepper, QuantitySelector, Counter | `pos-number-selector` | partial + js | `number-selector.json` |
 | `pagination` | Pagination | `pos-pagination` | partial | `pagination.json` |
 | `password` | Password, PasswordInput | `pos-form-password` | partial | `password.json` |
 | `popover` | Popover, PopoverContent, Dropdown, Menu, MenuItem, ContextMenu | `pos-popover` | markup | `popover.json`, `popover-content.json` |

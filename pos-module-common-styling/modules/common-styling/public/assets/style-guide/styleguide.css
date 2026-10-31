@@ -4506,3 +4506,7 @@ tr[data-risk="grey"] td:nth-child(2) {
 /* dropdown-button — hover / focus reuse the Button's debug classes on the trigger; the open state
    (Active) is simulated in pos-dropdown-button.css with .pos-debug-dropdown-button-active, which
    also shows the menu in place (a real popover lives in the top layer and closes on any click) */
+
+/* number-selector — hover / focus are simulated with .pos-debug-number-selector-hover / -focus,
+   defined next to the real :hover / :focus-within rules in pos-number-selector.css (same pattern as
+   the text input's debug classes in pos-forms.css); filled, disabled and display only are real states */

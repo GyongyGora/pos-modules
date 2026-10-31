@@ -30,10 +30,11 @@ One JSON per component (modules/common-styling/public/assets/tokens/components/)
 - `dropdown-button` (Dropdown button): [dropdown-button.json](modules/common-styling/public/assets/tokens/components/dropdown-button.json)
 - `dialog` (Dialog): [dialog.json](modules/common-styling/public/assets/tokens/components/dialog.json)
 - `feature-card` (FeatureCard): [feature-card.json](modules/common-styling/public/assets/tokens/components/feature-card.json)
-- `forms` (Forms): one spec per control — `text-input`, `textarea`, `select`, `checkbox`, `radio`, `password`, `multiselect`
+- `forms` (Forms): one spec per control — `text-input`, `textarea`, `select`, `checkbox`, `radio`, `password`, `multiselect`, `number-selector`
 - `link` (Link): [link.json](modules/common-styling/public/assets/tokens/components/link.json)
 - `markdown` (Markdown): [markdown.json](modules/common-styling/public/assets/tokens/components/markdown.json)
 - `multiselect` (Multiselect): [multiselect.json](modules/common-styling/public/assets/tokens/components/multiselect.json)
+- `number-selector` (NumberSelector): [number-selector.json](modules/common-styling/public/assets/tokens/components/number-selector.json)
 - `pagination` (Pagination): [pagination.json](modules/common-styling/public/assets/tokens/components/pagination.json)
 - `password` (Password): [password.json](modules/common-styling/public/assets/tokens/components/password.json)
 - `popover` (Popover, PopoverContent): [popover.json](modules/common-styling/public/assets/tokens/components/popover.json), [popover-content.json](modules/common-styling/public/assets/tokens/components/popover-content.json)

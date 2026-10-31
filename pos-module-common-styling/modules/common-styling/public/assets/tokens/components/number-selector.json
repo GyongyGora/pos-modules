@@ -1,0 +1,1947 @@
+{
+  "_about": "Component spec for pos-number-selector (style/pos-number-selector.css, js/pos-number-selector.js, partial forms/number-selector.liquid) — created 2026-10-31 from the design approved in tools/component-wizard.html. Single source of truth for the Variants/Usage/Tokens tabs on /style-guide \"Number selector\" section and for AI-assisted generation. One variant; six states (normal, hover, focus, filled, disabled, display-only) and the error / success intents of the text input, with the same state keys as text-input.json (error, error-filled, error-hover …). Every token is the one the CSS applies; Figma names looked up per RULES.md 6.4 (figma: null where no mapping exists). Regenerate spec-number-selector.liquid with the RULES.md 6.4 snippet after any change here — never hand-edit the .liquid partial.",
+  "component": "number-selector",
+  "name": "Number selector",
+  "description": "A number field with decrease / increase stepper buttons in one frame, for small whole-number values such as a quantity. Built on the input field tokens and the same states as the text input.",
+  "whenToUse": [
+    "Choosing a small whole number where stepping by one is common — a quantity, a number of guests, a count of items.",
+    "The value has a sensible starting point and clear limits (<code>min</code> / <code>max</code>).",
+    "Add <code>readonly</code> to show the value as <strong>display only</strong> — transparent background, the stepper buttons stay in place but are inactive."
+  ],
+  "whenNotToUse": [
+    "The range is large or the value is rarely changed by small steps (a year, a price) — use a text input with <code>inputmode=\"numeric\"</code> instead.",
+    "The value is picked from a continuous range where the exact number matters less — use a <code>slider</code> instead.",
+    "The user picks one of a few named options — use a <code>select</code>, radio buttons or a segmented button instead."
+  ],
+  "do": [
+    "Always associate a visible <code>&lt;label&gt;</code> with the input via matching <code>for</code> and <code>id</code>, and pass the same label to the partial so the buttons are named after it (\"Decrease quantity\").",
+    "Set <code>min</code>, <code>max</code> and <code>step</code> — the stepper button at a limit turns inactive automatically.",
+    "Give a sensible starting <code>value</code>; the field turns bold (filled) once the value differs from it.",
+    "For errors pass <code>intent: 'error'</code> (sets <code>aria-invalid=\"true\"</code>) + <code>.pos-form-error</code>, for success <code>intent: 'success'</code> (<code>aria-invalid=\"false\"</code>) + <code>.pos-form-success</code>, the same frames as the text input."
+  ],
+  "dont": [
+    "Use a placeholder instead of a starting value — the field always shows a number; an emptied field returns to its starting value when it loses focus.",
+    "Make the stepper buttons focusable separately — the arrow keys on the number do the same, one Tab stop per field like every other input.",
+    "Style the component outside the <code>.pos-form</code> wrapper."
+  ],
+  "accessibility": [
+    "The number is a native <code>&lt;input type=\"number\"&gt;</code> (a spin button): <kbd>↑</kbd> / <kbd>↓</kbd> step the value, typing works, screen readers announce the value.",
+    "The stepper buttons have <code>tabindex=\"-1\"</code> and <code>aria-controls</code> pointing at the input; their accessible names include the field label.",
+    "After a button press the new value is announced through a polite live region inside the component.",
+    "Error and success messages should be linked via <code>aria-describedby</code>; required fields use the <code>required</code> attribute."
+  ],
+  "composedOf": [],
+  "props": [
+    {
+      "name": "id",
+      "type": "string",
+      "default": "required",
+      "description": "Id of the number input — the <code>&lt;label for&gt;</code> and the buttons' <code>aria-controls</code> point at it."
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "required",
+      "description": "The field label, used in the stepper buttons' names (\"Decrease quantity\" / \"Increase quantity\")."
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "default": "min (or 0)",
+      "description": "Starting value. The field shows it in regular weight and turns bold (filled) once the value differs from it."
+    },
+    {
+      "name": "min / max / step",
+      "type": "number",
+      "default": "0 / none / 1",
+      "description": "Native number-input limits and step. At a limit the matching stepper button is disabled."
+    },
+    {
+      "name": "disabled",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Disables the input and both buttons — not-allowed cursor over the whole field."
+    },
+    {
+      "name": "readonly",
+      "type": "boolean attribute",
+      "default": "false",
+      "description": "Display only: transparent background, regular text, buttons visible but inactive."
+    },
+    {
+      "name": "intent",
+      "type": "'error' | 'success' (partial parameter)",
+      "default": "none",
+      "description": "Sets aria-invalid=\"true\" / \"false\" on the number: the error / success frame of the text input. Pair it with .pos-form-error / .pos-form-success linked via describedby."
+    }
+  ],
+  "dimensions": {
+    "state": [
+      "normal",
+      "hover",
+      "focus",
+      "filled",
+      "disabled",
+      "display-only"
+    ],
+    "intent": [
+      "normal",
+      "error",
+      "success"
+    ]
+  },
+  "shared": {},
+  "variants": {
+    "number-selector": {
+      "label": "Number selector",
+      "classes": [
+        "pos-number-selector"
+      ],
+      "states": {
+        "normal": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "role": "Value (starting value)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Frame and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon (inactive at min / max: interactive-disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "role": "Frame, 1px inset ring and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Hovered button icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-frame",
+                  "figma": "Input field Frame Hover, Active",
+                  "role": "Frame, 1px inset ring and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "2px focus ring outside the field (keyboard navigation)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Value — differs from the starting value (weight 600)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Frame and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "font-weight: 600",
+                  "figma": null,
+                  "role": "Filled value weight — the same literal 600 as the text input (no semibold token)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "role": "Frame and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Label text (disabled fieldset)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "cursor: not-allowed",
+                  "figma": null,
+                  "role": "Over the whole field, no hover (RULES.md 4.12)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Value (regular weight)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Frame and dividers",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons inert)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "role": "Display only: no field background",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "role": "Value (starting value)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon (inactive at min / max: interactive-disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Value — differs from the starting value (weight 600)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "font-weight: 600",
+                  "figma": null,
+                  "role": "Filled value weight — the same literal 600 as the text input (no semibold token)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons (stay neutral while the frame shows the intent)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Hovered button icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons (stay neutral while the frame shows the intent)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "2px focus ring outside the field (keyboard navigation)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "error-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Label text (disabled fieldset)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "cursor: not-allowed",
+                  "figma": null,
+                  "role": "Over the whole field, no hover (RULES.md 4.12)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "error-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Value (regular weight)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Frame + 1px inset ring (error)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons inert)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Error message (.pos-form-error)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "role": "Display only: no field background",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-text",
+                  "figma": "Input Field Text Normal",
+                  "role": "Value (starting value)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon (inactive at min / max: interactive-disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-filled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-prominent",
+                  "figma": "General elements-theme/Prominent - text",
+                  "role": "Value — differs from the starting value (weight 600)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "font-weight: 600",
+                  "figma": null,
+                  "role": "Filled value weight — the same literal 600 as the text input (no semibold token)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-hover": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-hover-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-hover-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons (stay neutral while the frame shows the intent)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-hover",
+                  "figma": "General elements-theme/Graphic Interactive Hover",
+                  "role": "Hovered button icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-focus": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-active-background",
+                  "figma": "Input field Bg Hover, Active",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-active-text",
+                  "figma": "Input Field Text Hover, Active",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-frame",
+                  "figma": "Input field Frame Normal",
+                  "role": "Dividers between the number and the buttons (stay neutral while the frame shows the intent)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive",
+                  "figma": "General elements-theme/Graphic Interactive",
+                  "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Focus indicator",
+              "tokens": [
+                {
+                  "css": "--pos-color-focused",
+                  "figma": "General elements-theme/Focused",
+                  "role": "2px focus ring outside the field (keyboard navigation)",
+                  "swatch": true
+                }
+              ]
+            }
+          ]
+        },
+        "success-disabled": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-input-background",
+                  "figma": "Input field Bg Normal",
+                  "role": "Field background",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-text",
+                  "figma": "Input Field Text Disabled",
+                  "role": "Value",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-input-disabled-frame",
+                  "figma": "Input field Frame Disabled",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons disabled)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-disabled",
+                  "figma": "General elements-theme/Disabled - text",
+                  "role": "Label text (disabled fieldset)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "cursor: not-allowed",
+                  "figma": null,
+                  "role": "Over the whole field, no hover (RULES.md 4.12)",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        },
+        "success-display-only": {
+          "sections": [
+            {
+              "heading": "Color",
+              "tokens": [
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Value (regular weight)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Frame + 1px inset ring (success)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-frame",
+                  "figma": "Backgrounds/Frame",
+                  "role": "Dividers between the number and the buttons",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Minus / plus icon (buttons inert)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text",
+                  "figma": "General elements-theme/Normal - text",
+                  "role": "Label text",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-content-text-supplementary",
+                  "figma": "General elements-theme/Supplementary - text",
+                  "role": "Helper text in the label (<small>)",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-important",
+                  "figma": "Utility/Important Normal",
+                  "role": "Required asterisk in the label",
+                  "swatch": true,
+                  "requiresSelector": "#comp-number-selector-field[required]"
+                },
+                {
+                  "css": "--pos-color-confirmation",
+                  "figma": "Utility/Confirmation Normal",
+                  "role": "Success message (.pos-form-success)",
+                  "swatch": true
+                }
+              ]
+            },
+            {
+              "heading": "Layout",
+              "tokens": [
+                {
+                  "css": "--pos-radius-input",
+                  "figma": "Input corner",
+                  "role": "Field corner radius",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-height-input",
+                  "figma": null,
+                  "role": "Field height = stepper button width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-padding-input",
+                  "figma": null,
+                  "role": "Number padding (inline)",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-border-input",
+                  "figma": null,
+                  "role": "Frame and divider width",
+                  "swatch": false
+                },
+                {
+                  "css": "--pos-size-icon-m",
+                  "figma": "Icon/icon-m",
+                  "role": "Minus / plus icon size",
+                  "swatch": false
+                }
+              ]
+            },
+            {
+              "heading": "Note",
+              "tokens": [
+                {
+                  "css": "background-color: transparent",
+                  "figma": null,
+                  "role": "Display only: no field background",
+                  "swatch": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "usageExample": "<form class=\"pos-form pos-form-simple\">\n  <fieldset>\n    <label for=\"quantity\"><strong>Quantity</strong></label>\n    {% render 'modules/common-styling/forms/number-selector', id: 'quantity', name: 'quantity', label: 'quantity', value: 5, min: 0, max: 99 %}\n  </fieldset>\n</form>"
+}
