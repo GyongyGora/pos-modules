@@ -9,6 +9,7 @@ en:
   number_selector:
     decrease: Decrease %{label}
     increase: Increase %{label}
+    value: value
   form:
     select: Select
     type_to_filter: Type to filter the list

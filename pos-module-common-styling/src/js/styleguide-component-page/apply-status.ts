@@ -604,11 +604,12 @@ import { getActivePreviewStage, getPreviewButtons, getPreviewLinks, previewStage
         if (!input) return;
         input.disabled = false;
         input.removeAttribute('readonly');
-        input.value = input.dataset.start || input.defaultValue;
+        input.value = input.defaultValue;
         switch (status) {
           case 'hover': el.classList.add('pos-debug-number-selector-hover'); break;
           case 'focus': el.classList.add('pos-debug-number-selector-focus'); break;
-          case 'filled': input.value = String(Number(input.defaultValue) + 1); break;
+          /* one step from the starting value — up, or down when the start is already at max */
+          case 'filled': input.stepUp(); if (input.value === input.defaultValue) input.stepDown(); break;
           case 'disabled': input.disabled = true; break;
           case 'display-only': input.setAttribute('readonly', ''); break;
         }

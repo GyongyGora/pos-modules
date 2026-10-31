@@ -12,7 +12,8 @@
 
 // purpose:   steps the value with the − / + buttons, disables the button at a limit, marks the
 //            field filled once the value differs from its starting value, restores the starting
-//            value when an emptied field loses focus, and announces the value after a button press
+//            value when an emptied field loses focus, and announces the label + value after a
+//            button press ("Quantity 7")
 // arguments: container with the number input and the two buttons (dom node)
 // ************************************************************************
 window.pos.modules.numberSelector = function(container){
@@ -34,8 +35,16 @@ window.pos.modules.numberSelector = function(container){
   module.settings.status = container.querySelector('.pos-number-selector-status');
   // class on the container while the value differs from its starting value (string)
   module.settings.filledClass = 'pos-number-selector--filled';
-  // the starting value (string) — data-start overrides the value the field was rendered with
-  module.settings.start = module.settings.input ? (module.settings.input.dataset.start || module.settings.input.defaultValue) : '';
+  // the starting value — the value the field was rendered with (string)
+  module.settings.start = module.settings.input ? module.settings.input.defaultValue : '';
+  // the field's visible label, read out with the value after a button press: "Quantity 7" (string)
+  module.settings.labelText = '';
+  if (module.settings.input && module.settings.input.labels && module.settings.input.labels.length) {
+    const label = module.settings.input.labels[0];
+    module.settings.labelText = (label.querySelector('strong') || label).textContent.trim();
+  } else if (module.settings.input && module.settings.input.getAttribute('aria-label')) {
+    module.settings.labelText = module.settings.input.getAttribute('aria-label');
+  }
 
 
 
@@ -51,7 +60,8 @@ window.pos.modules.numberSelector = function(container){
     if (module.settings.decrease) module.settings.decrease.disabled = inert || (!isNaN(value) && value <= min);
     if (module.settings.increase) module.settings.increase.disabled = inert || (!isNaN(value) && value >= max);
 
-    module.settings.container.classList.toggle(module.settings.filledClass, input.value !== '' && input.value !== module.settings.start);
+    // compared as numbers: "05" is the same value as "5"
+    module.settings.container.classList.toggle(module.settings.filledClass, input.value !== '' && parseFloat(input.value) !== parseFloat(module.settings.start));
   };
 
 
@@ -68,7 +78,9 @@ window.pos.modules.numberSelector = function(container){
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.dispatchEvent(new Event('change', { bubbles: true }));
 
-    if (module.settings.status) module.settings.status.textContent = input.value;
+    if (module.settings.status) {
+      module.settings.status.textContent = module.settings.labelText ? module.settings.labelText + ' ' + input.value : input.value;
+    }
   };
 
 
@@ -79,7 +91,8 @@ window.pos.modules.numberSelector = function(container){
     const input = module.settings.input;
     if (input.value !== '' || input.disabled || input.readOnly) return;
     input.value = module.settings.start;
-    module.update();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
 

@@ -42,6 +42,16 @@ import { COMPONENT_SPECS } from './token-panel.js';
      keep a small static snippet instead — same as Button/Code's bespoke functions, just not
      variant-reactive since neither has a toggle that changes their real markup. */
   export var STATIC_CODE_SNIPPETS: Record<string, string> = {
+    /* the partial call, the way an app uses it — the rendered HTML (input + two buttons + live
+       region) is the partial's job, so it isn't repeated here */
+    'number-selector':
+      '<form class="pos-form pos-form-simple">\n' +
+      '  <fieldset>\n' +
+      '    <label for="quantity"><strong>Quantity</strong></label>\n' +
+      "    {% render 'modules/common-styling/forms/number-selector', id: 'quantity', name: 'quantity', label: 'quantity', value: 5, min: 0, max: 99, describedby: 'quantity-error' %}\n" +
+      '    <p class="pos-form-error" id="quantity-error" hidden>Choose a number between 0 and 99</p>\n' +
+      '  </fieldset>\n' +
+      '</form>',
     'popover-content':
       '<div class="pos-popover">\n' +
       '  <button type="button" class="pos-button" popovertarget="my-popover">Open popover</button>\n' +

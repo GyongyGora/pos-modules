@@ -5,7 +5,8 @@
 
   arguments:
     id - input id, the <label for> points at it (string, required)
-    label - the field label, used in the buttons' names: "Decrease <label>" (string, required)
+    label - the field label, used in the buttons' names: "Decrease <label>" (string, optional,
+            default: the translated "value" — always pass it when the field has a label)
     name - form input name (string)
     value - starting value (number, default: min or 0)
     min - lowest value (number, default: 0)
@@ -28,6 +29,9 @@
   assign inert = false
   if disabled or readonly
     assign inert = true
+  endif
+  if label == blank
+    assign label = 'modules/common-styling/number_selector.value' | t
   endif
   assign decrease_label = 'modules/common-styling/number_selector.decrease' | t: label: label
   assign increase_label = 'modules/common-styling/number_selector.increase' | t: label: label

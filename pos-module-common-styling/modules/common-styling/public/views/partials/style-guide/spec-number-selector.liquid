@@ -32,7 +32,7 @@
   "accessibility": [
     "The number is a native <code>&lt;input type=\"number\"&gt;</code> (a spin button): <kbd>↑</kbd> / <kbd>↓</kbd> step the value, typing works, screen readers announce the value.",
     "The stepper buttons have <code>tabindex=\"-1\"</code> and <code>aria-controls</code> pointing at the input; their accessible names include the field label.",
-    "After a button press the new value is announced through a polite live region inside the component.",
+    "After a button press the field label and the new value are announced (\"Quantity 7\") through a polite live region inside the component.",
     "Error and success messages should be linked via <code>aria-describedby</code>; required fields use the <code>required</code> attribute."
   ],
   "composedOf": [],
@@ -46,8 +46,8 @@
     {
       "name": "label",
       "type": "string",
-      "default": "required",
-      "description": "The field label, used in the stepper buttons' names (\"Decrease quantity\" / \"Increase quantity\")."
+      "default": "\"value\" (translation)",
+      "description": "The field label, used in the stepper buttons' names (\"Decrease quantity\" / \"Increase quantity\"); falls back to \"value\" when not passed — always pass it when the field has a label. The live region reads the visible <label> text (or the input's aria-label) with the value (\"Quantity 7\")."
     },
     {
       "name": "value",
@@ -232,6 +232,12 @@
                   "swatch": true
                 },
                 {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
                   "css": "--pos-color-content-text",
                   "figma": "General elements-theme/Normal - text",
                   "role": "Label text",
@@ -316,6 +322,12 @@
                   "css": "--pos-color-interactive",
                   "figma": "General elements-theme/Graphic Interactive",
                   "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
                   "swatch": true
                 },
                 {
@@ -414,6 +426,12 @@
                   "css": "--pos-color-interactive",
                   "figma": "General elements-theme/Graphic Interactive",
                   "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
                   "swatch": true
                 },
                 {
@@ -810,6 +828,12 @@
                   "swatch": true
                 },
                 {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
                   "css": "--pos-color-content-text",
                   "figma": "General elements-theme/Normal - text",
                   "role": "Label text",
@@ -926,6 +950,12 @@
                   "swatch": true
                 },
                 {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
                   "css": "--pos-color-content-text",
                   "figma": "General elements-theme/Normal - text",
                   "role": "Label text",
@@ -1022,6 +1052,12 @@
                   "css": "--pos-color-interactive",
                   "figma": "General elements-theme/Graphic Interactive",
                   "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
                   "swatch": true
                 },
                 {
@@ -1448,6 +1484,12 @@
                   "swatch": true
                 },
                 {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
                   "css": "--pos-color-content-text",
                   "figma": "General elements-theme/Normal - text",
                   "role": "Label text",
@@ -1564,6 +1606,12 @@
                   "swatch": true
                 },
                 {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
+                  "swatch": true
+                },
+                {
                   "css": "--pos-color-content-text",
                   "figma": "General elements-theme/Normal - text",
                   "role": "Label text",
@@ -1660,6 +1708,12 @@
                   "css": "--pos-color-interactive",
                   "figma": "General elements-theme/Graphic Interactive",
                   "role": "Minus / plus icon",
+                  "swatch": true
+                },
+                {
+                  "css": "--pos-color-interactive-disabled",
+                  "figma": "General elements-theme/Graphic Interactive Disabled",
+                  "role": "Button at min / max (disabled)",
                   "swatch": true
                 },
                 {

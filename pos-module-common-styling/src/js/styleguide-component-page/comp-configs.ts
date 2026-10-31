@@ -1108,7 +1108,7 @@
         accessibility: [
           "The number is a native <code>&lt;input type=\"number\"&gt;</code> (a spin button): <kbd>↑</kbd> / <kbd>↓</kbd> step the value, typing works, screen readers announce the value.",
           "The stepper buttons have <code>tabindex=\"-1\"</code> and <code>aria-controls</code> pointing at the input; their accessible names include the field label.",
-          "After a button press the new value is announced through a polite live region inside the component.",
+          "After a button press the field label and the new value are announced (\"Quantity 7\") through a polite live region inside the component.",
           "Error and success messages should be linked via <code>aria-describedby</code>; required fields use the <code>required</code> attribute.",
         ],
       },

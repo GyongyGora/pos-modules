@@ -62,6 +62,7 @@
 
   .pos-number-selector-input {
     all: unset;
+    box-sizing: border-box;
     flex: 1 1 auto;
     min-inline-size: 0;
     inline-size: calc(var(--pos-height-input) * 2.5);
@@ -99,6 +100,7 @@
   ============================================================================ */
   .pos-number-selector-btn {
     all: unset;
+    box-sizing: border-box;
     inline-size: var(--pos-height-input);
     flex-shrink: 0;
     display: flex;
